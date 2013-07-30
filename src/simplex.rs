@@ -16,11 +16,11 @@
 use std::util::unreachable;
 
 pub trait Simplex<T> {
-    fn simplex(&self, ctx: SimplexContext<T>) -> T;
+    fn simplex(&self, ctx: &SimplexContext<T>) -> T;
 }
 
 impl<T: Clone + Float> Simplex<T> for (T, T) {
-    fn simplex(&self, ctx: SimplexContext<T>) -> T {
+    fn simplex(&self, ctx: &SimplexContext<T>) -> T {
         match *self {
             (ref x, ref y) => ctx.gen2(x, y)
         }
@@ -28,7 +28,7 @@ impl<T: Clone + Float> Simplex<T> for (T, T) {
 }
 
 impl<T: Clone + Float> Simplex<T> for (T, T, T) {
-    fn simplex(&self, ctx: SimplexContext<T>) -> T {
+    fn simplex(&self, ctx: &SimplexContext<T>) -> T {
         match *self {
             (ref x, ref y, ref z) => ctx.gen3(x, y, z)
         }
@@ -36,7 +36,7 @@ impl<T: Clone + Float> Simplex<T> for (T, T, T) {
 }
 
 impl<T: Clone + Float> Simplex<T> for (T, T, T, T) {
-    fn simplex(&self, ctx: SimplexContext<T>) -> T {
+    fn simplex(&self, ctx: &SimplexContext<T>) -> T {
         match *self {
             (ref x, ref y, ref z, ref w) => ctx.gen4(x, y, z, w)
         }
@@ -44,7 +44,7 @@ impl<T: Clone + Float> Simplex<T> for (T, T, T, T) {
 }
 
 impl<T: Clone + Float> Simplex<T> for [T, ..2] {
-    fn simplex(&self, ctx: SimplexContext<T>) -> T {
+    fn simplex(&self, ctx: &SimplexContext<T>) -> T {
         match *self {
             [ref x, ref y] => ctx.gen2(x, y),
             _ => unreachable(),
@@ -53,7 +53,7 @@ impl<T: Clone + Float> Simplex<T> for [T, ..2] {
 }
 
 impl<T: Clone + Float> Simplex<T> for [T, ..3] {
-    fn simplex(&self, ctx: SimplexContext<T>) -> T {
+    fn simplex(&self, ctx: &SimplexContext<T>) -> T {
         match *self {
             [ref x, ref y, ref z] => ctx.gen3(x, y, z),
             _ => unreachable(),
@@ -62,7 +62,7 @@ impl<T: Clone + Float> Simplex<T> for [T, ..3] {
 }
 
 impl<T: Clone + Float> Simplex<T> for [T, ..4] {
-    fn simplex(&self, ctx: SimplexContext<T>) -> T {
+    fn simplex(&self, ctx: &SimplexContext<T>) -> T {
         match *self {
             [ref x, ref y, ref z, ref w] => ctx.gen4(x, y, z, w),
             _ => unreachable(),

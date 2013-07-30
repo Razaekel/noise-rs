@@ -20,33 +20,34 @@ use std::num::cast;
 use std::util::unreachable;
 
 pub trait Perlin<T> {
-    fn perlin(&self, ctx: PerlinContext<T>) -> T;
+    fn perlin(&self, ctx: &PerlinContext<T>) -> T;
 }
 
 // impl<T: Clone + Float> Perlin<T> for T {
-//     fn perlin(&self, ctx: PerlinContext<T>) -> T {
+//     fn perlin(&self, ctx: &PerlinContext<T>) -> T {
 //         ctx.gen1(self)
 //     }
 // }
 
 impl<T: Clone + Float> Perlin<T> for (T,) {
-    fn perlin(&self, ctx: PerlinContext<T>) -> T {
+    fn perlin(&self, ctx: &PerlinContext<T>) -> T {
         match *self {
-            (ref x,) => ctx.gen1(x)
+            (ref x,) => ctx.gen1(x.clone())
         }
     }
 }
 
 impl<T: Clone + Float> Perlin<T> for (T, T) {
-    fn perlin(&self, ctx: PerlinContext<T>) -> T {
+    fn perlin(&self, ctx: &PerlinContext<T>) -> T {
         match *self {
-            (ref x, ref y) => ctx.gen2(x, y)
+            (ref x, ref y) => ctx.gen2(x.clone(),
+                                       y.clone())
         }
     }
 }
 
 impl<T: Clone + Float> Perlin<T> for (T, T, T) {
-    fn perlin(&self, ctx: PerlinContext<T>) -> T {
+    fn perlin(&self, ctx: &PerlinContext<T>) -> T {
         match *self {
             (ref x, ref y, ref z) => ctx.gen3(x, y, z)
         }
@@ -54,7 +55,7 @@ impl<T: Clone + Float> Perlin<T> for (T, T, T) {
 }
 
 impl<T: Clone + Float> Perlin<T> for [T, ..1] {
-    fn perlin(&self, ctx: PerlinContext<T>) -> T {
+    fn perlin(&self, ctx: &PerlinContext<T>) -> T {
         match *self {
             [ref x] => ctx.gen1(x),
             _ => unreachable(),
@@ -63,7 +64,7 @@ impl<T: Clone + Float> Perlin<T> for [T, ..1] {
 }
 
 impl<T: Clone + Float> Perlin<T> for [T, ..2] {
-    fn perlin(&self, ctx: PerlinContext<T>) -> T {
+    fn perlin(&self, ctx: &PerlinContext<T>) -> T {
         match *self {
             [ref x, ref y] => ctx.gen2(x, y),
             _ => unreachable(),
@@ -72,7 +73,7 @@ impl<T: Clone + Float> Perlin<T> for [T, ..2] {
 }
 
 impl<T: Clone + Float> Perlin<T> for [T, ..3] {
-    fn perlin(&self, ctx: PerlinContext<T>) -> T {
+    fn perlin(&self, ctx: &PerlinContext<T>) -> T {
         match *self {
             [ref x, ref y, ref z] => ctx.gen3(x, y, z),
             _ => unreachable(),

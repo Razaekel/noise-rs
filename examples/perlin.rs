@@ -35,7 +35,7 @@ fn main() {
     for range(0, HEIGHT) |y| {
         for range(0, WIDTH) |x| {
             cells[y][x] = [x as f32 * 0.1f32,
-                           y as f32 * 0.1f32].perlin(ctx) * 0.5f32 + 0.5f32;
+                           y as f32 * 0.1f32].perlin(&ctx) * 0.5f32 + 0.5f32;
         };
     };
 
