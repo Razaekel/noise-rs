@@ -15,33 +15,24 @@
 
 //! An example of using perlin noise
 
-// Console noise rendering based off rust/src/test/bench/noise.rs
-
 extern mod noise;
 
 use std::uint::range;
 use noise::perlin::*;
 
-static WIDTH:  uint = 100;
+static WIDTH: uint = 100;
 static HEIGHT: uint = 100;
 
 static GRADIENT: [&'static str, ..6] = [" ", "░", "▒", "▓", "█", "█"];
 
 fn main() {
-    let mut cells = [[0f32, ..WIDTH], ..HEIGHT];
-
     let ctx = PerlinContext::new::<f32>();
 
     for range(0, HEIGHT) |y| {
         for range(0, WIDTH) |x| {
-            cells[y][x] = [x as f32 * 0.1f32,
-                           y as f32 * 0.1f32].perlin(&ctx) * 0.5f32 + 0.5f32;
-        };
-    };
-
-    for range(0, HEIGHT) |y| {
-        for range(0, WIDTH) |x| {
-            print(GRADIENT[cells[y][x] / 0.2f32 as int]);
+            let val = [x as f32 * 0.1f32,
+                       y as f32 * 0.1f32].perlin(&ctx) * 0.5f32 + 0.5f32;
+            print(GRADIENT[val / 0.2f32 as int]);
         }
         println("");
     }
