@@ -19,17 +19,17 @@
 use std::num::cast;
 
 pub trait Perlin<T> {
-    fn perlin(&self, ctx: &PerlinContext<T>) -> T;
+    fn perlin(&self, ctx: &PerlinContext) -> T;
 }
 
 // impl<T: Clone + Float> Perlin<T> for T {
-//     fn perlin(&self, ctx: &PerlinContext<T>) -> T {
+//     fn perlin(&self, ctx: &PerlinContext) -> T {
 //         ctx.gen1(self)
 //     }
 // }
 
 impl<T: Clone + Float> Perlin<T> for (T,) {
-    fn perlin(&self, ctx: &PerlinContext<T>) -> T {
+    fn perlin(&self, ctx: &PerlinContext) -> T {
         match *self {
             (ref x,) => ctx.gen1(x)
         }
@@ -37,16 +37,15 @@ impl<T: Clone + Float> Perlin<T> for (T,) {
 }
 
 impl<T: Clone + Float> Perlin<T> for (T, T) {
-    fn perlin(&self, ctx: &PerlinContext<T>) -> T {
+    fn perlin(&self, ctx: &PerlinContext) -> T {
         match *self {
-            (ref x, ref y) => ctx.gen2(x,
-                                       y)
+            (ref x, ref y) => ctx.gen2(x, y)
         }
     }
 }
 
 impl<T: Clone + Float> Perlin<T> for (T, T, T) {
-    fn perlin(&self, ctx: &PerlinContext<T>) -> T {
+    fn perlin(&self, ctx: &PerlinContext) -> T {
         match *self {
             (ref x, ref y, ref z) => ctx.gen3(x, y, z)
         }
@@ -54,7 +53,7 @@ impl<T: Clone + Float> Perlin<T> for (T, T, T) {
 }
 
 impl<T: Clone + Float> Perlin<T> for [T, ..1] {
-    fn perlin(&self, ctx: &PerlinContext<T>) -> T {
+    fn perlin(&self, ctx: &PerlinContext) -> T {
         match *self {
             [ref x] => ctx.gen1(x),
         }
@@ -62,7 +61,7 @@ impl<T: Clone + Float> Perlin<T> for [T, ..1] {
 }
 
 impl<T: Clone + Float> Perlin<T> for [T, ..2] {
-    fn perlin(&self, ctx: &PerlinContext<T>) -> T {
+    fn perlin(&self, ctx: &PerlinContext) -> T {
         match *self {
             [ref x, ref y] => ctx.gen2(x, y),
         }
@@ -70,7 +69,7 @@ impl<T: Clone + Float> Perlin<T> for [T, ..2] {
 }
 
 impl<T: Clone + Float> Perlin<T> for [T, ..3] {
-    fn perlin(&self, ctx: &PerlinContext<T>) -> T {
+    fn perlin(&self, ctx: &PerlinContext) -> T {
         match *self {
             [ref x, ref y, ref z] => ctx.gen3(x, y, z),
         }
@@ -78,26 +77,26 @@ impl<T: Clone + Float> Perlin<T> for [T, ..3] {
 }
 
 /// A perlin noise generator
-pub struct PerlinContext<T> {
+pub struct PerlinContext {
     // permutation table
     priv ptable: [uint, ..512],
 }
 
-impl<T:Clone + Float> PerlinContext<T> {
-    pub fn new() -> PerlinContext<T> {
+impl PerlinContext {
+    pub fn new() -> PerlinContext {
         // TODO: generate random permutation table
         PerlinContext { ptable: P }
     }
 
-    pub fn gen1(&self, x: &T) -> T {
+    pub fn gen1<T:Clone + Float>(&self, x: &T) -> T {
         self.gen2(x, &cast(0))
     }
 
-    pub fn gen2(&self, x: &T, y: &T) -> T {
+    pub fn gen2<T:Clone + Float>(&self, x: &T, y: &T) -> T {
         self.gen3(x, y, &cast(0))
     }
 
-    pub fn gen3(&self, x: &T, y: &T, z: &T) -> T {
+    pub fn gen3<T:Clone + Float>(&self, x: &T, y: &T, z: &T) -> T {
         // Find the unit cube that contains the point
         let X = x.floor().to_uint() & 255;
         let Y = y.floor().to_uint() & 255;

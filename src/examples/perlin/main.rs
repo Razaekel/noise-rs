@@ -25,13 +25,13 @@ static HEIGHT: uint = 100;
 static GRADIENT: [&'static str, ..6] = [" ", "░", "▒", "▓", "█", "█"];
 
 fn main() {
-    let ctx = PerlinContext::<f32>::new();
+    let ctx = PerlinContext::new();
 
     for y in range(0, HEIGHT) {
         for x in range(0, WIDTH) {
-            let val = [x as f32 * 0.1f32,
-                       y as f32 * 0.1f32].perlin(&ctx) * 0.5f32 + 0.5f32;
-            print(GRADIENT[(val / 0.2f32) as int]);
+            let val = [x as f32 * 0.1,
+                       y as f32 * 0.1].perlin(&ctx) * 0.5 + 0.5;
+            print(GRADIENT[(val / 0.2) as int]);
         }
         println("");
     }
