@@ -25,7 +25,7 @@ static HEIGHT: uint = 100;
 static GRADIENT: [&'static str, ..6] = [" ", "░", "▒", "▓", "█", "█"];
 
 fn main() {
-    let ctx = PerlinContext::new::<f32>();
+    let ctx = PerlinContext::<f32>::new();
 
     for y in range(0, HEIGHT) {
         for x in range(0, WIDTH) {
