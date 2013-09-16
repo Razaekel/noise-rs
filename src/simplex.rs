@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::util::unreachable;
-
 pub trait Simplex<T> {
     fn simplex(&self, ctx: &SimplexContext<T>) -> T;
 }

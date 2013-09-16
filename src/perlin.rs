@@ -17,7 +17,6 @@
 //! (http://mrl.nyu.edu/~perlin/noise/) algorithm.
 
 use std::num::cast;
-use std::util::unreachable;
 
 pub trait Perlin<T> {
     fn perlin(&self, ctx: &PerlinContext<T>) -> T;
