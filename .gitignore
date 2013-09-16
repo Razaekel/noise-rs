@@ -1,2 +1,4 @@
+/.rust/
+/bin/
+/build/
 /lib/
-/sublime/
