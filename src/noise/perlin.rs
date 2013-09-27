@@ -89,11 +89,40 @@ impl PerlinContext {
     }
 
     pub fn gen1<T:Float>(&self, x: &T) -> T {
-        self.gen2(x, &cast(0))
+        let X = x.floor().to_uint() as u8;
+        let x_ = *x - x.floor();
+        let u = fade(x_.clone());
+
+        let A  = self.ptable[X    ];
+        let AA = self.ptable[A    ];
+        let B  = self.ptable[X + 1];
+        let BA = self.ptable[B    ];
+
+        lerp(u.clone(), grad(self.ptable[AA], x_.clone(), cast(0), cast(0)),
+                        grad(self.ptable[BA], x_-cast(1), cast(0), cast(0)))
     }
 
     pub fn gen2<T:Float>(&self, x: &T, y: &T) -> T {
-        self.gen3(x, y, &cast(0))
+        let X = x.floor().to_uint() as u8;
+        let Y = y.floor().to_uint() as u8;
+
+        let x_ = *x - x.floor();
+        let y_ = *y - y.floor();
+
+        let u = fade(x_.clone());
+        let v = fade(y_.clone());
+
+        let A  = self.ptable[X    ] + Y;
+        let AA = self.ptable[A    ];
+        let AB = self.ptable[A + 1];
+        let B  = self.ptable[X + 1] + Y;
+        let BA = self.ptable[B    ];
+        let BB = self.ptable[B + 1];
+
+        lerp(v.clone(), lerp(u.clone(), grad(self.ptable[AA], x_.clone(), y_.clone(), cast(0)),
+                                        grad(self.ptable[BA], x_-cast(1), y_.clone(), cast(0))),
+                        lerp(u.clone(), grad(self.ptable[AB], x_.clone(), y_-cast(1), cast(0)),
+                                        grad(self.ptable[BB], x_-cast(1), y_-cast(1), cast(0))))
     }
 
     pub fn gen3<T:Float>(&self, x: &T, y: &T, z: &T) -> T {
