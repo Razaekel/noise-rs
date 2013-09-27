@@ -23,13 +23,13 @@ pub trait Perlin<T> {
     fn perlin(&self, ctx: &PerlinContext) -> T;
 }
 
-// impl<T: Clone + Float> Perlin<T> for T {
+// impl<T: Float> Perlin<T> for T {
 //     fn perlin(&self, ctx: &PerlinContext) -> T {
 //         ctx.gen1(self)
 //     }
 // }
 
-impl<T: Clone + Float> Perlin<T> for (T,) {
+impl<T: Float> Perlin<T> for (T,) {
     fn perlin(&self, ctx: &PerlinContext) -> T {
         match *self {
             (ref x,) => ctx.gen1(x)
@@ -37,7 +37,7 @@ impl<T: Clone + Float> Perlin<T> for (T,) {
     }
 }
 
-impl<T: Clone + Float> Perlin<T> for (T, T) {
+impl<T: Float> Perlin<T> for (T, T) {
     fn perlin(&self, ctx: &PerlinContext) -> T {
         match *self {
             (ref x, ref y) => ctx.gen2(x, y)
@@ -45,7 +45,7 @@ impl<T: Clone + Float> Perlin<T> for (T, T) {
     }
 }
 
-impl<T: Clone + Float> Perlin<T> for (T, T, T) {
+impl<T: Float> Perlin<T> for (T, T, T) {
     fn perlin(&self, ctx: &PerlinContext) -> T {
         match *self {
             (ref x, ref y, ref z) => ctx.gen3(x, y, z)
@@ -53,7 +53,7 @@ impl<T: Clone + Float> Perlin<T> for (T, T, T) {
     }
 }
 
-impl<T: Clone + Float> Perlin<T> for [T, ..1] {
+impl<T: Float> Perlin<T> for [T, ..1] {
     fn perlin(&self, ctx: &PerlinContext) -> T {
         match *self {
             [ref x] => ctx.gen1(x),
@@ -61,7 +61,7 @@ impl<T: Clone + Float> Perlin<T> for [T, ..1] {
     }
 }
 
-impl<T: Clone + Float> Perlin<T> for [T, ..2] {
+impl<T: Float> Perlin<T> for [T, ..2] {
     fn perlin(&self, ctx: &PerlinContext) -> T {
         match *self {
             [ref x, ref y] => ctx.gen2(x, y),
@@ -69,7 +69,7 @@ impl<T: Clone + Float> Perlin<T> for [T, ..2] {
     }
 }
 
-impl<T: Clone + Float> Perlin<T> for [T, ..3] {
+impl<T: Float> Perlin<T> for [T, ..3] {
     fn perlin(&self, ctx: &PerlinContext) -> T {
         match *self {
             [ref x, ref y, ref z] => ctx.gen3(x, y, z),
@@ -88,15 +88,15 @@ impl PerlinContext {
         PerlinContext { ptable: rng.gen_vec::<u8>(512) }
     }
 
-    pub fn gen1<T:Clone + Float>(&self, x: &T) -> T {
+    pub fn gen1<T:Float>(&self, x: &T) -> T {
         self.gen2(x, &cast(0))
     }
 
-    pub fn gen2<T:Clone + Float>(&self, x: &T, y: &T) -> T {
+    pub fn gen2<T:Float>(&self, x: &T, y: &T) -> T {
         self.gen3(x, y, &cast(0))
     }
 
-    pub fn gen3<T:Clone + Float>(&self, x: &T, y: &T, z: &T) -> T {
+    pub fn gen3<T:Float>(&self, x: &T, y: &T, z: &T) -> T {
         // Find the unit cube that contains the point
         let X = x.floor().to_uint() as u8;
         let Y = y.floor().to_uint() as u8;
@@ -133,16 +133,16 @@ impl PerlinContext {
 }
 
 #[inline]
-fn fade<T:Num + NumCast>(t: T) -> T {
+fn fade<T: Float>(t: T) -> T {
     t * t * t * (t * (t * cast(6) - cast(15)) + cast(10))
 }
 
 #[inline]
-fn lerp<T:Num + NumCast>(t: T, a: T, b: T) -> T {
+fn lerp<T: Float>(t: T, a: T, b: T) -> T {
     a + t * (b - a)
 }
 
-fn grad<T:Clone + Num + NumCast>(hash: u8, x: T, y: T, z: T) -> T {
+fn grad<T: Float>(hash: u8, x: T, y: T, z: T) -> T {
     let h = hash & 15;
 
     let u = match h {
