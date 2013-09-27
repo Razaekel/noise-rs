@@ -121,26 +121,28 @@ impl PerlinContext {
         let BB = self.ptable[B + 1] + Z;
 
         // Add the blended results from the 8 corners of the cube
-        lerp(w, lerp(v.clone(), lerp(u.clone(), grad(self.ptable[AA    ] as uint, x_.clone(), y_.clone(), z_.clone()),
-                                                grad(self.ptable[BA    ] as uint, x_-cast(1), y_.clone(), z_.clone())),
-                                lerp(u.clone(), grad(self.ptable[AB    ] as uint, x_.clone(), y_-cast(1), z_.clone()),
-                                                grad(self.ptable[BB    ] as uint, x_-cast(1), y_-cast(1), z_.clone()))),
-                lerp(v.clone(), lerp(u.clone(), grad(self.ptable[AA + 1] as uint, x_.clone(), y_.clone(), z_-cast(1)),
-                                                grad(self.ptable[BA + 1] as uint, x_-cast(1), y_.clone(), z_-cast(1))),
-                                lerp(u.clone(), grad(self.ptable[AB + 1] as uint, x_.clone(), y_-cast(1), z_-cast(1)),
-                                                grad(self.ptable[BB + 1] as uint, x_-cast(1), y_-cast(1), z_-cast(1)))))
+        lerp(w, lerp(v.clone(), lerp(u.clone(), grad(self.ptable[AA    ], x_.clone(), y_.clone(), z_.clone()),
+                                                grad(self.ptable[BA    ], x_-cast(1), y_.clone(), z_.clone())),
+                                lerp(u.clone(), grad(self.ptable[AB    ], x_.clone(), y_-cast(1), z_.clone()),
+                                                grad(self.ptable[BB    ], x_-cast(1), y_-cast(1), z_.clone()))),
+                lerp(v.clone(), lerp(u.clone(), grad(self.ptable[AA + 1], x_.clone(), y_.clone(), z_-cast(1)),
+                                                grad(self.ptable[BA + 1], x_-cast(1), y_.clone(), z_-cast(1))),
+                                lerp(u.clone(), grad(self.ptable[AB + 1], x_.clone(), y_-cast(1), z_-cast(1)),
+                                                grad(self.ptable[BB + 1], x_-cast(1), y_-cast(1), z_-cast(1)))))
     }
 }
 
+#[inline]
 fn fade<T:Num + NumCast>(t: T) -> T {
     t * t * t * (t * (t * cast(6) - cast(15)) + cast(10))
 }
 
+#[inline]
 fn lerp<T:Num + NumCast>(t: T, a: T, b: T) -> T {
     a + t * (b - a)
 }
 
-fn grad<T:Clone + Num + NumCast>(hash: uint, x: T, y: T, z: T) -> T {
+fn grad<T:Clone + Num + NumCast>(hash: u8, x: T, y: T, z: T) -> T {
     let h = hash & 15;
 
     let u = match h {
