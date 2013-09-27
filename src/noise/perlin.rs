@@ -17,7 +17,6 @@
 //! (http://mrl.nyu.edu/~perlin/noise/) algorithm.
 
 use std::num::cast;
-use std::rand;
 use std::rand::Rng;
 
 pub trait Perlin<T> {
@@ -85,8 +84,7 @@ pub struct PerlinContext {
 }
 
 impl PerlinContext {
-    pub fn new() -> PerlinContext {
-        let mut rng = rand::rng();
+    pub fn new<R: Rng>(rng: &mut R) -> PerlinContext {
         PerlinContext { ptable: rng.gen_vec::<u8>(512) }
     }
 
