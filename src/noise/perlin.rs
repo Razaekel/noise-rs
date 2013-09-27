@@ -168,7 +168,7 @@ fn fade<T: Float>(t: T) -> T {
 
 #[inline]
 fn lerp<T: Float>(t: T, a: T, b: T) -> T {
-    mul_add(t.clone(), b, mul_add(t, -a, a))
+    mul_add(t, b - a, a)
 }
 
 fn grad<T: Float>(hash: u8, x: T, y: T, z: T) -> T {
