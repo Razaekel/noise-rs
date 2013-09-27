@@ -16,7 +16,7 @@
 //! An implementation of Ken Perlin's [Improved Noise]
 //! (http://mrl.nyu.edu/~perlin/noise/) algorithm.
 
-use std::num::cast;
+use std::num::{cast, mul_add};
 use std::rand::Rng;
 
 pub trait Perlin<T> {
@@ -139,7 +139,7 @@ fn fade<T: Float>(t: T) -> T {
 
 #[inline]
 fn lerp<T: Float>(t: T, a: T, b: T) -> T {
-    a + t * (b - a)
+    mul_add(t.clone(), b, mul_add(t, -a, a))
 }
 
 fn grad<T: Float>(hash: u8, x: T, y: T, z: T) -> T {
