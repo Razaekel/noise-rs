@@ -23,57 +23,24 @@ pub trait Perlin<T> {
     fn perlin(&self, ctx: &PerlinContext) -> T;
 }
 
-// impl<T: Float> Perlin<T> for T {
-//     fn perlin(&self, ctx: &PerlinContext) -> T {
-//         ctx.gen1(self)
-//     }
-// }
-
-impl<T: Float> Perlin<T> for (T,) {
-    fn perlin(&self, ctx: &PerlinContext) -> T {
-        match *self {
-            (ref x,) => ctx.gen1(x)
-        }
-    }
-}
-
-impl<T: Float> Perlin<T> for (T, T) {
-    fn perlin(&self, ctx: &PerlinContext) -> T {
-        match *self {
-            (ref x, ref y) => ctx.gen2(x, y)
-        }
-    }
-}
-
-impl<T: Float> Perlin<T> for (T, T, T) {
-    fn perlin(&self, ctx: &PerlinContext) -> T {
-        match *self {
-            (ref x, ref y, ref z) => ctx.gen3(x, y, z)
-        }
-    }
-}
-
 impl<T: Float> Perlin<T> for [T, ..1] {
+    #[inline]
     fn perlin(&self, ctx: &PerlinContext) -> T {
-        match *self {
-            [ref x] => ctx.gen1(x),
-        }
+        match *self { [ref x] => ctx.gen1(x) }
     }
 }
 
 impl<T: Float> Perlin<T> for [T, ..2] {
+    #[inline]
     fn perlin(&self, ctx: &PerlinContext) -> T {
-        match *self {
-            [ref x, ref y] => ctx.gen2(x, y),
-        }
+        match *self { [ref x, ref y] => ctx.gen2(x, y) }
     }
 }
 
 impl<T: Float> Perlin<T> for [T, ..3] {
+    #[inline]
     fn perlin(&self, ctx: &PerlinContext) -> T {
-        match *self {
-            [ref x, ref y, ref z] => ctx.gen3(x, y, z),
-        }
+        match *self { [ref x, ref y, ref z] => ctx.gen3(x, y, z) }
     }
 }
 
