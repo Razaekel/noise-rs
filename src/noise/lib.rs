@@ -23,4 +23,3 @@
 #[crate_type = "lib"];
 
 pub mod perlin;
-pub mod simplex;
