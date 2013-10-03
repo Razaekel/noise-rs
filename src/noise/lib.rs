@@ -22,4 +22,5 @@
 #[license = "ASL2"];
 #[crate_type = "lib"];
 
+pub use perlin::Perlin;
 pub mod perlin;

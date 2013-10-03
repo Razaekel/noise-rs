@@ -17,115 +17,180 @@
 //! (http://mrl.nyu.edu/~perlin/noise/) algorithm.
 
 use std::num::{cast, mul_add};
-use std::rand::Rng;
-
-pub trait Perlin<T> {
-    fn perlin(&self, ctx: &PerlinContext) -> T;
-}
-
-impl<T: Float> Perlin<T> for [T, ..1] {
-    #[inline]
-    fn perlin(&self, ctx: &PerlinContext) -> T {
-        match *self { [ref x] => ctx.gen1(x) }
-    }
-}
-
-impl<T: Float> Perlin<T> for [T, ..2] {
-    #[inline]
-    fn perlin(&self, ctx: &PerlinContext) -> T {
-        match *self { [ref x, ref y] => ctx.gen2(x, y) }
-    }
-}
-
-impl<T: Float> Perlin<T> for [T, ..3] {
-    #[inline]
-    fn perlin(&self, ctx: &PerlinContext) -> T {
-        match *self { [ref x, ref y, ref z] => ctx.gen3(x, y, z) }
-    }
-}
+use std::rand::{IsaacRng, Rng, weak_rng};
 
 /// A perlin noise generator
-pub struct PerlinContext {
-    // permutation table
+pub struct Perlin {
+    // The permutation table used for generating the noise values
     priv ptable: ~[u8]//[uint, ..512],
 }
 
-impl PerlinContext {
-    pub fn new<R: Rng>(rng: &mut R) -> PerlinContext {
-        PerlinContext { ptable: rng.gen_vec::<u8>(512) }
+impl Perlin {
+    /// Create a new perlin noise generator using the given seed.
+    ///
+    /// # Example
+    ///
+    /// ~~~rust
+    /// let perlin = Perlin::new();
+    /// ~~~
+    ///
+    pub fn new() -> Perlin {
+        Perlin::from_rng(&mut weak_rng())
     }
 
-    pub fn gen1<T:Float>(&self, x: &T) -> T {
-        let X = x.floor().to_uint() as u8;
-        let x_ = *x - x.floor();
-        let u = fade(x_.clone());
-
-        let A  = self.ptable[X    ];
-        let AA = self.ptable[A    ];
-        let B  = self.ptable[X + 1];
-        let BA = self.ptable[B    ];
-
-        lerp(u.clone(), grad(self.ptable[AA], x_.clone(), cast(0), cast(0)),
-                        grad(self.ptable[BA], x_-cast(1), cast(0), cast(0)))
+    /// Create a new perlin noise generator using the given seed.
+    ///
+    /// # Example
+    ///
+    /// ~~~rust
+    /// let perlin = Perlin::from_seed(std::rand::seed());
+    /// let perlin = Perlin::from_seed("Bananas!".into_bytes());
+    /// ~~~
+    ///
+    pub fn from_seed(seed: &[u8]) -> Perlin {
+        Perlin::from_rng(&mut IsaacRng::new_seeded(seed))
     }
 
-    pub fn gen2<T:Float>(&self, x: &T, y: &T) -> T {
-        let X = x.floor().to_uint() as u8;
-        let Y = y.floor().to_uint() as u8;
-
-        let x_ = *x - x.floor();
-        let y_ = *y - y.floor();
-
-        let u = fade(x_.clone());
-        let v = fade(y_.clone());
-
-        let A  = self.ptable[X    ] + Y;
-        let AA = self.ptable[A    ];
-        let AB = self.ptable[A + 1];
-        let B  = self.ptable[X + 1] + Y;
-        let BA = self.ptable[B    ];
-        let BB = self.ptable[B + 1];
-
-        lerp(v.clone(), lerp(u.clone(), grad(self.ptable[AA], x_.clone(), y_.clone(), cast(0)),
-                                        grad(self.ptable[BA], x_-cast(1), y_.clone(), cast(0))),
-                        lerp(u.clone(), grad(self.ptable[AB], x_.clone(), y_-cast(1), cast(0)),
-                                        grad(self.ptable[BB], x_-cast(1), y_-cast(1), cast(0))))
+    /// Create a new perlin noise generator using the given random number
+    /// generator to create the initial permutation table.
+    ///
+    /// # Example
+    ///
+    /// ~~~rust
+    /// let perlin = Perlin::from_seed(&mut std::rand::weak_rng());
+    /// ~~~
+    ///
+    #[inline]
+    pub fn from_rng<R: Rng>(rng: &mut R) -> Perlin {
+        Perlin { ptable: rng.gen_vec::<u8>(512) }
     }
 
-    pub fn gen3<T:Float>(&self, x: &T, y: &T, z: &T) -> T {
+    /// Generate a new perlin noise value based on a given 1, 2 or
+    /// 3-dimensional coordinte.
+    ///
+    /// `pos` can be of the following coordinate types, where `T: Float`:
+    ///
+    /// - `[T, ..1]`
+    /// - `[T, ..2]`
+    /// - `[T, ..3]`
+    /// - `&[T, ..1]`
+    /// - `&[T, ..2]`
+    /// - `&[T, ..3]`
+    ///
+    /// # Examples
+    ///
+    /// ~~~rust
+    /// let perlin = Perlin::new();
+    /// let a = perlin.gen([1.0]);
+    /// let b = perlin.gen([2.0, 3.0, 4.0]);
+    ///
+    /// let v = [3.0, 4.0];
+    /// let c = perlin.gen(&v);
+    /// ~~~
+    ///
+    #[inline]
+    pub fn gen<T: Float, G: Gen<T>>(&self, pos: G) -> T {
+        pos.gen(self)
+    }
+}
+
+/// Internal trait used for implementing the perlin noise generation algorithm
+/// for various coordinate types. The `Gen::gen` method should not be accessed
+/// directly - use the generic `Perlin::gen` method instead.
+trait Gen<T> {
+    fn gen(&self, ctx: &Perlin) -> T;
+}
+
+impl<'self, T: Float> Gen<T> for &'self [T, ..1] {
+    fn gen(&self, ctx: &Perlin) -> T {
+        let X = self[0].floor().to_uint() as u8;
+
+        let x = self[0] - self[0].floor();
+
+        let u = fade(x.clone());
+
+        let A  = ctx.ptable[X    ];
+        let AA = ctx.ptable[A    ];
+        let B  = ctx.ptable[X + 1];
+        let BA = ctx.ptable[B    ];
+
+        lerp(u.clone(), grad(ctx.ptable[AA], x.clone(), cast(0), cast(0)),
+                        grad(ctx.ptable[BA], x-cast(1), cast(0), cast(0)))
+    }
+}
+
+impl<'self, T: Float> Gen<T> for &'self [T, ..2] {
+    fn gen(&self, ctx: &Perlin) -> T {
+        let X = self[0].floor().to_uint() as u8;
+        let Y = self[1].floor().to_uint() as u8;
+
+        let x = self[0] - self[0].floor();
+        let y = self[1] - self[1].floor();
+
+        let u = fade(x.clone());
+        let v = fade(y.clone());
+
+        let A  = ctx.ptable[X    ] + Y;
+        let AA = ctx.ptable[A    ];
+        let AB = ctx.ptable[A + 1];
+        let B  = ctx.ptable[X + 1] + Y;
+        let BA = ctx.ptable[B    ];
+        let BB = ctx.ptable[B + 1];
+
+        lerp(v.clone(), lerp(u.clone(), grad(ctx.ptable[AA], x.clone(), y.clone(), cast(0)),
+                                        grad(ctx.ptable[BA], x-cast(1), y.clone(), cast(0))),
+                        lerp(u.clone(), grad(ctx.ptable[AB], x.clone(), y-cast(1), cast(0)),
+                                        grad(ctx.ptable[BB], x-cast(1), y-cast(1), cast(0))))
+    }
+}
+
+impl<'self, T: Float> Gen<T> for &'self [T, ..3] {
+    fn gen(&self, ctx: &Perlin) -> T {
         // Find the unit cube that contains the point
-        let X = x.floor().to_uint() as u8;
-        let Y = y.floor().to_uint() as u8;
-        let Z = z.floor().to_uint() as u8;
+        let X = self[0].floor().to_uint() as u8;
+        let Y = self[1].floor().to_uint() as u8;
+        let Z = self[2].floor().to_uint() as u8;
 
         // Find the relative X, Y, Z of point in the cube
-        let x_ = *x - x.floor();
-        let y_ = *y - y.floor();
-        let z_ = *z - z.floor();
+        let x = self[0] - self[0].floor();
+        let y = self[1] - self[1].floor();
+        let z = self[2] - self[2].floor();
 
         // Compute the fade curves for X, Y, Z
-        let u = fade(x_.clone());
-        let v = fade(y_.clone());
-        let w = fade(z_.clone());
+        let u = fade(x.clone());
+        let v = fade(y.clone());
+        let w = fade(z.clone());
 
         // Hash coordinates of the 8 cube corners
-        let A  = self.ptable[X    ] + Y;
-        let AA = self.ptable[A    ] + Z;
-        let AB = self.ptable[A + 1] + Z;
-        let B  = self.ptable[X + 1] + Y;
-        let BA = self.ptable[B    ] + Z;
-        let BB = self.ptable[B + 1] + Z;
+        let A  = ctx.ptable[X    ] + Y;
+        let AA = ctx.ptable[A    ] + Z;
+        let AB = ctx.ptable[A + 1] + Z;
+        let B  = ctx.ptable[X + 1] + Y;
+        let BA = ctx.ptable[B    ] + Z;
+        let BB = ctx.ptable[B + 1] + Z;
 
         // Add the blended results from the 8 corners of the cube
-        lerp(w, lerp(v.clone(), lerp(u.clone(), grad(self.ptable[AA    ], x_.clone(), y_.clone(), z_.clone()),
-                                                grad(self.ptable[BA    ], x_-cast(1), y_.clone(), z_.clone())),
-                                lerp(u.clone(), grad(self.ptable[AB    ], x_.clone(), y_-cast(1), z_.clone()),
-                                                grad(self.ptable[BB    ], x_-cast(1), y_-cast(1), z_.clone()))),
-                lerp(v.clone(), lerp(u.clone(), grad(self.ptable[AA + 1], x_.clone(), y_.clone(), z_-cast(1)),
-                                                grad(self.ptable[BA + 1], x_-cast(1), y_.clone(), z_-cast(1))),
-                                lerp(u.clone(), grad(self.ptable[AB + 1], x_.clone(), y_-cast(1), z_-cast(1)),
-                                                grad(self.ptable[BB + 1], x_-cast(1), y_-cast(1), z_-cast(1)))))
+        lerp(w, lerp(v.clone(), lerp(u.clone(), grad(ctx.ptable[AA    ], x.clone(), y.clone(), z.clone()),
+                                                grad(ctx.ptable[BA    ], x-cast(1), y.clone(), z.clone())),
+                                lerp(u.clone(), grad(ctx.ptable[AB    ], x.clone(), y-cast(1), z.clone()),
+                                                grad(ctx.ptable[BB    ], x-cast(1), y-cast(1), z.clone()))),
+                lerp(v.clone(), lerp(u.clone(), grad(ctx.ptable[AA + 1], x.clone(), y.clone(), z-cast(1)),
+                                                grad(ctx.ptable[BA + 1], x-cast(1), y.clone(), z-cast(1))),
+                                lerp(u.clone(), grad(ctx.ptable[AB + 1], x.clone(), y-cast(1), z-cast(1)),
+                                                grad(ctx.ptable[BB + 1], x-cast(1), y-cast(1), z-cast(1)))))
     }
+}
+
+impl<T: Float> Gen<T> for [T, ..1] {
+    #[inline] fn gen(&self, ctx: &Perlin) -> T { ctx.gen(self) }
+}
+
+impl<T: Float> Gen<T> for [T, ..2] {
+    #[inline] fn gen(&self, ctx: &Perlin) -> T { ctx.gen(self) }
+}
+
+impl<T: Float> Gen<T> for [T, ..3] {
+    #[inline] fn gen(&self, ctx: &Perlin) -> T { ctx.gen(self) }
 }
 
 #[inline]
