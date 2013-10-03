@@ -46,7 +46,7 @@ impl Perlin {
     ///
     /// ~~~rust
     /// let perlin = Perlin::from_seed(std::rand::seed());
-    /// let perlin = Perlin::from_seed("Bananas!".into_bytes());
+    /// let perlin = Perlin::from_seed((~"Hello").into_bytes());
     /// ~~~
     ///
     pub fn from_seed(seed: &[u8]) -> Perlin {

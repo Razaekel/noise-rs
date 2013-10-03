@@ -17,7 +17,6 @@
 
 extern mod noise;
 
-use std::rand::rng;
 use noise::Perlin;
 
 static WIDTH: uint = 100;
@@ -26,7 +25,7 @@ static HEIGHT: uint = 100;
 static GRADIENT: [&'static str, ..6] = [" ", "░", "▒", "▓", "█", "█"];
 
 fn main() {
-    let perlin = Perlin::new(&mut rng());
+    let perlin = Perlin::from_seed((~"Hello").into_bytes());
 
     for y in range(0, HEIGHT / 2) {
         for x in range(0, WIDTH) {
