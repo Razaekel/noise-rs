@@ -16,8 +16,8 @@
 //! An implementation of Ken Perlin's [Improved Noise]
 //! (http://mrl.nyu.edu/~perlin/noise/) algorithm.
 
-use std::num::{cast, mul_add};
-use std::rand::{IsaacRng, Rng};
+use std::num::{cast, one, mul_add, zero};
+use std::rand::{Rng, SeedableRng, StdRng};
 use std::vec;
 
 /// A perlin noise generator
@@ -46,11 +46,25 @@ impl Perlin {
     ///
     /// ~~~rust
     /// let perlin = Perlin::from_seed(std::rand::seed());
-    /// let perlin = Perlin::from_seed((~"Hello").into_bytes());
+    /// let perlin = Perlin::from_seed([1, 2, 3]);
     /// ~~~
     ///
-    pub fn from_seed(seed: &[u8]) -> Perlin {
-        Perlin::from_rng(&mut IsaacRng::new_seeded(seed))
+    pub fn from_seed(seed: &[uint]) -> Perlin {
+        Perlin::from_rng::<StdRng>(&mut SeedableRng::from_seed(seed))
+    }
+
+    /// Create a new perlin noise generator using the given seed string.
+    ///
+    /// # Example
+    ///
+    /// ~~~rust
+    /// let perlin = Perlin::from_seed(std::rand::seed());
+    /// let perlin = Perlin::from_seed("Hello");
+    /// ~~~
+    ///
+    pub fn from_seed_str(seed: &str) -> Perlin {
+        let seed = seed.as_bytes().map(|&x| x as uint);
+        Perlin::from_rng::<StdRng>(&mut SeedableRng::from_seed(seed.as_slice()))
     }
 
     /// Create a new perlin noise generator using the given random number
@@ -105,7 +119,7 @@ pub trait Coordinate<T> {
 
 impl<'self, T: Float> Coordinate<T> for &'self [T, ..1] {
     fn gen(&self, perlin: &Perlin) -> T {
-        let X = self[0].floor().to_uint() as u8;
+        let X = self[0].floor().to_uint().unwrap() as u8;
 
         let x = self[0] - self[0].floor();
 
@@ -116,15 +130,15 @@ impl<'self, T: Float> Coordinate<T> for &'self [T, ..1] {
         let B  = perlin.permutes[X + 1];
         let BA = perlin.permutes[B    ];
 
-        lerp(u.clone(), grad(perlin.permutes[AA], x.clone(), cast(0), cast(0)),
-                        grad(perlin.permutes[BA], x-cast(1), cast(0), cast(0)))
+        lerp(u.clone(), grad(perlin.permutes[AA], x.clone(), zero(), zero()),
+                        grad(perlin.permutes[BA], x - one(), zero(), zero()))
     }
 }
 
 impl<'self, T: Float> Coordinate<T> for &'self [T, ..2] {
     fn gen(&self, perlin: &Perlin) -> T {
-        let X = self[0].floor().to_uint() as u8;
-        let Y = self[1].floor().to_uint() as u8;
+        let X = self[0].floor().to_uint().unwrap() as u8;
+        let Y = self[1].floor().to_uint().unwrap() as u8;
 
         let x = self[0] - self[0].floor();
         let y = self[1] - self[1].floor();
@@ -139,19 +153,19 @@ impl<'self, T: Float> Coordinate<T> for &'self [T, ..2] {
         let BA = perlin.permutes[B    ];
         let BB = perlin.permutes[B + 1];
 
-        lerp(v.clone(), lerp(u.clone(), grad(perlin.permutes[AA], x.clone(), y.clone(), cast(0)),
-                                        grad(perlin.permutes[BA], x-cast(1), y.clone(), cast(0))),
-                        lerp(u.clone(), grad(perlin.permutes[AB], x.clone(), y-cast(1), cast(0)),
-                                        grad(perlin.permutes[BB], x-cast(1), y-cast(1), cast(0))))
+        lerp(v.clone(), lerp(u.clone(), grad(perlin.permutes[AA], x.clone(), y.clone(), zero()),
+                                        grad(perlin.permutes[BA], x - one(), y.clone(), zero())),
+                        lerp(u.clone(), grad(perlin.permutes[AB], x.clone(), y - one(), zero()),
+                                        grad(perlin.permutes[BB], x - one(), y - one(), zero())))
     }
 }
 
 impl<'self, T: Float> Coordinate<T> for &'self [T, ..3] {
     fn gen(&self, perlin: &Perlin) -> T {
         // Find the unit cube that contains the point
-        let X = self[0].floor().to_uint() as u8;
-        let Y = self[1].floor().to_uint() as u8;
-        let Z = self[2].floor().to_uint() as u8;
+        let X = self[0].floor().to_uint().unwrap() as u8;
+        let Y = self[1].floor().to_uint().unwrap() as u8;
+        let Z = self[2].floor().to_uint().unwrap() as u8;
 
         // Find the relative X, Y, Z of point in the cube
         let x = self[0] - self[0].floor();
@@ -173,13 +187,13 @@ impl<'self, T: Float> Coordinate<T> for &'self [T, ..3] {
 
         // Add the blended results from the 8 corners of the cube
         lerp(w, lerp(v.clone(), lerp(u.clone(), grad(perlin.permutes[AA    ], x.clone(), y.clone(), z.clone()),
-                                                grad(perlin.permutes[BA    ], x-cast(1), y.clone(), z.clone())),
-                                lerp(u.clone(), grad(perlin.permutes[AB    ], x.clone(), y-cast(1), z.clone()),
-                                                grad(perlin.permutes[BB    ], x-cast(1), y-cast(1), z.clone()))),
-                lerp(v.clone(), lerp(u.clone(), grad(perlin.permutes[AA + 1], x.clone(), y.clone(), z-cast(1)),
-                                                grad(perlin.permutes[BA + 1], x-cast(1), y.clone(), z-cast(1))),
-                                lerp(u.clone(), grad(perlin.permutes[AB + 1], x.clone(), y-cast(1), z-cast(1)),
-                                                grad(perlin.permutes[BB + 1], x-cast(1), y-cast(1), z-cast(1)))))
+                                                grad(perlin.permutes[BA    ], x - one(), y.clone(), z.clone())),
+                                lerp(u.clone(), grad(perlin.permutes[AB    ], x.clone(), y - one(), z.clone()),
+                                                grad(perlin.permutes[BB    ], x - one(), y - one(), z.clone()))),
+                lerp(v.clone(), lerp(u.clone(), grad(perlin.permutes[AA + 1], x.clone(), y.clone(), z - one()),
+                                                grad(perlin.permutes[BA + 1], x - one(), y.clone(), z - one())),
+                                lerp(u.clone(), grad(perlin.permutes[AB + 1], x.clone(), y - one(), z - one()),
+                                                grad(perlin.permutes[BB + 1], x - one(), y - one(), z - one()))))
     }
 }
 
@@ -197,7 +211,7 @@ impl<T: Float> Coordinate<T> for [T, ..3] {
 
 #[inline]
 fn fade<T: Float>(t: T) -> T {
-    t * t * t * (t * (t * cast(6) - cast(15)) + cast(10))
+    t * t * t * (t * (t * cast(6).unwrap() - cast(15).unwrap()) + cast(10).unwrap())
 }
 
 #[inline]
