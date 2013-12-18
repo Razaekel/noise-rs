@@ -13,11 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[link(name = "noise",
-       vers = "0.1.0",
-       author = "Brendan Zabarauskas and the noise-rs Developers",
-       url = "https://github.com/bjz/color-rs")];
-
+#[pkgid = "noise#0.1"];
 #[comment = "Procedural noise generation library."];
 #[license = "ASL2"];
 #[crate_type = "lib"];

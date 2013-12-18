@@ -117,7 +117,7 @@ pub trait Coordinate<T> {
     fn gen(&self, perlin: &Perlin) -> T;
 }
 
-impl<'self, T: Float> Coordinate<T> for &'self [T, ..1] {
+impl<'a, T: Float> Coordinate<T> for &'a [T, ..1] {
     fn gen(&self, perlin: &Perlin) -> T {
         let X = self[0].floor().to_uint().unwrap() as u8;
 
@@ -135,7 +135,7 @@ impl<'self, T: Float> Coordinate<T> for &'self [T, ..1] {
     }
 }
 
-impl<'self, T: Float> Coordinate<T> for &'self [T, ..2] {
+impl<'a, T: Float> Coordinate<T> for &'a [T, ..2] {
     fn gen(&self, perlin: &Perlin) -> T {
         let X = self[0].floor().to_uint().unwrap() as u8;
         let Y = self[1].floor().to_uint().unwrap() as u8;
@@ -160,7 +160,7 @@ impl<'self, T: Float> Coordinate<T> for &'self [T, ..2] {
     }
 }
 
-impl<'self, T: Float> Coordinate<T> for &'self [T, ..3] {
+impl<'a, T: Float> Coordinate<T> for &'a [T, ..3] {
     fn gen(&self, perlin: &Perlin) -> T {
         // Find the unit cube that contains the point
         let X = self[0].floor().to_uint().unwrap() as u8;
