@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[pkgid = "noise#0.1"];
+#[crate_id = "noise#0.1"];
 #[comment = "Procedural noise generation library."];
 #[license = "ASL2"];
 #[crate_type = "lib"];
