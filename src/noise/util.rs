@@ -13,29 +13,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[crate_id = "noise#0.1"];
-#[comment = "Procedural noise generation library."];
-#[license = "ASL2"];
-#[crate_type = "lib"];
+use std::num::cast;
 
-mod gen;
-pub mod util;
-
-pub mod sources {
-    pub use self::perlin::Perlin;
-
-    pub mod perlin;
+#[inline]
+pub fn lerp<T: Float>(t: T, a: T, b: T) -> T {
+    t * (b - a) + a
 }
 
-/// A source of noise values.
-pub trait Source {
-    /// For the given coordinate, return the value
-    /// The value is between -1 and 1
-    fn get<F:Float>(&self, x: F, y: F, z: F) -> F;
+#[inline]
+pub fn scurve3<F: Float>(t: F) -> F {
+    let three : F = cast(3).unwrap();
+    let two : F = cast(2).unwrap();
+    t * t * (three - (t * two))
 }
 
-pub enum Quality {
-    Fast,
-    Standard,
-    Best
+#[inline]
+pub fn scurve5<T: Float>(t: T) -> T {
+    t * t * t * (t * (t * cast(6).unwrap() - cast(15).unwrap()) + cast(10).unwrap())
 }
+
