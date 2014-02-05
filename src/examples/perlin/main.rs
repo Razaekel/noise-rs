@@ -17,32 +17,16 @@
 
 extern mod noise;
 
-use noise::Source;
-use noise::sources::Perlin;
-
-use std::io::{print,println};
-
-static WIDTH: uint = 100;
-static HEIGHT: uint = 100;
-
-static GRADIENT: [&'static str, ..6] = [" ", "░", "▒", "▓", "█", "█"];
+use noise::source::Source;
+use noise::source::Perlin;
+use noise::renderer::Console;
 
 fn main() {
     let mut perlin = Perlin::new();
     perlin.frequency = 0.1;
 
-    for y in range(0, HEIGHT / 2) {
-        for x in range(0, WIDTH) {
-            let val = perlin.get(
-                x as f64,
-                y as f64 * 2.0,
-                0.0
-            );
+    let model = noise::model::Plane::new(&perlin);
+    let renderer = Console::new(Plane(model));
 
-            let val = val * 0.5 + 0.5;
-
-            print(GRADIENT[(val / 0.2) as int]);
-        }
-        println("");
-    }
+    renderer.render();
 }
