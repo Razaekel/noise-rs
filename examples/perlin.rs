@@ -17,16 +17,15 @@
 
 extern crate noise;
 
-use noise::source::Source;
 use noise::source::Perlin;
+use noise::model::Plane;
 use noise::renderer::Console;
-use noise::renderer::console::Plane;
 
 fn main() {
     let perlin = Perlin::new().frequency(0.1);
 
-    let model = noise::model::Plane::new(&perlin);
-    let renderer = Console::new(Plane(model));
+    let model = Plane::new(&perlin);
+    let renderer = Console::new(model);
 
     renderer.render();
 }

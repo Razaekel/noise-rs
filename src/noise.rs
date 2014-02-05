@@ -22,8 +22,8 @@
 mod gen;
 pub mod util;
 
-pub mod source;
 pub mod model;
+pub mod source;
 
 pub mod renderer {
     pub use self::console::Console;

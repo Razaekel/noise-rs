@@ -1,6 +1,8 @@
 pub use self::perlin::Perlin;
+pub use self::ridgedmulti::RidgedMulti;
 
 pub mod perlin;
+pub mod ridgedmulti;
 
 /// A source of noise values.
 pub trait Source {

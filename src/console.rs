@@ -14,10 +14,10 @@
 // limitations under the License.
 
 use source::Source;
+use util::clamp;
 use model;
 
 use std::io::{print,println};
-
 static GRADIENT: [&'static str, ..6] = [" ", "░", "▒", "▓", "█", "█"];
 
 pub struct Console<'a, S> {
@@ -27,11 +27,11 @@ pub struct Console<'a, S> {
 }
 
 impl<'a, S:Source> Console<'a, S> {
-    pub fn new(model: Model<'a, S>) -> Console<'a, S> {
+    pub fn new(plane: model::Plane<'a, S>) -> Console<'a, S> {
         Console {
             width: 100,
             height: 100,
-            model: model
+            plane: plane
         }
     }
 
@@ -40,9 +40,10 @@ impl<'a, S:Source> Console<'a, S> {
             for x in range(0, self.width) {
                 let val = self.plane.get(
                     x as f32,
-                    y as f32 * 2.0) * 0.5 + 0.5;
+                    y as f32 * 2.0);
 
-                print(GRADIENT[(val / 0.2) as int]);
+                let val = clamp(val, -1.0, 1.0) * 0.5 + 0.5;
+                print(GRADIENT[(val / 0.2) as uint]);
             }
             println("");
         }

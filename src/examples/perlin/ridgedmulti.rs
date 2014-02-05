@@ -13,33 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num::cast;
+//! An example of using perlin noise
 
-#[inline]
-pub fn lerp<T: Float>(t: T, a: T, b: T) -> T {
-    t * (b - a) + a
+extern mod noise;
+
+use noise::source::RidgedMulti;
+use noise::renderer::Console;
+
+fn main() {
+    let mut ridged = RidgedMulti::new();
+    ridged.frequency = 0.1;
+
+    let model = noise::model::Plane::new(&ridged);
+    let renderer = Console::new(model);
+
+    renderer.render();
 }
-
-#[inline]
-pub fn scurve3<F: Float>(t: F) -> F {
-    let three : F = cast(3i).unwrap();
-    let two : F = cast(2i).unwrap();
-    t * t * (three - (t * two))
-}
-
-#[inline]
-pub fn scurve5<T: Float>(t: T) -> T {
-    t * t * t * (t * (t * cast(6i).unwrap() - cast(15i).unwrap()) + cast(10i).unwrap())
-}
-
-pub fn clamp<T: Primitive>(val: T, min: T, max: T) -> T {
-    if val < min {
-        min
-    } else if val > max {
-        max
-    } else {
-        val
-    }
-}
-
 
