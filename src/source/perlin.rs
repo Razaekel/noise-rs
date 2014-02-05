@@ -20,7 +20,7 @@ use std::rand;
 use std::rand::Rng;
 use std::num::{zero, one, cast};
 
-use Source;
+use super::Source;
 use Quality;
 
 pub static DEFAULT_SEED : int = 0;
