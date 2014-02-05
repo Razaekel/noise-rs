@@ -20,7 +20,7 @@ use std;
 use std::rand::Rng;
 use std::num::{zero, one, cast};
 
-use Source;
+use super::Source;
 use Quality;
 
 pub static DEFAULT_SEED : int = 0;
@@ -30,6 +30,7 @@ pub static DEFAULT_LACUNARITY : f64 = 2.0;
 pub static DEFAULT_PERSISTENCE : f64 = 0.5;
 
 /// A perlin noise source
+#[deriving(Clone)]
 pub struct Perlin {
     /// The seed for the noise
     seed: int,

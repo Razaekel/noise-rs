@@ -21,19 +21,28 @@
 mod gen;
 pub mod util;
 
-pub mod sources {
+pub mod source {
     pub use self::perlin::Perlin;
 
     pub mod perlin;
+
+    /// A source of noise values.
+    pub trait Source {
+        /// For the given coordinate, return the value
+        /// The value is between -1 and 1
+        fn get<F:Float>(&self, x: F, y: F, z: F) -> F;
+    }
 }
 
-/// A source of noise values.
-pub trait Source {
-    /// For the given coordinate, return the value
-    /// The value is between -1 and 1
-    fn get<F:Float>(&self, x: F, y: F, z: F) -> F;
+pub mod model;
+
+pub mod renderer {
+    pub use self::console::Console;
+
+    pub mod console;
 }
 
+#[deriving(Clone)]
 pub enum Quality {
     Fast,
     Standard,
