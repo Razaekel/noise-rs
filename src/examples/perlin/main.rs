@@ -20,7 +20,6 @@ extern mod noise;
 use noise::source::Source;
 use noise::source::Perlin;
 use noise::renderer::Console;
-use noise::renderer::console::Plane;
 
 fn main() {
     let mut perlin = Perlin::new();

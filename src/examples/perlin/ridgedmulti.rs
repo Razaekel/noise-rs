@@ -13,40 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[crate_id = "noise#0.1"];
-#[comment = "Procedural noise generation library."];
-#[license = "ASL2"];
-#[crate_type = "lib"];
+//! An example of using perlin noise
 
-mod gen;
-pub mod util;
+extern mod noise;
 
-pub mod source {
-    pub use self::perlin::Perlin;
-    pub use self::ridgedmulti::RidgedMulti;
+use noise::source::RidgedMulti;
+use noise::renderer::Console;
 
-    pub mod perlin;
-    pub mod ridgedmulti;
+fn main() {
+    let mut ridged = RidgedMulti::new();
+    ridged.frequency = 0.1;
 
-    /// A source of noise values.
-    pub trait Source {
-        /// For the given coordinate, return the value
-        /// The value is between -1 and 1
-        fn get<F:Float>(&self, x: F, y: F, z: F) -> F;
-    }
+    let model = noise::model::Plane::new(&ridged);
+    let renderer = Console::new(model);
+
+    renderer.render();
 }
 
-pub mod model;
-
-pub mod renderer {
-    pub use self::console::Console;
-
-    pub mod console;
-}
-
-#[deriving(Clone)]
-pub enum Quality {
-    Fast,
-    Standard,
-    Best
-}
