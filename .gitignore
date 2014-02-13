@@ -1,4 +1,3 @@
-/.rust/
-/bin/
-/build/
+/doc/
+/examples/
 /lib/

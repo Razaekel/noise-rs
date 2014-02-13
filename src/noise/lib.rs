@@ -16,7 +16,8 @@
 #[crate_id = "noise#0.1"];
 #[comment = "Procedural noise generation library."];
 #[license = "ASL2"];
-#[crate_type = "lib"];
+#[crate_type = "rlib"];
+#[crate_type = "dylib"];
 
 mod gen;
 pub mod util;
