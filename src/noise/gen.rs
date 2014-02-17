@@ -76,7 +76,7 @@ pub fn gradient_coherent_noise_3d<F: Float>(x: F, y: F, z: F, seed: int, quality
     let ix1 = lerp(xs, n0, n1);
     let iy1 = lerp(ys, ix0, ix1);
 
-    let v = lerp(iy0, iy1, zs);
+    let v = lerp(zs, iy0, iy1);
 
     v
 }
