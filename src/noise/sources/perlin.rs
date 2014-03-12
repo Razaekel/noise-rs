@@ -79,7 +79,7 @@ impl Source for Perlin {
         let mut z = z * frequency;
 
         for i in range(0, self.octaves) {
-            let seed = (self.seed + i as int);
+            let seed = self.seed + i as int;
 
             let signal = ::gen::gradient_coherent_noise_3d(
                 x.clone(),

@@ -90,7 +90,7 @@ pub fn gradient_noise_3d<F:Float>(fx: F, fy: F, fz: F, ix: int, iy: int, iz: int
       + Z_NOISE_GEN * iz
       + SEED_NOISE_GEN * seed
     ) & 0xffffffff;
-    vector_index ^= (vector_index >> SHIFT_NOISE_GEN);
+    vector_index ^= vector_index >> SHIFT_NOISE_GEN;
     vector_index &= 0xff;
 
     let vector_index = vector_index as uint;
