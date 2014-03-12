@@ -16,8 +16,8 @@
 //! An implementation of Ken Perlin's [Improved Noise]
 //! (http://mrl.nyu.edu/~perlin/noise/) algorithm.
 
-use std;
-use std::rand::Rng;
+use rand;
+use rand::Rng;
 use std::num::{zero, one, cast};
 
 use Source;
@@ -60,7 +60,7 @@ impl Perlin {
 
     // Set a random seed
     pub fn random_seed(&mut self) {
-        let mut rng = std::rand::weak_rng();
+        let mut rng = rand::weak_rng();
         self.seed = rng.gen();
     }
 }
