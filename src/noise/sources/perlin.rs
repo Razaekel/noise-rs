@@ -58,10 +58,40 @@ impl Perlin {
         }
     }
 
-    // Set a random seed
-    pub fn random_seed(&mut self) {
-        let mut rng = rand::weak_rng();
-        self.seed = rng.gen();
+    #[inline]
+    pub fn seed(self, seed: int) -> Perlin {
+        Perlin { seed: seed, ..self }
+    }
+
+    /// Randomize the seed
+    #[inline]
+    pub fn random_seed(self) -> Perlin {
+        self.seed(rand::weak_rng().gen())
+    }
+
+    #[inline]
+    pub fn octaves(self, octaves: uint) -> Perlin {
+        Perlin { octaves: octaves, ..self }
+    }
+
+    #[inline]
+    pub fn frequency(self, frequency: f64) -> Perlin {
+        Perlin { frequency: frequency, ..self }
+    }
+
+    #[inline]
+    pub fn lacunarity(self, lacunarity: f64) -> Perlin {
+        Perlin { lacunarity: lacunarity, ..self }
+    }
+
+    #[inline]
+    pub fn persistence(self, persistence: f64) -> Perlin {
+        Perlin { persistence: persistence, ..self }
+    }
+
+    #[inline]
+    pub fn quality(self, quality: Quality) -> Perlin {
+        Perlin { quality: quality, ..self }
     }
 }
 

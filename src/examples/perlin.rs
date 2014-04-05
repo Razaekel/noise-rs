@@ -28,8 +28,7 @@ static HEIGHT: uint = 100;
 static GRADIENT: [&'static str, ..6] = [" ", "░", "▒", "▓", "█", "█"];
 
 fn main() {
-    let mut perlin = Perlin::new();
-    perlin.frequency = 0.1;
+    let perlin = Perlin::new().frequency(0.1);
 
     for y in range(0, HEIGHT / 2) {
         for x in range(0, WIDTH) {
