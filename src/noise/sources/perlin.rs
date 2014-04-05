@@ -32,17 +32,17 @@ pub static DEFAULT_PERSISTENCE : f64 = 0.5;
 /// A perlin noise source
 pub struct Perlin {
     /// The seed for the noise
-    seed: int,
+    pub seed: int,
     /// The number of octaves to use
-    octaves: uint,
+    pub octaves: uint,
     /// The base frequency of the noise
-    frequency: f64,
+    pub frequency: f64,
     /// How quickly the frequency changes for each octave
-    lacunarity: f64,
+    pub lacunarity: f64,
     /// How quickly the amplitude of each octave decreases
-    persistence: f64,
+    pub persistence: f64,
     /// The quality of the noise, with lower quality being faster
-    quality: Quality
+    pub quality: Quality,
 }
 
 impl Perlin {
@@ -58,10 +58,40 @@ impl Perlin {
         }
     }
 
-    // Set a random seed
-    pub fn random_seed(&mut self) {
-        let mut rng = rand::weak_rng();
-        self.seed = rng.gen();
+    #[inline]
+    pub fn seed(self, seed: int) -> Perlin {
+        Perlin { seed: seed, ..self }
+    }
+
+    /// Randomize the seed
+    #[inline]
+    pub fn random_seed(self) -> Perlin {
+        self.seed(rand::weak_rng().gen())
+    }
+
+    #[inline]
+    pub fn octaves(self, octaves: uint) -> Perlin {
+        Perlin { octaves: octaves, ..self }
+    }
+
+    #[inline]
+    pub fn frequency(self, frequency: f64) -> Perlin {
+        Perlin { frequency: frequency, ..self }
+    }
+
+    #[inline]
+    pub fn lacunarity(self, lacunarity: f64) -> Perlin {
+        Perlin { lacunarity: lacunarity, ..self }
+    }
+
+    #[inline]
+    pub fn persistence(self, persistence: f64) -> Perlin {
+        Perlin { persistence: persistence, ..self }
+    }
+
+    #[inline]
+    pub fn quality(self, quality: Quality) -> Perlin {
+        Perlin { quality: quality, ..self }
     }
 }
 
