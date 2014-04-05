@@ -41,7 +41,7 @@ fn main() {
 
             let val = val * 0.5 + 0.5;
 
-            print(GRADIENT[(val / 0.2) as int]);
+            print(GRADIENT[(val / 0.2) as uint]);
         }
         println("");
     }

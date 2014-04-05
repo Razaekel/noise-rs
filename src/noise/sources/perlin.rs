@@ -32,17 +32,17 @@ pub static DEFAULT_PERSISTENCE : f64 = 0.5;
 /// A perlin noise source
 pub struct Perlin {
     /// The seed for the noise
-    seed: int,
+    pub seed: int,
     /// The number of octaves to use
-    octaves: uint,
+    pub octaves: uint,
     /// The base frequency of the noise
-    frequency: f64,
+    pub frequency: f64,
     /// How quickly the frequency changes for each octave
-    lacunarity: f64,
+    pub lacunarity: f64,
     /// How quickly the amplitude of each octave decreases
-    persistence: f64,
+    pub persistence: f64,
     /// The quality of the noise, with lower quality being faster
-    quality: Quality
+    pub quality: Quality,
 }
 
 impl Perlin {
