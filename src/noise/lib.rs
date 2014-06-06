@@ -19,8 +19,6 @@
 #![crate_type = "rlib"]
 #![crate_type = "dylib"]
 
-extern crate rand;
-
 mod gen;
 pub mod util;
 

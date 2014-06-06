@@ -16,8 +16,8 @@
 //! An implementation of Ken Perlin's [Improved Noise]
 //! (http://mrl.nyu.edu/~perlin/noise/) algorithm.
 
-use rand;
-use rand::Rng;
+use std::rand;
+use std::rand::Rng;
 use std::num::{zero, one, cast};
 
 use Source;
