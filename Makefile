@@ -17,15 +17,15 @@ RUSTC               = rustc
 RUSTDOC             = rustdoc
 
 SRC_DIR             = src
-LIB_FILE            = $(SRC_DIR)/noise/lib.rs
-EXAMPLE_FILES       = $(SRC_DIR)/examples/*.rs
+LIB_FILE            = $(SRC_DIR)/noise.rs
+EXAMPLE_FILES       = examples/*.rs
 
 CRATE_NAME          = $(shell $(RUSTC) --crate-name $(LIB_FILE))
 CRATE_FILES         = $(shell $(RUSTC) --crate-file-name $(LIB_FILE))
 
 DOC_DIR             = doc
-EXAMPLES_DIR        = examples
-LIB_DIR             = lib
+EXAMPLES_DIR        = target/examples
+LIB_DIR             = target
 
 INSTALL_PREFIX      = /usr/local
 BIN_INSTALL_DIR     = $(INSTALL_PREFIX)/bin
