@@ -1,0 +1,11 @@
+[package]
+
+name = "noise-rs"
+version = "0.0.1"
+authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
+           "tiffany352 <https://github.com/tiffany352",
+           "James Miller <james@aatch.net"]
+
+[[lib]]
+
+name = "noise"
