@@ -22,13 +22,13 @@ pub fn lerp<T: Float>(t: T, a: T, b: T) -> T {
 
 #[inline]
 pub fn scurve3<F: Float>(t: F) -> F {
-    let three : F = cast(3).unwrap();
-    let two : F = cast(2).unwrap();
+    let three : F = cast(3i).unwrap();
+    let two : F = cast(2i).unwrap();
     t * t * (three - (t * two))
 }
 
 #[inline]
 pub fn scurve5<T: Float>(t: T) -> T {
-    t * t * t * (t * (t * cast(6).unwrap() - cast(15).unwrap()) + cast(10).unwrap())
+    t * t * t * (t * (t * cast(6i).unwrap() - cast(15i).unwrap()) + cast(10i).unwrap())
 }
 
