@@ -22,7 +22,7 @@ static X_NOISE_GEN : int = 1619;
 static Y_NOISE_GEN : int = 31337;
 static Z_NOISE_GEN : int = 6971;
 static SEED_NOISE_GEN : int = 1013;
-static SHIFT_NOISE_GEN : int = 8;
+static SHIFT_NOISE_GEN : uint = 8;
 
 // This is used to scale the output from gradiant_noise_3d
 static SQRT_3 : f64 = 1.73205080757;
