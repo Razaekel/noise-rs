@@ -9,3 +9,7 @@ authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
 [[lib]]
 
 name = "noise"
+
+[[example]]
+
+name = "perlin"
