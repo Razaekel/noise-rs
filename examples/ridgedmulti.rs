@@ -15,7 +15,7 @@
 
 //! An example of using perlin noise
 
-extern mod noise;
+extern crate noise;
 
 use noise::source::RidgedMulti;
 use noise::renderer::Console;
