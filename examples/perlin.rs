@@ -17,31 +17,15 @@
 
 extern crate noise;
 
-use noise::Source;
-use noise::sources::Perlin;
-
-use std::io::{print,println};
-
-static WIDTH: uint = 100;
-static HEIGHT: uint = 100;
-
-static GRADIENT: [&'static str, ..6] = [" ", "░", "▒", "▓", "█", "█"];
+use noise::source::Perlin;
+use noise::model::Plane;
+use noise::renderer::Console;
 
 fn main() {
     let perlin = Perlin::new().frequency(0.1);
 
-    for y in range(0, HEIGHT / 2) {
-        for x in range(0, WIDTH) {
-            let val = perlin.get(
-                x as f64,
-                y as f64 * 2.0,
-                0.0
-            );
+    let model = Plane::new(&perlin);
+    let renderer = Console::new(model);
 
-            let val = val * 0.5 + 0.5;
-
-            print(GRADIENT[(val / 0.2) as uint]);
-        }
-        println("");
-    }
+    renderer.render();
 }
