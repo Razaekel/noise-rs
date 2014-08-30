@@ -18,7 +18,7 @@ use std::num::{zero,one};
 use util::lerp;
 use source::Source;
 
-pub struct Line<'a, S, F> {
+pub struct Line<'a, S:'a, F> {
     start: [F,..3],
     end: [F,..3],
     source: &'a S,
@@ -43,7 +43,7 @@ impl<'a, S:Source, F:Float> Line<'a, S, F> {
     }
 }
 
-pub struct Plane<'a, S> {
+pub struct Plane<'a, S:'a> {
     source: &'a S
 }
 
