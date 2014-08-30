@@ -6,7 +6,7 @@ authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
            "tiffany352 <https://github.com/tiffany352",
            "James Miller <james@aatch.net"]
 
-[[lib]]
+[lib]
 
 name = "noise"
 

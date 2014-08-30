@@ -20,7 +20,7 @@ use model;
 use std::io::{print,println};
 static GRADIENT: [&'static str, ..6] = [" ", "░", "▒", "▓", "█", "█"];
 
-pub struct Console<'a, S> {
+pub struct Console<'a, S:'a> {
     width: uint,
     height: uint,
     plane: model::Plane<'a, S>
