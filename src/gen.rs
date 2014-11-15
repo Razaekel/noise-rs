@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num::cast;
+use std::num::{cast, Float};
 
 use util::{lerp,scurve3,scurve5};
 

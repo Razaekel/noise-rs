@@ -18,7 +18,7 @@
 
 use std::rand;
 use std::rand::Rng;
-use std::num::{zero, one, cast};
+use std::num::{cast, Float};
 
 use super::Source;
 use Quality;
@@ -98,8 +98,8 @@ impl Perlin {
 
 impl Source for Perlin {
     fn get<F:Float>(&self, x: F, y: F, z: F) -> F {
-        let mut value : F = zero();
-        let mut cur_persistence = one();
+        let mut value : F = Float::zero();
+        let mut cur_persistence = Float::one();
 
         let frequency = cast(self.frequency).unwrap();
         let lacunarity = cast(self.lacunarity).unwrap();

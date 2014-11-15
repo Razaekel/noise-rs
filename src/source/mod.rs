@@ -1,3 +1,5 @@
+use std::num::Float;
+
 pub use self::perlin::Perlin;
 pub use self::ridgedmulti::RidgedMulti;
 
