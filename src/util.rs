@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num::cast;
+use std::num::{cast, Float};
 
 #[inline]
 pub fn lerp<T: Float>(t: T, a: T, b: T) -> T {
@@ -32,7 +32,7 @@ pub fn scurve5<T: Float>(t: T) -> T {
     t * t * t * (t * (t * cast(6i).unwrap() - cast(15i).unwrap()) + cast(10i).unwrap())
 }
 
-pub fn clamp<T: Primitive>(val: T, min: T, max: T) -> T {
+pub fn clamp<F: Float>(val: F, min: F, max: F) -> F {
     if val < min {
         min
     } else if val > max {

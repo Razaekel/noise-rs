@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num::{zero,one};
+use std::num::Float;
 
 use util::lerp;
 use source::Source;
@@ -28,8 +28,8 @@ impl<'a, S:Source, F:Float> Line<'a, S, F> {
 
     pub fn new(src: &'a S) -> Line<'a, S, F> {
         Line {
-            start: [zero(), zero(), zero()],
-            end: [one(), one(), one()],
+            start: [Float::zero(), Float::zero(), Float::zero()],
+            end: [Float::one(), Float::one(), Float::one()],
             source: src,
         }
     }
@@ -53,6 +53,6 @@ impl<'a, S:Source> Plane<'a, S> {
     }
 
     pub fn get<F:Float>(&self, x: F, y: F) -> F {
-        self.source.get(x, y, zero())
+        self.source.get(x, y, Float::zero())
     }
 }

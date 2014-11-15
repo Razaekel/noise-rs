@@ -14,7 +14,7 @@
 // limitations under the License.
 
 use std;
-use std::num::{zero,one,abs,cast};
+use std::num::{cast, Float};
 use std::rand::Rng;
 
 use util::clamp;
@@ -106,8 +106,8 @@ impl RidgedMulti {
 impl Source for RidgedMulti {
 
     fn get<F:Float>(&self, x: F, y: F, z: F) -> F {
-        let mut value : F = zero();
-        let mut weight : F = one();
+        let mut value : F = Float::zero();
+        let mut weight : F = Float::one();
 
         let offset : F = cast(self.offset).unwrap();
         let gain = cast(self.gain).unwrap();
@@ -126,12 +126,12 @@ impl Source for RidgedMulti {
                 y.clone(),
                 z.clone(), seed, self.quality);
 
-            let signal = abs(signal);
+            let signal = signal.abs();
             let signal = offset - signal;
             let signal = signal * signal;
             let signal = signal * weight;
 
-            weight = clamp(signal * gain, zero(), one());
+            weight = clamp(signal * gain, Float::zero(), Float::one());
 
             value = value + (signal * cast(self.spectral_weights[i]).unwrap());
 
