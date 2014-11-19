@@ -55,7 +55,7 @@ impl Perlin {
             frequency: DEFAULT_FREQUENCY,
             lacunarity: DEFAULT_LACUNARITY,
             persistence: DEFAULT_PERSISTENCE,
-            quality: ::Standard
+            quality: ::Quality::Standard
         }
     }
 

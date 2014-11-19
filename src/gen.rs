@@ -28,9 +28,7 @@ static SHIFT_NOISE_GEN : uint = 8;
 static SQRT_3 : f64 = 1.73205080757;
 
 pub fn gradient_coherent_noise_3d<F: Float>(x: F, y: F, z: F, seed: int, quality: ::Quality) -> F {
-    use Fast;
-    use Standard;
-    use Best;
+    use Quality::{ Fast, Standard, Best };
 
     let x0 : int = x.floor().to_int().unwrap();
     let y0 : int = y.floor().to_int().unwrap();
@@ -95,9 +93,9 @@ pub fn gradient_noise_3d<F:Float>(fx: F, fy: F, fz: F, ix: int, iy: int, iz: int
 
     let vector_index = vector_index as uint;
 
-    let xv_grad : F = cast(random_vectors[(vector_index << 2)]).unwrap();
-    let yv_grad : F = cast(random_vectors[(vector_index << 2) + 1]).unwrap();
-    let zv_grad : F = cast(random_vectors[(vector_index << 2) + 2]).unwrap();
+    let xv_grad : F = cast(RANDOM_VECTORS[(vector_index << 2)]).unwrap();
+    let yv_grad : F = cast(RANDOM_VECTORS[(vector_index << 2) + 1]).unwrap();
+    let zv_grad : F = cast(RANDOM_VECTORS[(vector_index << 2) + 2]).unwrap();
 
     // Get another vector equal to the distance between the two vectors
     // passed to the function
@@ -124,7 +122,7 @@ pub fn gradient_noise_3d<F:Float>(fx: F, fy: F, fz: F, ix: int, iy: int, iz: int
 // specifically page 76.
 //
 // Take from file vectortable.h in libnoise
-static random_vectors : [f64,..256 * 4] = [
+static RANDOM_VECTORS: [f64,..256 * 4] = [
     -0.763874, -0.596439, -0.246489, 0.0,
     0.396055, 0.904518, -0.158073, 0.0,
     -0.499004, -0.8665, -0.0131631, 0.0,

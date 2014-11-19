@@ -48,7 +48,7 @@ impl RidgedMulti {
             seed: DEFAULT_SEED,
             octaves: DEFAULT_OCTAVE_COUNT,
             frequency: DEFAULT_FREQUENCY,
-            quality: ::Standard,
+            quality: ::Quality::Standard,
             offset: DEFAULT_OFFSET,
             gain: DEFAULT_GAIN,
             lacunarity: DEFAULT_LACUNARITY,
