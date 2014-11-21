@@ -1,7 +1,12 @@
 [package]
 
-name = "noise-rs"
-version = "0.0.1"
+name = "noise"
+description = "Procedural noise generation library."
+homepage = "https://github.com/bjz/noise-rs"
+repository = "https://github.com/bjz/noise-rs"
+version = "0.0.3"
+license = "Apache-2.0"
+keywords = ["math", "random"]
 authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
            "tiffany352 <https://github.com/tiffany352",
            "James Miller <james@aatch.net"]
