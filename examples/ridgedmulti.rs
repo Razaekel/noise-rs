@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! An example of using perlin noise
 
 extern crate noise;
 
@@ -21,8 +20,8 @@ use noise::source::RidgedMulti;
 use noise::renderer::Console;
 
 fn main() {
-    let mut ridged = RidgedMulti::new();
-    ridged.frequency = 0.1;
+    let ridged = RidgedMulti::new()
+        .frequency(0.1);
 
     let model = noise::model::Plane::new(&ridged);
     let renderer = Console::new(model);

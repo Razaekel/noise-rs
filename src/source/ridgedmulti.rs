@@ -44,7 +44,7 @@ pub struct RidgedMulti {
 
 impl RidgedMulti {
     pub fn new() -> RidgedMulti {
-        let mut r = RidgedMulti {
+        RidgedMulti {
             seed: DEFAULT_SEED,
             octaves: DEFAULT_OCTAVE_COUNT,
             frequency: DEFAULT_FREQUENCY,
@@ -54,52 +54,39 @@ impl RidgedMulti {
             lacunarity: DEFAULT_LACUNARITY,
             exponent: DEFAULT_EXPONENT,
             spectral_weights: Vec::new(),
-        };
-
-        r.calc_spectral_weights();
-        return r;
+        }.calc_spectral_weights()
     }
 
-    pub fn lacunarity(&self) -> f64 {
-        self.lacunarity
+
+    pub fn seed(self, seed: int) -> RidgedMulti {
+        RidgedMulti { seed: seed, ..self }
     }
 
     // Set a random seed
-    pub fn random_seed(&mut self) {
-        let mut rng = std::rand::weak_rng();
-        self.seed = rng.gen();
+    pub fn random_seed(self) -> RidgedMulti {
+        self.seed(std::rand::weak_rng().gen())
     }
 
-    pub fn set_lacunarity(&mut self, l: f64) {
-        self.lacunarity = l;
-        self.calc_spectral_weights();
+    pub fn lacunarity(self, l: f64) -> RidgedMulti {
+        RidgedMulti { lacunarity: l, ..self }.calc_spectral_weights()
     }
 
-    pub fn exponent(&self) -> f64 {
-        self.exponent
+    pub fn exponent(self, e: f64) -> RidgedMulti {
+        RidgedMulti{ exponent: e, ..self }.calc_spectral_weights()
     }
 
-    pub fn set_exponent(&mut self, e: f64) {
-        self.exponent = e;
-        self.calc_spectral_weights();
+    pub fn octaves(self, o: uint) -> RidgedMulti {
+        RidgedMulti{ octaves: o, ..self }.calc_spectral_weights()
     }
 
-    pub fn octaves(&self) -> uint {
-        self.octaves
-    }
-
-    pub fn set_octaves(&mut self, o: uint) {
-        self.octaves = o;
-        self.calc_spectral_weights();
-    }
-
-    fn calc_spectral_weights(&mut self) {
+    fn calc_spectral_weights(self) -> RidgedMulti {
         let mut freq = 1.0f64;
-        self.spectral_weights = Vec::from_fn(self.octaves, |_| {
+        let spectral_weights = Vec::from_fn(self.octaves, |_| {
             let w = freq.powf(-self.exponent);
             freq *= self.lacunarity;
             w
         });
+        RidgedMulti { spectral_weights: spectral_weights, ..self }
     }
 }
 
