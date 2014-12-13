@@ -14,8 +14,6 @@
 // limitations under the License.
 
 #![crate_name = "noise"]
-#![comment = "Procedural noise generation library."]
-#![license = "ASL2"]
 #![crate_type = "rlib"]
 #![crate_type = "dylib"]
 
