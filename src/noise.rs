@@ -14,8 +14,6 @@
 // limitations under the License.
 
 #![crate_name = "noise"]
-#![comment = "Procedural noise generation library."]
-#![license = "ASL2"]
 #![crate_type = "rlib"]
 #![crate_type = "dylib"]
 
@@ -32,7 +30,7 @@ pub mod renderer {
     pub mod console;
 }
 
-#[deriving(Clone)]
+#[deriving(Clone, Copy)]
 pub enum Quality {
     Fast,
     Standard,
