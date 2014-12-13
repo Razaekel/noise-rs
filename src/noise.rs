@@ -32,7 +32,7 @@ pub mod renderer {
     pub mod console;
 }
 
-#[deriving(Clone)]
+#[deriving(Clone, Copy)]
 pub enum Quality {
     Fast,
     Standard,
