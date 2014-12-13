@@ -29,7 +29,7 @@ static DEFAULT_FREQUENCY : f64 = 1.0;
 static DEFAULT_LACUNARITY : f64 = 2.0;
 static DEFAULT_PERSISTENCE : f64 = 0.5;
 
-#[deriving(Clone)]
+#[deriving(Copy, Clone)]
 /// A perlin noise source
 pub struct Perlin {
     /// The seed for the noise

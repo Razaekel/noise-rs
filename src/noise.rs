@@ -18,6 +18,7 @@
 #![license = "ASL2"]
 #![crate_type = "rlib"]
 #![crate_type = "dylib"]
+#![deny(missing_copy_implementations)]
 
 mod gen;
 pub mod util;
@@ -32,7 +33,7 @@ pub mod renderer {
     pub mod console;
 }
 
-#[deriving(Clone)]
+#[deriving(Copy, Clone)]
 pub enum Quality {
     Fast,
     Standard,
