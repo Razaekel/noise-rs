@@ -13,15 +13,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! An example of using perlin noise
+use noise::source::Source;
+use noise::util::clamp;
+use std::num::Float;
 
-extern crate noise;
+const GRADIENT: [&'static str, ..6] = [" ", "░", "▒", "▓", "█", "█"];
 
-use noise::source::Perlin;
-
-mod debug;
-
-fn main() {
-    let perlin = Perlin::new().frequency(0.1);
-    debug::render(100, 100, &perlin);
+pub fn render<S: Source>(width: uint, height: uint, source: &S) {
+    for y in range(0, height / 2) {
+        for x in range(0, width) {
+            let val = source.get(x as f32, y as f32 * 2.0, Float::zero());
+            let val = clamp(val, -1.0, 1.0) * 0.5 + 0.5;
+            print!("{}", GRADIENT[(val / 0.2) as uint]);
+        }
+        println!("");
+    }
 }
