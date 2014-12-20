@@ -17,15 +17,13 @@
 extern crate noise;
 
 use noise::source::RidgedMulti;
-use noise::renderer::Console;
+
+mod debug;
 
 fn main() {
     let ridged = RidgedMulti::new()
-        .frequency(0.1);
+        .octaves(3);
 
-    let model = noise::model::Plane::new(&ridged);
-    let renderer = Console::new(model);
-
-    renderer.render();
+    debug::render(100, 100, &ridged);
 }
 

@@ -57,9 +57,12 @@ impl RidgedMulti {
         }.calc_spectral_weights()
     }
 
-
     pub fn seed(self, seed: int) -> RidgedMulti {
         RidgedMulti { seed: seed, ..self }
+    }
+
+    pub fn frequency(self, frequency: f64) -> RidgedMulti {
+        RidgedMulti { frequency: frequency, ..self }
     }
 
     // Set a random seed

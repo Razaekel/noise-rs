@@ -18,3 +18,7 @@ name = "noise"
 [[example]]
 
 name = "perlin"
+
+[[example]]
+
+name = "ridgedmulti"

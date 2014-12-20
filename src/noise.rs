@@ -13,25 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![crate_name = "noise"]
-#![comment = "Procedural noise generation library."]
-#![license = "ASL2"]
-#![crate_type = "rlib"]
-#![crate_type = "dylib"]
 #![deny(missing_copy_implementations)]
 
 mod gen;
 pub mod util;
 
-pub mod model;
 pub mod source;
-
-pub mod renderer {
-    pub use self::console::Console;
-
-    #[path = "../console.rs"]
-    pub mod console;
-}
 
 #[deriving(Copy, Clone)]
 pub enum Quality {
