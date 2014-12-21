@@ -9,7 +9,10 @@ Procedural noise generation library for Rust.
 API
 ===
 
-This is the proposed new API for noise-rs. Thus far, only a fraction of it is implemented: Seed, Point2d, Point3d, Point4d, perlin2d, perlin3d and perlin4d.
+The API is currently being revamped to a simple, composable closure-based system.
+
+Implemented thus far
+--------------------
 
     struct Seed { ... }
     Seed {
@@ -23,6 +26,9 @@ This is the proposed new API for noise-rs. Thus far, only a fraction of it is im
     fn perlin2d<T: Float>(seed: &Seed, point: Point2d<T>) -> f32;
     fn perlin3d<T: Float>(seed: &Seed, point: Point3d<T>) -> f32;
     fn perlin3d<T: Float>(seed: &Seed, point: Point4d<T>) -> f32;
+
+Coming soon
+-----------
 
     fn open_simplex2d<T: Float>(seed: &Seed, point: Point2d<T>) -> f32;
     fn open_simplex3d<T: Float>(seed: &Seed, point: Point3d<T>) -> f32;
