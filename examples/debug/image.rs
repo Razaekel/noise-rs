@@ -22,7 +22,7 @@ use noise::util::clamp;
 use noise::Seed;
 
 pub fn render_to_png<T, F>(filename: &str, seed: &Seed, width: u32, height: u32, func: F)
-    where T: Float + NumCast, F: Fn(&Seed, &noise::Point2d<T>) -> f32
+    where T: Float + NumCast, F: Fn(&Seed, &noise::Point2<T>) -> f32
 {
     let mut pixels = Vec::with_capacity((width * height) as uint);
 

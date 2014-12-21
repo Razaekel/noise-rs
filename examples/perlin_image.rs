@@ -19,27 +19,27 @@
 
 extern crate noise;
 
-use noise::{perlin2d_best, perlin3d_best, perlin4d_best, Seed, Point2d};
+use noise::{perlin2_best, perlin3_best, perlin4_best, Seed, Point2};
 
 mod debug {
     pub mod image;
 }
 
 fn main() {
-    debug::image::render_to_png("perlin2d.png", &Seed::new(0), 256, 256, scaled_perlin2d);
-    debug::image::render_to_png("perlin3d.png", &Seed::new(0), 256, 256, scaled_perlin3d);
-    debug::image::render_to_png("perlin4d.png", &Seed::new(0), 256, 256, scaled_perlin4d);
-    println!("\nGenerated perlin2d.png, perlin3d.png and perlin4d.png");
+    debug::image::render_to_png("perlin2.png", &Seed::new(0), 256, 256, scaled_perlin2);
+    debug::image::render_to_png("perlin3.png", &Seed::new(0), 256, 256, scaled_perlin3);
+    debug::image::render_to_png("perlin4.png", &Seed::new(0), 256, 256, scaled_perlin4);
+    println!("\nGenerated perlin2.png, perlin3.png and perlin4.png");
 }
 
-fn scaled_perlin2d(seed: &Seed, point: &Point2d<f32>) -> f32 {
-    return perlin2d_best(seed, &[point[0] / 32.0, point[1] / 32.00]);
+fn scaled_perlin2(seed: &Seed, point: &Point2<f32>) -> f32 {
+    return perlin2_best(seed, &[point[0] / 32.0, point[1] / 32.00]);
 }
 
-fn scaled_perlin3d(seed: &Seed, point: &Point2d<f32>) -> f32 {
-    return perlin3d_best(seed, &[point[0] / 32.0, point[1] / 32.00, 0.0]);
+fn scaled_perlin3(seed: &Seed, point: &Point2<f32>) -> f32 {
+    return perlin3_best(seed, &[point[0] / 32.0, point[1] / 32.00, 0.0]);
 }
 
-fn scaled_perlin4d(seed: &Seed, point: &Point2d<f32>) -> f32 {
-    return perlin4d_best(seed, &[point[0] / 32.0, point[1] / 32.00, 0.0, 0.0]);
+fn scaled_perlin4(seed: &Seed, point: &Point2<f32>) -> f32 {
+    return perlin4_best(seed, &[point[0] / 32.0, point[1] / 32.00, 0.0, 0.0]);
 }

@@ -19,27 +19,27 @@
 
 extern crate noise;
 
-use noise::{brownian2d, brownian3d, brownian4d, perlin2d_best, perlin3d_best, perlin4d_best, Seed, Point2d};
+use noise::{brownian2, brownian3, brownian4, perlin2_best, perlin3_best, perlin4_best, Seed, Point2};
 
 mod debug {
     pub mod image;
 }
 
 fn main() {
-    debug::image::render_to_png("brownian2d.png", &Seed::new(0), 256, 256, brownian2d_for_image);
-    debug::image::render_to_png("brownian3d.png", &Seed::new(0), 256, 256, brownian3d_for_image);
-    debug::image::render_to_png("brownian4d.png", &Seed::new(0), 256, 256, brownian4d_for_image);
-    println!("\nGenerated brownian2d.png, brownian3d.png and brownian4d.png");
+    debug::image::render_to_png("brownian2.png", &Seed::new(0), 256, 256, brownian2_for_image);
+    debug::image::render_to_png("brownian3.png", &Seed::new(0), 256, 256, brownian3_for_image);
+    debug::image::render_to_png("brownian4.png", &Seed::new(0), 256, 256, brownian4_for_image);
+    println!("\nGenerated brownian2.png, brownian3.png and brownian4.png");
 }
 
-fn brownian2d_for_image(seed: &Seed, point: &Point2d<f32>) -> f32 {
-    return brownian2d(seed, point, perlin2d_best, 32.0, 4);
+fn brownian2_for_image(seed: &Seed, point: &Point2<f32>) -> f32 {
+    return brownian2(seed, point, perlin2_best, 32.0, 4);
 }
 
-fn brownian3d_for_image(seed: &Seed, point: &Point2d<f32>) -> f32 {
-    return brownian3d(seed, &[point[0], point[1], 0.0], perlin3d_best, 32.0, 4);
+fn brownian3_for_image(seed: &Seed, point: &Point2<f32>) -> f32 {
+    return brownian3(seed, &[point[0], point[1], 0.0], perlin3_best, 32.0, 4);
 }
 
-fn brownian4d_for_image(seed: &Seed, point: &Point2d<f32>) -> f32 {
-    return brownian4d(seed, &[point[0], point[1], 0.0, 0.0], perlin4d_best, 32.0, 4);
+fn brownian4_for_image(seed: &Seed, point: &Point2<f32>) -> f32 {
+    return brownian4(seed, &[point[0], point[1], 0.0, 0.0], perlin4_best, 32.0, 4);
 }

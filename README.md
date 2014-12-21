@@ -14,52 +14,56 @@ The API is currently being revamped to a simple, composable closure-based system
 Implemented thus far
 --------------------
 
-    struct Seed { ... }
-    Seed {
-        fn new(seed: u32) -> Seed;
-    }
+~~~rust
+struct Seed { ... }
+Seed {
+    fn new(seed: u32) -> Seed;
+}
 
-    pub type Point2d<T> = [T, ..2];
-    pub type Point3d<T> = [T, ..3];
-    pub type Point4d<T> = [T, ..4];
+pub type Point2<T> = [T, ..2];
+pub type Point3<T> = [T, ..3];
+pub type Point4<T> = [T, ..4];
 
-    fn perlin2d_fast<T: Float>(seed: &Seed, point: &Point2d<T>) -> f32;
-    fn perlin2d_best<T: Float>(seed: &Seed, point: &Point2d<T>) -> f32;
-    fn perlin3d_fast<T: Float>(seed: &Seed, point: &Point3d<T>) -> f32;
-    fn perlin3d_best<T: Float>(seed: &Seed, point: &Point3d<T>) -> f32;
-    fn perlin4d_fast<T: Float>(seed: &Seed, point: &Point4d<T>) -> f32;
-    fn perlin4d_best<T: Float>(seed: &Seed, point: &Point4d<T>) -> f32;
+fn perlin2_fast<T: Float>(seed: &Seed, point: &Point2<T>) -> f32;
+fn perlin2_best<T: Float>(seed: &Seed, point: &Point2<T>) -> f32;
+fn perlin3_fast<T: Float>(seed: &Seed, point: &Point3<T>) -> f32;
+fn perlin3_best<T: Float>(seed: &Seed, point: &Point3<T>) -> f32;
+fn perlin4_fast<T: Float>(seed: &Seed, point: &Point4<T>) -> f32;
+fn perlin4_best<T: Float>(seed: &Seed, point: &Point4<T>) -> f32;
 
-    fn brownian2d<T, F>(seed: &Seed, point: &Point2d<T>, noise_func: F, wavelength: f32, octaves: u32) -> f32
-        where T: Float, F: Fn(&Seed, &Point2d<T>) -> f32;
-    fn brownian3d<T, F>(seed: &Seed, point: &Point3d<T>, noise_func: F, wavelength: f32, octaves: u32) -> f32
-        where T: Float, F: Fn(&Seed, &Point3d<T>) -> f32;
-    fn brownian4d<T, F>(seed: &Seed, point: &Point4d<T>, noise_func: F, wavelength: f32, octaves: u32) -> f32
-        where T: Float, F: Fn(&Seed, &Point4d<T>) -> f32;
+fn brownian2<T, F>(seed: &Seed, point: &Point2<T>, noise_func: F, wavelength: f32, octaves: u32) -> f32
+    where T: Float, F: Fn(&Seed, &Point2<T>) -> f32;
+fn brownian3<T, F>(seed: &Seed, point: &Point3<T>, noise_func: F, wavelength: f32, octaves: u32) -> f32
+    where T: Float, F: Fn(&Seed, &Point3<T>) -> f32;
+fn brownian4<T, F>(seed: &Seed, point: &Point4<T>, noise_func: F, wavelength: f32, octaves: u32) -> f32
+    where T: Float, F: Fn(&Seed, &Point4<T>) -> f32;
+~~~
 
 Coming soon
 -----------
 
-    fn open_simplex2d<T: Float>(seed: &Seed, point: &Point2d<T>) -> f32;
-    fn open_simplex3d<T: Float>(seed: &Seed, point: &Point3d<T>) -> f32;
-    fn open_simplex4d<T: Float>(seed: &Seed, point: &Point4d<T>) -> f32;
+~~~rust
+fn open_simplex2<T: Float>(seed: &Seed, point: &Point2<T>) -> f32;
+fn open_simplex3<T: Float>(seed: &Seed, point: &Point3<T>) -> f32;
+fn open_simplex4<T: Float>(seed: &Seed, point: &Point4<T>) -> f32;
 
-    fn worley2d_points<T: Float>(seed: &Seed, point: &Point2d<T>) -> [Point2d<T>, ..9];
-    fn worley3d_points<T: Float>(seed: &Seed, point: &Point3d<T>) -> [Point3d<T>, ..27];
-    fn worley4d_points<T: Float>(seed: &Seed, point: &Point4d<T>) -> [Point4d<T>, ..81];
+fn worley2_points<T: Float>(seed: &Seed, point: &Point2<T>) -> [Point2<T>, ..9];
+fn worley3_points<T: Float>(seed: &Seed, point: &Point3<T>) -> [Point3<T>, ..27];
+fn worley4_points<T: Float>(seed: &Seed, point: &Point4<T>) -> [Point4<T>, ..81];
 
-    fn worley2d_nearest_point<T: Float>(seed: &Seed, point: &Point2d<T>) -> f32;
-    fn worley3d_nearest_point<T: Float>(seed: &Seed, point: &Point3d<T>) -> f32;
-    fn worley4d_nearest_point<T: Float>(seed: &Seed, point: &Point4d<T>) -> f32;
+fn worley2_nearest_point<T: Float>(seed: &Seed, point: &Point2<T>) -> f32;
+fn worley3_nearest_point<T: Float>(seed: &Seed, point: &Point3<T>) -> f32;
+fn worley4_nearest_point<T: Float>(seed: &Seed, point: &Point4<T>) -> f32;
 
-    fn worley2d_nearest_edge<T: Float>(seed: &Seed, point: &Point2d<T>) -> f32;
-    fn worley3d_nearest_edge<T: Float>(seed: &Seed, point: &Point3d<T>) -> f32;
-    fn worley4d_nearest_edge<T: Float>(seed: &Seed, point: &Point4d<T>) -> f32;
+fn worley2_nearest_edge<T: Float>(seed: &Seed, point: &Point2<T>) -> f32;
+fn worley3_nearest_edge<T: Float>(seed: &Seed, point: &Point3<T>) -> f32;
+fn worley4_nearest_edge<T: Float>(seed: &Seed, point: &Point4<T>) -> f32;
 
-    fn worley2d_manhattan_point<T: Float>(seed: &Seed, point: &Point2d<T>) -> f32;
-    fn worley3d_manhattan_point<T: Float>(seed: &Seed, point: &Point3d<T>) -> f32;
-    fn worley4d_manhattan_point<T: Float>(seed: &Seed, point: &Point4d<T>) -> f32;
+fn worley2_manhattan_point<T: Float>(seed: &Seed, point: &Point2<T>) -> f32;
+fn worley3_manhattan_point<T: Float>(seed: &Seed, point: &Point3<T>) -> f32;
+fn worley4_manhattan_point<T: Float>(seed: &Seed, point: &Point4<T>) -> f32;
 
-    fn worley2d_manhattan_edge<T: Float>(seed: &Seed, point: &Point2d<T>) -> f32;
-    fn worley3d_manhattan_edge<T: Float>(seed: &Seed, point: &Point3d<T>) -> f32;
-    fn worley4d_manhattan_edge<T: Float>(seed: &Seed, point: &Point4d<T>) -> f32;
+fn worley2_manhattan_edge<T: Float>(seed: &Seed, point: &Point2<T>) -> f32;
+fn worley3_manhattan_edge<T: Float>(seed: &Seed, point: &Point3<T>) -> f32;
+fn worley4_manhattan_edge<T: Float>(seed: &Seed, point: &Point4<T>) -> f32;
+~~~

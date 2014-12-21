@@ -17,8 +17,8 @@ use std::num::{cast, Float};
 
 use seed::Seed;
 
-pub fn brownian2d<T, F>(seed: &Seed, point: &::Point2d<T>, noise_func: F, wavelength: f32, octaves: u32) -> f32
-    where T: Float, F: Fn(&Seed, &::Point2d<T>) -> f32
+pub fn brownian2<T, F>(seed: &Seed, point: &::Point2<T>, noise_func: F, wavelength: f32, octaves: u32) -> f32
+    where T: Float, F: Fn(&Seed, &::Point2<T>) -> f32
 {
     let mut frequency = 1.0 / wavelength;
     let mut amplitude = 1.0;
@@ -32,8 +32,8 @@ pub fn brownian2d<T, F>(seed: &Seed, point: &::Point2d<T>, noise_func: F, wavele
     return result;
 }
 
-pub fn brownian3d<T, F>(seed: &Seed, point: &::Point3d<T>, noise_func: F, wavelength: f32, octaves: u32) -> f32
-    where T: Float, F: Fn(&Seed, &::Point3d<T>) -> f32
+pub fn brownian3<T, F>(seed: &Seed, point: &::Point3<T>, noise_func: F, wavelength: f32, octaves: u32) -> f32
+    where T: Float, F: Fn(&Seed, &::Point3<T>) -> f32
 {
     let mut frequency = 1.0 / wavelength;
     let mut amplitude = 1.0;
@@ -47,8 +47,8 @@ pub fn brownian3d<T, F>(seed: &Seed, point: &::Point3d<T>, noise_func: F, wavele
     return result;
 }
 
-pub fn brownian4d<T, F>(seed: &Seed, point: &::Point4d<T>, noise_func: F, wavelength: f32, octaves: u32) -> f32
-    where T: Float, F: Fn(&Seed, &::Point4d<T>) -> f32
+pub fn brownian4<T, F>(seed: &Seed, point: &::Point4<T>, noise_func: F, wavelength: f32, octaves: u32) -> f32
+    where T: Float, F: Fn(&Seed, &::Point4<T>) -> f32
 {
     let mut frequency = 1.0 / wavelength;
     let mut amplitude = 1.0;

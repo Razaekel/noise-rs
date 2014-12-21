@@ -48,19 +48,19 @@ impl Seed {
         return new_seed;
     }
 
-    pub fn get1d(&self, x: int) -> uint {
+    pub fn get1(&self, x: int) -> uint {
         return self.values[(signed_modulus(x, TABLE_SIZE as int))];
     }
 
-    pub fn get2d(&self, x: int, y: int) -> uint {
-        return self.values[(signed_modulus(y, TABLE_SIZE as int)) + self.get1d(x)];
+    pub fn get2(&self, x: int, y: int) -> uint {
+        return self.values[(signed_modulus(y, TABLE_SIZE as int)) + self.get1(x)];
     }
 
-    pub fn get3d(&self, x: int, y: int, z: int) -> uint {
-        return self.values[(signed_modulus(z, TABLE_SIZE as int)) + self.get2d(x, y)];
+    pub fn get3(&self, x: int, y: int, z: int) -> uint {
+        return self.values[(signed_modulus(z, TABLE_SIZE as int)) + self.get2(x, y)];
     }
 
-    pub fn get4d(&self, x: int, y: int, z: int, w: int) -> uint {
-        return self.values[(signed_modulus(w, TABLE_SIZE as int)) + self.get3d(x, y, z)];
+    pub fn get4(&self, x: int, y: int, z: int, w: int) -> uint {
+        return self.values[(signed_modulus(w, TABLE_SIZE as int)) + self.get3(x, y, z)];
     }
 }
