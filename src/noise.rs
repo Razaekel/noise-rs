@@ -15,10 +15,20 @@
 
 #![deny(missing_copy_implementations)]
 
+pub use seed::Seed;
+pub use perlin::{perlin2d, perlin3d, perlin4d};
+
 mod gen;
 pub mod util;
 
 pub mod source;
+
+pub mod seed;
+pub mod perlin;
+
+pub type Point2d<T> = [T, ..2];
+pub type Point3d<T> = [T, ..3];
+pub type Point4d<T> = [T, ..4];
 
 #[deriving(Copy, Clone)]
 pub enum Quality {

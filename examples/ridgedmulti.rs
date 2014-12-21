@@ -18,12 +18,14 @@ extern crate noise;
 
 use noise::source::RidgedMulti;
 
-mod debug;
+mod debug {
+    pub mod console;
+}
 
 fn main() {
     let ridged = RidgedMulti::new()
         .octaves(3);
 
-    debug::render(100, 100, &ridged);
+    debug::console::render(100, 100, &ridged);
 }
 

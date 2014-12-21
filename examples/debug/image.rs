@@ -13,15 +13,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! An example of using perlin noise
-
+extern crate image;
 extern crate noise;
 
-use noise::source::Perlin;
+use std::num::{cast, Float, NumCast};
 
-mod debug;
+use noise::util::clamp;
+use noise::Seed;
 
-fn main() {
-    let perlin = Perlin::new().frequency(0.1);
-    debug::render(100, 100, &perlin);
+pub fn render_to_png<T, F>(filename: &str, seed: &Seed, width: u32, height: u32, func: F)
+    where T: Float + NumCast, F: Fn(&Seed, &noise::Point2d<T>) -> f32
+{
+    let mut pixels = Vec::with_capacity((width * height) as uint);
+
+    for y in range(0, height) {
+        for x in range(0, width) {
+            let value = func(seed, &[c(x), c(y)]);
+            pixels.push(c(clamp(value * 0.5 + 0.5, 0.0, 1.0) * 255.0));
+        }
+    }
+
+    let _ = image::save_buffer(&Path::new(filename), pixels.as_slice(), width, height, image::ColorType::Grey(8));
+}
+
+fn c<T: NumCast, R: NumCast>(val: T) -> R {
+    return cast(val).unwrap();
 }

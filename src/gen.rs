@@ -87,7 +87,7 @@ pub fn gradient_noise_3d<F:Float>(fx: F, fy: F, fz: F, ix: int, iy: int, iz: int
       + Y_NOISE_GEN * iy
       + Z_NOISE_GEN * iz
       + SEED_NOISE_GEN * seed
-    ) & 0xffffffff;
+    ) & 0x7fffffff;
     vector_index ^= vector_index >> SHIFT_NOISE_GEN;
     vector_index &= 0xff;
 
