@@ -19,7 +19,7 @@
 
 extern crate noise;
 
-use noise::{perlin2d, perlin3d, perlin4d, Seed, Quality, Point2d};
+use noise::{perlin2d_best, perlin3d_best, perlin4d_best, Seed, Point2d};
 
 mod debug {
     pub mod image;
@@ -33,13 +33,13 @@ fn main() {
 }
 
 fn scaled_perlin2d(seed: &Seed, point: &Point2d<f32>) -> f32 {
-    return perlin2d(seed, &[point[0] / 32.0, point[1] / 32.00], Quality::Best);
+    return perlin2d_best(seed, &[point[0] / 32.0, point[1] / 32.00]);
 }
 
 fn scaled_perlin3d(seed: &Seed, point: &Point2d<f32>) -> f32 {
-    return perlin3d(seed, &[point[0] / 32.0, point[1] / 32.00, 0.0], Quality::Best);
+    return perlin3d_best(seed, &[point[0] / 32.0, point[1] / 32.00, 0.0]);
 }
 
 fn scaled_perlin4d(seed: &Seed, point: &Point2d<f32>) -> f32 {
-    return perlin4d(seed, &[point[0] / 32.0, point[1] / 32.00, 0., 0.0], Quality::Best);
+    return perlin4d_best(seed, &[point[0] / 32.0, point[1] / 32.00, 0.0, 0.0]);
 }

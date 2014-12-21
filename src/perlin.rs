@@ -94,8 +94,8 @@ fn get_perlin4d_gradient(seed: &Seed, x_whole: int, y_whole: int, z_whole: int, 
     return x_frac * vector[0] + y_frac * vector[1] + z_frac * vector[2] + w_frac * vector[3];
 }
 
-pub fn perlin2d<T: Float>(seed: &Seed, point: &::Point2d<T>, quality: ::Quality) -> f32 {
-    use Quality::{ Fast, Standard, Best };
+fn perlin2d<T: Float>(seed: &Seed, point: &::Point2d<T>, quality: ::Quality) -> f32 {
+    use Quality::{ Fast, Best };
 
     let xfloor = point[0].floor().to_f32().unwrap();
     let yfloor = point[1].floor().to_f32().unwrap();
@@ -114,10 +114,6 @@ pub fn perlin2d<T: Float>(seed: &Seed, point: &::Point2d<T>, quality: ::Quality)
 
     let (x_curve, y_curve) = match quality {
         Fast => (
-            x0_frac,
-            y0_frac,
-        ),
-        Standard => (
             scurve3(x0_frac),
             scurve3(y0_frac),
         ),
@@ -138,8 +134,16 @@ pub fn perlin2d<T: Float>(seed: &Seed, point: &::Point2d<T>, quality: ::Quality)
     return lerp(y_curve, interpolated_x0, interpolated_x1);
 }
 
-pub fn perlin3d<T: Float>(seed: &Seed, point: &::Point3d<T>, quality: ::Quality) -> f32 {
-    use Quality::{ Fast, Standard, Best };
+pub fn perlin2d_fast<T: Float>(seed: &Seed, point: &::Point2d<T>) -> f32 {
+    return perlin2d(seed, point, ::Quality::Fast);
+}
+
+pub fn perlin2d_best<T: Float>(seed: &Seed, point: &::Point2d<T>) -> f32 {
+    return perlin2d(seed, point, ::Quality::Best);
+}
+
+fn perlin3d<T: Float>(seed: &Seed, point: &::Point3d<T>, quality: ::Quality) -> f32 {
+    use Quality::{ Fast, Best };
 
     let xfloor = point[0].floor().to_f32().unwrap();
     let yfloor = point[1].floor().to_f32().unwrap();
@@ -163,11 +167,6 @@ pub fn perlin3d<T: Float>(seed: &Seed, point: &::Point3d<T>, quality: ::Quality)
 
     let (x_curve, y_curve, z_curve) = match quality {
         Fast => (
-            x0_frac,
-            y0_frac,
-            z0_frac
-        ),
-        Standard => (
             scurve3(x0_frac),
             scurve3(y0_frac),
             scurve3(z0_frac)
@@ -200,8 +199,16 @@ pub fn perlin3d<T: Float>(seed: &Seed, point: &::Point3d<T>, quality: ::Quality)
     return lerp(z_curve, interpolated_y0, interpolated_y1);
 }
 
-pub fn perlin4d<T: Float>(seed: &Seed, point: &::Point4d<T>, quality: ::Quality) -> f32 {
-    use Quality::{ Fast, Standard, Best };
+pub fn perlin3d_fast<T: Float>(seed: &Seed, point: &::Point3d<T>) -> f32 {
+    return perlin3d(seed, point, ::Quality::Fast);
+}
+
+pub fn perlin3d_best<T: Float>(seed: &Seed, point: &::Point3d<T>) -> f32 {
+    return perlin3d(seed, point, ::Quality::Best);
+}
+
+fn perlin4d<T: Float>(seed: &Seed, point: &::Point4d<T>, quality: ::Quality) -> f32 {
+    use Quality::{ Fast, Best };
 
     let xfloor = point[0].floor().to_f32().unwrap();
     let yfloor = point[1].floor().to_f32().unwrap();
@@ -230,12 +237,6 @@ pub fn perlin4d<T: Float>(seed: &Seed, point: &::Point4d<T>, quality: ::Quality)
 
     let (x_curve, y_curve, z_curve, w_curve) = match quality {
         Fast => (
-            x0_frac,
-            y0_frac,
-            z0_frac,
-            w0_frac
-        ),
-        Standard => (
             scurve3(x0_frac),
             scurve3(y0_frac),
             scurve3(z0_frac),
@@ -288,4 +289,12 @@ pub fn perlin4d<T: Float>(seed: &Seed, point: &::Point4d<T>, quality: ::Quality)
     let interpolated_z1 = lerp(z_curve, interpolated_y0, interpolated_y1);
 
     return lerp(w_curve, interpolated_z0, interpolated_z1);
+}
+
+pub fn perlin4d_fast<T: Float>(seed: &Seed, point: &::Point4d<T>) -> f32 {
+    return perlin4d(seed, point, ::Quality::Fast);
+}
+
+pub fn perlin4d_best<T: Float>(seed: &Seed, point: &::Point4d<T>) -> f32 {
+    return perlin4d(seed, point, ::Quality::Best);
 }

@@ -28,7 +28,7 @@ static SHIFT_NOISE_GEN : uint = 8;
 static SQRT_3 : f64 = 1.73205080757;
 
 pub fn gradient_coherent_noise_3d<F: Float>(x: F, y: F, z: F, seed: int, quality: ::Quality) -> F {
-    use Quality::{ Fast, Standard, Best };
+    use Quality::{ Fast, Best };
 
     let x0 : int = x.floor().to_int().unwrap();
     let y0 : int = y.floor().to_int().unwrap();
@@ -40,11 +40,6 @@ pub fn gradient_coherent_noise_3d<F: Float>(x: F, y: F, z: F, seed: int, quality
 
     let (xs, ys, zs) = match quality {
         Fast => (
-            x - x.floor(),
-            y - x.floor(),
-            z - x.floor()
-        ),
-        Standard => (
             scurve3(x - cast(x0).unwrap()),
             scurve3(y - cast(y0).unwrap()),
             scurve3(z - cast(z0).unwrap())
