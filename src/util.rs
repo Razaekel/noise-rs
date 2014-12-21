@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num::{cast, Float};
+use std::num::{cast, Float, SignedInt};
 
 #[inline]
 pub fn lerp<T: Float>(t: T, a: T, b: T) -> T {
@@ -42,4 +42,6 @@ pub fn clamp<F: Float>(val: F, min: F, max: F) -> F {
     }
 }
 
-
+pub fn signed_modulus(a: int, b: int) -> uint {
+    (if a < 0 { b - (a.abs() % b) } else { a % b }) as uint
+}

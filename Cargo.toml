@@ -17,8 +17,19 @@ name = "noise"
 
 [[example]]
 
-name = "perlin"
+name = "perlin_console"
+
+[[example]]
+
+name = "perlin_image"
+
+[[example]]
+
+name = "brownian"
 
 [[example]]
 
 name = "ridgedmulti"
+
+[dev-dependencies.image]
+git = "https://github.com/PistonDevelopers/image.git"
