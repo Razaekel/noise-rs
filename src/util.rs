@@ -45,3 +45,13 @@ pub fn clamp<F: Float>(val: F, min: F, max: F) -> F {
 pub fn signed_modulus(a: int, b: int) -> uint {
     (if a < 0 { b - (a.abs() % b) } else { a % b }) as uint
 }
+
+macro_rules! assert_approx_eq(
+    ($a:expr, $b:expr, $eps:expr) => ({
+        use std::num::Float;
+        let (a, b, eps) = ($a, $b, $eps);
+        if (a - b).abs() > eps {
+            panic!("assertion failed: `left ≈ right` (left: {}, right: {}, tolerance: {})", a, b, eps);
+        }
+    })
+);

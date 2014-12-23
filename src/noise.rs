@@ -13,6 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#![feature(macro_rules)]
 #![deny(missing_copy_implementations)]
 
 pub use seed::Seed;
@@ -23,6 +24,7 @@ pub use brownian::{brownian2, brownian3, brownian4};
 mod gen;
 mod gradients;
 
+#[macro_escape]
 pub mod util;
 pub mod source;
 
