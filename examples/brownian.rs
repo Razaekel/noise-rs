@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! An example of using perlin noise
+//! An example of using fractal brownian motion on perlin noise
 
 #![feature(macro_rules)]
 

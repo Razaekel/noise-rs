@@ -25,6 +25,10 @@ name = "perlin_image"
 
 [[example]]
 
+name = "simplex"
+
+[[example]]
+
 name = "brownian"
 
 [[example]]

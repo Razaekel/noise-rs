@@ -17,6 +17,7 @@
 
 pub use seed::Seed;
 pub use perlin::{perlin2_fast, perlin2_best, perlin3_fast, perlin3_best, perlin4_fast, perlin4_best};
+pub use simplex::simplex2;
 pub use brownian::{brownian2, brownian3, brownian4};
 
 mod gen;
@@ -26,6 +27,7 @@ pub mod source;
 
 pub mod seed;
 pub mod perlin;
+pub mod simplex;
 pub mod brownian;
 
 pub type Point2<T> = [T, ..2];
