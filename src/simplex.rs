@@ -22,22 +22,12 @@
 use std::num::{cast, Float};
 
 use seed::Seed;
+use gradients::GRADIENT2;
 
 const STRETCH_CONSTANT_2D: f64 = -0.211324865405187; //(1/sqrt(2+1)-1)/2;
 const SQUISH_CONSTANT_2D: f64 = 0.366025403784439; //(sqrt(2+1)-1)/2;
 
 const NORM_CONSTANT_2D: f32 = 14.0;
-
-const GRADIENT2: [::Point2<f32>, ..8] = [
-    [ 0.70710678118,  0.70710678118],
-    [ 0.70710678118, -0.70710678118],
-    [-0.70710678118,  0.70710678118],
-    [-0.70710678118, -0.70710678118],
-    [ 1.0,  0.0],
-    [-1.0,  0.0],
-    [ 0.0,  1.0],
-    [ 0.0, -1.0],
-];
 
 fn get_simplex2_gradient<T: Float>(seed: &Seed, xs_floor: T, ys_floor: T, dx: T, dy: T) -> T {
     let two: T = cast(2.0f32).unwrap();

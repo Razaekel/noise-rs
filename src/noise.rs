@@ -21,8 +21,9 @@ pub use simplex::simplex2;
 pub use brownian::{brownian2, brownian3, brownian4};
 
 mod gen;
-pub mod util;
+mod gradients;
 
+pub mod util;
 pub mod source;
 
 pub mod seed;

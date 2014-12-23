@@ -27,19 +27,9 @@ mod debug {
 
 fn main() {
     debug::image::render_to_png("simplex2.png", &Seed::new(0), 256, 256, scaled_simplex2);
-    // debug::image::render_to_png("simplex3.png", &Seed::new(0), 256, 256, scaled_simplex3);
-    // debug::image::render_to_png("simplex4.png", &Seed::new(0), 256, 256, scaled_simplex4);
     println!("\nGenerated simplex2.png, simplex3.png and simplex4.png");
 }
 
 fn scaled_simplex2(seed: &Seed, point: &Point2<f32>) -> f32 {
     return simplex2(seed, &[point[0] / 32.0, point[1] / 32.00]);
 }
-
-// fn scaled_simplex3(seed: &Seed, point: &Point2<f32>) -> f32 {
-//     return simplex3_best(seed, &[point[0] / 32.0, point[1] / 32.00, 0.0]);
-// }
-
-// fn scaled_simplex4(seed: &Seed, point: &Point2<f32>) -> f32 {
-//     return simplex4_best(seed, &[point[0] / 32.0, point[1] / 32.00, 0.0, 0.0]);
-// }
