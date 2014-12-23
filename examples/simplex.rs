@@ -27,7 +27,7 @@ mod debug {
 
 fn main() {
     debug::image::render_to_png("simplex2.png", &Seed::new(0), 256, 256, scaled_simplex2);
-    println!("\nGenerated simplex2.png, simplex3.png and simplex4.png");
+    println!("\nGenerated simplex2.png");
 }
 
 fn scaled_simplex2(seed: &Seed, point: &Point2<f32>) -> f32 {
