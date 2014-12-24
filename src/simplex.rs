@@ -128,6 +128,7 @@ pub fn simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> f32 {
 
 #[cfg(test)]
 mod tests {
+    use std::rand;
     use seed::Seed;
     use simplex::simplex2;
 
@@ -135,36 +136,37 @@ mod tests {
 
     #[test]
     fn test_simplex2() {
-        let seed = Seed::new(0);
+        let mut rng: rand::XorShiftRng = rand::SeedableRng::from_seed([42, 37, 26, 8]);
+        let seed = Seed::from_rng(&mut rng);
 
         assert_approx_eq!( 0.000000, simplex2(&seed, &[0.0f32, 0.0]), EPSILON);
-        assert_approx_eq!( 0.341389, simplex2(&seed, &[0.5f32, 0.0]), EPSILON);
-        assert_approx_eq!( 0.433783, simplex2(&seed, &[1.0f32, 0.0]), EPSILON);
-        assert_approx_eq!( 0.137262, simplex2(&seed, &[1.5f32, 0.0]), EPSILON);
-        assert_approx_eq!(-0.309079, simplex2(&seed, &[2.0f32, 0.0]), EPSILON);
+        assert_approx_eq!(-0.073360, simplex2(&seed, &[0.5f32, 0.0]), EPSILON);
+        assert_approx_eq!(-0.163874, simplex2(&seed, &[1.0f32, 0.0]), EPSILON);
+        assert_approx_eq!( 0.110803, simplex2(&seed, &[1.5f32, 0.0]), EPSILON);
+        assert_approx_eq!(-0.038814, simplex2(&seed, &[2.0f32, 0.0]), EPSILON);
 
-        assert_approx_eq!( 0.309427, simplex2(&seed, &[0.0f32, 0.5]), EPSILON);
-        assert_approx_eq!( 0.426084, simplex2(&seed, &[0.5f32, 0.5]), EPSILON);
-        assert_approx_eq!( 0.166750, simplex2(&seed, &[1.0f32, 0.5]), EPSILON);
-        assert_approx_eq!(-0.206059, simplex2(&seed, &[1.5f32, 0.5]), EPSILON);
-        assert_approx_eq!(-0.459946, simplex2(&seed, &[2.0f32, 0.5]), EPSILON);
+        assert_approx_eq!(-0.352936, simplex2(&seed, &[0.0f32, 0.5]), EPSILON);
+        assert_approx_eq!(-0.301287, simplex2(&seed, &[0.5f32, 0.5]), EPSILON);
+        assert_approx_eq!(-0.292849, simplex2(&seed, &[1.0f32, 0.5]), EPSILON);
+        assert_approx_eq!( 0.144342, simplex2(&seed, &[1.5f32, 0.5]), EPSILON);
+        assert_approx_eq!( 0.208945, simplex2(&seed, &[2.0f32, 0.5]), EPSILON);
 
-        assert_approx_eq!( 0.332767, simplex2(&seed, &[0.0f32, 1.0]), EPSILON);
-        assert_approx_eq!( 0.166750, simplex2(&seed, &[0.5f32, 1.0]), EPSILON);
-        assert_approx_eq!(-0.124372, simplex2(&seed, &[1.0f32, 1.0]), EPSILON);
-        assert_approx_eq!(-0.348575, simplex2(&seed, &[1.5f32, 1.0]), EPSILON);
-        assert_approx_eq!(-0.517394, simplex2(&seed, &[2.0f32, 1.0]), EPSILON);
+        assert_approx_eq!(-0.235302, simplex2(&seed, &[0.0f32, 1.0]), EPSILON);
+        assert_approx_eq!( 0.057028, simplex2(&seed, &[0.5f32, 1.0]), EPSILON);
+        assert_approx_eq!( 0.142835, simplex2(&seed, &[1.0f32, 1.0]), EPSILON);
+        assert_approx_eq!( 0.261979, simplex2(&seed, &[1.5f32, 1.0]), EPSILON);
+        assert_approx_eq!( 0.252710, simplex2(&seed, &[2.0f32, 1.0]), EPSILON);
 
-        assert_approx_eq!( 0.105300, simplex2(&seed, &[0.0f32, 1.5]), EPSILON);
-        assert_approx_eq!(-0.196746, simplex2(&seed, &[0.5f32, 1.5]), EPSILON);
-        assert_approx_eq!(-0.143812, simplex2(&seed, &[1.0f32, 1.5]), EPSILON);
-        assert_approx_eq!(-0.030082, simplex2(&seed, &[1.5f32, 1.5]), EPSILON);
-        assert_approx_eq!(-0.344659, simplex2(&seed, &[2.0f32, 1.5]), EPSILON);
+        assert_approx_eq!(-0.305799, simplex2(&seed, &[0.0f32, 1.5]), EPSILON);
+        assert_approx_eq!( 0.142413, simplex2(&seed, &[0.5f32, 1.5]), EPSILON);
+        assert_approx_eq!( 0.470566, simplex2(&seed, &[1.0f32, 1.5]), EPSILON);
+        assert_approx_eq!( 0.321834, simplex2(&seed, &[1.5f32, 1.5]), EPSILON);
+        assert_approx_eq!( 0.013222, simplex2(&seed, &[2.0f32, 1.5]), EPSILON);
 
-        assert_approx_eq!(-0.231452, simplex2(&seed, &[0.0f32, 2.0]), EPSILON);
-        assert_approx_eq!(-0.042004, simplex2(&seed, &[0.5f32, 2.0]), EPSILON);
-        assert_approx_eq!( 0.255193, simplex2(&seed, &[1.0f32, 2.0]), EPSILON);
-        assert_approx_eq!( 0.342329, simplex2(&seed, &[1.5f32, 2.0]), EPSILON);
-        assert_approx_eq!( 0.016486, simplex2(&seed, &[2.0f32, 2.0]), EPSILON);
+        assert_approx_eq!(-0.383105, simplex2(&seed, &[0.0f32, 2.0]), EPSILON);
+        assert_approx_eq!(-0.140743, simplex2(&seed, &[0.5f32, 2.0]), EPSILON);
+        assert_approx_eq!( 0.092702, simplex2(&seed, &[1.0f32, 2.0]), EPSILON);
+        assert_approx_eq!(-0.022101, simplex2(&seed, &[1.5f32, 2.0]), EPSILON);
+        assert_approx_eq!(-0.301222, simplex2(&seed, &[2.0f32, 2.0]), EPSILON);
     }
 }
