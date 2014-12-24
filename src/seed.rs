@@ -25,11 +25,10 @@ pub struct Seed {
 }
 
 impl Seed {
-    pub fn new(seed: uint) -> Seed {
-        let mut rng: rand::StdRng = rand::SeedableRng::from_seed([seed].as_slice());
+    pub fn from_rng<R: rand::Rng>(rng: &mut R) -> Seed {
         let mut seq: Vec<uint> = range(0u, TABLE_SIZE).collect();
         for i in range(0, TABLE_SIZE) {
-            let mut swap_i: uint = rand::Rand::rand(&mut rng);
+            let mut swap_i: uint = rand::Rand::rand(rng);
             swap_i = swap_i % TABLE_SIZE;
             let swap = seq[swap_i as uint];
             seq[swap_i as uint] = seq[i];
@@ -46,6 +45,11 @@ impl Seed {
             new_seed.values[i] = seq[i % TABLE_SIZE];
         }
         return new_seed;
+    }
+
+    pub fn new(seed: u32) -> Seed {
+        let mut rng: rand::XorShiftRng = rand::SeedableRng::from_seed([1, seed, seed, seed]);
+        return Seed::from_rng(&mut rng);
     }
 
     pub fn get1(&self, x: int) -> uint {
