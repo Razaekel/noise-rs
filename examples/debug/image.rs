@@ -22,14 +22,15 @@ use std::num::{cast, Float, NumCast};
 #[path = "../../src/math.rs"]
 mod math;
 
-pub fn render_to_png<T, F>(filename: &str, seed: &noise::Seed, width: u32, height: u32, func: F)
-    where T: Float + NumCast, F: Fn(&noise::Seed, &noise::Point2<T>) -> f32
+pub fn render_to_png<T, F>(filename: &str, seed: &noise::Seed, width: u32, height: u32, func: F) where
+    T: Float + NumCast,
+    F: Fn(&noise::Seed, &noise::Point2<T>) -> T,
 {
     let mut pixels = Vec::with_capacity((width * height) as uint);
 
     for y in range(0, height) {
         for x in range(0, width) {
-            let value = func(seed, &[c(x), c(y)]);
+            let value: f32 = math::cast(func(seed, &[c(x), c(y)]));
             pixels.push(c(math::clamp(value * 0.5 + 0.5, 0.0, 1.0) * 255.0));
         }
     }

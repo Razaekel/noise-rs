@@ -18,17 +18,17 @@ use std::num::Float;
 use {math, Seed};
 use gradients::{GRADIENT2, GRADIENT3, GRADIENT4};
 
-fn perlin2<T, F>(seed: &Seed, point: &::Point2<T>, scurve: F) -> f32 where
+fn perlin2<T, F>(seed: &Seed, point: &::Point2<T>, scurve: F) -> T where
     T: Float,
-    F: Fn(f32) -> f32,
+    F: Fn(T) -> T,
 {
-    fn gradient(seed: &Seed, x_whole: int, y_whole: int, x_frac: f32, y_frac: f32) -> f32 {
-        let vector = GRADIENT2[seed.get2(x_whole, y_whole) % GRADIENT2.len()];
-        x_frac * vector[0] + y_frac * vector[1]
+    fn gradient<T: Float>(seed: &Seed, x_whole: int, y_whole: int, x_frac: T, y_frac: T) -> T {
+        let [x, y] = GRADIENT2[seed.get2(x_whole, y_whole) % GRADIENT2.len()];
+        x_frac * math::cast(x) + y_frac * math::cast(y)
     }
 
-    let xfloor = point[0].floor().to_f32().unwrap();
-    let yfloor = point[1].floor().to_f32().unwrap();
+    let xfloor = point[0].floor();
+    let yfloor = point[1].floor();
 
     let x0_whole = xfloor.to_int().unwrap();
     let y0_whole = yfloor.to_int().unwrap();
@@ -36,11 +36,11 @@ fn perlin2<T, F>(seed: &Seed, point: &::Point2<T>, scurve: F) -> f32 where
     let x1_whole = x0_whole + 1;
     let y1_whole = y0_whole + 1;
 
-    let x0_frac = point[0].to_f32().unwrap() - xfloor;
-    let y0_frac = point[1].to_f32().unwrap() - yfloor;
+    let x0_frac = point[0] - xfloor;
+    let y0_frac = point[1] - yfloor;
 
-    let x1_frac = x0_frac - 1.0;
-    let y1_frac = y0_frac - 1.0;
+    let x1_frac = x0_frac - Float::one();
+    let y1_frac = y0_frac - Float::one();
 
     let x_curve = scurve(x0_frac);
     let y_curve = scurve(y0_frac);
@@ -56,26 +56,26 @@ fn perlin2<T, F>(seed: &Seed, point: &::Point2<T>, scurve: F) -> f32 where
     math::lerp(y_curve, interpolated_x0, interpolated_x1)
 }
 
-pub fn perlin2_fast<T: Float>(seed: &Seed, point: &::Point2<T>) -> f32 {
+pub fn perlin2_fast<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
     perlin2(seed, point, math::scurve3)
 }
 
-pub fn perlin2_best<T: Float>(seed: &Seed, point: &::Point2<T>) -> f32 {
+pub fn perlin2_best<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
     perlin2(seed, point, math::scurve5)
 }
 
-fn perlin3<T, F>(seed: &Seed, point: &::Point3<T>, scurve: F) -> f32 where
+fn perlin3<T, F>(seed: &Seed, point: &::Point3<T>, scurve: F) -> T where
     T: Float,
-    F: Fn(f32) -> f32,
+    F: Fn(T) -> T,
 {
-    fn gradient(seed: &Seed, x_whole: int, y_whole: int, z_whole: int, x_frac: f32, y_frac: f32, z_frac: f32) -> f32 {
-        let vector = GRADIENT3[seed.get3(x_whole, y_whole, z_whole) % GRADIENT3.len()];
-        x_frac * vector[0] + y_frac * vector[1] + z_frac * vector[2]
+    fn gradient<T: Float>(seed: &Seed, x_whole: int, y_whole: int, z_whole: int, x_frac: T, y_frac: T, z_frac: T) -> T {
+        let [x, y, z] = GRADIENT3[seed.get3(x_whole, y_whole, z_whole) % GRADIENT3.len()];
+        x_frac * math::cast(x) + y_frac * math::cast(y) + z_frac * math::cast(z)
     }
 
-    let xfloor = point[0].floor().to_f32().unwrap();
-    let yfloor = point[1].floor().to_f32().unwrap();
-    let zfloor = point[2].floor().to_f32().unwrap();
+    let xfloor = point[0].floor();
+    let yfloor = point[1].floor();
+    let zfloor = point[2].floor();
 
     let x0_whole = xfloor.to_int().unwrap();
     let y0_whole = yfloor.to_int().unwrap();
@@ -85,13 +85,13 @@ fn perlin3<T, F>(seed: &Seed, point: &::Point3<T>, scurve: F) -> f32 where
     let y1_whole = y0_whole + 1;
     let z1_whole = z0_whole + 1;
 
-    let x0_frac = point[0].to_f32().unwrap() - xfloor;
-    let y0_frac = point[1].to_f32().unwrap() - yfloor;
-    let z0_frac = point[2].to_f32().unwrap() - zfloor;
+    let x0_frac = point[0] - xfloor;
+    let y0_frac = point[1] - yfloor;
+    let z0_frac = point[2] - zfloor;
 
-    let x1_frac = x0_frac - 1.0;
-    let y1_frac = y0_frac - 1.0;
-    let z1_frac = z0_frac - 1.0;
+    let x1_frac = x0_frac - Float::one();
+    let y1_frac = y0_frac - Float::one();
+    let z1_frac = z0_frac - Float::one();
 
     let x_curve = scurve(x0_frac);
     let y_curve = scurve(y0_frac);
@@ -118,27 +118,27 @@ fn perlin3<T, F>(seed: &Seed, point: &::Point3<T>, scurve: F) -> f32 where
     math::lerp(z_curve, interpolated_y0, interpolated_y1)
 }
 
-pub fn perlin3_fast<T: Float>(seed: &Seed, point: &::Point3<T>) -> f32 {
+pub fn perlin3_fast<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
     perlin3(seed, point, math::scurve3)
 }
 
-pub fn perlin3_best<T: Float>(seed: &Seed, point: &::Point3<T>) -> f32 {
+pub fn perlin3_best<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
     perlin3(seed, point, math::scurve5)
 }
 
-fn perlin4<T, F>(seed: &Seed, point: &::Point4<T>, scurve: F) -> f32 where
+fn perlin4<T, F>(seed: &Seed, point: &::Point4<T>, scurve: F) -> T where
     T: Float,
-    F: Fn(f32) -> f32,
+    F: Fn(T) -> T,
 {
-    fn gradient(seed: &Seed, x_whole: int, y_whole: int, z_whole: int, w_whole: int, x_frac: f32, y_frac: f32, z_frac: f32, w_frac: f32) -> f32 {
-        let vector = GRADIENT4[seed.get4(x_whole, y_whole, z_whole, w_whole) % GRADIENT4.len()];
-        x_frac * vector[0] + y_frac * vector[1] + z_frac * vector[2] + w_frac * vector[3]
+    fn gradient<T: Float>(seed: &Seed, x_whole: int, y_whole: int, z_whole: int, w_whole: int, x_frac: T, y_frac: T, z_frac: T, w_frac: T) -> T {
+        let [x, y, z, w] = GRADIENT4[seed.get4(x_whole, y_whole, z_whole, w_whole) % GRADIENT4.len()];
+        x_frac * math::cast(x) + y_frac * math::cast(y) + z_frac * math::cast(z) + w_frac * math::cast(w)
     }
 
-    let xfloor = point[0].floor().to_f32().unwrap();
-    let yfloor = point[1].floor().to_f32().unwrap();
-    let zfloor = point[2].floor().to_f32().unwrap();
-    let wfloor = point[3].floor().to_f32().unwrap();
+    let xfloor = point[0].floor();
+    let yfloor = point[1].floor();
+    let zfloor = point[2].floor();
+    let wfloor = point[3].floor();
 
     let x0_whole = xfloor.to_int().unwrap();
     let y0_whole = yfloor.to_int().unwrap();
@@ -150,15 +150,15 @@ fn perlin4<T, F>(seed: &Seed, point: &::Point4<T>, scurve: F) -> f32 where
     let z1_whole = z0_whole + 1;
     let w1_whole = w0_whole + 1;
 
-    let x0_frac = point[0].to_f32().unwrap() - xfloor;
-    let y0_frac = point[1].to_f32().unwrap() - yfloor;
-    let z0_frac = point[2].to_f32().unwrap() - zfloor;
-    let w0_frac = point[2].to_f32().unwrap() - wfloor;
+    let x0_frac = point[0] - xfloor;
+    let y0_frac = point[1] - yfloor;
+    let z0_frac = point[2] - zfloor;
+    let w0_frac = point[2] - wfloor;
 
-    let x1_frac = x0_frac - 1.0;
-    let y1_frac = y0_frac - 1.0;
-    let z1_frac = z0_frac - 1.0;
-    let w1_frac = w0_frac - 1.0;
+    let x1_frac = x0_frac - Float::one();
+    let y1_frac = y0_frac - Float::one();
+    let z1_frac = z0_frac - Float::one();
+    let w1_frac = w0_frac - Float::one();
 
     let x_curve = scurve(x0_frac);
     let y_curve = scurve(y0_frac);
@@ -206,10 +206,10 @@ fn perlin4<T, F>(seed: &Seed, point: &::Point4<T>, scurve: F) -> f32 where
     math::lerp(w_curve, interpolated_z0, interpolated_z1)
 }
 
-pub fn perlin4_fast<T: Float>(seed: &Seed, point: &::Point4<T>) -> f32 {
+pub fn perlin4_fast<T: Float>(seed: &Seed, point: &::Point4<T>) -> T {
     perlin4(seed, point, math::scurve3)
 }
 
-pub fn perlin4_best<T: Float>(seed: &Seed, point: &::Point4<T>) -> f32 {
+pub fn perlin4_best<T: Float>(seed: &Seed, point: &::Point4<T>) -> T {
     perlin4(seed, point, math::scurve5)
 }

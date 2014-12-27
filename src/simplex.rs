@@ -21,7 +21,7 @@
 
 use std::num::{cast, Float};
 
-use seed::Seed;
+use {math, Seed};
 use gradients::GRADIENT2;
 
 const STRETCH_CONSTANT_2D: f64 = -0.211324865405187; //(1/sqrt(2+1)-1)/2;
@@ -30,26 +30,25 @@ const SQUISH_CONSTANT_2D: f64 = 0.366025403784439; //(sqrt(2+1)-1)/2;
 const NORM_CONSTANT_2D: f32 = 14.0;
 
 fn get_simplex2_gradient<T: Float>(seed: &Seed, xs_floor: T, ys_floor: T, dx: T, dy: T) -> T {
-    let two: T = cast(2.0f32).unwrap();
-    let attn = two - dx * dx - dy * dy;
-    if attn > cast(0.0f32).unwrap() {
+    let attn = math::cast::<_, T>(2u) - dx * dx - dy * dy;
+    if attn > Float::zero() {
         let index = seed.get2(xs_floor.to_int().unwrap(), ys_floor.to_int().unwrap()) % GRADIENT2.len();
         let vec = GRADIENT2[index];
         let attn2 = attn * attn;
-        attn2 * attn2 * (dx * cast(vec[0]).unwrap() + dy * cast(vec[1]).unwrap())
+        attn2 * attn2 * (dx * math::cast(vec[0]) + dy * math::cast(vec[1]))
     } else {
-        cast(0.0f32).unwrap()
+        Float::zero()
     }
 }
 
-pub fn simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> f32 {
-    let zero: T = cast(0.0f32).unwrap();
-    let one: T = cast(1.0f32).unwrap();
-    let two: T = cast(2.0f32).unwrap();
-    let squish_constant: T = cast(SQUISH_CONSTANT_2D).unwrap();
+pub fn simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
+    let zero: T = math::cast(0u);
+    let one: T = math::cast(1u);
+    let two: T = math::cast(2u);
+    let squish_constant: T = math::cast(SQUISH_CONSTANT_2D);
 
     //Place input coordinates onto grid.
-    let stretch_offset = (point[0] + point[1]) * cast(STRETCH_CONSTANT_2D).unwrap();
+    let stretch_offset = (point[0] + point[1]) * math::cast(STRETCH_CONSTANT_2D);
     let xs = point[0] + stretch_offset;
     let ys = point[1] + stretch_offset;
 
@@ -124,5 +123,5 @@ pub fn simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> f32 {
     //Extra Vertex
     value = value + get_simplex2_gradient(seed, xsv_ext, ysv_ext, dx_ext, dy_ext);
 
-    value.to_f32().unwrap() / NORM_CONSTANT_2D
+    value / math::cast(NORM_CONSTANT_2D)
 }

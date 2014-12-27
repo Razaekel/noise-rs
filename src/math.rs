@@ -13,20 +13,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num::{cast, Float, SignedInt};
+use std::num::{mod, Float, NumCast, SignedInt};
+
+pub fn cast<T: NumCast, U: NumCast>(x: T) -> U {
+    num::cast(x).unwrap()
+}
 
 pub fn lerp<T: Float>(t: T, a: T, b: T) -> T {
     t * (b - a) + a
 }
 
 pub fn scurve3<F: Float>(t: F) -> F {
-    let three : F = cast(3i).unwrap();
-    let two : F = cast(2i).unwrap();
-    t * t * (three - (t * two))
+    t * t * (cast::<_, F>(3u) - (t * cast(2u)))
 }
 
 pub fn scurve5<T: Float>(t: T) -> T {
-    t * t * t * (t * (t * cast(6i).unwrap() - cast(15i).unwrap()) + cast(10i).unwrap())
+    t * t * t * (t * (t * cast(6u) - cast(15u)) + cast(10u))
 }
 
 pub fn clamp<F: Float>(val: F, min: F, max: F) -> F {
