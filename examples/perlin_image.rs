@@ -33,13 +33,13 @@ fn main() {
 }
 
 fn scaled_perlin2(seed: &Seed, point: &Point2<f32>) -> f32 {
-    return perlin2_best(seed, &[point[0] / 32.0, point[1] / 32.00]);
+    perlin2_best(seed, &[point[0] / 32.0, point[1] / 32.00])
 }
 
 fn scaled_perlin3(seed: &Seed, point: &Point2<f32>) -> f32 {
-    return perlin3_best(seed, &[point[0] / 32.0, point[1] / 32.00, 0.0]);
+    perlin3_best(seed, &[point[0] / 32.0, point[1] / 32.00, 0.0])
 }
 
 fn scaled_perlin4(seed: &Seed, point: &Point2<f32>) -> f32 {
-    return perlin4_best(seed, &[point[0] / 32.0, point[1] / 32.00, 0.0, 0.0]);
+    perlin4_best(seed, &[point[0] / 32.0, point[1] / 32.00, 0.0, 0.0])
 }

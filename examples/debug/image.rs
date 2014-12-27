@@ -37,5 +37,5 @@ pub fn render_to_png<T, F>(filename: &str, seed: &Seed, width: u32, height: u32,
 }
 
 fn c<T: NumCast, R: NumCast>(val: T) -> R {
-    return cast(val).unwrap();
+    cast(val).unwrap()
 }

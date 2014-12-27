@@ -94,7 +94,6 @@ impl RidgedMulti {
 }
 
 impl Source for RidgedMulti {
-
     fn get<F:Float>(&self, x: F, y: F, z: F) -> F {
         let mut value : F = Float::zero();
         let mut weight : F = Float::one();
@@ -131,6 +130,6 @@ impl Source for RidgedMulti {
 
         }
 
-        return value - offset;
+        value - offset
     }
 }

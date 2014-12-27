@@ -33,13 +33,13 @@ fn main() {
 }
 
 fn brownian2_for_image(seed: &Seed, point: &Point2<f32>) -> f32 {
-    return brownian2(seed, point, perlin2_best, 32.0, 4);
+    brownian2(seed, point, perlin2_best, 32.0, 4)
 }
 
 fn brownian3_for_image(seed: &Seed, point: &Point2<f32>) -> f32 {
-    return brownian3(seed, &[point[0], point[1], 0.0], perlin3_best, 32.0, 4);
+    brownian3(seed, &[point[0], point[1], 0.0], perlin3_best, 32.0, 4)
 }
 
 fn brownian4_for_image(seed: &Seed, point: &Point2<f32>) -> f32 {
-    return brownian4(seed, &[point[0], point[1], 0.0, 0.0], perlin4_best, 32.0, 4);
+    brownian4(seed, &[point[0], point[1], 0.0, 0.0], perlin4_best, 32.0, 4)
 }

@@ -29,7 +29,7 @@ pub fn brownian2<T, F>(seed: &Seed, point: &::Point2<T>, noise_func: F, waveleng
         amplitude *= 0.5;
         frequency *= 2.0;
     }
-    return result;
+    result
 }
 
 pub fn brownian3<T, F>(seed: &Seed, point: &::Point3<T>, noise_func: F, wavelength: f32, octaves: u32) -> f32
@@ -44,7 +44,7 @@ pub fn brownian3<T, F>(seed: &Seed, point: &::Point3<T>, noise_func: F, waveleng
         amplitude *= 0.5;
         frequency *= 2.0;
     }
-    return result;
+    result
 }
 
 pub fn brownian4<T, F>(seed: &Seed, point: &::Point4<T>, noise_func: F, wavelength: f32, octaves: u32) -> f32
@@ -59,5 +59,5 @@ pub fn brownian4<T, F>(seed: &Seed, point: &::Point4<T>, noise_func: F, waveleng
         amplitude *= 0.5;
         frequency *= 2.0;
     }
-    return result;
+    result
 }

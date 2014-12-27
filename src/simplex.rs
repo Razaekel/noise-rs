@@ -36,9 +36,10 @@ fn get_simplex2_gradient<T: Float>(seed: &Seed, xs_floor: T, ys_floor: T, dx: T,
         let index = seed.get2(xs_floor.to_int().unwrap(), ys_floor.to_int().unwrap()) % GRADIENT2.len();
         let vec = GRADIENT2[index];
         let attn2 = attn * attn;
-        return attn2 * attn2 * (dx * cast(vec[0]).unwrap() + dy * cast(vec[1]).unwrap());
+        attn2 * attn2 * (dx * cast(vec[0]).unwrap() + dy * cast(vec[1]).unwrap())
+    } else {
+        cast(0.0f32).unwrap()
     }
-    return cast(0.0f32).unwrap();
 }
 
 pub fn simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> f32 {
@@ -123,5 +124,5 @@ pub fn simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> f32 {
     //Extra Vertex
     value = value + get_simplex2_gradient(seed, xsv_ext, ysv_ext, dx_ext, dy_ext);
 
-    return value.to_f32().unwrap() / NORM_CONSTANT_2D;
+    value.to_f32().unwrap() / NORM_CONSTANT_2D
 }

@@ -21,17 +21,17 @@ use gradients::{GRADIENT2, GRADIENT3, GRADIENT4};
 
 fn get_perlin2_gradient(seed: &Seed, x_whole: int, y_whole: int, x_frac: f32, y_frac: f32) -> f32 {
     let vector = GRADIENT2[seed.get2(x_whole, y_whole) % GRADIENT2.len()];
-    return x_frac * vector[0] + y_frac * vector[1];
+    x_frac * vector[0] + y_frac * vector[1]
 }
 
 fn get_perlin3_gradient(seed: &Seed, x_whole: int, y_whole: int, z_whole: int, x_frac: f32, y_frac: f32, z_frac: f32) -> f32 {
     let vector = GRADIENT3[seed.get3(x_whole, y_whole, z_whole) % GRADIENT3.len()];
-    return x_frac * vector[0] + y_frac * vector[1] + z_frac * vector[2];
+    x_frac * vector[0] + y_frac * vector[1] + z_frac * vector[2]
 }
 
 fn get_perlin4_gradient(seed: &Seed, x_whole: int, y_whole: int, z_whole: int, w_whole: int, x_frac: f32, y_frac: f32, z_frac: f32, w_frac: f32) -> f32 {
     let vector = GRADIENT4[seed.get4(x_whole, y_whole, z_whole, w_whole) % GRADIENT4.len()];
-    return x_frac * vector[0] + y_frac * vector[1] + z_frac * vector[2] + w_frac * vector[3];
+    x_frac * vector[0] + y_frac * vector[1] + z_frac * vector[2] + w_frac * vector[3]
 }
 
 fn perlin2<T: Float>(seed: &Seed, point: &::Point2<T>, quality: ::Quality) -> f32 {
@@ -71,15 +71,15 @@ fn perlin2<T: Float>(seed: &Seed, point: &::Point2<T>, quality: ::Quality) -> f3
     let n1 = get_perlin2_gradient(seed, x1_whole, y1_whole, x1_frac, y1_frac);
     let interpolated_x1 = lerp(x_curve, n0, n1);
 
-    return lerp(y_curve, interpolated_x0, interpolated_x1);
+    lerp(y_curve, interpolated_x0, interpolated_x1)
 }
 
 pub fn perlin2_fast<T: Float>(seed: &Seed, point: &::Point2<T>) -> f32 {
-    return perlin2(seed, point, ::Quality::Fast);
+    perlin2(seed, point, ::Quality::Fast)
 }
 
 pub fn perlin2_best<T: Float>(seed: &Seed, point: &::Point2<T>) -> f32 {
-    return perlin2(seed, point, ::Quality::Best);
+    perlin2(seed, point, ::Quality::Best)
 }
 
 fn perlin3<T: Float>(seed: &Seed, point: &::Point3<T>, quality: ::Quality) -> f32 {
@@ -136,15 +136,15 @@ fn perlin3<T: Float>(seed: &Seed, point: &::Point3<T>, quality: ::Quality) -> f3
     let interpolated_x1 = lerp(x_curve, n0, n1);
     let interpolated_y1 = lerp(y_curve, interpolated_x0, interpolated_x1);
 
-    return lerp(z_curve, interpolated_y0, interpolated_y1);
+    lerp(z_curve, interpolated_y0, interpolated_y1)
 }
 
 pub fn perlin3_fast<T: Float>(seed: &Seed, point: &::Point3<T>) -> f32 {
-    return perlin3(seed, point, ::Quality::Fast);
+    perlin3(seed, point, ::Quality::Fast)
 }
 
 pub fn perlin3_best<T: Float>(seed: &Seed, point: &::Point3<T>) -> f32 {
-    return perlin3(seed, point, ::Quality::Best);
+    perlin3(seed, point, ::Quality::Best)
 }
 
 fn perlin4<T: Float>(seed: &Seed, point: &::Point4<T>, quality: ::Quality) -> f32 {
@@ -228,13 +228,13 @@ fn perlin4<T: Float>(seed: &Seed, point: &::Point4<T>, quality: ::Quality) -> f3
     let interpolated_y1 = lerp(y_curve, interpolated_x0, interpolated_x1);
     let interpolated_z1 = lerp(z_curve, interpolated_y0, interpolated_y1);
 
-    return lerp(w_curve, interpolated_z0, interpolated_z1);
+    lerp(w_curve, interpolated_z0, interpolated_z1)
 }
 
 pub fn perlin4_fast<T: Float>(seed: &Seed, point: &::Point4<T>) -> f32 {
-    return perlin4(seed, point, ::Quality::Fast);
+    perlin4(seed, point, ::Quality::Fast)
 }
 
 pub fn perlin4_best<T: Float>(seed: &Seed, point: &::Point4<T>) -> f32 {
-    return perlin4(seed, point, ::Quality::Best);
+    perlin4(seed, point, ::Quality::Best)
 }

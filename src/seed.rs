@@ -44,27 +44,27 @@ impl Seed {
         for i in range(0, TABLE_SIZE*2) {
             new_seed.values[i] = seq[i % TABLE_SIZE];
         }
-        return new_seed;
+        new_seed
     }
 
     pub fn new(seed: u32) -> Seed {
         let mut rng: rand::XorShiftRng = rand::SeedableRng::from_seed([1, seed, seed, seed]);
-        return Seed::from_rng(&mut rng);
+        Seed::from_rng(&mut rng)
     }
 
     pub fn get1(&self, x: int) -> uint {
-        return self.values[(signed_modulus(x, TABLE_SIZE as int))];
+        self.values[(signed_modulus(x, TABLE_SIZE as int))]
     }
 
     pub fn get2(&self, x: int, y: int) -> uint {
-        return self.values[(signed_modulus(y, TABLE_SIZE as int)) + self.get1(x)];
+        self.values[(signed_modulus(y, TABLE_SIZE as int)) + self.get1(x)]
     }
 
     pub fn get3(&self, x: int, y: int, z: int) -> uint {
-        return self.values[(signed_modulus(z, TABLE_SIZE as int)) + self.get2(x, y)];
+        self.values[(signed_modulus(z, TABLE_SIZE as int)) + self.get2(x, y)]
     }
 
     pub fn get4(&self, x: int, y: int, z: int, w: int) -> uint {
-        return self.values[(signed_modulus(w, TABLE_SIZE as int)) + self.get3(x, y, z)];
+        self.values[(signed_modulus(w, TABLE_SIZE as int)) + self.get3(x, y, z)]
     }
 }
