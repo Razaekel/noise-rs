@@ -29,19 +29,19 @@ const SQUISH_CONSTANT_2D: f64 = 0.366025403784439; //(sqrt(2+1)-1)/2;
 
 const NORM_CONSTANT_2D: f32 = 14.0;
 
-fn get_simplex2_gradient<T: Float>(seed: &Seed, xs_floor: T, ys_floor: T, dx: T, dy: T) -> T {
-    let attn = math::cast::<_, T>(2u) - dx * dx - dy * dy;
-    if attn > Float::zero() {
-        let index = seed.get2(xs_floor.to_int().unwrap(), ys_floor.to_int().unwrap()) % GRADIENT2.len();
-        let vec = GRADIENT2[index];
-        let attn2 = attn * attn;
-        attn2 * attn2 * (dx * math::cast(vec[0]) + dy * math::cast(vec[1]))
-    } else {
-        Float::zero()
-    }
-}
-
 pub fn simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
+    fn gradient<T: Float>(seed: &Seed, xs_floor: T, ys_floor: T, dx: T, dy: T) -> T {
+        let attn = math::cast::<_, T>(2u) - dx * dx - dy * dy;
+        if attn > Float::zero() {
+            let index = seed.get2(xs_floor.to_int().unwrap(), ys_floor.to_int().unwrap()) % GRADIENT2.len();
+            let vec = GRADIENT2[index];
+            let attn2 = attn * attn;
+            attn2 * attn2 * (dx * math::cast(vec[0]) + dy * math::cast(vec[1]))
+        } else {
+            Float::zero()
+        }
+    }
+
     let zero: T = math::cast(0u);
     let one: T = math::cast(1u);
     let two: T = math::cast(2u);
@@ -77,12 +77,12 @@ pub fn simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
     //Contribution (1,0)
     let dx1 = dx0 - one - squish_constant;
     let dy1 = dy0 - zero - squish_constant;
-    value = value + get_simplex2_gradient(seed, xs_floor + one, ys_floor + zero, dx1, dy1);
+    value = value + gradient(seed, xs_floor + one, ys_floor + zero, dx1, dy1);
 
     //Contribution (0,1)
     let dx2 = dx0 - zero - squish_constant;
     let dy2 = dy0 - one - squish_constant;
-    value = value + get_simplex2_gradient(seed, xs_floor + zero, ys_floor + one, dx2, dy2);
+    value = value + gradient(seed, xs_floor + zero, ys_floor + one, dx2, dy2);
 
     let (dx_ext, dy_ext, xsv_ext, ysv_ext) = if frac_sum <= one {
         //We're inside the triangle (2-Simplex) at (0,0)
@@ -118,10 +118,10 @@ pub fn simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
     }
 
     //Contribution (0,0) or (1,1)
-    value = value + get_simplex2_gradient(seed, xs_floor, ys_floor, dx0, dy0);
+    value = value + gradient(seed, xs_floor, ys_floor, dx0, dy0);
 
     //Extra Vertex
-    value = value + get_simplex2_gradient(seed, xsv_ext, ysv_ext, dx_ext, dy_ext);
+    value = value + gradient(seed, xsv_ext, ysv_ext, dx_ext, dy_ext);
 
     value / math::cast(NORM_CONSTANT_2D)
 }
