@@ -15,7 +15,7 @@
 
 use std::rand::{Rand, Rng, SeedableRng, XorShiftRng};
 
-use util::signed_modulus;
+use math;
 
 const TABLE_SIZE: uint = 256;
 
@@ -55,19 +55,19 @@ impl Seed {
     }
 
     pub fn get1(&self, x: int) -> uint {
-        self.values[(signed_modulus(x, TABLE_SIZE as int))]
+        self.values[(math::signed_modulus(x, TABLE_SIZE as int))]
     }
 
     pub fn get2(&self, x: int, y: int) -> uint {
-        self.values[(signed_modulus(y, TABLE_SIZE as int)) + self.get1(x)]
+        self.values[(math::signed_modulus(y, TABLE_SIZE as int)) + self.get1(x)]
     }
 
     pub fn get3(&self, x: int, y: int, z: int) -> uint {
-        self.values[(signed_modulus(z, TABLE_SIZE as int)) + self.get2(x, y)]
+        self.values[(math::signed_modulus(z, TABLE_SIZE as int)) + self.get2(x, y)]
     }
 
     pub fn get4(&self, x: int, y: int, z: int, w: int) -> uint {
-        self.values[(signed_modulus(w, TABLE_SIZE as int)) + self.get3(x, y, z)]
+        self.values[(math::signed_modulus(w, TABLE_SIZE as int)) + self.get3(x, y, z)]
     }
 }
 

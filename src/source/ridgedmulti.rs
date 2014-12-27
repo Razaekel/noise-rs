@@ -17,9 +17,8 @@ use std;
 use std::num::{cast, Float};
 use std::rand::Rng;
 
-use util::clamp;
+use {math, Quality};
 use super::Source;
-use Quality;
 
 static DEFAULT_SEED : int = 0;
 static DEFAULT_OCTAVE_COUNT : uint = 6;
@@ -120,7 +119,7 @@ impl Source for RidgedMulti {
             let signal = signal * signal;
             let signal = signal * weight;
 
-            weight = clamp(signal * gain, Float::zero(), Float::one());
+            weight = math::clamp(signal * gain, Float::zero(), Float::one());
 
             value = value + (signal * cast(self.spectral_weights[i]).unwrap());
 
