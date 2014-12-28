@@ -18,7 +18,10 @@ extern crate noise;
 use std::num::Float;
 
 use noise::source::Source;
-use noise::util::clamp;
+
+#[allow(dead_code)]
+#[path = "../../src/math.rs"]
+mod math;
 
 const GRADIENT: [&'static str, ..6] = [" ", "░", "▒", "▓", "█", "█"];
 
@@ -26,7 +29,7 @@ pub fn render<S: Source>(width: uint, height: uint, source: &S) {
     for y in range(0, height / 2) {
         for x in range(0, width) {
             let val = source.get(x as f32, y as f32 * 2.0, Float::zero());
-            let val = clamp(val, -1.0, 1.0) * 0.5 + 0.5;
+            let val = math::clamp(val, -1.0, 1.0) * 0.5 + 0.5;
             print!("{}", GRADIENT[(val / 0.2) as uint]);
         }
         println!("");

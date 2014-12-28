@@ -31,5 +31,5 @@ fn main() {
 }
 
 fn scaled_simplex2(seed: &Seed, point: &Point2<f32>) -> f32 {
-    return simplex2(seed, &[point[0] / 32.0, point[1] / 32.00]);
+    simplex2(seed, &[point[0] / 32.0, point[1] / 32.00])
 }

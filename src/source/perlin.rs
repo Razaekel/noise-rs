@@ -125,6 +125,6 @@ impl Source for Perlin {
 
         }
 
-        return value;
+        value
     }
 }

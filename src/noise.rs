@@ -24,8 +24,7 @@ pub use brownian::{brownian2, brownian3, brownian4};
 mod gen;
 mod gradients;
 
-#[macro_escape]
-pub mod util;
+mod math;
 pub mod source;
 
 pub mod seed;

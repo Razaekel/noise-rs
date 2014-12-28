@@ -13,51 +13,57 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num::{cast, Float};
+use std::num::Float;
 
-use seed::Seed;
+use {math, Seed};
 
-pub fn brownian2<T, F>(seed: &Seed, point: &::Point2<T>, noise_func: F, wavelength: f32, octaves: u32) -> f32
-    where T: Float, F: Fn(&Seed, &::Point2<T>) -> f32
+pub fn brownian2<T, F>(seed: &Seed, point: &::Point2<T>, noise_func: F, wavelength: T, octaves: u32) -> T
+    where T: Float, F: Fn(&Seed, &::Point2<T>) -> T
 {
-    let mut frequency = 1.0 / wavelength;
-    let mut amplitude = 1.0;
-    let mut result = 0.0;
+    let mut frequency: T = wavelength.recip();
+    let mut amplitude: T = Float::one();
+    let mut result: T = Float::zero();
     for _ in range(0, octaves) {
-        let scaled_point = [point[0] * cast(frequency).unwrap(), point[1] * cast(frequency).unwrap()];
-        result += noise_func(seed, &scaled_point) * amplitude;
-        amplitude *= 0.5;
-        frequency *= 2.0;
+        let scaled_point = [point[0] * frequency,
+                            point[1] * frequency];
+        result = result + (noise_func(seed, &scaled_point) * amplitude);
+        amplitude = amplitude * math::cast(0.5f32);
+        frequency = frequency * math::cast(2.0f32);
     }
-    return result;
+    result
 }
 
-pub fn brownian3<T, F>(seed: &Seed, point: &::Point3<T>, noise_func: F, wavelength: f32, octaves: u32) -> f32
-    where T: Float, F: Fn(&Seed, &::Point3<T>) -> f32
+pub fn brownian3<T, F>(seed: &Seed, point: &::Point3<T>, noise_func: F, wavelength: T, octaves: u32) -> T
+    where T: Float, F: Fn(&Seed, &::Point3<T>) -> T
 {
-    let mut frequency = 1.0 / wavelength;
-    let mut amplitude = 1.0;
-    let mut result = 0.0;
+    let mut frequency: T = wavelength.recip();
+    let mut amplitude: T = Float::one();
+    let mut result: T = Float::zero();
     for _ in range(0, octaves) {
-        let scaled_point = [point[0] * cast(frequency).unwrap(), point[1] * cast(frequency).unwrap(), point[2] * cast(frequency).unwrap()];
-        result += noise_func(seed, &scaled_point) * amplitude;
-        amplitude *= 0.5;
-        frequency *= 2.0;
+        let scaled_point = [point[0] * frequency,
+                            point[1] * frequency,
+                            point[2] * frequency];
+        result = result + (noise_func(seed, &scaled_point) * amplitude);
+        amplitude = amplitude * math::cast(0.5f32);
+        frequency = frequency * math::cast(2.0f32);
     }
-    return result;
+    result
 }
 
-pub fn brownian4<T, F>(seed: &Seed, point: &::Point4<T>, noise_func: F, wavelength: f32, octaves: u32) -> f32
-    where T: Float, F: Fn(&Seed, &::Point4<T>) -> f32
+pub fn brownian4<T, F>(seed: &Seed, point: &::Point4<T>, noise_func: F, wavelength: T, octaves: u32) -> T
+    where T: Float, F: Fn(&Seed, &::Point4<T>) -> T
 {
-    let mut frequency = 1.0 / wavelength;
-    let mut amplitude = 1.0;
-    let mut result = 0.0;
+    let mut frequency: T = wavelength.recip();
+    let mut amplitude: T = Float::one();
+    let mut result: T = Float::zero();
     for _ in range(0, octaves) {
-        let scaled_point = [point[0] * cast(frequency).unwrap(), point[1] * cast(frequency).unwrap(), point[2] * cast(frequency).unwrap(), point[3] * cast(frequency).unwrap()];
-        result += noise_func(seed, &scaled_point) * amplitude;
-        amplitude *= 0.5;
-        frequency *= 2.0;
+        let scaled_point = [point[0] * frequency,
+                            point[1] * frequency,
+                            point[2] * frequency,
+                            point[3] * frequency];
+        result = result + (noise_func(seed, &scaled_point) * amplitude);
+        amplitude = amplitude * math::cast(0.5f32);
+        frequency = frequency * math::cast(2.0f32);
     }
-    return result;
+    result
 }

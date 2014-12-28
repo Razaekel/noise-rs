@@ -15,7 +15,7 @@
 
 use std::num::{cast, Float};
 
-use util::{lerp,scurve3,scurve5};
+use math;
 
 // Values for random number generation
 static X_NOISE_GEN : int = 1619;
@@ -40,36 +40,36 @@ pub fn gradient_coherent_noise_3d<F: Float>(x: F, y: F, z: F, seed: int, quality
 
     let (xs, ys, zs) = match quality {
         Fast => (
-            scurve3(x - cast(x0).unwrap()),
-            scurve3(y - cast(y0).unwrap()),
-            scurve3(z - cast(z0).unwrap())
+            math::scurve3(x - cast(x0).unwrap()),
+            math::scurve3(y - cast(y0).unwrap()),
+            math::scurve3(z - cast(z0).unwrap())
         ),
         Best => (
-            scurve5(x - cast(x0).unwrap()),
-            scurve5(y - cast(y0).unwrap()),
-            scurve5(z - cast(z0).unwrap())
+            math::scurve5(x - cast(x0).unwrap()),
+            math::scurve5(y - cast(y0).unwrap()),
+            math::scurve5(z - cast(z0).unwrap())
         )
     };
 
     let n0 = gradient_noise_3d(x.clone(), y.clone(), z.clone(), x0, y0, z0, seed);
     let n1 = gradient_noise_3d(x.clone(), y.clone(), z.clone(), x1, y0, z0, seed);
-    let ix0 = lerp(xs.clone(), n0, n1);
+    let ix0 = math::lerp(xs.clone(), n0, n1);
 
     let n0 = gradient_noise_3d(x.clone(), y.clone(), z.clone(), x0, y1, z0, seed);
     let n1 = gradient_noise_3d(x.clone(), y.clone(), z.clone(), x1, y1, z0, seed);
-    let ix1 = lerp(xs.clone(), n0, n1);
-    let iy0 = lerp(ys.clone(), ix0, ix1);
+    let ix1 = math::lerp(xs.clone(), n0, n1);
+    let iy0 = math::lerp(ys.clone(), ix0, ix1);
 
     let n0 = gradient_noise_3d(x.clone(), y.clone(), z.clone(), x0, y0, z1, seed);
     let n1 = gradient_noise_3d(x.clone(), y.clone(), z.clone(), x1, y0, z1, seed);
-    let ix0 = lerp(xs.clone(), n0, n1);
+    let ix0 = math::lerp(xs.clone(), n0, n1);
 
     let n0 = gradient_noise_3d(x.clone(), y.clone(), z.clone(), x0, y1, z1, seed);
     let n1 = gradient_noise_3d(x.clone(), y.clone(), z.clone(), x1, y1, z1, seed);
-    let ix1 = lerp(xs, n0, n1);
-    let iy1 = lerp(ys, ix0, ix1);
+    let ix1 = math::lerp(xs, n0, n1);
+    let iy1 = math::lerp(ys, ix0, ix1);
 
-    let v = lerp(zs, iy0, iy1);
+    let v = math::lerp(zs, iy0, iy1);
 
     v
 }

@@ -13,45 +13,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num::{cast, Float, SignedInt};
+use std::num::{mod, Float, NumCast, SignedInt};
 
-#[inline]
+pub fn cast<T: NumCast, U: NumCast>(x: T) -> U {
+    num::cast(x).unwrap()
+}
+
 pub fn lerp<T: Float>(t: T, a: T, b: T) -> T {
     t * (b - a) + a
 }
 
-#[inline]
 pub fn scurve3<F: Float>(t: F) -> F {
-    let three : F = cast(3i).unwrap();
-    let two : F = cast(2i).unwrap();
-    t * t * (three - (t * two))
+    t * t * (cast::<_, F>(3u) - (t * cast(2u)))
 }
 
-#[inline]
 pub fn scurve5<T: Float>(t: T) -> T {
-    t * t * t * (t * (t * cast(6i).unwrap() - cast(15i).unwrap()) + cast(10i).unwrap())
+    t * t * t * (t * (t * cast(6u) - cast(15u)) + cast(10u))
 }
 
 pub fn clamp<F: Float>(val: F, min: F, max: F) -> F {
-    if val < min {
-        min
-    } else if val > max {
-        max
-    } else {
-        val
+    match () {
+        _ if val < min => min,
+        _ if val > max => max,
+        _              => val,
     }
 }
 
 pub fn signed_modulus(a: int, b: int) -> uint {
     (if a < 0 { b - (a.abs() % b) } else { a % b }) as uint
 }
-
-macro_rules! assert_approx_eq(
-    ($a:expr, $b:expr, $eps:expr) => ({
-        use std::num::Float;
-        let (a, b, eps) = ($a, $b, $eps);
-        if (a - b).abs() > eps {
-            panic!("assertion failed: `left ≈ right` (left: {}, right: {}, tolerance: {})", a, b, eps);
-        }
-    })
-);
