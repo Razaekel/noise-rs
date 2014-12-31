@@ -26,9 +26,9 @@ mod debug {
 }
 
 fn main() {
-    debug::image::render_to_png("simplectic2.png", &Seed::new(0), 1024, 1024, scaled_simplectic2);
-    debug::image::render_to_png("simplectic3.png", &Seed::new(0), 1024, 1024, scaled_simplectic3);
-    debug::image::render_to_png("simplectic4.png", &Seed::new(0), 1024, 1024, scaled_simplectic4);
+    debug::image::render_to_png("simplectic2.png", &Seed::new(0), 256, 256, scaled_simplectic2);
+    debug::image::render_to_png("simplectic3.png", &Seed::new(0), 256, 256, scaled_simplectic3);
+    debug::image::render_to_png("simplectic4.png", &Seed::new(0), 256, 256, scaled_simplectic4);
     println!("\nGenerated simplectic2.png, simplectic3.png and simplectic4.png");
 }
 
