@@ -20,25 +20,43 @@
 extern crate noise;
 extern crate test;
 
-use noise::{perlin2_best, perlin3_best, perlin4_best, simplex2, simplex3, simplectic2, simplectic3, simplectic4, Seed};
+use noise::{perlin2_best, perlin3_best, perlin4_best, perlin2_fast, perlin3_fast, perlin4_fast, simplex2, simplex3, simplectic2, simplectic3, simplectic4, Seed};
 use test::Bencher;
 
 #[bench]
-fn bench_perlin2(bencher: &mut Bencher) {
+fn bench_perlin2_best(bencher: &mut Bencher) {
     let seed = Seed::new(0);
     bencher.iter(|| perlin2_best(&seed, &[42.0f32, 37.0]));
 }
 
 #[bench]
-fn bench_perlin3(bencher: &mut Bencher) {
+fn bench_perlin3_best(bencher: &mut Bencher) {
     let seed = Seed::new(0);
     bencher.iter(|| perlin3_best(&seed, &[42.0f32, 37.0, 26.0]));
 }
 
 #[bench]
-fn bench_perlin4(bencher: &mut Bencher) {
+fn bench_perlin4_best(bencher: &mut Bencher) {
     let seed = Seed::new(0);
     bencher.iter(|| perlin4_best(&seed, &[42.0f32, 37.0, 26.0, 128.0]));
+}
+
+#[bench]
+fn bench_perlin2_fast(bencher: &mut Bencher) {
+    let seed = Seed::new(0);
+    bencher.iter(|| perlin2_fast(&seed, &[42.0f32, 37.0]));
+}
+
+#[bench]
+fn bench_perlin3_fast(bencher: &mut Bencher) {
+    let seed = Seed::new(0);
+    bencher.iter(|| perlin3_fast(&seed, &[42.0f32, 37.0, 26.0]));
+}
+
+#[bench]
+fn bench_perlin4_fast(bencher: &mut Bencher) {
+    let seed = Seed::new(0);
+    bencher.iter(|| perlin4_fast(&seed, &[42.0f32, 37.0, 26.0, 128.0]));
 }
 
 #[bench]
