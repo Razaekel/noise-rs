@@ -39,6 +39,6 @@ pub fn clamp<F: Float>(val: F, min: F, max: F) -> F {
     }
 }
 
-pub fn signed_modulus(a: int, b: int) -> uint {
-    (if a < 0 { b - (a.abs() % b) } else { a % b }) as uint
+pub fn signed_modulus<T: SignedInt>(a: T, b: T) -> T {
+    if a.is_negative() { b - (a.abs() % b) } else { a % b }
 }

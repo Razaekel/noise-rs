@@ -14,6 +14,7 @@
 // limitations under the License.
 
 use std::rand::{Rand, Rng, SeedableRng, XorShiftRng};
+use std::num::SignedInt;
 
 use math;
 
@@ -54,20 +55,20 @@ impl Seed {
         Rand::rand(&mut rng)
     }
 
-    pub fn get1(&self, x: int) -> uint {
-        self.values[(math::signed_modulus(x, TABLE_SIZE as int))]
+    pub fn get1<T: SignedInt>(&self, x: T) -> uint {
+        self.values[math::cast::<T, uint>(math::signed_modulus(x, math::cast(TABLE_SIZE)))]
     }
 
-    pub fn get2(&self, x: int, y: int) -> uint {
-        self.values[(math::signed_modulus(y, TABLE_SIZE as int)) + self.get1(x)]
+    pub fn get2<T: SignedInt>(&self, x: T, y: T) -> uint {
+        self.values[math::cast::<T, uint>(math::signed_modulus(y, math::cast(TABLE_SIZE))) + self.get1(x)]
     }
 
-    pub fn get3(&self, x: int, y: int, z: int) -> uint {
-        self.values[(math::signed_modulus(z, TABLE_SIZE as int)) + self.get2(x, y)]
+    pub fn get3<T: SignedInt>(&self, x: T, y: T, z: T) -> uint {
+        self.values[math::cast::<T, uint>(math::signed_modulus(z, math::cast(TABLE_SIZE))) + self.get2(x, y)]
     }
 
-    pub fn get4(&self, x: int, y: int, z: int, w: int) -> uint {
-        self.values[(math::signed_modulus(w, TABLE_SIZE as int)) + self.get3(x, y, z)]
+    pub fn get4<T: SignedInt>(&self, x: T, y: T, z: T, w: T) -> uint {
+        self.values[math::cast::<T, uint>(math::signed_modulus(w, math::cast(TABLE_SIZE))) + self.get3(x, y, z)]
     }
 }
 

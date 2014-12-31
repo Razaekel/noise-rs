@@ -29,11 +29,19 @@ name = "simplex"
 
 [[example]]
 
+name = "simplectic"
+
+[[example]]
+
 name = "brownian"
 
 [[example]]
 
 name = "ridgedmulti"
+
+[[bench]]
+
+name = "benches"
 
 [dev-dependencies.image]
 git = "https://github.com/PistonDevelopers/image.git"
