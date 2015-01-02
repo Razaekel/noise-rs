@@ -75,10 +75,10 @@ impl Seed {
 #[cfg(test)]
 mod tests {
     use std::rand::random;
-    use perlin::perlin3_best;
+    use perlin::perlin3;
 
     #[test]
     fn test_random_seed() {
-        let _ = perlin3_best::<f32>(&random(), &[1.0, 2.0, 3.0]);
+        let _ = perlin3::<f32>(&random(), &[1.0, 2.0, 3.0]);
     }
 }

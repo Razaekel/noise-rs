@@ -17,7 +17,7 @@
 #![deny(missing_copy_implementations)]
 
 pub use seed::Seed;
-pub use perlin::{perlin2_fast, perlin2_best, perlin3_fast, perlin3_best, perlin4_fast, perlin4_best};
+pub use perlin::{perlin2, perlin3, perlin4};
 pub use simplex::{simplex2, simplex3};
 pub use simplectic::{simplectic2, simplectic3, simplectic4};
 pub use brownian::{brownian2, brownian3, brownian4};
