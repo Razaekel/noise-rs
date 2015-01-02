@@ -22,7 +22,7 @@
 use std::num::{cast, Float};
 
 use {math, Seed};
-use gradients::{GRADIENT2, GRADIENT3};
+use gradients::{gradient2, gradient3};
 
 const STRETCH_CONSTANT_2D: f64 = -0.211324865405187; //(1/sqrt(2+1)-1)/2;
 const SQUISH_CONSTANT_2D: f64 = 0.366025403784439; //(sqrt(2+1)-1)/2;
@@ -36,10 +36,10 @@ pub fn simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
     fn gradient<T: Float>(seed: &Seed, xs_floor: T, ys_floor: T, dx: T, dy: T) -> T {
         let attn = math::cast::<_, T>(2u) - dx * dx - dy * dy;
         if attn > Float::zero() {
-            let index = seed.get2(xs_floor.to_int().unwrap(), ys_floor.to_int().unwrap()) % GRADIENT2.len();
-            let vec = GRADIENT2[index];
+            let index = seed.get2(xs_floor.to_int().unwrap(), ys_floor.to_int().unwrap());
+            let vec = gradient2::<T>(index);
             let attn2 = attn * attn;
-            attn2 * attn2 * (dx * math::cast(vec[0]) + dy * math::cast(vec[1]))
+            attn2 * attn2 * (dx * vec[0] + dy * vec[1])
         } else {
             Float::zero()
         }
@@ -133,10 +133,10 @@ pub fn simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
     fn gradient<T: Float>(seed: &Seed, xs_floor: T, ys_floor: T, zs_floor: T, dx: T, dy: T, dz: T) -> T {
         let attn = math::cast::<_, T>(2u) - dx * dx - dy * dy - dz * dz;
         if attn > Float::zero() {
-            let index = seed.get3(xs_floor.to_int().unwrap(), ys_floor.to_int().unwrap(), zs_floor.to_int().unwrap()) % GRADIENT3.len();
-            let vec = GRADIENT3[index];
+            let index = seed.get3(xs_floor.to_int().unwrap(), ys_floor.to_int().unwrap(), zs_floor.to_int().unwrap());
+            let vec = gradient3::<T>(index);
             let attn2 = attn * attn;
-            attn2 * attn2 * (dx * math::cast(vec[0]) + dy * math::cast(vec[1]) + dz * math::cast(vec[2]))
+            attn2 * attn2 * (dx * vec[0] + dy * vec[1] + dz * vec[2])
         } else {
             Float::zero()
         }
