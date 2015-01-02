@@ -83,11 +83,11 @@ impl RidgedMulti {
 
     fn calc_spectral_weights(self) -> RidgedMulti {
         let mut freq = 1.0f64;
-        let spectral_weights = Vec::from_fn(self.octaves, |_| {
+        let spectral_weights = range(0, self.octaves).map(|_| {
             let w = freq.powf(-self.exponent);
             freq *= self.lacunarity;
             w
-        });
+        }).collect();
         RidgedMulti { spectral_weights: spectral_weights, ..self }
     }
 }

@@ -16,15 +16,15 @@
 use std::num::Float;
 
 use {math, Seed};
-use gradients::{GRADIENT2, GRADIENT3, GRADIENT4};
+use gradients::{gradient2, gradient3, gradient4};
 
 fn perlin2<T, F>(seed: &Seed, point: &::Point2<T>, scurve: F) -> T where
     T: Float,
     F: Fn(T) -> T,
 {
     fn gradient<T: Float>(seed: &Seed, x_whole: int, y_whole: int, x_frac: T, y_frac: T) -> T {
-        let [x, y] = GRADIENT2[seed.get2(x_whole, y_whole) % GRADIENT2.len()];
-        x_frac * math::cast(x) + y_frac * math::cast(y)
+        let [x, y] = gradient2::<T>(seed.get2(x_whole, y_whole));
+        x_frac * x + y_frac * y
     }
 
     let xfloor = point[0].floor();
@@ -69,8 +69,8 @@ fn perlin3<T, F>(seed: &Seed, point: &::Point3<T>, scurve: F) -> T where
     F: Fn(T) -> T,
 {
     fn gradient<T: Float>(seed: &Seed, x_whole: int, y_whole: int, z_whole: int, x_frac: T, y_frac: T, z_frac: T) -> T {
-        let [x, y, z] = GRADIENT3[seed.get3(x_whole, y_whole, z_whole) % GRADIENT3.len()];
-        x_frac * math::cast(x) + y_frac * math::cast(y) + z_frac * math::cast(z)
+        let [x, y, z] = gradient3::<T>(seed.get3(x_whole, y_whole, z_whole));
+        x_frac * x + y_frac * y + z_frac * z
     }
 
     let xfloor = point[0].floor();
@@ -131,8 +131,8 @@ fn perlin4<T, F>(seed: &Seed, point: &::Point4<T>, scurve: F) -> T where
     F: Fn(T) -> T,
 {
     fn gradient<T: Float>(seed: &Seed, x_whole: int, y_whole: int, z_whole: int, w_whole: int, x_frac: T, y_frac: T, z_frac: T, w_frac: T) -> T {
-        let [x, y, z, w] = GRADIENT4[seed.get4(x_whole, y_whole, z_whole, w_whole) % GRADIENT4.len()];
-        x_frac * math::cast(x) + y_frac * math::cast(y) + z_frac * math::cast(z) + w_frac * math::cast(w)
+        let [x, y, z, w] = gradient4::<T>(seed.get4(x_whole, y_whole, z_whole, w_whole));
+        x_frac * x + y_frac * y + z_frac * z + w_frac * w
     }
 
     let xfloor = point[0].floor();
