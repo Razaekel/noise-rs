@@ -19,7 +19,7 @@
 
 extern crate noise;
 
-use noise::{brownian2, brownian3, brownian4, perlin2_best, perlin3_best, perlin4_best, Seed, Point2};
+use noise::{brownian2, brownian3, brownian4, perlin2, perlin3, perlin4, Seed, Point2};
 
 mod debug {
     pub mod image;
@@ -33,13 +33,13 @@ fn main() {
 }
 
 fn brownian2_for_image(seed: &Seed, point: &Point2<f32>) -> f32 {
-    brownian2(seed, point, perlin2_best, 32.0, 4)
+    brownian2(seed, point, perlin2, 32.0, 4)
 }
 
 fn brownian3_for_image(seed: &Seed, point: &Point2<f32>) -> f32 {
-    brownian3(seed, &[point[0], point[1], 0.0], perlin3_best, 32.0, 4)
+    brownian3(seed, &[point[0], point[1], 0.0], perlin3, 32.0, 4)
 }
 
 fn brownian4_for_image(seed: &Seed, point: &Point2<f32>) -> f32 {
-    brownian4(seed, &[point[0], point[1], 0.0, 0.0], perlin4_best, 32.0, 4)
+    brownian4(seed, &[point[0], point[1], 0.0, 0.0], perlin4, 32.0, 4)
 }

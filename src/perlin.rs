@@ -18,10 +18,7 @@ use std::num::Float;
 use {math, Seed};
 use gradients::{gradient2, gradient3, gradient4};
 
-fn perlin2<T, F>(seed: &Seed, point: &::Point2<T>, scurve: F) -> T where
-    T: Float,
-    F: Fn(T) -> T,
-{
+pub fn perlin2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
     fn gradient<T: Float>(seed: &Seed, x_whole: int, y_whole: int, x_frac: T, y_frac: T) -> T {
         let [x, y] = gradient2::<T>(seed.get2(x_whole, y_whole));
         x_frac * x + y_frac * y
@@ -42,8 +39,8 @@ fn perlin2<T, F>(seed: &Seed, point: &::Point2<T>, scurve: F) -> T where
     let x1_frac = x0_frac - Float::one();
     let y1_frac = y0_frac - Float::one();
 
-    let x_curve = scurve(x0_frac);
-    let y_curve = scurve(y0_frac);
+    let x_curve = math::scurve5(x0_frac);
+    let y_curve = math::scurve5(y0_frac);
 
     let n0 = gradient(seed, x0_whole, y0_whole, x0_frac, y0_frac);
     let n1 = gradient(seed, x1_whole, y0_whole, x1_frac, y0_frac);
@@ -56,18 +53,7 @@ fn perlin2<T, F>(seed: &Seed, point: &::Point2<T>, scurve: F) -> T where
     math::lerp(y_curve, interpolated_x0, interpolated_x1)
 }
 
-pub fn perlin2_fast<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
-    perlin2(seed, point, math::scurve3)
-}
-
-pub fn perlin2_best<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
-    perlin2(seed, point, math::scurve5)
-}
-
-fn perlin3<T, F>(seed: &Seed, point: &::Point3<T>, scurve: F) -> T where
-    T: Float,
-    F: Fn(T) -> T,
-{
+pub fn perlin3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
     fn gradient<T: Float>(seed: &Seed, x_whole: int, y_whole: int, z_whole: int, x_frac: T, y_frac: T, z_frac: T) -> T {
         let [x, y, z] = gradient3::<T>(seed.get3(x_whole, y_whole, z_whole));
         x_frac * x + y_frac * y + z_frac * z
@@ -93,9 +79,9 @@ fn perlin3<T, F>(seed: &Seed, point: &::Point3<T>, scurve: F) -> T where
     let y1_frac = y0_frac - Float::one();
     let z1_frac = z0_frac - Float::one();
 
-    let x_curve = scurve(x0_frac);
-    let y_curve = scurve(y0_frac);
-    let z_curve = scurve(z0_frac);
+    let x_curve = math::scurve5(x0_frac);
+    let y_curve = math::scurve5(y0_frac);
+    let z_curve = math::scurve5(z0_frac);
 
     let n0 = gradient(seed, x0_whole, y0_whole, z0_whole, x0_frac, y0_frac, z0_frac);
     let n1 = gradient(seed, x1_whole, y0_whole, z0_whole, x1_frac, y0_frac, z0_frac);
@@ -118,18 +104,7 @@ fn perlin3<T, F>(seed: &Seed, point: &::Point3<T>, scurve: F) -> T where
     math::lerp(z_curve, interpolated_y0, interpolated_y1)
 }
 
-pub fn perlin3_fast<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
-    perlin3(seed, point, math::scurve3)
-}
-
-pub fn perlin3_best<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
-    perlin3(seed, point, math::scurve5)
-}
-
-fn perlin4<T, F>(seed: &Seed, point: &::Point4<T>, scurve: F) -> T where
-    T: Float,
-    F: Fn(T) -> T,
-{
+pub fn perlin4<T: Float>(seed: &Seed, point: &::Point4<T>) -> T {
     fn gradient<T: Float>(seed: &Seed, x_whole: int, y_whole: int, z_whole: int, w_whole: int, x_frac: T, y_frac: T, z_frac: T, w_frac: T) -> T {
         let [x, y, z, w] = gradient4::<T>(seed.get4(x_whole, y_whole, z_whole, w_whole));
         x_frac * x + y_frac * y + z_frac * z + w_frac * w
@@ -160,10 +135,10 @@ fn perlin4<T, F>(seed: &Seed, point: &::Point4<T>, scurve: F) -> T where
     let z1_frac = z0_frac - Float::one();
     let w1_frac = w0_frac - Float::one();
 
-    let x_curve = scurve(x0_frac);
-    let y_curve = scurve(y0_frac);
-    let z_curve = scurve(z0_frac);
-    let w_curve = scurve(w0_frac);
+    let x_curve = math::scurve5(x0_frac);
+    let y_curve = math::scurve5(y0_frac);
+    let z_curve = math::scurve5(z0_frac);
+    let w_curve = math::scurve5(w0_frac);
 
     let n0 = gradient(seed, x0_whole, y0_whole, z0_whole, w0_whole, x0_frac, y0_frac, z0_frac, w0_frac);
     let n1 = gradient(seed, x1_whole, y0_whole, z0_whole, w0_whole, x1_frac, y0_frac, z0_frac, w0_frac);
@@ -204,12 +179,4 @@ fn perlin4<T, F>(seed: &Seed, point: &::Point4<T>, scurve: F) -> T where
     let interpolated_z1 = math::lerp(z_curve, interpolated_y0, interpolated_y1);
 
     math::lerp(w_curve, interpolated_z0, interpolated_z1)
-}
-
-pub fn perlin4_fast<T: Float>(seed: &Seed, point: &::Point4<T>) -> T {
-    perlin4(seed, point, math::scurve3)
-}
-
-pub fn perlin4_best<T: Float>(seed: &Seed, point: &::Point4<T>) -> T {
-    perlin4(seed, point, math::scurve5)
 }

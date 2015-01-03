@@ -24,12 +24,9 @@ pub type Point2<T> = [T, ..2];
 pub type Point3<T> = [T, ..3];
 pub type Point4<T> = [T, ..4];
 
-fn perlin2_fast<T: Float>(seed: &Seed, point: &Point2<T>) -> T;
-fn perlin2_best<T: Float>(seed: &Seed, point: &Point2<T>) -> T;
-fn perlin3_fast<T: Float>(seed: &Seed, point: &Point3<T>) -> T;
-fn perlin3_best<T: Float>(seed: &Seed, point: &Point3<T>) -> T;
-fn perlin4_fast<T: Float>(seed: &Seed, point: &Point4<T>) -> T;
-fn perlin4_best<T: Float>(seed: &Seed, point: &Point4<T>) -> T;
+fn perlin2<T: Float>(seed: &Seed, point: &Point2<T>) -> T;
+fn perlin3<T: Float>(seed: &Seed, point: &Point3<T>) -> T;
+fn perlin4<T: Float>(seed: &Seed, point: &Point4<T>) -> T;
 
 fn simplex2<T: Float>(seed: &Seed, point: &Point2<T>) -> T;
 fn simplex3<T: Float>(seed: &Seed, point: &Point3<T>) -> T;
