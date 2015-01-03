@@ -16,10 +16,11 @@
 //! An example of using fractal brownian motion on perlin noise
 
 #![feature(macro_rules)]
+#![feature(unboxed_closures)]
 
 extern crate noise;
 
-use noise::{brownian2, brownian3, brownian4, perlin2, perlin3, perlin4, Seed, Point2};
+use noise::{Brownian2, Brownian3, Brownian4, perlin2, perlin3, perlin4, Seed, Point2};
 
 mod debug {
     pub mod image;
@@ -33,13 +34,13 @@ fn main() {
 }
 
 fn brownian2_for_image(seed: &Seed, point: &Point2<f32>) -> f32 {
-    brownian2(seed, point, perlin2, 32.0, 4)
+    Brownian2::new(perlin2, 4).wavelength(32.0)(seed, point)
 }
 
 fn brownian3_for_image(seed: &Seed, point: &Point2<f32>) -> f32 {
-    brownian3(seed, &[point[0], point[1], 0.0], perlin3, 32.0, 4)
+    Brownian3::new(perlin3, 4).wavelength(32.0)(seed, &[point[0], point[1], 0.0])
 }
 
 fn brownian4_for_image(seed: &Seed, point: &Point2<f32>) -> f32 {
-    brownian4(seed, &[point[0], point[1], 0.0, 0.0], perlin4, 32.0, 4)
+    Brownian4::new(perlin4, 4).wavelength(32.0)(seed, &[point[0], point[1], 0.0, 0.0])
 }

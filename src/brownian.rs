@@ -15,55 +15,144 @@
 
 use std::num::Float;
 
-use {math, Seed};
+use {math, Seed, Point2, Point3, Point4};
 
-pub fn brownian2<T, F>(seed: &Seed, point: &::Point2<T>, noise_func: F, wavelength: T, octaves: u32) -> T
-    where T: Float, F: Fn(&Seed, &::Point2<T>) -> T
-{
-    let mut frequency: T = wavelength.recip();
-    let mut amplitude: T = Float::one();
-    let mut result: T = Float::zero();
-    for _ in range(0, octaves) {
-        let scaled_point = [point[0] * frequency,
-                            point[1] * frequency];
-        result = result + (noise_func(seed, &scaled_point) * amplitude);
-        amplitude = amplitude * math::cast(0.5f32);
-        frequency = frequency * math::cast(2.0f32);
+macro_rules! brownian {
+    { $Brownian:ident, $Point:ident } => {
+        pub struct $Brownian<T, F: Fn(&Seed, &$Point<T>) -> T> {
+            /// The underlying noise function
+            pub function: F,
+            /// The number of octaves to use
+            pub octaves: uint,
+            /// The base frequency of the noise
+            pub frequency: T,
+            /// How quickly the amplitude of each octave decreases
+            pub persistence: T,
+            /// How quickly the frequency changes for each octave
+            pub lacunarity: T,
+        }
+
+        impl<T: Float, F> $Brownian<T, F> where
+            F: Fn(&Seed, &$Point<T>) -> T,
+        {
+            /// Consructs a new brownian noise function, defaulting to:
+            ///
+            /// - frequency: `1.0`
+            /// - lacunarity: `2.0`
+            /// - persistence: `0.5`
+            #[inline]
+            pub fn new(function: F, octaves: uint) -> $Brownian<T, F> {
+                $Brownian {
+                    function: function,
+                    octaves: octaves,
+                    frequency: math::cast(1.0f32),
+                    lacunarity: math::cast(2.0f32),
+                    persistence: math::cast(0.5f32),
+                }
+            }
+
+            #[inline]
+            pub fn function<Q>(self, function: Q) -> $Brownian<T, Q> where
+                Q: Fn(&Seed, &$Point<T>) -> T,
+            {
+                let $Brownian { octaves, frequency, lacunarity, persistence, .. } = self;
+                $Brownian {
+                    function: function,
+                    octaves: octaves,
+                    frequency: frequency,
+                    persistence: persistence,
+                    lacunarity: lacunarity,
+                }
+            }
+
+            #[inline]
+            pub fn octaves(self, octaves: uint) -> $Brownian<T, F> {
+                $Brownian { octaves: octaves, ..self }
+            }
+
+            #[inline]
+            pub fn wavelength(self, wavelength: T) -> $Brownian<T, F> {
+                $Brownian { frequency: wavelength.recip(), ..self }
+            }
+
+            #[inline]
+            pub fn frequency(self, frequency: T) -> $Brownian<T, F> {
+                $Brownian { frequency: frequency, ..self }
+            }
+
+            #[inline]
+            pub fn persistence(self, persistence: T) -> $Brownian<T, F> {
+                $Brownian { persistence: persistence, ..self }
+            }
+
+            #[inline]
+            pub fn lacunarity(self, lacunarity: T) -> $Brownian<T, F> {
+                $Brownian { lacunarity: lacunarity, ..self }
+            }
+        }
     }
-    result
 }
 
-pub fn brownian3<T, F>(seed: &Seed, point: &::Point3<T>, noise_func: F, wavelength: T, octaves: u32) -> T
-    where T: Float, F: Fn(&Seed, &::Point3<T>) -> T
+brownian! { Brownian2, Point2 }
+brownian! { Brownian3, Point3 }
+brownian! { Brownian4, Point4 }
+
+impl<'a, 'b, T, F> Fn(&'a Seed, &'b Point2<T>) -> T for Brownian2<T, F> where
+    T: Float,
+    F: Fn(&Seed, &Point2<T>) -> T,
 {
-    let mut frequency: T = wavelength.recip();
-    let mut amplitude: T = Float::one();
-    let mut result: T = Float::zero();
-    for _ in range(0, octaves) {
-        let scaled_point = [point[0] * frequency,
-                            point[1] * frequency,
-                            point[2] * frequency];
-        result = result + (noise_func(seed, &scaled_point) * amplitude);
-        amplitude = amplitude * math::cast(0.5f32);
-        frequency = frequency * math::cast(2.0f32);
+    extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b Point2<T>)) -> T {
+        let mut frequency: T = self.frequency;
+        let mut amplitude: T = Float::one();
+        let mut result: T = Float::zero();
+        for _ in range(0, self.octaves) {
+            let scaled_point = [point[0] * frequency,
+                                point[1] * frequency];
+            result = result + ((self.function)(seed, &scaled_point) * amplitude);
+            amplitude = amplitude * self.persistence;
+            frequency = frequency * self.lacunarity;
+        }
+        result
     }
-    result
 }
 
-pub fn brownian4<T, F>(seed: &Seed, point: &::Point4<T>, noise_func: F, wavelength: T, octaves: u32) -> T
-    where T: Float, F: Fn(&Seed, &::Point4<T>) -> T
+impl<'a, 'b, T, F> Fn(&'a Seed, &'b ::Point3<T>) -> T for Brownian3<T, F> where
+    T: Float,
+    F: Fn(&Seed, &::Point3<T>) -> T,
 {
-    let mut frequency: T = wavelength.recip();
-    let mut amplitude: T = Float::one();
-    let mut result: T = Float::zero();
-    for _ in range(0, octaves) {
-        let scaled_point = [point[0] * frequency,
-                            point[1] * frequency,
-                            point[2] * frequency,
-                            point[3] * frequency];
-        result = result + (noise_func(seed, &scaled_point) * amplitude);
-        amplitude = amplitude * math::cast(0.5f32);
-        frequency = frequency * math::cast(2.0f32);
+    extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b ::Point3<T>)) -> T {
+        let mut frequency: T = self.frequency;
+        let mut amplitude: T = Float::one();
+        let mut result: T = Float::zero();
+        for _ in range(0, self.octaves) {
+            let scaled_point = [point[0] * frequency,
+                                point[1] * frequency,
+                                point[2] * frequency];
+            result = result + ((self.function)(seed, &scaled_point) * amplitude);
+            amplitude = amplitude * self.persistence;
+            frequency = frequency * self.lacunarity;
+        }
+        result
     }
-    result
+}
+
+impl<'a, 'b, T, F> Fn(&'a Seed, &'b ::Point4<T>) -> T for Brownian4<T, F> where
+    T: Float,
+    F: Fn(&Seed, &::Point4<T>) -> T,
+{
+    extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b ::Point4<T>)) -> T {
+        let mut frequency: T = self.frequency;
+        let mut amplitude: T = Float::one();
+        let mut result: T = Float::zero();
+        for _ in range(0, self.octaves) {
+            let scaled_point = [point[0] * frequency,
+                                point[1] * frequency,
+                                point[2] * frequency,
+                                point[3] * frequency];
+            result = result + ((self.function)(seed, &scaled_point) * amplitude);
+            amplitude = amplitude * self.persistence;
+            frequency = frequency * self.lacunarity;
+        }
+        result
+    }
 }

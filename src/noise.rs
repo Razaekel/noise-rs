@@ -14,13 +14,14 @@
 // limitations under the License.
 
 #![feature(macro_rules)]
+#![feature(unboxed_closures)]
 #![deny(missing_copy_implementations)]
 
 pub use seed::Seed;
 pub use perlin::{perlin2, perlin3, perlin4};
 pub use simplex::{simplex2, simplex3};
 pub use simplectic::{simplectic2, simplectic3, simplectic4};
-pub use brownian::{brownian2, brownian3, brownian4};
+pub use brownian::{Brownian2, Brownian3, Brownian4};
 
 mod gen;
 mod gradients;
@@ -28,11 +29,11 @@ mod gradients;
 mod math;
 pub mod source;
 
-pub mod seed;
-pub mod perlin;
-pub mod simplex;
-pub mod simplectic;
-pub mod brownian;
+mod seed;
+mod perlin;
+mod simplex;
+mod simplectic;
+mod brownian;
 
 pub type Point2<T> = [T, ..2];
 pub type Point3<T> = [T, ..3];
