@@ -40,6 +40,7 @@ pub type Point3<T> = [T, ..3];
 pub type Point4<T> = [T, ..4];
 
 #[deriving(Copy, Clone)]
+#[deprecated = "It has been determined that this parameter does little to affect the speed of the algorithm."]
 pub enum Quality {
     Fast,
     Best,
