@@ -33,8 +33,7 @@
 
 use std::num::{cast, Float};
 
-use {math, Seed};
-use gradients::{gradient2, gradient3, gradient4};
+use {gradient, math, Seed};
 
 struct SimplecticPoint2<T: Float> {
     x_cell: i64,
@@ -229,7 +228,7 @@ pub fn simplectic2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
     fn gradient<T: Float>(seed: &Seed, p: &SimplecticPoint2<T>) -> T {
         let attn = math::cast::<_, T>(SIMPLEX_SIZE) - p.x_offset*p.x_offset - p.y_offset*p.y_offset;
         if attn > Float::zero() {
-            let vec = gradient2::<T>(seed.get2(p.x_cell, p.y_cell));
+            let vec = gradient::get2::<T>(seed.get2(p.x_cell, p.y_cell));
             let attn2 = attn*attn;
             attn2*attn2*(p.x_offset*vec[0] + p.y_offset*vec[1])
         } else {
@@ -247,7 +246,7 @@ pub fn simplectic3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
     fn gradient<T: Float>(seed: &Seed, p: &SimplecticPoint3<T>) -> T {
         let attn = math::cast::<_, T>(SIMPLEX_SIZE) - p.x_offset*p.x_offset - p.y_offset*p.y_offset - p.z_offset*p.z_offset;
         if attn > Float::zero() {
-            let vec = gradient3::<T>(seed.get3(p.x_cell, p.y_cell, p.z_cell));
+            let vec = gradient::get3::<T>(seed.get3(p.x_cell, p.y_cell, p.z_cell));
             let attn2 = attn*attn;
             attn2*attn2*(p.x_offset*vec[0] + p.y_offset*vec[1] + p.z_offset*vec[2])
         } else {
@@ -267,7 +266,7 @@ pub fn simplectic4<T: Float>(seed: &Seed, point: &::Point4<T>) -> T {
     fn gradient<T: Float>(seed: &Seed, p: &SimplecticPoint4<T>) -> T {
         let attn = math::cast::<_, T>(SIMPLEX_SIZE) - p.x_offset*p.x_offset - p.y_offset*p.y_offset - p.z_offset*p.z_offset - p.w_offset*p.w_offset;
         if attn > Float::zero() {
-            let vec = gradient4::<T>(seed.get4(p.x_cell, p.y_cell, p.z_cell, p.w_cell));
+            let vec = gradient::get4::<T>(seed.get4(p.x_cell, p.y_cell, p.z_cell, p.w_cell));
             let attn2 = attn*attn;
             attn2*attn2*(p.x_offset*vec[0] + p.y_offset*vec[1] + p.z_offset*vec[2] + p.w_offset*vec[3])
         } else {

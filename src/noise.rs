@@ -24,7 +24,7 @@ pub use simplectic::{simplectic2, simplectic3, simplectic4};
 pub use brownian::{Brownian2, Brownian3, Brownian4};
 
 mod gen;
-mod gradients;
+mod gradient;
 
 mod math;
 pub mod source;

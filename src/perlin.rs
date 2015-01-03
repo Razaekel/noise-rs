@@ -15,12 +15,11 @@
 
 use std::num::Float;
 
-use {math, Seed};
-use gradients::{gradient2, gradient3, gradient4};
+use {gradient, math, Seed};
 
 pub fn perlin2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
     fn gradient<T: Float>(seed: &Seed, x_whole: int, y_whole: int, x_frac: T, y_frac: T) -> T {
-        let [x, y] = gradient2::<T>(seed.get2(x_whole, y_whole));
+        let [x, y] = gradient::get2::<T>(seed.get2(x_whole, y_whole));
         x_frac * x + y_frac * y
     }
 
@@ -55,7 +54,7 @@ pub fn perlin2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
 
 pub fn perlin3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
     fn gradient<T: Float>(seed: &Seed, x_whole: int, y_whole: int, z_whole: int, x_frac: T, y_frac: T, z_frac: T) -> T {
-        let [x, y, z] = gradient3::<T>(seed.get3(x_whole, y_whole, z_whole));
+        let [x, y, z] = gradient::get3::<T>(seed.get3(x_whole, y_whole, z_whole));
         x_frac * x + y_frac * y + z_frac * z
     }
 
@@ -106,7 +105,7 @@ pub fn perlin3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
 
 pub fn perlin4<T: Float>(seed: &Seed, point: &::Point4<T>) -> T {
     fn gradient<T: Float>(seed: &Seed, x_whole: int, y_whole: int, z_whole: int, w_whole: int, x_frac: T, y_frac: T, z_frac: T, w_frac: T) -> T {
-        let [x, y, z, w] = gradient4::<T>(seed.get4(x_whole, y_whole, z_whole, w_whole));
+        let [x, y, z, w] = gradient::get4::<T>(seed.get4(x_whole, y_whole, z_whole, w_whole));
         x_frac * x + y_frac * y + z_frac * z + w_frac * w
     }
 
