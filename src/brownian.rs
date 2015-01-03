@@ -116,11 +116,11 @@ impl<'a, 'b, T, F> Fn(&'a Seed, &'b Point2<T>) -> T for Brownian2<T, F> where
     }
 }
 
-impl<'a, 'b, T, F> Fn(&'a Seed, &'b ::Point3<T>) -> T for Brownian3<T, F> where
+impl<'a, 'b, T, F> Fn(&'a Seed, &'b Point3<T>) -> T for Brownian3<T, F> where
     T: Float,
     F: Fn(&Seed, &::Point3<T>) -> T,
 {
-    extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b ::Point3<T>)) -> T {
+    extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b Point3<T>)) -> T {
         let mut frequency: T = self.frequency;
         let mut amplitude: T = Float::one();
         let mut result: T = Float::zero();
@@ -140,7 +140,7 @@ impl<'a, 'b, T, F> Fn(&'a Seed, &'b ::Point4<T>) -> T for Brownian4<T, F> where
     T: Float,
     F: Fn(&Seed, &::Point4<T>) -> T,
 {
-    extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b ::Point4<T>)) -> T {
+    extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b Point4<T>)) -> T {
         let mut frequency: T = self.frequency;
         let mut amplitude: T = Float::one();
         let mut result: T = Float::zero();
