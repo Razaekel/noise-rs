@@ -102,7 +102,7 @@ fn norm3_constant<T: Float>() -> T { math::cast(9.0_f64) }
 fn norm4_constant<T: Float>() -> T { math::cast(10.0_f64) }
 
 #[inline(always)]
-fn simplectic2_points<T: Float>(point: &::Point2<T>) -> [SimplecticPoint2<T>, ..3] {
+fn simplectic2_points<T: Float>(point: &::Point2<T>) -> [SimplecticPoint2<T>; 3] {
     let zero: T = math::cast(0u);
     let one: T = math::cast(1u);
     let two: T = math::cast(2u);
@@ -153,7 +153,7 @@ fn simplectic2_points<T: Float>(point: &::Point2<T>) -> [SimplecticPoint2<T>, ..
 }
 
 #[inline(always)]
-fn simplectic3_points<T: Float>(point: &::Point3<T>) -> [SimplecticPoint3<T>, ..6] {
+fn simplectic3_points<T: Float>(point: &::Point3<T>) -> [SimplecticPoint3<T>; 6] {
     let layer = (point[2] * inv_simplex_size()).floor();
     let layer_int: i64 = math::cast(layer);
 
@@ -178,7 +178,7 @@ fn simplectic3_points<T: Float>(point: &::Point3<T>) -> [SimplecticPoint3<T>, ..
 }
 
 #[inline(always)]
-fn simplectic4_points<T: Float>(point: &::Point4<T>) -> [SimplecticPoint4<T>, ..12] {
+fn simplectic4_points<T: Float>(point: &::Point4<T>) -> [SimplecticPoint4<T>; 12] {
     let layer = (point[3] * inv_simplex_size()).floor();
     let layer_int: i64 = math::cast(layer);
 

@@ -22,7 +22,7 @@ const TABLE_SIZE: uint = 256;
 
 #[allow(missing_copy_implementations)]
 pub struct Seed {
-    values: [uint, ..TABLE_SIZE * 2],
+    values: [uint; TABLE_SIZE * 2],
 }
 
 impl Rand for Seed {
@@ -40,7 +40,7 @@ impl Rand for Seed {
         // clean way to do this in one pass. Hopefully won't matter, as Seed creation will usually be a
         // one-time event.
         let mut new_seed = Seed {
-            values: [0, ..TABLE_SIZE * 2],
+            values: [0; TABLE_SIZE * 2],
         };
         for i in range(0, TABLE_SIZE * 2) {
             new_seed.values[i] = seq[i % TABLE_SIZE];

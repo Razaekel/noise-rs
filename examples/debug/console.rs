@@ -23,7 +23,7 @@ use noise::source::Source;
 #[path = "../../src/math.rs"]
 mod math;
 
-const GRADIENT: [&'static str, ..6] = [" ", "░", "▒", "▓", "█", "█"];
+const GRADIENT: [&'static str; 6] = [" ", "░", "▒", "▓", "█", "█"];
 
 pub fn render<S: Source>(width: uint, height: uint, source: &S) {
     for y in range(0, height / 2) {
