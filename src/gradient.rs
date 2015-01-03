@@ -34,6 +34,7 @@ pub fn get2<T: Float>(index: uint) -> ::Point2<T> {
     }
 }
 
+#[inline(always)]
 pub fn get3<T: Float>(index: uint) -> ::Point3<T> {
     let diag: T = math::cast(0.70710678118f32);
     let zero: T = math::cast(0.0f32);
