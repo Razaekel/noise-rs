@@ -39,6 +39,8 @@ pub fn clamp<F: Float>(val: F, min: F, max: F) -> F {
     }
 }
 
+pub fn pow4<T: Float>(x: T) -> T { x * x * x * x }
+
 pub fn signed_modulus<T: SignedInt>(a: T, b: T) -> T {
     if a.is_negative() { b - (a.abs() % b) } else { a % b }
 }
