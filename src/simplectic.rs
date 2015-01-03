@@ -88,34 +88,32 @@ struct SimplecticPoint4<T: Float> {
     w_offset: T,
 }
 
-const SKEW_CONSTANT: f64 = 0.36602540378; // 0.5*(sqrt(3.0)-1.0)
-const UNSKEW_CONSTANT: f64 = 0.2113248654; // (3.0-sqrt(3.0))/6.0
+fn skew_constant<T: Float>() -> T { math::cast(0.36602540378_f64) } // 0.5 * (sqrt(3.0) - 1.0)
+fn unskew_constant<T: Float>() -> T { math::cast(0.2113248654_f64) } // (3.0 - sqrt(3.0)) / 6.0
 
-const SIMPLEX_SIZE: f64 = 0.70710678119;
-const INV_SIMPLEX_SIZE: f64 = 1.41421356235; // 1 / SIMPLEX_SIZE
-const LAYER_OFFSET_X: f64 = 0.45534180126; // (2.0-3.0*UNSKEW_CONSTANT)/3.0
-const LAYER_OFFSET_Y: f64 = 0.12200846793; // (1.0-3.0*UNSKEW_CONSTANT)/3.0
-const LAYER_OFFSET_Z: f64 = 0.35355339059; // (1.0-3.0*UNSKEW_CONSTANT)/3.0
+fn simplex_size<T: Float>() -> T { math::cast(0.70710678119_f64) }
+fn inv_simplex_size<T: Float>() -> T { math::cast(1.41421356235_f64) } // 1 / simplex_size()
+fn layer_offset_x<T: Float>() -> T { math::cast(0.45534180126_f64) } // (2.0 - 3.0 * unskew_constant()) / 3.0
+fn layer_offset_y<T: Float>() -> T { math::cast(0.12200846793_f64) } // (1.0 - 3.0 * unskew_constant()) / 3.0
+fn layer_offset_z<T: Float>() -> T { math::cast(0.35355339059_f64) } // (1.0 - 3.0 * unskew_constant()) / 3.0
 
-const NORM_CONSTANT_2D: f64 = 8.0;
-const NORM_CONSTANT_3D: f64 = 9.0;
-const NORM_CONSTANT_4D: f64 = 10.0;
+fn norm2_constant<T: Float>() -> T { math::cast(8.0_f64) }
+fn norm3_constant<T: Float>() -> T { math::cast(9.0_f64) }
+fn norm4_constant<T: Float>() -> T { math::cast(10.0_f64) }
 
 #[inline(always)]
 fn simplectic2_points<T: Float>(point: &::Point2<T>) -> [SimplecticPoint2<T>, ..3] {
     let zero: T = math::cast(0u);
     let one: T = math::cast(1u);
     let two: T = math::cast(2u);
-    let skew_constant  = math::cast(SKEW_CONSTANT);
-    let unskew_constant  = math::cast(UNSKEW_CONSTANT);
 
     // Skew the input coordinates into the grid to figure out which grid cell we're in
-    let skew_offset = (point[0] + point[1]) * skew_constant;
+    let skew_offset = (point[0] + point[1]) * skew_constant();
     let x_cell = (point[0] + skew_offset).floor();
     let y_cell = (point[1] + skew_offset).floor();
 
     // Unskew the floored coordinates to find the real coordinates of the cell's origin
-    let unskew_offset = (x_cell + y_cell) * unskew_constant;
+    let unskew_offset = (x_cell + y_cell) * unskew_constant();
     let x_origin = x_cell - unskew_offset;
     let y_origin = y_cell - unskew_offset;
 
@@ -125,12 +123,12 @@ fn simplectic2_points<T: Float>(point: &::Point2<T>) -> [SimplecticPoint2<T>, ..
 
     // Compute the delta from the second point, which depends on which simplex we're in
     let (x1_offset, y1_offset) = if dx0 > dy0 { (one, zero) } else { (zero, one) };
-    let dx1 = dx0 - x1_offset + unskew_constant;
-    let dy1 = dy0 - y1_offset + unskew_constant;
+    let dx1 = dx0 - x1_offset + unskew_constant();
+    let dy1 = dy0 - y1_offset + unskew_constant();
 
     // Compute the delta from the third point
-    let dx2 = dx0 - one + two * unskew_constant;
-    let dy2 = dy0 - one + two * unskew_constant;
+    let dx2 = dx0 - one + two * unskew_constant();
+    let dy2 = dy0 - one + two * unskew_constant();
 
     [
         SimplecticPoint2 {
@@ -156,55 +154,44 @@ fn simplectic2_points<T: Float>(point: &::Point2<T>) -> [SimplecticPoint2<T>, ..
 
 #[inline(always)]
 fn simplectic3_points<T: Float>(point: &::Point3<T>) -> [SimplecticPoint3<T>, ..6] {
-    let layer_offset_x = math::cast(LAYER_OFFSET_X);
-    let layer_offset_y = math::cast(LAYER_OFFSET_Y);
-    let layer_scale = math::cast(SIMPLEX_SIZE);
-    let inv_layer_scale = math::cast(INV_SIMPLEX_SIZE);
-
-    let layer = (point[2] * inv_layer_scale).floor();
+    let layer = (point[2] * inv_simplex_size()).floor();
     let layer_int: i64 = math::cast(layer);
 
     let (layer1_point, layer2_point) = if layer_int % 2 == 0 {
-        ([point[0], point[1]], [point[0] + layer_offset_x, point[1] + layer_offset_y])
+        ([point[0], point[1]], [point[0] + layer_offset_x(), point[1] + layer_offset_y()])
     } else {
-        ([point[0] + layer_offset_x, point[1] + layer_offset_y], [point[0], point[1]])
+        ([point[0] + layer_offset_x(), point[1] + layer_offset_y()], [point[0], point[1]])
     };
 
     let [p1, p2, p3] = simplectic2_points(&layer1_point);
     let [p4, p5, p6] = simplectic2_points(&layer2_point);
 
-    let z_offset = point[2] - layer * layer_scale;
+    let z_offset = point[2] - layer * simplex_size();
     [
         p1.to_simplectic_point3(layer_int, z_offset),
         p2.to_simplectic_point3(layer_int, z_offset),
         p3.to_simplectic_point3(layer_int, z_offset),
-        p4.to_simplectic_point3(layer_int + 1, z_offset - layer_scale),
-        p5.to_simplectic_point3(layer_int + 1, z_offset - layer_scale),
-        p6.to_simplectic_point3(layer_int + 1, z_offset - layer_scale),
+        p4.to_simplectic_point3(layer_int + 1, z_offset - simplex_size()),
+        p5.to_simplectic_point3(layer_int + 1, z_offset - simplex_size()),
+        p6.to_simplectic_point3(layer_int + 1, z_offset - simplex_size()),
     ]
 }
 
 #[inline(always)]
 fn simplectic4_points<T: Float>(point: &::Point4<T>) -> [SimplecticPoint4<T>, ..12] {
-    let layer_offset_x = math::cast(LAYER_OFFSET_X);
-    let layer_offset_y = math::cast(LAYER_OFFSET_Y);
-    let layer_offset_z = math::cast(LAYER_OFFSET_Z);
-    let layer_scale = math::cast(SIMPLEX_SIZE);
-    let inv_layer_scale = math::cast(INV_SIMPLEX_SIZE);
-
-    let layer = (point[3] * inv_layer_scale).floor();
+    let layer = (point[3] * inv_simplex_size()).floor();
     let layer_int: i64 = math::cast(layer);
 
     let (layer1_point, layer2_point) = if layer_int % 2 == 0 {
-        ([point[0], point[1], point[2]], [point[0] + layer_offset_x, point[1] + layer_offset_y, point[2] + layer_offset_z])
+        ([point[0], point[1], point[2]], [point[0] + layer_offset_x(), point[1] + layer_offset_y(), point[2] + layer_offset_z()])
     } else {
-        ([point[0] + layer_offset_x, point[1] + layer_offset_y, point[2] + layer_offset_z], [point[0], point[1], point[2]])
+        ([point[0] + layer_offset_x(), point[1] + layer_offset_y(), point[2] + layer_offset_z()], [point[0], point[1], point[2]])
     };
 
     let [p1, p2, p3, p4, p5, p6] = simplectic3_points(&layer1_point);
     let [p7, p8, p9, p10, p11, p12] = simplectic3_points(&layer2_point);
 
-    let w_offset = point[3] - layer * layer_scale;
+    let w_offset = point[3] - layer * simplex_size();
     [
         p1.to_simplectic_point4(layer_int, w_offset),
         p2.to_simplectic_point4(layer_int, w_offset),
@@ -212,20 +199,20 @@ fn simplectic4_points<T: Float>(point: &::Point4<T>) -> [SimplecticPoint4<T>, ..
         p4.to_simplectic_point4(layer_int, w_offset),
         p5.to_simplectic_point4(layer_int, w_offset),
         p6.to_simplectic_point4(layer_int, w_offset),
-        p7.to_simplectic_point4(layer_int + 1, w_offset - layer_scale),
-        p8.to_simplectic_point4(layer_int + 1, w_offset - layer_scale),
-        p9.to_simplectic_point4(layer_int + 1, w_offset - layer_scale),
-        p10.to_simplectic_point4(layer_int + 1, w_offset - layer_scale),
-        p11.to_simplectic_point4(layer_int + 1, w_offset - layer_scale),
-        p12.to_simplectic_point4(layer_int + 1, w_offset - layer_scale),
+        p7.to_simplectic_point4(layer_int + 1, w_offset - simplex_size()),
+        p8.to_simplectic_point4(layer_int + 1, w_offset - simplex_size()),
+        p9.to_simplectic_point4(layer_int + 1, w_offset - simplex_size()),
+        p10.to_simplectic_point4(layer_int + 1, w_offset - simplex_size()),
+        p11.to_simplectic_point4(layer_int + 1, w_offset - simplex_size()),
+        p12.to_simplectic_point4(layer_int + 1, w_offset - simplex_size()),
     ]
 }
 
 pub fn simplectic2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
     #[inline(always)]
     fn gradient<T: Float>(seed: &Seed, p: &SimplecticPoint2<T>) -> T {
-        let attn = math::cast::<_, T>(SIMPLEX_SIZE) - p.x_offset * p.x_offset
-                                                    - p.y_offset * p.y_offset;
+        let attn = simplex_size::<T>() - p.x_offset * p.x_offset
+                                       - p.y_offset * p.y_offset;
         if attn > Float::zero() {
             let [gx, gy] = gradient::get2(seed.get2(p.x_cell, p.y_cell));
             let attn2 = attn * attn;
@@ -237,15 +224,15 @@ pub fn simplectic2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
 
     let [p1, p2, p3] = simplectic2_points(point);
 
-    (gradient(seed, &p1) + gradient(seed, &p2) + gradient(seed, &p3)) * math::cast(NORM_CONSTANT_2D)
+    (gradient(seed, &p1) + gradient(seed, &p2) + gradient(seed, &p3)) * norm2_constant()
 }
 
 pub fn simplectic3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
     #[inline(always)]
     fn gradient<T: Float>(seed: &Seed, p: &SimplecticPoint3<T>) -> T {
-        let attn = math::cast::<_, T>(SIMPLEX_SIZE) - p.x_offset * p.x_offset
-                                                    - p.y_offset * p.y_offset
-                                                    - p.z_offset * p.z_offset;
+        let attn = simplex_size::<T>() - p.x_offset * p.x_offset
+                                       - p.y_offset * p.y_offset
+                                       - p.z_offset * p.z_offset;
         if attn > Float::zero() {
             let [gx, gy, gz] = gradient::get3(seed.get3(p.x_cell, p.y_cell, p.z_cell));
             let attn2 = attn * attn;
@@ -259,16 +246,16 @@ pub fn simplectic3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
 
     (
         gradient(seed, &p1) + gradient(seed, &p2) + gradient(seed, &p3) + gradient(seed, &p4) + gradient(seed, &p5) + gradient(seed, &p6)
-    ) * math::cast(NORM_CONSTANT_3D)
+    ) * norm3_constant()
 }
 
 pub fn simplectic4<T: Float>(seed: &Seed, point: &::Point4<T>) -> T {
     #[inline(always)]
     fn gradient<T: Float>(seed: &Seed, p: &SimplecticPoint4<T>) -> T {
-        let attn = math::cast::<_, T>(SIMPLEX_SIZE) - p.x_offset * p.x_offset
-                                                    - p.y_offset * p.y_offset
-                                                    - p.z_offset * p.z_offset
-                                                    - p.w_offset * p.w_offset;
+        let attn = simplex_size::<T>() - p.x_offset * p.x_offset
+                                       - p.y_offset * p.y_offset
+                                       - p.z_offset * p.z_offset
+                                       - p.w_offset * p.w_offset;
         if attn > Float::zero() {
             let [gx, gy, gz, gw] = gradient::get4(seed.get4(p.x_cell, p.y_cell, p.z_cell, p.w_cell));
             let attn2 = attn * attn;
@@ -283,5 +270,5 @@ pub fn simplectic4<T: Float>(seed: &Seed, point: &::Point4<T>) -> T {
     (
         gradient(seed, &p1) + gradient(seed, &p2) + gradient(seed, &p3) + gradient(seed, &p4) + gradient(seed, &p5) + gradient(seed, &p6) +
         gradient(seed, &p7) + gradient(seed, &p8) + gradient(seed, &p9) + gradient(seed, &p10) + gradient(seed, &p11) + gradient(seed, &p12)
-    ) * math::cast(NORM_CONSTANT_4D)
+    ) * norm4_constant()
 }
