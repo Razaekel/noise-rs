@@ -13,11 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/*
-    Note that this is NOT Ken Perlin's simplex noise, as that is patent encumbered.
-    Instead, these functions use the OpenSimplex algorithm, as detailed here:
-    http://uniblock.tumblr.com/post/97868843242/noise
-*/
+//! Note that this is NOT Ken Perlin's simplex noise, as that is patent encumbered.
+//! Instead, these functions use the OpenSimplex algorithm, as detailed here:
+//! http://uniblock.tumblr.com/post/97868843242/noise
 
 use std::num::{cast, Float};
 

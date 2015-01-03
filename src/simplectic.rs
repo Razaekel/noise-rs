@@ -13,23 +13,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/*
-    This is a form of gradient noise, similar to Perlin or simplex noise,
-    but using a simplectic honeycomb. The 2D case is functionally identical
-    to simplex noise. The 3D case is a tetrahedral-octohedral honeycomb and
-    the 4D case is a 5-cell honeycomb. See the Wikipedia article on
-    simplectic honeycombs for more info:
-    http://en.wikipedia.org/wiki/Simplectic_honeycomb
-
-    The virtue of this noise, over the alternatives, is it's algorithmic
-    cleanliness. In any dimension, it can be seen as a series of layers of
-    the noise function from the lower dimension. So for any given point,
-    one can calculate the lower dimensional noise twice, one for the layer
-    below and one for the layer above, to get the relevant set of gradient
-    points. Thus, 3D noise can be composed out of two iterations of 2D
-    noise, and 4D noise can be composed out of two iterations of 3D noise,
-    or four iterations of 2D noise.
-*/
+//! This is a form of gradient noise, similar to Perlin or simplex noise,
+//! but using a simplectic honeycomb. The 2D case is functionally identical
+//! to simplex noise. The 3D case is a tetrahedral-octohedral honeycomb and
+//! the 4D case is a 5-cell honeycomb. See the Wikipedia article on
+//! simplectic honeycombs for more info:
+//! http://en.wikipedia.org/wiki/Simplectic_honeycomb
+//!
+//! The virtue of this noise, over the alternatives, is it's algorithmic
+//! cleanliness. In any dimension, it can be seen as a series of layers of
+//! the noise function from the lower dimension. So for any given point,
+//! one can calculate the lower dimensional noise twice, one for the layer
+//! below and one for the layer above, to get the relevant set of gradient
+//! points. Thus, 3D noise can be composed out of two iterations of 2D
+//! noise, and 4D noise can be composed out of two iterations of 3D noise,
+//! or four iterations of 2D noise.
 
 use std::num::{cast, Float};
 
