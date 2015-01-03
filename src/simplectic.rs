@@ -215,8 +215,7 @@ pub fn simplectic2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
                                        - p.y_offset * p.y_offset;
         if attn > Float::zero() {
             let [gx, gy] = gradient::get2(seed.get2(p.x_cell, p.y_cell));
-            let attn2 = attn * attn;
-            attn2 * attn2 * (p.x_offset * gx + p.y_offset * gy)
+            math::pow4(attn) * (p.x_offset * gx + p.y_offset * gy)
         } else {
             Float::zero()
         }
@@ -235,8 +234,7 @@ pub fn simplectic3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
                                        - p.z_offset * p.z_offset;
         if attn > Float::zero() {
             let [gx, gy, gz] = gradient::get3(seed.get3(p.x_cell, p.y_cell, p.z_cell));
-            let attn2 = attn * attn;
-            attn2 * attn2 * (p.x_offset * gx + p.y_offset * gy + p.z_offset * gz)
+            math::pow4(attn) * (p.x_offset * gx + p.y_offset * gy + p.z_offset * gz)
         } else {
             Float::zero()
         }
@@ -258,8 +256,7 @@ pub fn simplectic4<T: Float>(seed: &Seed, point: &::Point4<T>) -> T {
                                        - p.w_offset * p.w_offset;
         if attn > Float::zero() {
             let [gx, gy, gz, gw] = gradient::get4(seed.get4(p.x_cell, p.y_cell, p.z_cell, p.w_cell));
-            let attn2 = attn * attn;
-            attn2 * attn2 * (p.x_offset * gx + p.y_offset * gy + p.z_offset * gz + p.w_offset * gw)
+            math::pow4(attn) * (p.x_offset * gx + p.y_offset * gy + p.z_offset * gz + p.w_offset * gw)
         } else {
             Float::zero()
         }
