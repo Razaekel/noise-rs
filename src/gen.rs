@@ -117,7 +117,7 @@ pub fn gradient_noise_3d<F:Float>(fx: F, fy: F, fz: F, ix: int, iy: int, iz: int
 // specifically page 76.
 //
 // Take from file vectortable.h in libnoise
-static RANDOM_VECTORS: [f64,..256 * 4] = [
+static RANDOM_VECTORS: [f64; 256 * 4] = [
     -0.763874, -0.596439, -0.246489, 0.0,
     0.396055, 0.904518, -0.158073, 0.0,
     -0.499004, -0.8665, -0.0131631, 0.0,
