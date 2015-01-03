@@ -3,6 +3,7 @@ use std::num::Float;
 pub use self::perlin::Perlin;
 pub use self::ridgedmulti::RidgedMulti;
 
+#[deprecated = "Use noise::{perlin2, perlin3, perlin4}, with noise::{Brownian2, Brownian3, Brownian4}"]
 pub mod perlin;
 pub mod ridgedmulti;
 

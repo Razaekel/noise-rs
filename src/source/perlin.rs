@@ -16,6 +16,8 @@
 //! An implementation of Ken Perlin's [Improved Noise]
 //! (http://mrl.nyu.edu/~perlin/noise/) algorithm.
 
+#![allow(deprecated)]
+
 use std::rand;
 use std::rand::Rng;
 use std::num::{cast, Float};
