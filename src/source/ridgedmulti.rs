@@ -30,7 +30,7 @@ static DEFAULT_EXPONENT : f64 = 1.0;
 static DEFAULT_OFFSET : f64 = 1.0;
 static DEFAULT_GAIN : f64 = 2.0;
 
-#[deriving(Clone)]
+#[derive(Clone)]
 pub struct RidgedMulti {
     pub seed: int,
     pub frequency: f64,

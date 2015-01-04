@@ -36,7 +36,7 @@ mod simplex;
 mod simplectic;
 mod brownian;
 
-#[deriving(Copy, Clone)]
+#[derive(Copy, Clone)]
 #[deprecated = "It has been determined that this parameter does little to affect the speed of the algorithm."]
 pub enum Quality {
     Fast,
