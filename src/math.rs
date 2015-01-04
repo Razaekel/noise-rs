@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num::{mod, Float, NumCast, SignedInt};
+use std::num::{self, Float, NumCast, SignedInt};
 
 pub fn cast<T: NumCast, U: NumCast>(x: T) -> U {
     num::cast(x).unwrap()
@@ -39,6 +39,28 @@ pub fn clamp<F: Float>(val: F, min: F, max: F) -> F {
     }
 }
 
+pub fn pow4<T: Float>(x: T) -> T { x * x * x * x }
+
 pub fn signed_modulus<T: SignedInt>(a: T, b: T) -> T {
     if a.is_negative() { b - (a.abs() % b) } else { a % b }
+}
+
+pub type Point2<T> = [T; 2];
+pub type Point3<T> = [T; 3];
+pub type Point4<T> = [T; 4];
+
+pub type Vector2<T> = [T; 2];
+pub type Vector3<T> = [T; 3];
+pub type Vector4<T> = [T; 4];
+
+pub fn dot2<T: Float>(a: Vector2<T>, b: Vector2<T>) -> T {
+    a[0] * b[0] + a[1] * b[1]
+}
+
+pub fn dot3<T: Float>(a: Vector3<T>, b: Vector3<T>) -> T {
+    a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
+}
+
+pub fn dot4<T: Float>(a: Vector4<T>, b: Vector4<T>) -> T {
+    a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3]
 }

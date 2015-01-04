@@ -33,7 +33,7 @@ pub fn simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
     fn gradient<T: Float>(seed: &Seed, xs_floor: T, ys_floor: T, dx: T, dy: T) -> T {
         let attn = math::cast::<_, T>(2u) - dx * dx - dy * dy;
         if attn > Float::zero() {
-            let index = seed.get2(xs_floor.to_int().unwrap(), ys_floor.to_int().unwrap());
+            let index = seed.get2::<int>([math::cast(xs_floor), math::cast(ys_floor)]);
             let vec = gradient::get2::<T>(index);
             let attn2 = attn * attn;
             attn2 * attn2 * (dx * vec[0] + dy * vec[1])
@@ -130,7 +130,7 @@ pub fn simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
     fn gradient<T: Float>(seed: &Seed, xs_floor: T, ys_floor: T, zs_floor: T, dx: T, dy: T, dz: T) -> T {
         let attn = math::cast::<_, T>(2u) - dx * dx - dy * dy - dz * dz;
         if attn > Float::zero() {
-            let index = seed.get3(xs_floor.to_int().unwrap(), ys_floor.to_int().unwrap(), zs_floor.to_int().unwrap());
+            let index = seed.get3::<int>([math::cast(xs_floor), math::cast(ys_floor), math::cast(zs_floor)]);
             let vec = gradient::get3::<T>(index);
             let attn2 = attn * attn;
             attn2 * attn2 * (dx * vec[0] + dy * vec[1] + dz * vec[2])

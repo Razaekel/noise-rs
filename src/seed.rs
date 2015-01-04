@@ -59,16 +59,16 @@ impl Seed {
         self.values[math::cast::<T, uint>(math::signed_modulus(x, math::cast(TABLE_SIZE)))]
     }
 
-    pub fn get2<T: SignedInt>(&self, x: T, y: T) -> uint {
-        self.values[math::cast::<T, uint>(math::signed_modulus(y, math::cast(TABLE_SIZE))) + self.get1(x)]
+    pub fn get2<T: SignedInt>(&self, pos: math::Point2<T>) -> uint {
+        self.values[math::cast::<T, uint>(math::signed_modulus(pos[1], math::cast(TABLE_SIZE))) + self.get1(pos[0])]
     }
 
-    pub fn get3<T: SignedInt>(&self, x: T, y: T, z: T) -> uint {
-        self.values[math::cast::<T, uint>(math::signed_modulus(z, math::cast(TABLE_SIZE))) + self.get2(x, y)]
+    pub fn get3<T: SignedInt>(&self, pos: math::Point3<T>) -> uint {
+        self.values[math::cast::<T, uint>(math::signed_modulus(pos[2], math::cast(TABLE_SIZE))) + self.get2([pos[0], pos[1]])]
     }
 
-    pub fn get4<T: SignedInt>(&self, x: T, y: T, z: T, w: T) -> uint {
-        self.values[math::cast::<T, uint>(math::signed_modulus(w, math::cast(TABLE_SIZE))) + self.get3(x, y, z)]
+    pub fn get4<T: SignedInt>(&self, pos: math::Point4<T>) -> uint {
+        self.values[math::cast::<T, uint>(math::signed_modulus(pos[3], math::cast(TABLE_SIZE))) + self.get3([pos[0], pos[1], pos[2]])]
     }
 }
 
