@@ -17,7 +17,7 @@ use std::num::Float;
 
 use math;
 
-pub fn get2<T: Float>(index: uint) -> ::Point2<T> {
+pub fn get2<T: Float>(index: uint) -> math::Point2<T> {
     let diag: T = math::cast(0.70710678118f32);
     let one: T = math::cast(1.0f32);
     let zero: T = math::cast(0.0f32);
@@ -35,7 +35,7 @@ pub fn get2<T: Float>(index: uint) -> ::Point2<T> {
 }
 
 #[inline(always)]
-pub fn get3<T: Float>(index: uint) -> ::Point3<T> {
+pub fn get3<T: Float>(index: uint) -> math::Point3<T> {
     let diag: T = math::cast(0.70710678118f32);
     let zero: T = math::cast(0.0f32);
     match index % 12 {
@@ -56,7 +56,7 @@ pub fn get3<T: Float>(index: uint) -> ::Point3<T> {
 }
 
 #[inline(always)]
-pub fn get4<T: Float>(index: uint) -> ::Point4<T> {
+pub fn get4<T: Float>(index: uint) -> math::Point4<T> {
     let diag: T = math::cast(0.57735026919f32);
     let zero: T = math::cast(0.0f32);
     match index % 32 {

@@ -18,6 +18,7 @@
 #![deny(missing_copy_implementations)]
 
 pub use seed::Seed;
+pub use math::{Point2, Point3, Point4};
 pub use perlin::{perlin2, perlin3, perlin4};
 pub use simplex::{simplex2, simplex3};
 pub use simplectic::{simplectic2, simplectic3, simplectic4};
@@ -35,11 +36,7 @@ mod simplex;
 mod simplectic;
 mod brownian;
 
-pub type Point2<T> = [T; 2];
-pub type Point3<T> = [T; 3];
-pub type Point4<T> = [T; 4];
-
-#[deriving(Copy, Clone)]
+#[derive(Copy, Clone)]
 #[deprecated = "It has been determined that this parameter does little to affect the speed of the algorithm."]
 pub enum Quality {
     Fast,
