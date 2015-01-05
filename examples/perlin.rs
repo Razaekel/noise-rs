@@ -21,14 +21,12 @@ extern crate noise;
 
 use noise::{perlin2, perlin3, perlin4, Seed, Point2};
 
-mod debug {
-    pub mod image;
-}
+mod debug;
 
 fn main() {
-    debug::image::render_to_png("perlin2.png", &Seed::new(0), 256, 256, scaled_perlin2);
-    debug::image::render_to_png("perlin3.png", &Seed::new(0), 256, 256, scaled_perlin3);
-    debug::image::render_to_png("perlin4.png", &Seed::new(0), 256, 256, scaled_perlin4);
+    debug::render_png("perlin2.png", &Seed::new(0), 256, 256, scaled_perlin2);
+    debug::render_png("perlin3.png", &Seed::new(0), 256, 256, scaled_perlin3);
+    debug::render_png("perlin4.png", &Seed::new(0), 256, 256, scaled_perlin4);
     println!("\nGenerated perlin2.png, perlin3.png and perlin4.png");
 }
 

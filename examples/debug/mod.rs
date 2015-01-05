@@ -13,16 +13,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//! Useful things for debugging noise functions.
+
 extern crate image;
-extern crate noise;
 
-use std::num::{cast, Float, NumCast};
+use noise;
+use std::num::{self, Float, NumCast};
 
-#[allow(dead_code)]
-#[path = "../../src/math.rs"]
-mod math;
+fn cast<T: NumCast, R: NumCast>(val: T) -> R {
+    num::cast(val).unwrap()
+}
 
-pub fn render_to_png<T, F>(filename: &str, seed: &noise::Seed, width: u32, height: u32, func: F) where
+fn clamp<F: Float>(val: F, min: F, max: F) -> F {
+    match () {
+        _ if val < min => min,
+        _ if val > max => max,
+        _ => val,
+    }
+}
+
+pub fn render_png<T, F>(filename: &str, seed: &noise::Seed, width: u32, height: u32, func: F) where
     T: Float + NumCast,
     F: Fn(&noise::Seed, &noise::Point2<T>) -> T,
 {
@@ -30,14 +40,10 @@ pub fn render_to_png<T, F>(filename: &str, seed: &noise::Seed, width: u32, heigh
 
     for y in range(0, height) {
         for x in range(0, width) {
-            let value: f32 = math::cast(func(seed, &[c(x), c(y)]));
-            pixels.push(c(math::clamp(value * 0.5 + 0.5, 0.0, 1.0) * 255.0));
+            let value: f32 = cast(func(seed, &[cast(x), cast(y)]));
+            pixels.push(cast(clamp(value * 0.5 + 0.5, 0.0, 1.0) * 255.0));
         }
     }
 
     let _ = image::save_buffer(&Path::new(filename), pixels.as_slice(), width, height, image::ColorType::Grey(8));
-}
-
-fn c<T: NumCast, R: NumCast>(val: T) -> R {
-    cast(val).unwrap()
 }

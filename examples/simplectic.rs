@@ -21,14 +21,12 @@ extern crate noise;
 
 use noise::{simplectic2, simplectic3, simplectic4, Seed, Point2};
 
-mod debug {
-    pub mod image;
-}
+mod debug;
 
 fn main() {
-    debug::image::render_to_png("simplectic2.png", &Seed::new(0), 256, 256, scaled_simplectic2);
-    debug::image::render_to_png("simplectic3.png", &Seed::new(0), 256, 256, scaled_simplectic3);
-    debug::image::render_to_png("simplectic4.png", &Seed::new(0), 256, 256, scaled_simplectic4);
+    debug::render_png("simplectic2.png", &Seed::new(0), 256, 256, scaled_simplectic2);
+    debug::render_png("simplectic3.png", &Seed::new(0), 256, 256, scaled_simplectic3);
+    debug::render_png("simplectic4.png", &Seed::new(0), 256, 256, scaled_simplectic4);
     println!("\nGenerated simplectic2.png, simplectic3.png and simplectic4.png");
 }
 

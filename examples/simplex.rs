@@ -21,13 +21,11 @@ extern crate noise;
 
 use noise::{simplex2, simplex3, Seed, Point2};
 
-mod debug {
-    pub mod image;
-}
+mod debug;
 
 fn main() {
-    debug::image::render_to_png("simplex2.png", &Seed::new(0), 256, 256, scaled_simplex2);
-    debug::image::render_to_png("simplex3.png", &Seed::new(0), 256, 256, scaled_simplex3);
+    debug::render_png("simplex2.png", &Seed::new(0), 256, 256, scaled_simplex2);
+    debug::render_png("simplex3.png", &Seed::new(0), 256, 256, scaled_simplex3);
     println!("\nGenerated simplex2.png and simplex3.png");
 }
 

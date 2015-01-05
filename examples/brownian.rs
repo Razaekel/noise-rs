@@ -22,14 +22,12 @@ extern crate noise;
 
 use noise::{Brownian2, Brownian3, Brownian4, perlin2, perlin3, perlin4, Seed, Point2};
 
-mod debug {
-    pub mod image;
-}
+mod debug;
 
 fn main() {
-    debug::image::render_to_png("brownian2.png", &Seed::new(0), 256, 256, brownian2_for_image);
-    debug::image::render_to_png("brownian3.png", &Seed::new(0), 256, 256, brownian3_for_image);
-    debug::image::render_to_png("brownian4.png", &Seed::new(0), 256, 256, brownian4_for_image);
+    debug::render_png("brownian2.png", &Seed::new(0), 256, 256, brownian2_for_image);
+    debug::render_png("brownian3.png", &Seed::new(0), 256, 256, brownian3_for_image);
+    debug::render_png("brownian4.png", &Seed::new(0), 256, 256, brownian4_for_image);
     println!("\nGenerated brownian2.png, brownian3.png and brownian4.png");
 }
 
