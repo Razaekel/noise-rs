@@ -17,6 +17,7 @@ use std::num::Float;
 
 use {gradient, math, Seed};
 
+/// 2-dimensional perlin noise
 pub fn perlin2<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
     fn gradient<T: Float>(seed: &Seed, whole: math::Point2<int>, frac: math::Vector2<T>) -> T {
         math::dot2(frac, gradient::get2(seed.get2(whole)))
@@ -51,6 +52,7 @@ pub fn perlin2<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
     math::lerp(y_curve, interpolated_x0, interpolated_x1)
 }
 
+/// 3-dimensional perlin noise
 pub fn perlin3<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
     fn gradient<T: Float>(seed: &Seed, whole: math::Point3<int>, frac: math::Vector3<T>) -> T {
         math::dot3(frac, gradient::get3(seed.get3(whole)))
@@ -101,6 +103,7 @@ pub fn perlin3<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
     math::lerp(z_curve, interpolated_y0, interpolated_y1)
 }
 
+/// 4-dimensional perlin noise
 pub fn perlin4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
     fn gradient<T: Float>(seed: &Seed, whole: math::Point4<int>, frac: math::Vector4<T>) -> T {
         math::dot4(frac, gradient::get4(seed.get4(whole)))
