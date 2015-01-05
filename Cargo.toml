@@ -17,11 +17,7 @@ name = "noise"
 
 [[example]]
 
-name = "perlin_console"
-
-[[example]]
-
-name = "perlin_image"
+name = "perlin"
 
 [[example]]
 
@@ -35,13 +31,10 @@ name = "simplectic"
 
 name = "brownian"
 
-[[example]]
-
-name = "ridgedmulti"
-
 [[bench]]
 
 name = "benches"
 
 [dev-dependencies.image]
+
 git = "https://github.com/PistonDevelopers/image.git"

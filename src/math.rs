@@ -24,21 +24,8 @@ pub fn lerp<T: Float>(t: T, a: T, b: T) -> T {
     t * (b - a) + a
 }
 
-pub fn scurve3<F: Float>(t: F) -> F {
-    t * t * (cast::<_, F>(3u) - (t * cast(2u)))
-}
-
 pub fn scurve5<T: Float>(t: T) -> T {
     t * t * t * (t * (t * cast(6u) - cast(15u)) + cast(10u))
-}
-
-/// Clamps `val` between `min` and `max`
-pub fn clamp<F: Float>(val: F, min: F, max: F) -> F {
-    match () {
-        _ if val < min => min,
-        _ if val > max => max,
-        _              => val,
-    }
 }
 
 /// Raises the number to the power of `4`

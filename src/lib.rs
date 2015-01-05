@@ -13,19 +13,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#![feature(macro_rules)]
+#![feature(unboxed_closures)]
+#![deny(missing_copy_implementations)]
 
-extern crate noise;
+pub use seed::Seed;
+pub use math::{Point2, Point3, Point4};
+pub use perlin::{perlin2, perlin3, perlin4};
+pub use simplex::{simplex2, simplex3};
+pub use simplectic::{simplectic2, simplectic3, simplectic4};
+pub use brownian::{Brownian2, Brownian3, Brownian4};
 
-use noise::source::RidgedMulti;
+mod gradient;
+mod math;
+mod seed;
 
-mod debug {
-    pub mod console;
-}
-
-fn main() {
-    let ridged = RidgedMulti::new()
-        .octaves(3);
-
-    debug::console::render(100, 100, &ridged);
-}
-
+mod brownian;
+mod perlin;
+mod simplex;
+mod simplectic;

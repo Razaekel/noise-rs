@@ -9,11 +9,6 @@ Procedural noise generation library for Rust.
 API
 ===
 
-The API is currently being revamped to a simple, composable closure-based system.
-
-Implemented thus far
---------------------
-
 ~~~rust
 struct Seed { ... }
 Seed {
