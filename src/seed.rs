@@ -55,20 +55,24 @@ impl Seed {
         Rand::rand(&mut rng)
     }
 
+    #[inline(always)]
     pub fn get1<T: SignedInt>(&self, x: T) -> uint {
-        self.values[math::cast::<T, uint>(math::signed_modulus(x, math::cast(TABLE_SIZE)))]
+        self.values[math::cast::<T, uint>(x) & (TABLE_SIZE - 1)]
     }
 
+    #[inline(always)]
     pub fn get2<T: SignedInt>(&self, pos: math::Point2<T>) -> uint {
-        self.values[math::cast::<T, uint>(math::signed_modulus(pos[1], math::cast(TABLE_SIZE))) + self.get1(pos[0])]
+        self.values[self.get1(pos[0]) + (math::cast::<T, uint>(pos[1]) & (TABLE_SIZE - 1))]
     }
 
+    #[inline(always)]
     pub fn get3<T: SignedInt>(&self, pos: math::Point3<T>) -> uint {
-        self.values[math::cast::<T, uint>(math::signed_modulus(pos[2], math::cast(TABLE_SIZE))) + self.get2([pos[0], pos[1]])]
+        self.values[self.get2([pos[0], pos[1]]) + (math::cast::<T, uint>(pos[2]) & (TABLE_SIZE - 1))]
     }
 
+    #[inline(always)]
     pub fn get4<T: SignedInt>(&self, pos: math::Point4<T>) -> uint {
-        self.values[math::cast::<T, uint>(math::signed_modulus(pos[3], math::cast(TABLE_SIZE))) + self.get3([pos[0], pos[1], pos[2]])]
+        self.values[self.get3([pos[0], pos[1], pos[2]]) + (math::cast::<T, uint>(pos[3]) & (TABLE_SIZE - 1))]
     }
 }
 

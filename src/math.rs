@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num::{self, Float, NumCast, SignedInt};
+use std::num::{self, Float, NumCast};
 
 pub fn cast<T: NumCast, U: NumCast>(x: T) -> U {
     num::cast(x).unwrap()
@@ -43,10 +43,6 @@ pub fn clamp<F: Float>(val: F, min: F, max: F) -> F {
 
 /// Raises the number to the power of `4`
 pub fn pow4<T: Float>(x: T) -> T { x * x * x * x }
-
-pub fn signed_modulus<T: SignedInt>(a: T, b: T) -> T {
-    if a.is_negative() { b - (a.abs() % b) } else { a % b }
-}
 
 /// A 2-dimensional point
 pub type Point2<T> = [T; 2];
