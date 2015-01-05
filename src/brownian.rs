@@ -19,6 +19,9 @@ use {math, Seed, Point2, Point3, Point4};
 
 macro_rules! brownian {
     { $Brownian:ident, $Point:ident } => {
+        /// A callable struct for applying [fractional Brownian motion]
+        /// (http://en.wikipedia.org/wiki/Fractional_Brownian_motion).
+        #[derive(Copy, Clone)]
         pub struct $Brownian<T, F: Fn(&Seed, &$Point<T>) -> T> {
             /// The underlying noise function
             pub function: F,
@@ -51,6 +54,8 @@ macro_rules! brownian {
                 }
             }
 
+            /// A builder method that sets the function that will be iteratively
+            /// applied on each octave.
             #[inline]
             pub fn function<Q>(self, function: Q) -> $Brownian<T, Q> where
                 Q: Fn(&Seed, &$Point<T>) -> T,
@@ -65,26 +70,33 @@ macro_rules! brownian {
                 }
             }
 
+            /// A builder method that sets the number of octaves to use.
             #[inline]
             pub fn octaves(self, octaves: uint) -> $Brownian<T, F> {
                 $Brownian { octaves: octaves, ..self }
             }
 
+            /// A builder method that sets the wavelength of the brownian noise.
+            /// This is equivalent to `self.frequency(wavelength.recip())`.
             #[inline]
             pub fn wavelength(self, wavelength: T) -> $Brownian<T, F> {
-                $Brownian { frequency: wavelength.recip(), ..self }
+                self.frequency(wavelength.recip())
             }
 
+            /// A builder method that sets the frequency.
             #[inline]
             pub fn frequency(self, frequency: T) -> $Brownian<T, F> {
                 $Brownian { frequency: frequency, ..self }
             }
 
+            /// A builder method that sets the persistence to use on each
+            /// octave.
             #[inline]
             pub fn persistence(self, persistence: T) -> $Brownian<T, F> {
                 $Brownian { persistence: persistence, ..self }
             }
 
+            /// A builder method that sets the lacunarity to use on each octave.
             #[inline]
             pub fn lacunarity(self, lacunarity: T) -> $Brownian<T, F> {
                 $Brownian { lacunarity: lacunarity, ..self }
@@ -101,6 +113,7 @@ impl<'a, 'b, T, F> Fn(&'a Seed, &'b Point2<T>) -> T for Brownian2<T, F> where
     T: Float,
     F: Fn(&Seed, &Point2<T>) -> T,
 {
+    /// Applies the brownian noise function for the supplied seed and point.
     extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b Point2<T>)) -> T {
         let mut frequency: T = self.frequency;
         let mut amplitude: T = Float::one();
@@ -120,6 +133,7 @@ impl<'a, 'b, T, F> Fn(&'a Seed, &'b Point3<T>) -> T for Brownian3<T, F> where
     T: Float,
     F: Fn(&Seed, &::Point3<T>) -> T,
 {
+    /// Applies the brownian noise function for the supplied seed and point.
     extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b Point3<T>)) -> T {
         let mut frequency: T = self.frequency;
         let mut amplitude: T = Float::one();
@@ -140,6 +154,7 @@ impl<'a, 'b, T, F> Fn(&'a Seed, &'b ::Point4<T>) -> T for Brownian4<T, F> where
     T: Float,
     F: Fn(&Seed, &::Point4<T>) -> T,
 {
+    /// Applies the brownian noise function for the supplied seed and point.
     extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b Point4<T>)) -> T {
         let mut frequency: T = self.frequency;
         let mut amplitude: T = Float::one();
