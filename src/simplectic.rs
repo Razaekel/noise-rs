@@ -129,13 +129,13 @@ fn simplectic3_points<T: Float>(point: &math::Point3<T>) -> [SimplecticPoint3<T>
     let layer = (point[2] * inv_simplex_size()).floor();
     let layer_int: i64 = math::cast(layer);
 
-    let point = [point[0], point[1]];
-    let offset_point = [point[0] + layer_offset_x(),
-                        point[1] + layer_offset_y()];
+    let point2 = [point[0], point[1]];
+    let offset_point2 = [point[0] + layer_offset_x(),
+                         point[1] + layer_offset_y()];
 
     let (layer1_point, layer2_point) = match layer_int % 2 {
-        0 => (point, offset_point),
-        _ => (offset_point, point),
+        0 => (point2, offset_point2),
+        _ => (offset_point2, point2),
     };
 
     let [p1, p2, p3] = simplectic2_points(&layer1_point);
@@ -157,14 +157,14 @@ fn simplectic4_points<T: Float>(point: &math::Point4<T>) -> [SimplecticPoint4<T>
     let layer = (point[3] * inv_simplex_size()).floor();
     let layer_int: i64 = math::cast(layer);
 
-    let point = [point[0], point[1], point[2]];
-    let offset_point = [point[0] + layer_offset_x(),
-                        point[1] + layer_offset_y(),
-                        point[2] + layer_offset_z()];
+    let point3 = [point[0], point[1], point[2]];
+    let offset_point3 = [point[0] + layer_offset_x(),
+                         point[1] + layer_offset_y(),
+                         point[2] + layer_offset_z()];
 
     let (layer1_point, layer2_point) = match layer_int % 2 {
-        0 => (point, offset_point),
-        _ => (offset_point, point),
+        0 => (point3, offset_point3),
+        _ => (offset_point3, point3),
     };
 
     let [p1, p2, p3, p4, p5, p6] = simplectic3_points(&layer1_point);
