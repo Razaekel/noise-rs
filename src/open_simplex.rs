@@ -29,7 +29,7 @@ const SQUISH_CONSTANT_3D: f64 = 1.0 / 3.0; //(Math.sqrt(3+1)-1)/3;
 const NORM_CONSTANT_2D: f32 = 1.0 / 14.0;
 const NORM_CONSTANT_3D: f32 = 1.0 / 14.0;
 
-pub fn simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
+pub fn open_simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
     fn gradient<T: Float>(seed: &Seed, xs_floor: T, ys_floor: T, dx: T, dy: T) -> T {
         let attn = math::cast::<_, T>(2.0_f64) - dx * dx - dy * dy;
         if attn > Float::zero() {
@@ -96,7 +96,7 @@ pub fn simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
     value * math::cast(NORM_CONSTANT_2D)
 }
 
-pub fn simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
+pub fn open_simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
     fn gradient<T: Float>(seed: &Seed, xs_floor: T, ys_floor: T, zs_floor: T, dx: T, dy: T, dz: T) -> T {
         let attn = math::cast::<_, T>(2.0_f64) - dx * dx - dy * dy - dz * dz;
         if attn > Float::zero() {
