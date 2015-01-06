@@ -129,13 +129,13 @@ fn simplectic3_points<T: Float>(point: &math::Point3<T>) -> [SimplecticPoint3<T>
     let layer = (point[2] * inv_simplex_size()).floor();
     let layer_int: i64 = math::cast(layer);
 
-    let point = [point[0], point[1]];
-    let offset_point = [point[0] + layer_offset_x(),
-                        point[1] + layer_offset_y()];
+    let point2 = [point[0], point[1]];
+    let offset_point2 = [point[0] + layer_offset_x(),
+                         point[1] + layer_offset_y()];
 
     let (layer1_point, layer2_point) = match layer_int % 2 {
-        0 => (point, offset_point),
-        _ => (offset_point, point),
+        0 => (point2, offset_point2),
+        _ => (offset_point2, point2),
     };
 
     let [p1, p2, p3] = simplectic2_points(&layer1_point);
@@ -157,14 +157,14 @@ fn simplectic4_points<T: Float>(point: &math::Point4<T>) -> [SimplecticPoint4<T>
     let layer = (point[3] * inv_simplex_size()).floor();
     let layer_int: i64 = math::cast(layer);
 
-    let point = [point[0], point[1], point[2]];
-    let offset_point = [point[0] + layer_offset_x(),
-                        point[1] + layer_offset_y(),
-                        point[2] + layer_offset_z()];
+    let point3 = [point[0], point[1], point[2]];
+    let offset_point3 = [point[0] + layer_offset_x(),
+                         point[1] + layer_offset_y(),
+                         point[2] + layer_offset_z()];
 
     let (layer1_point, layer2_point) = match layer_int % 2 {
-        0 => (point, offset_point),
-        _ => (offset_point, point),
+        0 => (point3, offset_point3),
+        _ => (offset_point3, point3),
     };
 
     let [p1, p2, p3, p4, p5, p6] = simplectic3_points(&layer1_point);
@@ -244,4 +244,21 @@ pub fn simplectic4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
         gradient(seed, &p1) + gradient(seed, &p2) + gradient(seed, &p3) + gradient(seed, &p4) + gradient(seed, &p5) + gradient(seed, &p6) +
         gradient(seed, &p7) + gradient(seed, &p8) + gradient(seed, &p9) + gradient(seed, &p10) + gradient(seed, &p11) + gradient(seed, &p12)
     ) * norm4_constant()
+}
+
+mod tests {
+    #[test]
+    fn test_simplectic2() {
+        let _ = ::simplectic2(&::Seed::new(0), &[37.0, 24.0]);
+    }
+
+    #[test]
+    fn test_simplectic3() {
+        let _ = ::simplectic3(&::Seed::new(0), &[37.0, 24.0, 42.0]);
+    }
+
+    #[test]
+    fn test_simplectic4() {
+        let _ = ::simplectic4(&::Seed::new(0), &[37.0, 24.0, 42.0, 128.0]);
+    }
 }
