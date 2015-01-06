@@ -26,17 +26,16 @@ const SQUISH_CONSTANT_2D: f64 = 0.366025403784439; //(sqrt(2+1)-1)/2;
 const STRETCH_CONSTANT_3D: f64 = -1.0 / 6.0; //(1/Math.sqrt(3+1)-1)/3;
 const SQUISH_CONSTANT_3D: f64 = 1.0 / 3.0; //(Math.sqrt(3+1)-1)/3;
 
-const NORM_CONSTANT_2D: f32 = 14.0;
-const NORM_CONSTANT_3D: f32 = 14.0;
+const NORM_CONSTANT_2D: f32 = 1.0 / 14.0;
+const NORM_CONSTANT_3D: f32 = 1.0 / 14.0;
 
 pub fn simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
     fn gradient<T: Float>(seed: &Seed, xs_floor: T, ys_floor: T, dx: T, dy: T) -> T {
-        let attn = math::cast::<_, T>(2u) - dx * dx - dy * dy;
+        let attn = math::cast::<_, T>(2.0_f64) - dx * dx - dy * dy;
         if attn > Float::zero() {
             let index = seed.get2::<int>([math::cast(xs_floor), math::cast(ys_floor)]);
             let vec = gradient::get2::<T>(index);
-            let attn2 = attn * attn;
-            attn2 * attn2 * (dx * vec[0] + dy * vec[1])
+            math::pow4(attn) * (dx * vec[0] + dy * vec[1])
         } else {
             Float::zero()
         }
@@ -84,32 +83,6 @@ pub fn simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
     let dy2 = dy0 - one - squish_constant;
     value = value + gradient(seed, xs_floor + zero, ys_floor + one, dx2, dy2);
 
-    let (dx_ext, dy_ext, xsv_ext, ysv_ext) = if frac_sum <= one {
-        //We're inside the triangle (2-Simplex) at (0,0)
-        let z_frac = one - frac_sum;
-        if z_frac > xs_frac || z_frac > ys_frac { //(0,0) is one of the closest two triangular vertices
-            if xs_frac > ys_frac {
-                (dx0 - one, dy0 + one, xs_floor + one, ys_floor - one)
-            } else {
-                (dx0 + one, dy0 - one, xs_floor - one, ys_floor + one)
-            }
-        } else { //(1,0) and (0,1) are the closest two vertices.
-            (dx0 - one - two * squish_constant, dy0 - one - two * squish_constant, xs_floor + one, ys_floor + one)
-        }
-    } else {
-        //We're inside the triangle (2-Simplex) at (1,1)
-        let z_frac = two - frac_sum;
-        if z_frac < xs_frac || z_frac < ys_frac { //(0,0) is one of the closest two triangular vertices
-            if xs_frac > ys_frac {
-                (dx0 - two - two * squish_constant, dy0 + zero - two * squish_constant, xs_floor + two, ys_floor + zero)
-            } else {
-                (dx0 + zero - two * squish_constant, dy0 - two - two * squish_constant, xs_floor + zero, ys_floor + two)
-            }
-        } else { //(1,0) and (0,1) are the closest two vertices.
-            (dx0, dy0, xs_floor, ys_floor)
-        }
-    };
-
     if frac_sum > one {
         xs_floor = xs_floor + one;
         ys_floor = ys_floor + one;
@@ -120,20 +93,16 @@ pub fn simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
     //Contribution (0,0) or (1,1)
     value = value + gradient(seed, xs_floor, ys_floor, dx0, dy0);
 
-    //Extra Vertex
-    value = value + gradient(seed, xsv_ext, ysv_ext, dx_ext, dy_ext);
-
-    value / math::cast(NORM_CONSTANT_2D)
+    value * math::cast(NORM_CONSTANT_2D)
 }
 
 pub fn simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
     fn gradient<T: Float>(seed: &Seed, xs_floor: T, ys_floor: T, zs_floor: T, dx: T, dy: T, dz: T) -> T {
-        let attn = math::cast::<_, T>(2u) - dx * dx - dy * dy - dz * dz;
+        let attn = math::cast::<_, T>(2.0_f64) - dx * dx - dy * dy - dz * dz;
         if attn > Float::zero() {
             let index = seed.get3::<int>([math::cast(xs_floor), math::cast(ys_floor), math::cast(zs_floor)]);
             let vec = gradient::get3::<T>(index);
-            let attn2 = attn * attn;
-            attn2 * attn2 * (dx * vec[0] + dy * vec[1] + dz * vec[2])
+            math::pow4(attn) * (dx * vec[0] + dy * vec[1] + dz * vec[2])
         } else {
             Float::zero()
         }
@@ -175,123 +144,8 @@ pub fn simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
     let mut dy0 = point[1] - yb;
     let mut dz0 = point[2] - zb;
 
-    //We'll be defining these inside the next block and using them afterwards.
-    let mut dx_ext0;
-    let mut dy_ext0;
-    let mut dz_ext0;
-    let mut dx_ext1;
-    let mut dy_ext1;
-    let mut dz_ext1;
-    let mut xsv_ext0;
-    let mut ysv_ext0;
-    let mut zsv_ext0;
-    let mut xsv_ext1;
-    let mut ysv_ext1;
-    let mut zsv_ext1;
-
     let mut value = zero;
     if in_sum <= one { //We're inside the tetrahedron (3-Simplex) at (0,0,0)
-        //Determine which two of (0,0,1), (0,1,0), (1,0,0) are closest.
-        let mut a_point = 0x01u8;
-        let mut a_score = xins;
-        let mut b_point = 0x02u8;
-        let mut b_score = yins;
-        if a_score >= b_score && zins > b_score {
-            b_score = zins;
-            b_point = 0x04;
-        } else if a_score < b_score && zins > a_score {
-            a_score = zins;
-            a_point = 0x04;
-        }
-
-        //Now we determine the two lattice points not part of the tetrahedron that may contribute.
-        //This depends on the closest two tetrahedral vertices, including (0,0,0)
-        let wins = one - in_sum;
-        if wins > a_score || wins > b_score { //(0,0,0) is one of the closest two tetrahedral vertices.
-            let c = if b_score > a_score { b_point } else { a_point }; //Our other closest vertex is the closest out of a and b.
-
-            if (c & 0x01) == 0 {
-                xsv_ext0 = xsb - one;
-                xsv_ext1 = xsb;
-                dx_ext0 = dx0 + one;
-                dx_ext1 = dx0;
-            } else {
-                xsv_ext0 = xsb + one;
-                xsv_ext1 =  xsv_ext0;
-                dx_ext0 = dx0 - one;
-                dx_ext1 = dx_ext0;
-            }
-
-            if (c & 0x02) == 0 {
-                ysv_ext0 = ysb;
-                ysv_ext1 = ysb;
-                dy_ext0 = dy0;
-                dy_ext1 = dy0;
-                if (c & 0x01) == 0 {
-                    ysv_ext1 = ysv_ext1 - one;
-                    dy_ext1 = dy_ext1 + one;
-                } else {
-                    ysv_ext0 = ysv_ext0 - one;
-                    dy_ext0 = dy_ext0 + one;
-                }
-            } else {
-                ysv_ext0 = ysb + one;
-                ysv_ext1 = ysv_ext0;
-                dy_ext0 = dy0 - one;
-                dy_ext1 =  dy_ext0;
-            }
-
-            if (c & 0x04) == 0 {
-                zsv_ext0 = zsb;
-                zsv_ext1 = zsb - one;
-                dz_ext0 = dz0;
-                dz_ext1 = dz0 + one;
-            } else {
-                zsv_ext0 = zsb + one;
-                zsv_ext1 = zsv_ext0;
-                dz_ext0 = dz0 - one;
-                dz_ext1 = dz_ext0;
-            }
-        } else { //(0,0,0) is not one of the closest two tetrahedral vertices.
-            let c = (a_point | b_point) as u8; //Our two extra vertices are determined by the closest two.
-
-            if (c & 0x01) == 0 {
-                xsv_ext0 = xsb;
-                xsv_ext1 = xsb - one;
-                dx_ext0 = dx0 - two * squish_constant;
-                dx_ext1 = dx0 + one - squish_constant;
-            } else {
-                xsv_ext0 = xsb + one;
-                xsv_ext1 = xsv_ext0;
-                dx_ext0 = dx0 - one - two * squish_constant;
-                dx_ext1 = dx0 - one - squish_constant;
-            }
-
-            if (c & 0x02) == 0 {
-                ysv_ext0 = ysb;
-                ysv_ext1 = ysb - one;
-                dy_ext0 = dy0 - two * squish_constant;
-                dy_ext1 = dy0 + one - squish_constant;
-            } else {
-                ysv_ext0 = ysb + one;
-                ysv_ext1 = ysv_ext0;
-                dy_ext0 = dy0 - one - two * squish_constant;
-                dy_ext1 = dy0 - one - squish_constant;
-            }
-
-            if (c & 0x04) == 0 {
-                zsv_ext0 = zsb;
-                zsv_ext1 = zsb - one;
-                dz_ext0 = dz0 - two * squish_constant;
-                dz_ext1 = dz0 + one - squish_constant;
-            } else {
-                zsv_ext0 = zsb + one;
-                zsv_ext1 = zsv_ext0;
-                dz_ext0 = dz0 - one - two * squish_constant;
-                dz_ext1 = dz0 - one - squish_constant;
-            }
-        }
-
         //Contribution (0,0,0)
         value = value + gradient(seed, xsb, ysb, zsb, dx0, dy0, dz0);
 
@@ -313,107 +167,6 @@ pub fn simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
         let dz3 = dz0 - one - squish_constant;
         value = value + gradient(seed, xsb, ysb, zsb + one, dx3, dy3, dz3);
     } else if in_sum >= two { //We're inside the tetrahedron (3-Simplex) at (1,11)
-        //Determine which two tetrahedral vertices are the closest, out of (1,1,0), (1,0,1), (0,1,1) but not (1,1,1).
-        let mut a_point = 0x06u8;
-        let mut a_score = xins;
-        let mut b_point = 0x05u8;
-        let mut b_score = yins;
-        if a_score <= b_score && zins < b_score {
-            b_score = zins;
-            b_point = 0x03;
-        } else if a_score > b_score && zins < a_score {
-            a_score = zins;
-            a_point = 0x03;
-        }
-
-        //Now we determine the two lattice points not part of the tetrahedron that may contribute.
-        //This depends on the closest two tetrahedral vertices, including (1,1,1)
-        let wins: T = three - in_sum;
-        if wins < a_score || wins < b_score { //(1,1,1) is one of the closest two tetrahedral vertics.
-            let c = if b_score < a_score { b_point } else { a_point }; //Our other closest vertex is the closest out of a and b.
-
-            if (c & 0x01) != 0 {
-                xsv_ext0 = xsb + two;
-                xsv_ext1 = xsb + one;
-                dx_ext0 = dx0 - two - three * squish_constant;
-                dx_ext1 = dx0 - one - three * squish_constant;
-            } else {
-                xsv_ext0 = xsb;
-                xsv_ext1 = xsv_ext0;
-                dx_ext0 = dx0 - three * squish_constant;
-                dx_ext1 = dx_ext0;
-            }
-
-            if (c & 0x02) != 0 {
-                ysv_ext0 = ysb + one;
-                ysv_ext1 = ysv_ext0;
-                dy_ext0 = dy0 - one - three * squish_constant;
-                dy_ext1 = dy_ext0;
-                if (c & 0x01) != 0 {
-                    ysv_ext1 = ysv_ext1 + one;
-                    dy_ext1 = dy_ext1 - one;
-                } else {
-                    ysv_ext0 = ysv_ext0 + one;
-                    dy_ext0 = dy_ext0 - one;
-                }
-            } else {
-                ysv_ext0 = ysb;
-                ysv_ext1 = ysb;
-                dy_ext0 = dy0 - three * squish_constant;
-                dy_ext1 = dy_ext0;
-            }
-
-            if (c & 0x04) != 0 {
-                zsv_ext0 = zsb + one;
-                zsv_ext1 = zsb + two;
-                dz_ext0 = dz0 - one - three * squish_constant;
-                dz_ext1 = dz0 - two - three * squish_constant;
-            } else {
-                zsv_ext0 = zsb;
-                zsv_ext1 = zsb;
-                dz_ext0 = dz0 - three * squish_constant;
-                dz_ext1 = dz_ext0;
-            }
-        } else { //(1,1,1) is not one of the closest two tetrahedral vertices.
-            let c = (a_point & b_point) as u8; //Our two extra vertices are determined by the closest two.
-
-            if (c & 0x01) != 0 {
-                xsv_ext0 = xsb + one;
-                xsv_ext1 = xsb + two;
-                dx_ext0 = dx0 - one - squish_constant;
-                dx_ext1 = dx0 - two - two * squish_constant;
-            } else {
-                xsv_ext0 = xsb;
-                xsv_ext1 = xsb;
-                dx_ext0 = dx0 - squish_constant;
-                dx_ext1 = dx0 - two * squish_constant;
-            }
-
-            if (c & 0x02) != 0 {
-                ysv_ext0 = ysb + one;
-                ysv_ext1 = ysb + two;
-                dy_ext0 = dy0 - one - squish_constant;
-                dy_ext1 = dy0 - two - two * squish_constant;
-            } else {
-                ysv_ext0 = ysb;
-                ysv_ext1 = ysb;
-                dy_ext0 = dy0 - squish_constant;
-                dy_ext1 = dy0 - two * squish_constant;
-            }
-
-            if (c & 0x04) != 0 {
-                zsv_ext0 = zsb + one;
-                zsv_ext1 = zsb + two;
-                dz_ext0 = dz0 - one - squish_constant;
-                dz_ext1 = dz0 - two - two * squish_constant;
-            } else {
-                zsv_ext0 = zsb;
-                zsv_ext1 = zsb;
-                dz_ext0 = dz0 - squish_constant;
-                dz_ext1 = dz0 - two * squish_constant;
-            }
-        }
-
         //Contribution (1,1,0)
         let dx3 = dx0 - one - two * squish_constant;
         let dy3 = dy0 - one - two * squish_constant;
@@ -438,182 +191,6 @@ pub fn simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
         dz0 = dz0 - one - three * squish_constant;
         value = value + gradient(seed, xsb + one, ysb + one, zsb + one, dx0, dy0, dz0);
     } else { //We're inside the octahedron (Rectified 3-Simplex) in between.
-        let mut a_score;
-        let mut a_point: u8;
-        let mut a_is_further_side;
-        let mut b_score;
-        let mut b_point: u8;
-        let mut b_is_further_side;
-
-        //Decide between point (0,0,1) and (1,1,0) as closest
-        let p1 = xins + yins;
-        if p1 > one {
-            a_score = p1 - one;
-            a_point = 0x03;
-            a_is_further_side = true;
-        } else {
-            a_score = one - p1;
-            a_point = 0x04;
-            a_is_further_side = false;
-        }
-
-        //Decide between point (0,1,0) and (1,0,1) as closest
-        let p2 = xins + zins;
-        if p2 > one {
-            b_score = p2 - one;
-            b_point = 0x05;
-            b_is_further_side = true;
-        } else {
-            b_score = one - p2;
-            b_point = 0x02;
-            b_is_further_side = false;
-        }
-
-        //The closest out of the two (1,0,0) and (0,1,1) will replace the furthest out of the two decided above, if closer.
-        let p3 = yins + zins;
-        if p3 > one {
-            let score = p3 - one;
-            if a_score <= b_score && a_score < score {
-                a_point = 0x06;
-                a_is_further_side = true;
-            } else if a_score > b_score && b_score < score {
-                b_point = 0x06;
-                b_is_further_side = true;
-            }
-        } else {
-            let score = one - p3;
-            if a_score <= b_score && a_score < score {
-                a_point = 0x01;
-                a_is_further_side = false;
-            } else if a_score > b_score && b_score < score {
-                b_point = 0x01;
-                b_is_further_side = false;
-            }
-        }
-
-        //Where each of the two closest points are determines how the extra two vertices are calculated.
-        if a_is_further_side == b_is_further_side {
-            if a_is_further_side { //Both closest points on (1,1,1) sde
-                //One of the two extra points is (1,1,1)
-                dx_ext0 = dx0 - one - three * squish_constant;
-                dy_ext0 = dy0 - one - three * squish_constant;
-                dz_ext0 = dz0 - one - three * squish_constant;
-                xsv_ext0 = xsb + one;
-                ysv_ext0 = ysb + one;
-                zsv_ext0 = zsb + one;
-
-                //Other extra point is based on the shared axis.
-                let c = (a_point & b_point) as u8;
-                if (c & 0x01) != 0 {
-                    dx_ext1 = dx0 - two - two * squish_constant;
-                    dy_ext1 = dy0 - two * squish_constant;
-                    dz_ext1 = dz0 - two * squish_constant;
-                    xsv_ext1 = xsb + two;
-                    ysv_ext1 = ysb;
-                    zsv_ext1 = zsb;
-                } else if (c & 0x02) != 0 {
-                    dx_ext1 = dx0 - two * squish_constant;
-                    dy_ext1 = dy0 - two - two * squish_constant;
-                    dz_ext1 = dz0 - two * squish_constant;
-                    xsv_ext1 = xsb;
-                    ysv_ext1 = ysb + two;
-                    zsv_ext1 = zsb;
-                } else {
-                    dx_ext1 = dx0 - two * squish_constant;
-                    dy_ext1 = dy0 - two * squish_constant;
-                    dz_ext1 = dz0 - two - two * squish_constant;
-                    xsv_ext1 = xsb;
-                    ysv_ext1 = ysb;
-                    zsv_ext1 = zsb + two;
-                }
-            } else {//Both closest points on (0,0,0) side
-                //One of the two extra points is (0,0,0)
-                dx_ext0 = dx0;
-                dy_ext0 = dy0;
-                dz_ext0 = dz0;
-                xsv_ext0 = xsb;
-                ysv_ext0 = ysb;
-                zsv_ext0 = zsb;
-
-                //Other extra point is based on the omitted axis.
-                let c = (a_point | b_point) as u8;
-                if (c & 0x01) == 0 {
-                    dx_ext1 = dx0 + one - squish_constant;
-                    dy_ext1 = dy0 - one - squish_constant;
-                    dz_ext1 = dz0 - one - squish_constant;
-                    xsv_ext1 = xsb - one;
-                    ysv_ext1 = ysb + one;
-                    zsv_ext1 = zsb + one;
-                } else if (c & 0x02) == 0 {
-                    dx_ext1 = dx0 - one - squish_constant;
-                    dy_ext1 = dy0 + one - squish_constant;
-                    dz_ext1 = dz0 - one - squish_constant;
-                    xsv_ext1 = xsb + one;
-                    ysv_ext1 = ysb - one;
-                    zsv_ext1 = zsb + one;
-                } else {
-                    dx_ext1 = dx0 - one - squish_constant;
-                    dy_ext1 = dy0 - one - squish_constant;
-                    dz_ext1 = dz0 + one - squish_constant;
-                    xsv_ext1 = xsb + one;
-                    ysv_ext1 = ysb + one;
-                    zsv_ext1 = zsb - one;
-                }
-            }
-        } else { //One point on (0,0,0) side, one point on (1,1,1) side
-            let c1;
-            let c2;
-            if a_is_further_side {
-                c1 = a_point;
-                c2 = b_point;
-            } else {
-                c1 = b_point;
-                c2 = a_point;
-            }
-
-            //One contribution is a permutation of (1,1,-1)
-            if (c1 & 0x01) == 0 {
-                dx_ext0 = dx0 + one - squish_constant;
-                dy_ext0 = dy0 - one - squish_constant;
-                dz_ext0 = dz0 - one - squish_constant;
-                xsv_ext0 = xsb - one;
-                ysv_ext0 = ysb + one;
-                zsv_ext0 = zsb + one;
-            } else if (c1 & 0x02) == 0 {
-                dx_ext0 = dx0 - one - squish_constant;
-                dy_ext0 = dy0 + one - squish_constant;
-                dz_ext0 = dz0 - one - squish_constant;
-                xsv_ext0 = xsb + one;
-                ysv_ext0 = ysb - one;
-                zsv_ext0 = zsb + one;
-            } else {
-                dx_ext0 = dx0 - one - squish_constant;
-                dy_ext0 = dy0 - one - squish_constant;
-                dz_ext0 = dz0 + one - squish_constant;
-                xsv_ext0 = xsb + one;
-                ysv_ext0 = ysb + one;
-                zsv_ext0 = zsb - one;
-            }
-
-            //One contribution is a permutation of (0,0,2)
-            dx_ext1 = dx0 - two * squish_constant;
-            dy_ext1 = dy0 - two * squish_constant;
-            dz_ext1 = dz0 - two * squish_constant;
-            xsv_ext1 = xsb;
-            ysv_ext1 = ysb;
-            zsv_ext1 = zsb;
-            if (c2 & 0x01) != 0 {
-                dx_ext1 = dx_ext1 - two;
-                xsv_ext1 = xsv_ext1 + two;
-            } else if (c2 & 0x02) != 0 {
-                dy_ext1 = dy_ext1 - two;
-                ysv_ext1 = ysv_ext1 + two;
-            } else {
-                dz_ext1 = dz_ext1 - two;
-                zsv_ext1 = zsv_ext1 + two;
-            }
-        }
-
         //Contribution (1,0,0)
         let dx1 = dx0 - one - squish_constant;
         let dy1 = dy0 - zero - squish_constant;
@@ -651,11 +228,5 @@ pub fn simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
         value = value + gradient(seed, xsb, ysb + one, zsb + one, dx6, dy6, dz6);
     }
 
-    //First extra vertex
-    value = value + gradient(seed, xsv_ext0, ysv_ext0, zsv_ext0, dx_ext0, dy_ext0, dz_ext0);
-
-    //Second extra vertex
-    value = value + gradient(seed, xsv_ext1, ysv_ext1, zsv_ext1, dx_ext1, dy_ext1, dz_ext1);
-
-    return value / math::cast(NORM_CONSTANT_3D);
+    return value * math::cast(NORM_CONSTANT_3D);
 }
