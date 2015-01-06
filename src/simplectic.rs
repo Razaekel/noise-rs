@@ -245,3 +245,20 @@ pub fn simplectic4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
         gradient(seed, &p7) + gradient(seed, &p8) + gradient(seed, &p9) + gradient(seed, &p10) + gradient(seed, &p11) + gradient(seed, &p12)
     ) * norm4_constant()
 }
+
+mod tests {
+    #[test]
+    fn test_simplectic2() {
+        let _ = ::simplectic2(&::Seed::new(0), &[37.0, 24.0]);
+    }
+
+    #[test]
+    fn test_simplectic3() {
+        let _ = ::simplectic3(&::Seed::new(0), &[37.0, 24.0, 42.0]);
+    }
+
+    #[test]
+    fn test_simplectic4() {
+        let _ = ::simplectic4(&::Seed::new(0), &[37.0, 24.0, 42.0, 128.0]);
+    }
+}
