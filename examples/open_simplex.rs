@@ -1,4 +1,4 @@
-// Copyright 2013 The noise-rs developers. For a full listing of the authors,
+// Copyright 2015 The noise-rs developers. For a full listing of the authors,
 // refer to the AUTHORS file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ mod debug;
 fn main() {
     debug::render_png("open_simplex2.png", &Seed::new(0), 256, 256, scaled_open_simplex2);
     debug::render_png("open_simplex3.png", &Seed::new(0), 256, 256, scaled_open_simplex3);
-    println!("\nGenerated simplex2.png and simplex3.png");
+    println!("\nGenerated open_simplex2.png and open_simplex3.png");
 }
 
 fn scaled_open_simplex2(seed: &Seed, point: &Point2<f32>) -> f32 {
