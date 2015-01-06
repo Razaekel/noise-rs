@@ -1,4 +1,4 @@
-// Copyright 2013 The noise-rs developers. For a full listing of the authors,
+// Copyright 2015 The noise-rs developers. For a full listing of the authors,
 // refer to the AUTHORS file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,20 +19,20 @@
 
 extern crate noise;
 
-use noise::{simplex2, simplex3, Seed, Point2};
+use noise::{open_simplex2, open_simplex3, Seed, Point2};
 
 mod debug;
 
 fn main() {
-    debug::render_png("simplex2.png", &Seed::new(0), 256, 256, scaled_simplex2);
-    debug::render_png("simplex3.png", &Seed::new(0), 256, 256, scaled_simplex3);
-    println!("\nGenerated simplex2.png and simplex3.png");
+    debug::render_png("open_simplex2.png", &Seed::new(0), 256, 256, scaled_open_simplex2);
+    debug::render_png("open_simplex3.png", &Seed::new(0), 256, 256, scaled_open_simplex3);
+    println!("\nGenerated open_simplex2.png and open_simplex3.png");
 }
 
-fn scaled_simplex2(seed: &Seed, point: &Point2<f32>) -> f32 {
-    simplex2(seed, &[point[0] / 32.0, point[1] / 32.00])
+fn scaled_open_simplex2(seed: &Seed, point: &Point2<f32>) -> f32 {
+    open_simplex2(seed, &[point[0] / 32.0, point[1] / 32.00])
 }
 
-fn scaled_simplex3(seed: &Seed, point: &Point2<f32>) -> f32 {
-    simplex3(seed, &[point[0] / 32.0, point[1] / 32.00, 0.0])
+fn scaled_open_simplex3(seed: &Seed, point: &Point2<f32>) -> f32 {
+    open_simplex3(seed, &[point[0] / 32.0, point[1] / 32.00, 0.0])
 }

@@ -21,7 +21,7 @@
 extern crate noise;
 extern crate test;
 
-use noise::{perlin2, perlin3, perlin4, simplex2, simplex3, simplectic2, simplectic3, simplectic4, Seed};
+use noise::{perlin2, perlin3, perlin4, open_simplex2, open_simplex3, simplectic2, simplectic3, simplectic4, Seed};
 use test::Bencher;
 
 fn black_box<T>(dummy: T) -> T {
@@ -50,15 +50,15 @@ fn bench_perlin4(bencher: &mut Bencher) {
 }
 
 #[bench]
-fn bench_simplex2(bencher: &mut Bencher) {
+fn bench_open_simplex2(bencher: &mut Bencher) {
     let seed = Seed::new(0);
-    bencher.iter(|| simplex2(black_box(&seed), black_box(&[42.0f32, 37.0])));
+    bencher.iter(|| open_simplex2(black_box(&seed), black_box(&[42.0f32, 37.0])));
 }
 
 #[bench]
-fn bench_simplex3(bencher: &mut Bencher) {
+fn bench_open_simplex3(bencher: &mut Bencher) {
     let seed = Seed::new(0);
-    bencher.iter(|| simplex3(black_box(&seed), black_box(&[42.0f32, 37.0, 26.0])));
+    bencher.iter(|| open_simplex3(black_box(&seed), black_box(&[42.0f32, 37.0, 26.0])));
 }
 
 #[bench]
@@ -116,24 +116,24 @@ fn bench_perlin4_64x64(bencher: &mut Bencher) {
 }
 
 #[bench]
-fn bench_simplex2_64x64(bencher: &mut Bencher) {
+fn bench_open_simplex2_64x64(bencher: &mut Bencher) {
     let seed = Seed::new(0);
     bencher.iter(|| {
         for y in range(0, 64u) {
             for x in range(0, 64u) {
-                black_box(simplex2(black_box(&seed), &[x as f32, y as f32]));
+                black_box(open_simplex2(black_box(&seed), &[x as f32, y as f32]));
             }
         }
     });
 }
 
 #[bench]
-fn bench_simplex3_64x64(bencher: &mut Bencher) {
+fn bench_open_simplex3_64x64(bencher: &mut Bencher) {
     let seed = Seed::new(0);
     bencher.iter(|| {
         for y in range(0, 64u) {
             for x in range(0, 64u) {
-                black_box(simplex3(black_box(&seed), &[x as f32, y as f32, x as f32]));
+                black_box(open_simplex3(black_box(&seed), &[x as f32, y as f32, x as f32]));
             }
         }
     });

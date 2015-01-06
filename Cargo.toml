@@ -22,7 +22,7 @@ name = "perlin"
 
 [[example]]
 
-name = "simplex"
+name = "open_simplex"
 
 [[example]]
 
