@@ -116,9 +116,9 @@ impl<'a, 'b, T, F> Fn(&'a Seed, &'b Point2<T>) -> T for Brownian2<T, F> where
     /// Applies the brownian noise function for the supplied seed and point.
     extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b Point2<T>)) -> T {
         let mut frequency: T = self.frequency;
-        let mut amplitude: T = Float::one();
-        let mut result: T = Float::zero();
-        for _ in range(0, self.octaves) {
+        let mut amplitude: T = math::cast(1);
+        let mut result: T = math::cast(0);
+        for _ in 0..self.octaves {
             let scaled_point = [point[0] * frequency,
                                 point[1] * frequency];
             result = result + ((self.function)(seed, &scaled_point) * amplitude);
@@ -136,9 +136,9 @@ impl<'a, 'b, T, F> Fn(&'a Seed, &'b Point3<T>) -> T for Brownian3<T, F> where
     /// Applies the brownian noise function for the supplied seed and point.
     extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b Point3<T>)) -> T {
         let mut frequency: T = self.frequency;
-        let mut amplitude: T = Float::one();
-        let mut result: T = Float::zero();
-        for _ in range(0, self.octaves) {
+        let mut amplitude: T = math::cast(1);
+        let mut result: T = math::cast(0);
+        for _ in 0..self.octaves {
             let scaled_point = [point[0] * frequency,
                                 point[1] * frequency,
                                 point[2] * frequency];
@@ -157,8 +157,8 @@ impl<'a, 'b, T, F> Fn(&'a Seed, &'b ::Point4<T>) -> T for Brownian4<T, F> where
     /// Applies the brownian noise function for the supplied seed and point.
     extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b Point4<T>)) -> T {
         let mut frequency: T = self.frequency;
-        let mut amplitude: T = Float::one();
-        let mut result: T = Float::zero();
+        let mut amplitude: T = math::cast(1);
+        let mut result: T = math::cast(0);
         for _ in 0..self.octaves {
             let scaled_point = [point[0] * frequency,
                                 point[1] * frequency,

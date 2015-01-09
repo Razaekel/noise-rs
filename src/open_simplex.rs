@@ -31,13 +31,15 @@ const NORM_CONSTANT_3D: f32 = 1.0 / 14.0;
 
 pub fn open_simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
     fn gradient<T: Float>(seed: &Seed, xs_floor: T, ys_floor: T, dx: T, dy: T) -> T {
+        let zero: T = math::cast(0);
+
         let attn = math::cast::<_, T>(2.0_f64) - dx * dx - dy * dy;
-        if attn > Float::zero() {
+        if attn > zero {
             let index = seed.get2::<isize>([math::cast(xs_floor), math::cast(ys_floor)]);
             let vec = gradient::get2::<T>(index);
             math::pow4(attn) * (dx * vec[0] + dy * vec[1])
         } else {
-            Float::zero()
+            zero
         }
     }
 
@@ -98,20 +100,22 @@ pub fn open_simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
 
 pub fn open_simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
     fn gradient<T: Float>(seed: &Seed, xs_floor: T, ys_floor: T, zs_floor: T, dx: T, dy: T, dz: T) -> T {
+        let zero: T = math::cast(0);
+
         let attn = math::cast::<_, T>(2.0_f64) - dx * dx - dy * dy - dz * dz;
-        if attn > Float::zero() {
+        if attn > zero {
             let index = seed.get3::<isize>([math::cast(xs_floor), math::cast(ys_floor), math::cast(zs_floor)]);
             let vec = gradient::get3::<T>(index);
             math::pow4(attn) * (dx * vec[0] + dy * vec[1] + dz * vec[2])
         } else {
-            Float::zero()
+            zero
         }
     }
 
-    let zero: T = math::cast(0.0f32);
-    let one: T = math::cast(1.0f32);
-    let two: T = math::cast(2.0f32);
-    let three: T = math::cast(3.0f32);
+    let zero: T = math::cast(0);
+    let one: T = math::cast(1);
+    let two: T = math::cast(2);
+    let three: T = math::cast(3);
     let squish_constant: T = math::cast(SQUISH_CONSTANT_3D);
 
     //Place input coordinates on simplectic honeycomb.

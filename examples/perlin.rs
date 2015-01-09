@@ -15,8 +15,6 @@
 
 //! An example of using perlin noise
 
-#![feature(macro_rules)]
-
 extern crate noise;
 
 use noise::{perlin2, perlin3, perlin4, Seed, Point2};

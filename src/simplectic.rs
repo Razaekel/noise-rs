@@ -190,12 +190,14 @@ fn simplectic4_points<T: Float>(point: &math::Point4<T>) -> [SimplecticPoint4<T>
 pub fn simplectic2<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
     #[inline(always)]
     fn gradient<T: Float>(seed: &Seed, p: &SimplecticPoint2<T>) -> T {
+        let zero: T = math::cast(0);
+
         let attn = simplex_size::<T>() - p.offset[0] * p.offset[0]
                                        - p.offset[1] * p.offset[1];
-        if attn > Float::zero() {
+        if attn > zero {
             math::pow4(attn) * math::dot2(p.offset, gradient::get2(seed.get2(p.cell)))
         } else {
-            Float::zero()
+            zero
         }
     }
 
@@ -207,13 +209,15 @@ pub fn simplectic2<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
 pub fn simplectic3<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
     #[inline(always)]
     fn gradient<T: Float>(seed: &Seed, p: &SimplecticPoint3<T>) -> T {
+        let zero: T = math::cast(0);
+
         let attn = simplex_size::<T>() - p.offset[0] * p.offset[0]
                                        - p.offset[1] * p.offset[1]
                                        - p.offset[2] * p.offset[2];
-        if attn > Float::zero() {
+        if attn > zero {
             math::pow4(attn) * math::dot3(p.offset, gradient::get3(seed.get3(p.cell)))
         } else {
-            Float::zero()
+            zero
         }
     }
 
@@ -227,14 +231,16 @@ pub fn simplectic3<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
 pub fn simplectic4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
     #[inline(always)]
     fn gradient<T: Float>(seed: &Seed, p: &SimplecticPoint4<T>) -> T {
+        let zero: T = math::cast(0);
+
         let attn = simplex_size::<T>() - p.offset[0] * p.offset[0]
                                        - p.offset[1] * p.offset[1]
                                        - p.offset[2] * p.offset[2]
                                        - p.offset[3] * p.offset[3];
-        if attn > Float::zero() {
+        if attn > zero {
             math::pow4(attn) * math::dot4(p.offset, gradient::get4(seed.get4(p.cell)))
         } else {
-            Float::zero()
+            zero
         }
     }
 

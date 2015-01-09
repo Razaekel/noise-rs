@@ -15,8 +15,6 @@
 
 //! An example of using simplectic noise
 
-#![feature(macro_rules)]
-
 extern crate noise;
 
 use noise::{simplectic2, simplectic3, simplectic4, Seed, Point2};
