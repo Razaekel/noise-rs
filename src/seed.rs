@@ -30,31 +30,22 @@ pub struct Seed {
 impl Rand for Seed {
     fn rand<R: Rng>(rng: &mut R) -> Seed {
         let mut seq: Vec<usize> = (0..TABLE_SIZE).collect();
-        for i in (0..TABLE_SIZE) {
-            let mut swap_i: usize = rng.gen();
-            swap_i = swap_i % TABLE_SIZE;
-            let swap = seq[swap_i];
-            seq[swap_i] = seq[i];
-            seq[i] = swap;
-        }
+        rng.shuffle(&mut *seq);
 
         // It's unfortunate that this double-initializes the array, but Rust doesn't currently provide a
         // clean way to do this in one pass. Hopefully won't matter, as Seed creation will usually be a
         // one-time event.
-        let mut new_seed = Seed {
-            values: [0; TABLE_SIZE * 2],
-        };
-        for i in 0..(TABLE_SIZE * 2) {
-            new_seed.values[i] = seq[i % TABLE_SIZE];
-        }
-        new_seed
+        let mut seed = Seed { values: [0; TABLE_SIZE * 2] };
+        let seq_it = seq.iter().cycle();
+        for (x, y) in seed.values.iter_mut().zip(seq_it) { *x = *y }
+        seed
     }
 }
 
 impl Seed {
     pub fn new(seed: u32) -> Seed {
         let mut rng: XorShiftRng = SeedableRng::from_seed([1, seed, seed, seed]);
-        Rand::rand(&mut rng)
+        rng.gen()
     }
 
     #[inline(always)]
