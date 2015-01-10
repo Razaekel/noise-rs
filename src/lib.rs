@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![feature(macro_rules)]
 #![feature(unboxed_closures)]
 #![deny(missing_copy_implementations)]
 

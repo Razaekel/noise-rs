@@ -40,7 +40,7 @@ pub fn quadlerp<T: Float>(u: T, v: T, w: T, x: T, f0000: T, f1000: T, f0001: T, 
 }
 
 pub fn scurve5<T: Float>(t: T) -> T {
-    t * t * t * (t * (t * cast(6u) - cast(15u)) + cast(10u))
+    t * t * t * (t * (t * cast(6) - cast(15)) + cast(10))
 }
 
 /// Raises the number to the power of `4`

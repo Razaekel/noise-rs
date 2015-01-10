@@ -26,7 +26,7 @@ macro_rules! brownian {
             /// The underlying noise function
             pub function: F,
             /// The number of octaves to use
-            pub octaves: uint,
+            pub octaves: usize,
             /// The base frequency of the noise
             pub frequency: T,
             /// How quickly the amplitude of each octave decreases
@@ -44,7 +44,7 @@ macro_rules! brownian {
             /// - lacunarity: `2.0`
             /// - persistence: `0.5`
             #[inline]
-            pub fn new(function: F, octaves: uint) -> $Brownian<T, F> {
+            pub fn new(function: F, octaves: usize) -> $Brownian<T, F> {
                 $Brownian {
                     function: function,
                     octaves: octaves,
@@ -72,7 +72,7 @@ macro_rules! brownian {
 
             /// A builder method that sets the number of octaves to use.
             #[inline]
-            pub fn octaves(self, octaves: uint) -> $Brownian<T, F> {
+            pub fn octaves(self, octaves: usize) -> $Brownian<T, F> {
                 $Brownian { octaves: octaves, ..self }
             }
 
@@ -159,7 +159,7 @@ impl<'a, 'b, T, F> Fn(&'a Seed, &'b ::Point4<T>) -> T for Brownian4<T, F> where
         let mut frequency: T = self.frequency;
         let mut amplitude: T = Float::one();
         let mut result: T = Float::zero();
-        for _ in range(0, self.octaves) {
+        for _ in 0..self.octaves {
             let scaled_point = [point[0] * frequency,
                                 point[1] * frequency,
                                 point[2] * frequency,

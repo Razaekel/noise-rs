@@ -20,15 +20,15 @@ use {gradient, math, Seed};
 /// 2-dimensional perlin noise
 pub fn perlin2<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
     #[inline(always)]
-    fn gradient<T: Float>(seed: &Seed, whole: math::Point2<int>, frac: math::Vector2<T>) -> T {
+    fn gradient<T: Float>(seed: &Seed, whole: math::Point2<isize>, frac: math::Vector2<T>) -> T {
         math::dot2(frac, gradient::get2(seed.get2(whole)))
     }
 
     let xfloor = point[0].floor();
     let yfloor = point[1].floor();
 
-    let x0_whole: int = math::cast(xfloor);
-    let y0_whole: int = math::cast(yfloor);
+    let x0_whole: isize = math::cast(xfloor);
+    let y0_whole: isize = math::cast(yfloor);
 
     let x1_whole = x0_whole + 1;
     let y1_whole = y0_whole + 1;
@@ -53,7 +53,7 @@ pub fn perlin2<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
 /// 3-dimensional perlin noise
 pub fn perlin3<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
     #[inline(always)]
-    fn gradient<T: Float>(seed: &Seed, whole: math::Point3<int>, frac: math::Vector3<T>) -> T {
+    fn gradient<T: Float>(seed: &Seed, whole: math::Point3<isize>, frac: math::Vector3<T>) -> T {
         math::dot3(frac, gradient::get3(seed.get3(whole)))
     }
 
@@ -61,9 +61,9 @@ pub fn perlin3<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
     let yfloor = point[1].floor();
     let zfloor = point[2].floor();
 
-    let x0_whole: int = math::cast(xfloor);
-    let y0_whole: int = math::cast(yfloor);
-    let z0_whole: int = math::cast(zfloor);
+    let x0_whole: isize = math::cast(xfloor);
+    let y0_whole: isize = math::cast(yfloor);
+    let z0_whole: isize = math::cast(zfloor);
 
     let x1_whole = x0_whole + 1;
     let y1_whole = y0_whole + 1;
@@ -96,7 +96,7 @@ pub fn perlin3<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
 /// 4-dimensional perlin noise
 pub fn perlin4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
     #[inline(always)]
-    fn gradient<T: Float>(seed: &Seed, whole: math::Point4<int>, frac: math::Vector4<T>) -> T {
+    fn gradient<T: Float>(seed: &Seed, whole: math::Point4<isize>, frac: math::Vector4<T>) -> T {
         math::dot4(frac, gradient::get4(seed.get4(whole)))
     }
 
@@ -105,10 +105,10 @@ pub fn perlin4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
     let zfloor = point[2].floor();
     let wfloor = point[3].floor();
 
-    let x0_whole: int = math::cast(xfloor);
-    let y0_whole: int = math::cast(yfloor);
-    let z0_whole: int = math::cast(zfloor);
-    let w0_whole: int = math::cast(wfloor);
+    let x0_whole: isize = math::cast(xfloor);
+    let y0_whole: isize = math::cast(yfloor);
+    let z0_whole: isize = math::cast(zfloor);
+    let w0_whole: isize = math::cast(wfloor);
 
     let x1_whole = x0_whole + 1;
     let y1_whole = y0_whole + 1;
