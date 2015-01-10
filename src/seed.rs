@@ -18,18 +18,18 @@ use std::num::SignedInt;
 
 use math;
 
-const TABLE_SIZE: uint = 256;
+const TABLE_SIZE: usize = 256;
 
 #[allow(missing_copy_implementations)]
 pub struct Seed {
-    values: [uint; TABLE_SIZE * 2],
+    values: [usize; TABLE_SIZE * 2],
 }
 
 impl Rand for Seed {
     fn rand<R: Rng>(rng: &mut R) -> Seed {
-        let mut seq: Vec<uint> = range(0u, TABLE_SIZE).collect();
-        for i in range(0, TABLE_SIZE) {
-            let mut swap_i: uint = rng.gen();
+        let mut seq: Vec<usize> = (0..TABLE_SIZE).collect();
+        for i in (0..TABLE_SIZE) {
+            let mut swap_i: usize = rng.gen();
             swap_i = swap_i % TABLE_SIZE;
             let swap = seq[swap_i];
             seq[swap_i] = seq[i];
@@ -42,7 +42,7 @@ impl Rand for Seed {
         let mut new_seed = Seed {
             values: [0; TABLE_SIZE * 2],
         };
-        for i in range(0, TABLE_SIZE * 2) {
+        for i in 0..(TABLE_SIZE * 2) {
             new_seed.values[i] = seq[i % TABLE_SIZE];
         }
         new_seed
@@ -56,22 +56,22 @@ impl Seed {
     }
 
     #[inline(always)]
-    pub fn get1<T: SignedInt>(&self, x: T) -> uint {
-        self.values[math::cast::<T, uint>(x & math::cast(TABLE_SIZE - 1))]
+    pub fn get1<T: SignedInt>(&self, x: T) -> usize {
+        self.values[math::cast::<T, usize>(x & math::cast(TABLE_SIZE - 1))]
     }
 
     #[inline(always)]
-    pub fn get2<T: SignedInt>(&self, pos: math::Point2<T>) -> uint {
+    pub fn get2<T: SignedInt>(&self, pos: math::Point2<T>) -> usize {
         self.values[self.get1(pos[0]) + math::cast(pos[1] & math::cast(TABLE_SIZE - 1))]
     }
 
     #[inline(always)]
-    pub fn get3<T: SignedInt>(&self, pos: math::Point3<T>) -> uint {
+    pub fn get3<T: SignedInt>(&self, pos: math::Point3<T>) -> usize {
         self.values[self.get2([pos[0], pos[1]]) + math::cast(pos[2] & math::cast(TABLE_SIZE - 1))]
     }
 
     #[inline(always)]
-    pub fn get4<T: SignedInt>(&self, pos: math::Point4<T>) -> uint {
+    pub fn get4<T: SignedInt>(&self, pos: math::Point4<T>) -> usize {
         self.values[self.get3([pos[0], pos[1], pos[2]]) + math::cast(pos[3] & math::cast(TABLE_SIZE - 1))]
     }
 }

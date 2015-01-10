@@ -81,9 +81,9 @@ fn norm4_constant<T: Float>() -> T { math::cast(10.0_f64) }
 
 #[inline(always)]
 fn simplectic2_points<T: Float>(point: &math::Point2<T>) -> [SimplecticPoint2<T>; 3] {
-    let zero: T = math::cast(0u);
-    let one: T = math::cast(1u);
-    let two: T = math::cast(2u);
+    let zero: T = math::cast(0);
+    let one: T = math::cast(1);
+    let two: T = math::cast(2);
 
     // Skew the input coordinates into the grid to figure out which grid cell we're in
     let skew_offset = (point[0] + point[1]) * skew_constant();
