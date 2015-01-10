@@ -1,4 +1,4 @@
-// Copyright 2013 The noise-rs developers. For a full listing of the authors,
+// Copyright 2015 The noise-rs developers. For a full listing of the authors,
 // refer to the AUTHORS file at the top-level directory of this distribution.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +12,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+#![allow(unstable)]
 
 use std::rand::{Rand, Rng, SeedableRng, XorShiftRng};
 use std::num::SignedInt;
