@@ -15,8 +15,6 @@
 
 //! An example of using simplex noise
 
-#![feature(macro_rules)]
-
 extern crate noise;
 
 use noise::{open_simplex2, open_simplex3, Seed, Point2};

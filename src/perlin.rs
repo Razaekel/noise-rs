@@ -24,6 +24,8 @@ pub fn perlin2<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
         math::dot2(frac, gradient::get2(seed.get2(whole)))
     }
 
+    let one: T = math::cast(1);
+
     let xfloor = point[0].floor();
     let yfloor = point[1].floor();
 
@@ -36,8 +38,8 @@ pub fn perlin2<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
     let x0_frac = point[0] - xfloor;
     let y0_frac = point[1] - yfloor;
 
-    let x1_frac = x0_frac - Float::one();
-    let y1_frac = y0_frac - Float::one();
+    let x1_frac = x0_frac - one;
+    let y1_frac = y0_frac - one;
 
     let x_curve = math::scurve5(x0_frac);
     let y_curve = math::scurve5(y0_frac);
@@ -57,6 +59,8 @@ pub fn perlin3<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
         math::dot3(frac, gradient::get3(seed.get3(whole)))
     }
 
+    let one: T = math::cast(1);
+
     let xfloor = point[0].floor();
     let yfloor = point[1].floor();
     let zfloor = point[2].floor();
@@ -73,9 +77,9 @@ pub fn perlin3<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
     let y0_frac = point[1] - yfloor;
     let z0_frac = point[2] - zfloor;
 
-    let x1_frac = x0_frac - Float::one();
-    let y1_frac = y0_frac - Float::one();
-    let z1_frac = z0_frac - Float::one();
+    let x1_frac = x0_frac - one;
+    let y1_frac = y0_frac - one;
+    let z1_frac = z0_frac - one;
 
     let x_curve = math::scurve5(x0_frac);
     let y_curve = math::scurve5(y0_frac);
@@ -100,6 +104,8 @@ pub fn perlin4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
         math::dot4(frac, gradient::get4(seed.get4(whole)))
     }
 
+    let one: T = math::cast(1);
+
     let xfloor = point[0].floor();
     let yfloor = point[1].floor();
     let zfloor = point[2].floor();
@@ -120,10 +126,10 @@ pub fn perlin4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
     let z0_frac = point[2] - zfloor;
     let w0_frac = point[2] - wfloor;
 
-    let x1_frac = x0_frac - Float::one();
-    let y1_frac = y0_frac - Float::one();
-    let z1_frac = z0_frac - Float::one();
-    let w1_frac = w0_frac - Float::one();
+    let x1_frac = x0_frac - one;
+    let y1_frac = y0_frac - one;
+    let z1_frac = z0_frac - one;
+    let w1_frac = w0_frac - one;
 
     let x_curve = math::scurve5(x0_frac);
     let y_curve = math::scurve5(y0_frac);
