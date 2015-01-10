@@ -10,7 +10,8 @@ keywords = ["math", "random"]
 authors = ["Brendan Zabarauskas <bjzaba@yahoo.com.au>",
            "tiffany352 <https://github.com/tiffany352>",
            "James Miller <james@aatch.net>",
-           "Travis Watkins <amaranth@ubuntu.com>"]
+           "Travis Watkins <amaranth@ubuntu.com>",
+           "Michael Powell <herufeanor@gmail.com"]
 
 [lib]
 
