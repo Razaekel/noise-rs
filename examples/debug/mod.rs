@@ -15,6 +15,8 @@
 
 //! Useful things for debugging noise functions.
 
+#![allow(unstable)]
+
 extern crate image;
 
 use noise;

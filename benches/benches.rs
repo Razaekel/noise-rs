@@ -16,6 +16,7 @@
 //! An example of using simplectic noise
 
 #![feature(asm)]
+#![allow(unstable)]
 
 extern crate noise;
 extern crate test;
