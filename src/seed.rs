@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![allow(unstable)]
-
 use std::rand::{Rand, Rng, SeedableRng, XorShiftRng};
 use std::num::SignedInt;
 
@@ -24,20 +22,42 @@ const TABLE_SIZE: usize = 256;
 
 #[allow(missing_copy_implementations)]
 pub struct Seed {
-    values: [usize; TABLE_SIZE * 2],
+    x_values: [u8; TABLE_SIZE],
+    y_values: [u8; TABLE_SIZE],
+    z_values: [u8; TABLE_SIZE],
+    w_values: [u8; TABLE_SIZE],
 }
 
 impl Rand for Seed {
     fn rand<R: Rng>(rng: &mut R) -> Seed {
-        let mut seq: Vec<usize> = (0..TABLE_SIZE).collect();
-        rng.shuffle(&mut *seq);
+        let mut x_values: Vec<u8> = ::std::iter::range_inclusive(0, (TABLE_SIZE - 1) as u8).collect();
+        let mut y_values: Vec<u8> = x_values.clone();
+        let mut z_values: Vec<u8> = x_values.clone();
+        let mut w_values: Vec<u8> = x_values.clone();
+
+        rng.shuffle(&mut *x_values);
+        rng.shuffle(&mut *y_values);
+        rng.shuffle(&mut *z_values);
+        rng.shuffle(&mut *w_values);
 
         // It's unfortunate that this double-initializes the array, but Rust doesn't currently provide a
         // clean way to do this in one pass. Hopefully won't matter, as Seed creation will usually be a
         // one-time event.
-        let mut seed = Seed { values: [0; TABLE_SIZE * 2] };
-        let seq_it = seq.iter().cycle();
-        for (x, y) in seed.values.iter_mut().zip(seq_it) { *x = *y }
+        let mut seed = Seed {
+            x_values: [0; TABLE_SIZE],
+            y_values: [0; TABLE_SIZE],
+            z_values: [0; TABLE_SIZE],
+            w_values: [0; TABLE_SIZE],
+        };
+
+        let x_iter = x_values.iter().cycle();
+        for (x, y) in seed.x_values.iter_mut().zip(x_iter) { *x = *y }
+        let y_iter = y_values.iter().cycle();
+        for (x, y) in seed.y_values.iter_mut().zip(y_iter) { *x = *y }
+        let z_iter = z_values.iter().cycle();
+        for (x, y) in seed.z_values.iter_mut().zip(z_iter) { *x = *y }
+        let w_iter = w_values.iter().cycle();
+        for (x, y) in seed.w_values.iter_mut().zip(w_iter) { *x = *y }
         seed
     }
 }
@@ -50,22 +70,22 @@ impl Seed {
 
     #[inline(always)]
     pub fn get1<T: SignedInt>(&self, x: T) -> usize {
-        self.values[math::cast::<T, usize>(x & math::cast(TABLE_SIZE - 1))]
+        self.x_values[math::cast::<T, usize>(x & math::cast(TABLE_SIZE - 1))] as usize
     }
 
     #[inline(always)]
     pub fn get2<T: SignedInt>(&self, pos: math::Point2<T>) -> usize {
-        self.values[self.get1(pos[0]) + math::cast(pos[1] & math::cast(TABLE_SIZE - 1))]
+        self.get1(pos[0]) ^ self.y_values[math::cast::<T, usize>(pos[1] & math::cast(TABLE_SIZE - 1))] as usize
     }
 
     #[inline(always)]
     pub fn get3<T: SignedInt>(&self, pos: math::Point3<T>) -> usize {
-        self.values[self.get2([pos[0], pos[1]]) + math::cast(pos[2] & math::cast(TABLE_SIZE - 1))]
+        self.get2([pos[0], pos[1]]) ^ self.z_values[math::cast::<T, usize>(pos[2] & math::cast(TABLE_SIZE - 1))] as usize
     }
 
     #[inline(always)]
     pub fn get4<T: SignedInt>(&self, pos: math::Point4<T>) -> usize {
-        self.values[self.get3([pos[0], pos[1], pos[2]]) + math::cast(pos[3] & math::cast(TABLE_SIZE - 1))]
+        self.get3([pos[0], pos[1], pos[2]]) ^ self.w_values[math::cast::<T, usize>(pos[3] & math::cast(TABLE_SIZE - 1))] as usize
     }
 }
 

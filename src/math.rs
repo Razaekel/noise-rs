@@ -15,7 +15,6 @@
 
 use std::num::{self, Float, NumCast};
 
-#[allow(unstable)]
 pub fn cast<T: NumCast, U: NumCast>(x: T) -> U {
     num::cast(x).unwrap()
 }

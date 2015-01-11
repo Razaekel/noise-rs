@@ -13,8 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![allow(unstable)]
-
 use std::num::Float;
 
 use {math, Seed, Point2, Point3, Point4};

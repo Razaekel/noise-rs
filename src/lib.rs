@@ -15,6 +15,7 @@
 
 #![feature(unboxed_closures)]
 #![deny(missing_copy_implementations)]
+#![allow(unstable)]
 
 pub use seed::Seed;
 pub use math::{Point2, Point3, Point4};
