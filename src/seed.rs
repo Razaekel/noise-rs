@@ -22,42 +22,20 @@ const TABLE_SIZE: usize = 256;
 
 #[allow(missing_copy_implementations)]
 pub struct Seed {
-    x_values: [u8; TABLE_SIZE],
-    y_values: [u8; TABLE_SIZE],
-    z_values: [u8; TABLE_SIZE],
-    w_values: [u8; TABLE_SIZE],
+    values: [u8; TABLE_SIZE],
 }
 
 impl Rand for Seed {
     fn rand<R: Rng>(rng: &mut R) -> Seed {
-        let mut x_values: Vec<u8> = ::std::iter::range_inclusive(0, (TABLE_SIZE - 1) as u8).collect();
-        let mut y_values: Vec<u8> = x_values.clone();
-        let mut z_values: Vec<u8> = x_values.clone();
-        let mut w_values: Vec<u8> = x_values.clone();
-
-        rng.shuffle(&mut *x_values);
-        rng.shuffle(&mut *y_values);
-        rng.shuffle(&mut *z_values);
-        rng.shuffle(&mut *w_values);
+        let mut seq: Vec<u8> = ::std::iter::range_inclusive(0, (TABLE_SIZE - 1) as u8).collect();
+        rng.shuffle(&mut *seq);
 
         // It's unfortunate that this double-initializes the array, but Rust doesn't currently provide a
         // clean way to do this in one pass. Hopefully won't matter, as Seed creation will usually be a
         // one-time event.
-        let mut seed = Seed {
-            x_values: [0; TABLE_SIZE],
-            y_values: [0; TABLE_SIZE],
-            z_values: [0; TABLE_SIZE],
-            w_values: [0; TABLE_SIZE],
-        };
-
-        let x_iter = x_values.iter().cycle();
-        for (x, y) in seed.x_values.iter_mut().zip(x_iter) { *x = *y }
-        let y_iter = y_values.iter().cycle();
-        for (x, y) in seed.y_values.iter_mut().zip(y_iter) { *x = *y }
-        let z_iter = z_values.iter().cycle();
-        for (x, y) in seed.z_values.iter_mut().zip(z_iter) { *x = *y }
-        let w_iter = w_values.iter().cycle();
-        for (x, y) in seed.w_values.iter_mut().zip(w_iter) { *x = *y }
+        let mut seed = Seed { values: [0; TABLE_SIZE] };
+        let seq_it = seq.iter();
+        for (x, y) in seed.values.iter_mut().zip(seq_it) { *x = *y }
         seed
     }
 }
@@ -70,22 +48,26 @@ impl Seed {
 
     #[inline(always)]
     pub fn get1<T: SignedInt>(&self, x: T) -> usize {
-        self.x_values[math::cast::<T, usize>(x & math::cast(TABLE_SIZE - 1))] as usize
+        let x: usize = math::cast(x & math::cast(0xff));
+        self.values[x] as usize
     }
 
     #[inline(always)]
     pub fn get2<T: SignedInt>(&self, pos: math::Point2<T>) -> usize {
-        self.get1(pos[0]) ^ self.y_values[math::cast::<T, usize>(pos[1] & math::cast(TABLE_SIZE - 1))] as usize
+        let y: usize = math::cast(pos[1] & math::cast(0xff));
+        self.values[self.get1(pos[0]) ^ y] as usize
     }
 
     #[inline(always)]
     pub fn get3<T: SignedInt>(&self, pos: math::Point3<T>) -> usize {
-        self.get2([pos[0], pos[1]]) ^ self.z_values[math::cast::<T, usize>(pos[2] & math::cast(TABLE_SIZE - 1))] as usize
+        let z: usize = math::cast(pos[2] & math::cast(0xff));
+        self.values[self.get2([pos[0], pos[1]]) ^ z] as usize
     }
 
     #[inline(always)]
     pub fn get4<T: SignedInt>(&self, pos: math::Point4<T>) -> usize {
-        self.get3([pos[0], pos[1], pos[2]]) ^ self.w_values[math::cast::<T, usize>(pos[3] & math::cast(TABLE_SIZE - 1))] as usize
+        let w: usize = math::cast(pos[3] & math::cast(0xff));
+        self.values[self.get3([pos[0], pos[1], pos[2]]) ^ w] as usize
     }
 }
 
