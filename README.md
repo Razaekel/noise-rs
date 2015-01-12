@@ -31,7 +31,7 @@ fn perlin3<T: Float>(seed: &Seed, point: &Point3<T>) -> T;
 fn perlin4<T: Float>(seed: &Seed, point: &Point4<T>) -> T;
 ~~~
 
-OpenSimplex noise is a slower but higher quality form of graidnet noise.
+OpenSimplex noise is a slower but higher quality form of gradient noise.
 ~~~rust
 fn open_simplex2<T: Float>(seed: &Seed, point: &Point2<T>) -> T;
 fn open_simplex3<T: Float>(seed: &Seed, point: &Point3<T>) -> T;
