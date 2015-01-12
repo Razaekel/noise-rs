@@ -44,10 +44,10 @@ pub fn perlin2<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
     let x_curve = math::scurve5(x0_frac);
     let y_curve = math::scurve5(y0_frac);
 
-    let x0_cache = seed.get1(x0_whole);
-    let y0_cache = seed.get1(y0_whole);
-    let x1_cache = seed.get1(x1_whole);
-    let y1_cache = seed.get1(y1_whole);
+    let x0_cache = seed.getx(x0_whole);
+    let y0_cache = seed.gety(y0_whole);
+    let x1_cache = seed.getx(x1_whole);
+    let y1_cache = seed.gety(y1_whole);
 
     let f00 = gradient([x0_cache, y0_cache], [x0_frac, y0_frac]);
     let f10 = gradient([x1_cache, y0_cache], [x1_frac, y0_frac]);
@@ -90,12 +90,12 @@ pub fn perlin3<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
     let y_curve = math::scurve5(y0_frac);
     let z_curve = math::scurve5(z0_frac);
 
-    let x0_cache = seed.get1(x0_whole);
-    let y0_cache = seed.get1(y0_whole);
-    let z0_cache = seed.get1(z0_whole);
-    let x1_cache = seed.get1(x1_whole);
-    let y1_cache = seed.get1(y1_whole);
-    let z1_cache = seed.get1(z1_whole);
+    let x0_cache = seed.getx(x0_whole);
+    let y0_cache = seed.gety(y0_whole);
+    let z0_cache = seed.getz(z0_whole);
+    let x1_cache = seed.getx(x1_whole);
+    let y1_cache = seed.gety(y1_whole);
+    let z1_cache = seed.getz(z1_whole);
 
     let f000 = gradient([x0_cache, y0_cache, z0_cache], [x0_frac, y0_frac, z0_frac]);
     let f100 = gradient([x1_cache, y0_cache, z0_cache], [x1_frac, y0_frac, z0_frac]);
@@ -148,14 +148,14 @@ pub fn perlin4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
     let z_curve = math::scurve5(z0_frac);
     let w_curve = math::scurve5(w0_frac);
 
-    let x0_cache = seed.get1(x0_whole);
-    let y0_cache = seed.get1(y0_whole);
-    let z0_cache = seed.get1(z0_whole);
-    let w0_cache = seed.get1(w0_whole);
-    let x1_cache = seed.get1(x1_whole);
-    let y1_cache = seed.get1(y1_whole);
-    let z1_cache = seed.get1(z1_whole);
-    let w1_cache = seed.get1(w1_whole);
+    let x0_cache = seed.getx(x0_whole);
+    let y0_cache = seed.gety(y0_whole);
+    let z0_cache = seed.getz(z0_whole);
+    let w0_cache = seed.getw(w0_whole);
+    let x1_cache = seed.getx(x1_whole);
+    let y1_cache = seed.gety(y1_whole);
+    let z1_cache = seed.getz(z1_whole);
+    let w1_cache = seed.getw(w1_whole);
 
     let f0000 = gradient([x0_cache, y0_cache, z0_cache, w0_cache], [x0_frac, y0_frac, z0_frac, w0_frac]);
     let f1000 = gradient([x1_cache, y0_cache, z0_cache, w0_cache], [x1_frac, y0_frac, z0_frac, w0_frac]);
