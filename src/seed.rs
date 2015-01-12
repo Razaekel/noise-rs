@@ -69,23 +69,38 @@ impl Seed {
     }
 
     #[inline(always)]
-    pub fn get1<T: SignedInt>(&self, x: T) -> usize {
+    pub fn getx<T: SignedInt>(&self, x: T) -> usize {
         self.x_values[math::cast::<T, usize>(x & math::cast(TABLE_SIZE - 1))] as usize
     }
 
     #[inline(always)]
+    pub fn gety<T: SignedInt>(&self, y: T) -> usize {
+        self.y_values[math::cast::<T, usize>(y & math::cast(TABLE_SIZE - 1))] as usize
+    }
+
+    #[inline(always)]
+    pub fn getz<T: SignedInt>(&self, z: T) -> usize {
+        self.z_values[math::cast::<T, usize>(z & math::cast(TABLE_SIZE - 1))] as usize
+    }
+
+    #[inline(always)]
+    pub fn getw<T: SignedInt>(&self, w: T) -> usize {
+        self.w_values[math::cast::<T, usize>(w & math::cast(TABLE_SIZE - 1))] as usize
+    }
+
+    #[inline(always)]
     pub fn get2<T: SignedInt>(&self, pos: math::Point2<T>) -> usize {
-        self.get1(pos[0]) ^ self.y_values[math::cast::<T, usize>(pos[1] & math::cast(TABLE_SIZE - 1))] as usize
+        self.getx(pos[0]) ^ self.gety(pos[1])
     }
 
     #[inline(always)]
     pub fn get3<T: SignedInt>(&self, pos: math::Point3<T>) -> usize {
-        self.get2([pos[0], pos[1]]) ^ self.z_values[math::cast::<T, usize>(pos[2] & math::cast(TABLE_SIZE - 1))] as usize
+        self.getx(pos[0]) ^ self.gety(pos[1]) ^ self.getz(pos[2])
     }
 
     #[inline(always)]
     pub fn get4<T: SignedInt>(&self, pos: math::Point4<T>) -> usize {
-        self.get3([pos[0], pos[1], pos[2]]) ^ self.w_values[math::cast::<T, usize>(pos[3] & math::cast(TABLE_SIZE - 1))] as usize
+        self.getx(pos[0]) ^ self.gety(pos[1]) ^ self.getz(pos[2]) ^ self.getw(pos[3])
     }
 }
 
