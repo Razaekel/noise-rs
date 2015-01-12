@@ -22,15 +22,15 @@ use noise::{open_simplex2, open_simplex3, Seed, Point2};
 mod debug;
 
 fn main() {
-    debug::render_png("open_simplex2.png", &Seed::new(0), 256, 256, scaled_open_simplex2);
-    debug::render_png("open_simplex3.png", &Seed::new(0), 256, 256, scaled_open_simplex3);
+    debug::render_png("open_simplex2.png", &Seed::new(0), 1024, 1024, scaled_open_simplex2);
+    debug::render_png("open_simplex3.png", &Seed::new(0), 1024, 1024, scaled_open_simplex3);
     println!("\nGenerated open_simplex2.png and open_simplex3.png");
 }
 
 fn scaled_open_simplex2(seed: &Seed, point: &Point2<f32>) -> f32 {
-    open_simplex2(seed, &[point[0] / 32.0, point[1] / 32.00])
+    open_simplex2(seed, &[point[0] / 16.0, point[1] / 16.0])
 }
 
 fn scaled_open_simplex3(seed: &Seed, point: &Point2<f32>) -> f32 {
-    open_simplex3(seed, &[point[0] / 32.0, point[1] / 32.00, 0.0])
+    open_simplex3(seed, &[point[0] / 16.0, point[1] / 16.0, 0.0])
 }

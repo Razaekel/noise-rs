@@ -22,20 +22,20 @@ use noise::{perlin2, perlin3, perlin4, Seed, Point2};
 mod debug;
 
 fn main() {
-    debug::render_png("perlin2.png", &Seed::new(0), 256, 256, scaled_perlin2);
-    debug::render_png("perlin3.png", &Seed::new(0), 256, 256, scaled_perlin3);
-    debug::render_png("perlin4.png", &Seed::new(0), 256, 256, scaled_perlin4);
+    debug::render_png("perlin2.png", &Seed::new(0), 1024, 1024, scaled_perlin2);
+    debug::render_png("perlin3.png", &Seed::new(0), 1024, 1024, scaled_perlin3);
+    debug::render_png("perlin4.png", &Seed::new(0), 1024, 1024, scaled_perlin4);
     println!("\nGenerated perlin2.png, perlin3.png and perlin4.png");
 }
 
 fn scaled_perlin2(seed: &Seed, point: &Point2<f32>) -> f32 {
-    perlin2(seed, &[point[0] / 32.0f32, point[1] / 32.00])
+    perlin2(seed, &[point[0] / 16.0, point[1] / 16.0])
 }
 
 fn scaled_perlin3(seed: &Seed, point: &Point2<f32>) -> f32 {
-    perlin3(seed, &[point[0] / 32.0f32, point[1] / 32.00, 0.0])
+    perlin3(seed, &[point[0] / 16.0, point[1] / 16.0, 0.0])
 }
 
 fn scaled_perlin4(seed: &Seed, point: &Point2<f32>) -> f32 {
-    perlin4(seed, &[point[0] / 32.0f32, point[1] / 32.00, 0.0, 0.0])
+    perlin4(seed, &[point[0] / 16.0, point[1] / 16.0, 0.0, 0.0])
 }
