@@ -22,20 +22,20 @@ use noise::{simplectic2, simplectic3, simplectic4, Seed, Point2};
 mod debug;
 
 fn main() {
-    debug::render_png("simplectic2.png", &Seed::new(0), 256, 256, scaled_simplectic2);
-    debug::render_png("simplectic3.png", &Seed::new(0), 256, 256, scaled_simplectic3);
-    debug::render_png("simplectic4.png", &Seed::new(0), 256, 256, scaled_simplectic4);
+    debug::render_png("simplectic2.png", &Seed::new(0), 1024, 1024, scaled_simplectic2);
+    debug::render_png("simplectic3.png", &Seed::new(0), 1024, 1024, scaled_simplectic3);
+    debug::render_png("simplectic4.png", &Seed::new(0), 1024, 1024, scaled_simplectic4);
     println!("\nGenerated simplectic2.png, simplectic3.png and simplectic4.png");
 }
 
 fn scaled_simplectic2(seed: &Seed, point: &Point2<f32>) -> f32 {
-    simplectic2(seed, &[point[0] / 64.0, point[1] / 64.0])
+    simplectic2(seed, &[point[0] / 16.0, point[1] / 16.0])
 }
 
 fn scaled_simplectic3(seed: &Seed, point: &Point2<f32>) -> f32 {
-    simplectic3(seed, &[point[0] / 64.0, point[1] / 64.0, 0.0])
+    simplectic3(seed, &[point[0] / 16.0, point[1] / 16.0, 0.0])
 }
 
 fn scaled_simplectic4(seed: &Seed, point: &Point2<f32>) -> f32 {
-    simplectic4(seed, &[point[0] / 64.0, point[1] / 64.0, 0.0, 0.0])
+    simplectic4(seed, &[point[0] / 16.0, point[1] / 16.0, 0.0, 0.0])
 }

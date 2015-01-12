@@ -24,20 +24,20 @@ use noise::{Brownian2, Brownian3, Brownian4, perlin2, perlin3, perlin4, Seed, Po
 mod debug;
 
 fn main() {
-    debug::render_png("brownian2.png", &Seed::new(0), 256, 256, brownian2_for_image);
-    debug::render_png("brownian3.png", &Seed::new(0), 256, 256, brownian3_for_image);
-    debug::render_png("brownian4.png", &Seed::new(0), 256, 256, brownian4_for_image);
+    debug::render_png("brownian2.png", &Seed::new(0), 1024, 1024, brownian2_for_image);
+    debug::render_png("brownian3.png", &Seed::new(0), 1024, 1024, brownian3_for_image);
+    debug::render_png("brownian4.png", &Seed::new(0), 1024, 1024, brownian4_for_image);
     println!("\nGenerated brownian2.png, brownian3.png and brownian4.png");
 }
 
 fn brownian2_for_image(seed: &Seed, point: &Point2<f32>) -> f32 {
-    Brownian2::new(perlin2, 4).wavelength(32.0)(seed, point)
+    Brownian2::new(perlin2, 4).wavelength(16.0)(seed, point)
 }
 
 fn brownian3_for_image(seed: &Seed, point: &Point2<f32>) -> f32 {
-    Brownian3::new(perlin3, 4).wavelength(32.0)(seed, &[point[0], point[1], 0.0])
+    Brownian3::new(perlin3, 4).wavelength(16.0)(seed, &[point[0], point[1], 0.0])
 }
 
 fn brownian4_for_image(seed: &Seed, point: &Point2<f32>) -> f32 {
-    Brownian4::new(perlin4, 4).wavelength(32.0)(seed, &[point[0], point[1], 0.0, 0.0])
+    Brownian4::new(perlin4, 4).wavelength(16.0)(seed, &[point[0], point[1], 0.0, 0.0])
 }
