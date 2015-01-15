@@ -21,7 +21,6 @@ pub use seed::Seed;
 pub use math::{Point2, Point3, Point4};
 pub use perlin::{perlin2, perlin3, perlin4};
 pub use open_simplex::{open_simplex2, open_simplex3};
-pub use simplectic::{simplectic2, simplectic3, simplectic4};
 pub use brownian::{Brownian2, Brownian3, Brownian4};
 
 mod gradient;
@@ -31,4 +30,3 @@ mod seed;
 mod brownian;
 mod perlin;
 mod open_simplex;
-mod simplectic;
