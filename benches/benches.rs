@@ -21,7 +21,7 @@
 extern crate noise;
 extern crate test;
 
-use noise::{perlin2, perlin3, perlin4, open_simplex2, open_simplex3, simplectic2, simplectic3, simplectic4, Seed};
+use noise::{perlin2, perlin3, perlin4, open_simplex2, open_simplex3, Seed};
 use test::Bencher;
 
 fn black_box<T>(dummy: T) -> T {
@@ -59,24 +59,6 @@ fn bench_open_simplex2(bencher: &mut Bencher) {
 fn bench_open_simplex3(bencher: &mut Bencher) {
     let seed = Seed::new(0);
     bencher.iter(|| open_simplex3(black_box(&seed), black_box(&[42.0f32, 37.0, 26.0])));
-}
-
-#[bench]
-fn bench_simplectic2(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| simplectic2(black_box(&seed), black_box(&[42.0f32, 37.0])));
-}
-
-#[bench]
-fn bench_simplectic3(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| simplectic3(black_box(&seed), black_box(&[42.0f32, 37.0, 26.0])));
-}
-
-#[bench]
-fn bench_simplectic4(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| simplectic4(black_box(&seed), black_box(&[42.0f32, 37.0, 26.0, 128.0])));
 }
 
 #[bench]
@@ -134,42 +116,6 @@ fn bench_open_simplex3_64x64(bencher: &mut Bencher) {
         for y in 0..64 {
             for x in 0..64 {
                 black_box(open_simplex3(black_box(&seed), &[x as f32, y as f32, x as f32]));
-            }
-        }
-    });
-}
-
-#[bench]
-fn bench_simplectic2_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| {
-        for y in 0..64 {
-            for x in 0..64 {
-                black_box(simplectic2(black_box(&seed), &[x as f32, y as f32]));
-            }
-        }
-    });
-}
-
-#[bench]
-fn bench_simplectic3_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| {
-        for y in 0..64 {
-            for x in 0..64 {
-                black_box(simplectic3(black_box(&seed), &[x as f32, y as f32, x as f32]));
-            }
-        }
-    });
-}
-
-#[bench]
-fn bench_simplectic4_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| {
-        for y in 0..64 {
-            for x in 0..64 {
-                black_box(simplectic4(black_box(&seed), &[x as f32, y as f32, x as f32, y as f32]));
             }
         }
     });

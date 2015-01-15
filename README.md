@@ -37,13 +37,6 @@ fn open_simplex2<T: Float>(seed: &Seed, point: &Point2<T>) -> T;
 fn open_simplex3<T: Float>(seed: &Seed, point: &Point3<T>) -> T;
 ~~~
 
-Simplectic noise is a slower and lower quality form of gradient noise. It has no particular advantages, and will soon be removed from this library.
-~~~rust
-fn simplectic2<T: Float>(seed: &Seed, point: &Point2<T>) -> T;
-fn simplectic3<T: Float>(seed: &Seed, point: &Point3<T>) -> T;
-fn simplectic4<T: Float>(seed: &Seed, point: &Point4<T>) -> T;
-~~~
-
 Fractional Brownian Motion is a way of combining multiple versions of a noise function to create a richer and more varied output.
 
 Example:

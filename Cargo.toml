@@ -27,10 +27,6 @@ name = "open_simplex"
 
 [[example]]
 
-name = "simplectic"
-
-[[example]]
-
 name = "brownian"
 
 [[bench]]
