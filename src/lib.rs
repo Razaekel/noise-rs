@@ -30,6 +30,7 @@ pub use cell::{cell2_range_inv, cell3_range_inv, cell4_range_inv};
 pub use cell::{cell2_value, cell3_value, cell4_value};
 pub use cell::{cell2_manhattan, cell3_manhattan, cell4_manhattan};
 pub use cell::{cell2_manhattan_inv, cell3_manhattan_inv, cell4_manhattan_inv};
+pub use cell::{cell2_manhattan_value, cell3_manhattan_value, cell4_manhattan_value};
 
 mod gradient;
 mod math;

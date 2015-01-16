@@ -29,6 +29,7 @@ use noise::{cell2_range_inv, cell3_range_inv, cell4_range_inv};
 use noise::{cell2_value, cell3_value, cell4_value};
 use noise::{cell2_manhattan, cell3_manhattan, cell4_manhattan};
 use noise::{cell2_manhattan_inv, cell3_manhattan_inv, cell4_manhattan_inv};
+use noise::{cell2_manhattan_value, cell3_manhattan_value, cell4_manhattan_value};
 use test::Bencher;
 
 fn black_box<T>(dummy: T) -> T {
@@ -156,6 +157,24 @@ fn bench_cell3_manhattan_inv(bencher: &mut Bencher) {
 fn bench_cell4_manhattan_inv(bencher: &mut Bencher) {
     let seed = Seed::new(0);
     bencher.iter(|| cell4_manhattan_inv(black_box(&seed), black_box(&[42.0f32, 37.0, 26.0, 128.0])));
+}
+
+#[bench]
+fn bench_cell2_manhattan_value(bencher: &mut Bencher) {
+    let seed = Seed::new(0);
+    bencher.iter(|| cell2_manhattan_value(black_box(&seed), black_box(&[42.0f32, 37.0])));
+}
+
+#[bench]
+fn bench_cell3_manhattan_value(bencher: &mut Bencher) {
+    let seed = Seed::new(0);
+    bencher.iter(|| cell3_manhattan_value(black_box(&seed), black_box(&[42.0f32, 37.0, 26.0])));
+}
+
+#[bench]
+fn bench_cell4_manhattan_value(bencher: &mut Bencher) {
+    let seed = Seed::new(0);
+    bencher.iter(|| cell4_manhattan_value(black_box(&seed), black_box(&[42.0f32, 37.0, 26.0, 128.0])));
 }
 
 #[bench]
@@ -393,6 +412,42 @@ fn bench_cell4_manhattan_inv_64x64(bencher: &mut Bencher) {
         for y in 0..64 {
             for x in 0..64 {
                 black_box(cell4_manhattan_inv(black_box(&seed), &[x as f32, y as f32, x as f32, y as f32]));
+            }
+        }
+    });
+}
+
+#[bench]
+fn bench_cell2_manhattan_value_64x64(bencher: &mut Bencher) {
+    let seed = Seed::new(0);
+    bencher.iter(|| {
+        for y in 0..64 {
+            for x in 0..64 {
+                black_box(cell2_manhattan_value(black_box(&seed), &[x as f32, y as f32]));
+            }
+        }
+    });
+}
+
+#[bench]
+fn bench_cell3_manhattan_value_64x64(bencher: &mut Bencher) {
+    let seed = Seed::new(0);
+    bencher.iter(|| {
+        for y in 0..64 {
+            for x in 0..64 {
+                black_box(cell3_manhattan_value(black_box(&seed), &[x as f32, y as f32, x as f32]));
+            }
+        }
+    });
+}
+
+#[bench]
+fn bench_cell4_manhattan_value_64x64(bencher: &mut Bencher) {
+    let seed = Seed::new(0);
+    bencher.iter(|| {
+        for y in 0..64 {
+            for x in 0..64 {
+                black_box(cell4_manhattan_value(black_box(&seed), &[x as f32, y as f32, x as f32, y as f32]));
             }
         }
     });

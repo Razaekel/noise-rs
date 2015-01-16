@@ -49,6 +49,10 @@ name = "cell_manhattan"
 
 name = "cell_manhattan_inv"
 
+[[example]]
+
+name = "cell_manhattan_value"
+
 [[bench]]
 
 name = "benches"

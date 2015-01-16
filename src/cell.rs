@@ -415,3 +415,18 @@ pub fn cell4_manhattan_inv<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T 
     let (_, range1, _, range2) = cell4_seed_2_points(seed, point, range_manhattan4);
     range2 - range1
 }
+
+pub fn cell2_manhattan_value<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
+    let cell = cell2_seed_cell(seed, point, range_manhattan2);
+    math::cast::<_,T>(seed.get2(cell)) * math::cast(1.0 / 255.0)
+}
+
+pub fn cell3_manhattan_value<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
+    let cell = cell3_seed_cell(seed, point, range_manhattan3);
+    math::cast::<_,T>(seed.get3(cell)) * math::cast(1.0 / 255.0)
+}
+
+pub fn cell4_manhattan_value<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
+    let cell = cell4_seed_cell(seed, point, range_manhattan4);
+    math::cast::<_,T>(seed.get4(cell)) * math::cast(1.0 / 255.0)
+}
