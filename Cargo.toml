@@ -37,6 +37,14 @@ name = "cell_range"
 
 name = "cell_range_inv"
 
+[[example]]
+
+name = "cell_manhattan"
+
+[[example]]
+
+name = "cell_manhattan_inv"
+
 [[bench]]
 
 name = "benches"

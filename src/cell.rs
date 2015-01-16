@@ -72,6 +72,24 @@ pub fn range_sqr_euclidian4<T: Float>(p1: math::Point4<T>, p2: math::Point4<T>) 
 }
 
 #[inline(always)]
+pub fn range_manhattan2<T: Float>(p1: math::Point2<T>, p2: math::Point2<T>) -> T {
+    let offset = math::sub2(p1, p2);
+    offset[0].abs() + offset[1].abs()
+}
+
+#[inline(always)]
+pub fn range_manhattan3<T: Float>(p1: math::Point3<T>, p2: math::Point3<T>) -> T {
+    let offset = math::sub3(p1, p2);
+    offset[0].abs() + offset[1].abs() + offset[2].abs()
+}
+
+#[inline(always)]
+pub fn range_manhattan4<T: Float>(p1: math::Point4<T>, p2: math::Point4<T>) -> T {
+    let offset = math::sub4(p1, p2);
+    offset[0].abs() + offset[1].abs() + offset[2].abs() + offset[3].abs()
+}
+
+#[inline(always)]
 pub fn cell2_seed_point<T, F>(seed: &Seed, point: &math::Point2<T>, range_func: F) -> (math::Point2<T>, T)
     where T: Float, F: Fn(math::Point2<T>, math::Point2<T>) -> T
 {
@@ -275,5 +293,35 @@ pub fn cell3_range_inv<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
 
 pub fn cell4_range_inv<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
     let (_, range1, _, range2) = cell4_seed_2_points(seed, point, range_sqr_euclidian4);
+    range2 - range1
+}
+
+pub fn cell2_manhattan<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
+    let (_, range) = cell2_seed_point(seed, point, range_manhattan2);
+    range
+}
+
+pub fn cell3_manhattan<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
+    let (_, range) = cell3_seed_point(seed, point, range_manhattan3);
+    range
+}
+
+pub fn cell4_manhattan<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
+    let (_, range) = cell4_seed_point(seed, point, range_manhattan4);
+    range
+}
+
+pub fn cell2_manhattan_inv<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
+    let (_, range1, _, range2) = cell2_seed_2_points(seed, point, range_manhattan2);
+    range2 - range1
+}
+
+pub fn cell3_manhattan_inv<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
+    let (_, range1, _, range2) = cell3_seed_2_points(seed, point, range_manhattan3);
+    range2 - range1
+}
+
+pub fn cell4_manhattan_inv<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
+    let (_, range1, _, range2) = cell4_seed_2_points(seed, point, range_manhattan4);
     range2 - range1
 }

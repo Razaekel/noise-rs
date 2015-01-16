@@ -27,6 +27,8 @@ pub use cell::{range_sqr_euclidian2, range_sqr_euclidian3, range_sqr_euclidian4}
 pub use cell::{cell2_seed_point, cell3_seed_point, cell4_seed_point};
 pub use cell::{cell2_range, cell3_range, cell4_range};
 pub use cell::{cell2_range_inv, cell3_range_inv, cell4_range_inv};
+pub use cell::{cell2_manhattan, cell3_manhattan, cell4_manhattan};
+pub use cell::{cell2_manhattan_inv, cell3_manhattan_inv, cell4_manhattan_inv};
 
 mod gradient;
 mod math;
