@@ -17,81 +17,61 @@ use std::num::Float;
 
 use math;
 
-pub fn get2<T: Float>(index: usize) -> math::Point2<T> {
-    let diag: T = math::cast(0.70710678118f32);
-    let one: T = math::cast(1.0f32);
-    let zero: T = math::cast(0.0f32);
-    match index % 8 {
-        0 => [ diag,  diag],
-        1 => [ diag, -diag],
-        2 => [-diag,  diag],
-        3 => [-diag, -diag],
-        4 => [ one,   zero],
-        5 => [-one,   zero],
-        6 => [ zero,  one],
-        7 => [ zero, -one],
-        _ => panic!("Attempt to access 2D gradient {} of 8", index % 8),
+#[inline(always)]
+fn gradient<T: Float>(index: usize) -> math::Point4<T> {
+    let one: T = Float::one();
+    let zero: T = Float::zero();
+
+    match index % 32 {
+        0  => [ zero,  one,   one,   one],
+        1  => [ zero,  one,   one,  -one],
+        2  => [ zero,  one,  -one,   one],
+        3  => [ zero,  one,  -one,  -one],
+        4  => [ zero, -one,   one,   one],
+        5  => [ zero, -one,   one,  -one],
+        6  => [ zero, -one,  -one,   one],
+        7  => [ zero, -one,  -one,  -one],
+        8  => [ one,   zero,  one,   one],
+        9  => [ one,   zero,  one,  -one],
+        10 => [ one,   zero, -one,   one],
+        11 => [ one,   zero, -one,  -one],
+        12 => [-one,   zero,  one,   one],
+        13 => [-one,   zero,  one,  -one],
+        14 => [-one,   zero, -one,   one],
+        15 => [-one,   zero, -one,  -one],
+        16 => [ one,   one,   zero,  one],
+        17 => [ one,   one,   zero, -one],
+        18 => [ one,  -one,   zero,  one],
+        19 => [ one,  -one,   zero, -one],
+        20 => [-one,   one,   zero,  one],
+        21 => [-one,   one,   zero, -one],
+        22 => [-one,  -one,   zero,  one],
+        23 => [-one,  -one,   zero, -one],
+        24 => [ one,   one,   one,   zero],
+        25 => [ one,   one,  -one,   zero],
+        26 => [ one,  -one,   one,   zero],
+        27 => [ one,  -one,  -one,   zero],
+        28 => [-one,   one,   one,   zero],
+        29 => [-one,   one,  -one,   zero],
+        30 => [-one,  -one,   one,   zero],
+        31 => [-one,  -one,  -one,   zero],
+        _ => panic!("Attempt to access gradient {} of 32", index % 32),
     }
+}
+
+#[inline(always)]
+pub fn get2<T: Float>(index: usize) -> math::Point2<T> {
+    let value = gradient(index);
+    [value[0], value[1]]
 }
 
 #[inline(always)]
 pub fn get3<T: Float>(index: usize) -> math::Point3<T> {
-    let diag: T = math::cast(0.70710678118f32);
-    let zero: T = math::cast(0.0f32);
-    match index % 12 {
-        0  => [ diag,  diag,  zero],
-        1  => [ diag, -diag,  zero],
-        2  => [-diag,  diag,  zero],
-        3  => [-diag, -diag,  zero],
-        4  => [ diag,  zero,  diag],
-        5  => [ diag,  zero, -diag],
-        6  => [-diag,  zero,  diag],
-        7  => [-diag,  zero, -diag],
-        8  => [ zero,  diag,  diag],
-        9  => [ zero,  diag, -diag],
-        10 => [ zero, -diag,  diag],
-        11 => [ zero, -diag, -diag],
-        _ => panic!("Attempt to access 3D gradient {} of 12", index % 12),
-    }
+    let value = gradient(index);
+    [value[0], value[1], value[2]]
 }
 
 #[inline(always)]
 pub fn get4<T: Float>(index: usize) -> math::Point4<T> {
-    let diag: T = math::cast(0.57735026919f32);
-    let zero: T = math::cast(0.0f32);
-    match index % 32 {
-        0  => [ diag,  diag,  diag,  zero],
-        1  => [ diag, -diag,  diag,  zero],
-        2  => [-diag,  diag,  diag,  zero],
-        3  => [-diag, -diag,  diag,  zero],
-        4  => [ diag,  diag, -diag,  zero],
-        5  => [ diag, -diag, -diag,  zero],
-        6  => [-diag,  diag, -diag,  zero],
-        7  => [-diag, -diag, -diag,  zero],
-        8  => [ diag,  diag,  zero,  diag],
-        9  => [ diag, -diag,  zero,  diag],
-        10 => [-diag,  diag,  zero,  diag],
-        11 => [-diag, -diag,  zero,  diag],
-        12 => [ diag,  diag,  zero, -diag],
-        13 => [ diag, -diag,  zero, -diag],
-        14 => [-diag,  diag,  zero, -diag],
-        15 => [-diag, -diag,  zero, -diag],
-        16 => [ diag,  zero,  diag,  diag],
-        17 => [ diag,  zero, -diag,  diag],
-        18 => [-diag,  zero,  diag,  diag],
-        19 => [-diag,  zero, -diag,  diag],
-        20 => [ diag,  zero,  diag, -diag],
-        21 => [ diag,  zero, -diag, -diag],
-        22 => [-diag,  zero,  diag, -diag],
-        23 => [-diag,  zero, -diag, -diag],
-        24 => [ zero,  diag,  diag,  diag],
-        25 => [ zero,  diag, -diag,  diag],
-        26 => [ zero, -diag,  diag,  diag],
-        27 => [ zero, -diag, -diag,  diag],
-        28 => [ zero,  diag,  diag, -diag],
-        29 => [ zero,  diag, -diag, -diag],
-        30 => [ zero, -diag,  diag, -diag],
-        31 => [ zero, -diag, -diag, -diag],
-        _ => panic!("Attempt to access 4D gradient {} of 32", index % 32),
-    }
+    gradient(index)
 }
