@@ -60,6 +60,66 @@ pub type Vector3<T> = [T; 3];
 /// A 4-dimensional vector
 pub type Vector4<T> = [T; 4];
 
+/// Cast a 2-dimensional point
+pub fn cast2<T: NumCast + Copy, U: NumCast + Copy>(x: Point2<T>) -> Point2<U> {
+    [cast(x[0]), cast(x[1])]
+}
+
+/// Cast a 3-dimensional point
+pub fn cast3<T: NumCast + Copy, U: NumCast + Copy>(x: Point3<T>) -> Point3<U> {
+    [cast(x[0]), cast(x[1]), cast(x[2])]
+}
+
+/// Cast a 4-dimensional point
+pub fn cast4<T: NumCast + Copy, U: NumCast + Copy>(x: Point4<T>) -> Point4<U> {
+    [cast(x[0]), cast(x[1]), cast(x[2]), cast(x[3])]
+}
+
+/// Get the vector between two 2-dimensional points
+pub fn sub2<T: Float>(a: Point2<T>, b: Point2<T>) -> Vector2<T> {
+    [a[0] - b[0], a[1] - b[1]]
+}
+
+/// Get the vector between two 3-dimensional points
+pub fn sub3<T: Float>(a: Point3<T>, b: Point3<T>) -> Vector3<T> {
+    [a[0] - b[0], a[1] - b[1], a[2] - b[2]]
+}
+
+/// Get the vector between two 4-dimensional points
+pub fn sub4<T: Float>(a: Point4<T>, b: Point4<T>) -> Vector4<T> {
+    [a[0] - b[0], a[1] - b[1], a[2] - b[2], a[3] - b[3]]
+}
+
+/// Translate a 2-dimensional point by a vector
+pub fn add2<T: Float>(a: Point2<T>, b: Vector2<T>) -> Point2<T> {
+    [a[0] + b[0], a[1] + b[1]]
+}
+
+/// Translate a 3-dimensional point by a vector
+pub fn add3<T: Float>(a: Point3<T>, b: Vector3<T>) -> Point3<T> {
+    [a[0] + b[0], a[1] + b[1], a[2] + b[2]]
+}
+
+/// Translate a 4-dimensional point by a vector
+pub fn add4<T: Float>(a: Point4<T>, b: Vector4<T>) -> Point4<T> {
+    [a[0] + b[0], a[1] + b[1], a[2] + b[2], a[3] + b[3]]
+}
+
+/// Scale a 2-dimensional point by a scalar
+pub fn mul2<T: Float>(a: Point2<T>, b: T) -> Point2<T> {
+    [a[0] * b, a[1] * b]
+}
+
+/// Scale a 3-dimensional point by a scalar
+pub fn mul3<T: Float>(a: Point3<T>, b: T) -> Point3<T> {
+    [a[0] * b, a[1] * b, a[2] * b]
+}
+
+/// Scale a 4-dimensional point by a scalar
+pub fn mul4<T: Float>(a: Point4<T>, b: T) -> Point4<T> {
+    [a[0] * b, a[1] * b, a[2] * b, a[3] * b]
+}
+
 /// The dot product of two 2-dimensional vectors
 pub fn dot2<T: Float>(a: Vector2<T>, b: Vector2<T>) -> T {
     a[0] * b[0] + a[1] * b[1]

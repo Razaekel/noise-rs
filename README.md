@@ -153,11 +153,11 @@ fn cell4_manhattan_inv<T: Float>(seed: &Seed, point: &Point4<T>) -> T;
 
 These are the set of functions for determining range between two points, which are used to determine which seed point is actually closest to the test point.
 
-Calculate the euclidian range between two points. This is what one normally things of as distance.
+Calculate the square of the euclidian range between two points. This is what one normally thinks of as range. It's squared because that's cheaper to calculate, and we only actually care about which distance is greater in this context.
 ~~~rust
-fn range_euclidian2<T: Float>(p1: Point2<T>, p2: Point2<T>) -> T;
-fn range_euclidian3<T: Float>(p1: Point3<T>, p2: Point3<T>) -> T;
-fn range_euclidian4<T: Float>(p1: Point4<T>, p2: Point4<T>) -> T;
+fn range_sqr_euclidian2<T: Float>(p1: Point2<T>, p2: Point2<T>) -> T;
+fn range_sqr_euclidian3<T: Float>(p1: Point3<T>, p2: Point3<T>) -> T;
+fn range_sqr_euclidian4<T: Float>(p1: Point4<T>, p2: Point4<T>) -> T;
 ~~~
 
 Calculate the manhattan range between two points. This is the sum of the coordinates in the offset vector, equivalent to the distance one would walk on the Manhattan streets between two points.
@@ -171,23 +171,23 @@ fn range_manhattan4<T: Float>(p1: Point4<T>, p2: Point4<T>) -> T;
 
 These are the set of functions for returning the nearest point, nearest 2 points, or the cell of the nearest point. If you want to do something a little unusual with the cell noise, you can call these directly to operate on this intermediate data.
 
-These functions, when given a point, will return the nearest seed point.
+These functions, when given a point, will return the nearest seed point, and the range to that point.
 ~~~rust
-fn cell2_seed_point<T, F>(seed: &Seed, point: &Point2<T>, range: F) -> Point2<T>
+fn cell2_seed_point<T, F>(seed: &Seed, point: &Point2<T>, range: F) -> (Point2<T>, T)
     where T: Float, F: fn(Point2<T>, Point2<T>) -> T;
-fn cell3_seed_point<T, F>(seed: &Seed, point: &Point3<T>, range: F) -> Point3<T>
+fn cell3_seed_point<T, F>(seed: &Seed, point: &Point3<T>, range: F) -> (Point3<T>, T)
     where T: Float, F: fn(Point3<T>, Point3<T>) -> T;
-fn cell4_seed_point<T, F>(seed: &Seed, point: &Point4<T>, range: F) -> Point4<T>
+fn cell4_seed_point<T, F>(seed: &Seed, point: &Point4<T>, range: F) -> (Point4<T>, T)
     where T: Float, F: fn(Point4<T>, Point4<T>) -> T;
 ~~~
 
-These functions, when given a point, will return the nearest 2 seed points. The first point is the nearest one, and the second point the second nearest.
+These functions, when given a point, will return the nearest 2 seed points, and the range to those points. The first point is the nearest one, and the second point the second nearest.
 ~~~rust
-fn cell2_seed_2_points<T, F>(seed: &Seed, point: &Point2<T>, range: F) -> (Point2<T>, Point2<T>)
+fn cell2_seed_2_points<T, F>(seed: &Seed, point: &Point2<T>, range: F) -> (Point2<T>, T, Point2<T>, T)
     where T: Float, F: fn(Point2<T>, Point2<T>) -> T;
-fn cell3_seed_2_points<T, F>(seed: &Seed, point: &Point3<T>, range: F) -> (Point3<T>, Point3<T>)
+fn cell3_seed_2_points<T, F>(seed: &Seed, point: &Point3<T>, range: F) -> (Point3<T>, T, Point3<T>, T)
     where T: Float, F: fn(Point3<T>, Point3<T>) -> T;
-fn cell4_seed_2_points<T, F>(seed: &Seed, point: &Point4<T>, range: F) -> (Point4<T>, Point4<T>)
+fn cell4_seed_2_points<T, F>(seed: &Seed, point: &Point4<T>, range: F) -> (Point4<T>, T, Point4<T>, T)
     where T: Float, F: fn(Point4<T>, Point4<T>) -> T;
 ~~~
 

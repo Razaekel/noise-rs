@@ -29,6 +29,14 @@ name = "open_simplex"
 
 name = "brownian"
 
+[[example]]
+
+name = "cell_range"
+
+[[example]]
+
+name = "cell_range_inv"
+
 [[bench]]
 
 name = "benches"
