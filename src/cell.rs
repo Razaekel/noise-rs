@@ -72,6 +72,24 @@ pub fn range_sqr_euclidian4<T: Float>(p1: math::Point4<T>, p2: math::Point4<T>) 
 }
 
 #[inline(always)]
+pub fn range_manhattan2<T: Float>(p1: math::Point2<T>, p2: math::Point2<T>) -> T {
+    let offset = math::sub2(p1, p2);
+    offset[0].abs() + offset[1].abs()
+}
+
+#[inline(always)]
+pub fn range_manhattan3<T: Float>(p1: math::Point3<T>, p2: math::Point3<T>) -> T {
+    let offset = math::sub3(p1, p2);
+    offset[0].abs() + offset[1].abs() + offset[2].abs()
+}
+
+#[inline(always)]
+pub fn range_manhattan4<T: Float>(p1: math::Point4<T>, p2: math::Point4<T>) -> T {
+    let offset = math::sub4(p1, p2);
+    offset[0].abs() + offset[1].abs() + offset[2].abs() + offset[3].abs()
+}
+
+#[inline(always)]
 pub fn cell2_seed_point<T, F>(seed: &Seed, point: &math::Point2<T>, range_func: F) -> (math::Point2<T>, T)
     where T: Float, F: Fn(math::Point2<T>, math::Point2<T>) -> T
 {
@@ -248,6 +266,81 @@ pub fn cell4_seed_2_points<T, F>(seed: &Seed, point: &math::Point4<T>, range_fun
     (seed_point1, range1, seed_point2, range2)
 }
 
+#[inline(always)]
+pub fn cell2_seed_cell<T, F>(seed: &Seed, point: &math::Point2<T>, range_func: F) -> math::Point2<i64>
+    where T: Float, F: Fn(math::Point2<T>, math::Point2<T>) -> T
+{
+    let cell = get_cell2(*point);
+    let mut range: T = Float::max_value();
+    let mut seed_cell: math::Point2<i64> = [0, 0];
+
+    for x_offset in -1..2 {
+        for y_offset in -1..2 {
+            let cell = math::add2(cell, math::cast2([x_offset, y_offset]));
+            let cur_seed_point = get_cell_point2(seed, cell);
+            let cur_range = range_func(*point, cur_seed_point);
+            if cur_range < range {
+                range = cur_range;
+                seed_cell = math::cast2(cell);
+            }
+        }
+    }
+
+    seed_cell
+}
+
+#[inline(always)]
+pub fn cell3_seed_cell<T, F>(seed: &Seed, point: &math::Point3<T>, range_func: F) -> math::Point3<i64>
+    where T: Float, F: Fn(math::Point3<T>, math::Point3<T>) -> T
+{
+    let cell = get_cell3(*point);
+    let mut range: T = Float::max_value();
+    let mut seed_cell: math::Point3<i64> = [0, 0, 0];
+
+    for x_offset in -1..2 {
+        for y_offset in -1..2 {
+            for z_offset in -1..2 {
+                let cell = math::add3(cell, math::cast3([x_offset, y_offset, z_offset]));
+                let cur_seed_point = get_cell_point3(seed, cell);
+                let cur_range = range_func(*point, cur_seed_point);
+                if cur_range < range {
+                    range = cur_range;
+                    seed_cell = math::cast3(cell);
+                }
+            }
+        }
+    }
+
+    seed_cell
+}
+
+#[inline(always)]
+pub fn cell4_seed_cell<T, F>(seed: &Seed, point: &math::Point4<T>, range_func: F) -> math::Point4<i64>
+    where T: Float, F: Fn(math::Point4<T>, math::Point4<T>) -> T
+{
+    let cell = get_cell4(*point);
+    let mut range: T = Float::max_value();
+    let mut seed_cell: math::Point4<i64> = [0, 0, 0, 0];
+
+    for x_offset in -1..2 {
+        for y_offset in -1..2 {
+            for z_offset in -1..2 {
+                for w_offset in -1..2 {
+                    let cell = math::add4(cell, math::cast4([x_offset, y_offset, z_offset, w_offset]));
+                    let cur_seed_point = get_cell_point4(seed, cell);
+                    let cur_range = range_func(*point, cur_seed_point);
+                    if cur_range < range {
+                        range = cur_range;
+                        seed_cell = math::cast4(cell);
+                    }
+                }
+            }
+        }
+    }
+
+    seed_cell
+}
+
 pub fn cell2_range<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
     let (_, range) = cell2_seed_point(seed, point, range_sqr_euclidian2);
     range
@@ -276,4 +369,64 @@ pub fn cell3_range_inv<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
 pub fn cell4_range_inv<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
     let (_, range1, _, range2) = cell4_seed_2_points(seed, point, range_sqr_euclidian4);
     range2 - range1
+}
+
+pub fn cell2_value<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
+    let cell = cell2_seed_cell(seed, point, range_sqr_euclidian2);
+    math::cast::<_,T>(seed.get2(cell)) * math::cast(1.0 / 255.0)
+}
+
+pub fn cell3_value<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
+    let cell = cell3_seed_cell(seed, point, range_sqr_euclidian3);
+    math::cast::<_,T>(seed.get3(cell)) * math::cast(1.0 / 255.0)
+}
+
+pub fn cell4_value<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
+    let cell = cell4_seed_cell(seed, point, range_sqr_euclidian4);
+    math::cast::<_,T>(seed.get4(cell)) * math::cast(1.0 / 255.0)
+}
+
+pub fn cell2_manhattan<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
+    let (_, range) = cell2_seed_point(seed, point, range_manhattan2);
+    range
+}
+
+pub fn cell3_manhattan<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
+    let (_, range) = cell3_seed_point(seed, point, range_manhattan3);
+    range
+}
+
+pub fn cell4_manhattan<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
+    let (_, range) = cell4_seed_point(seed, point, range_manhattan4);
+    range
+}
+
+pub fn cell2_manhattan_inv<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
+    let (_, range1, _, range2) = cell2_seed_2_points(seed, point, range_manhattan2);
+    range2 - range1
+}
+
+pub fn cell3_manhattan_inv<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
+    let (_, range1, _, range2) = cell3_seed_2_points(seed, point, range_manhattan3);
+    range2 - range1
+}
+
+pub fn cell4_manhattan_inv<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
+    let (_, range1, _, range2) = cell4_seed_2_points(seed, point, range_manhattan4);
+    range2 - range1
+}
+
+pub fn cell2_manhattan_value<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
+    let cell = cell2_seed_cell(seed, point, range_manhattan2);
+    math::cast::<_,T>(seed.get2(cell)) * math::cast(1.0 / 255.0)
+}
+
+pub fn cell3_manhattan_value<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
+    let cell = cell3_seed_cell(seed, point, range_manhattan3);
+    math::cast::<_,T>(seed.get3(cell)) * math::cast(1.0 / 255.0)
+}
+
+pub fn cell4_manhattan_value<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
+    let cell = cell4_seed_cell(seed, point, range_manhattan4);
+    math::cast::<_,T>(seed.get4(cell)) * math::cast(1.0 / 255.0)
 }

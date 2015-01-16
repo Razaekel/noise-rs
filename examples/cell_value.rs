@@ -17,25 +17,25 @@
 
 extern crate noise;
 
-use noise::{cell2_range, cell3_range, cell4_range, Seed, Point2};
+use noise::{cell2_value, cell3_value, cell4_value, Seed, Point2};
 
 mod debug;
 
 fn main() {
-    debug::render_png("cell2_range.png", &Seed::new(0), 256, 256, scaled_cell2_range);
-    debug::render_png("cell3_range.png", &Seed::new(0), 256, 256, scaled_cell3_range);
-    debug::render_png("cell4_range.png", &Seed::new(0), 256, 256, scaled_cell4_range);
-    println!("\nGenerated cell2_range.png, cell3_range.png and cell4_range.png");
+    debug::render_png("cell2_value.png", &Seed::new(0), 256, 256, scaled_cell2_value);
+    debug::render_png("cell3_value.png", &Seed::new(0), 256, 256, scaled_cell3_value);
+    debug::render_png("cell4_value.png", &Seed::new(0), 256, 256, scaled_cell4_value);
+    println!("\nGenerated cell2_value.png, cell3_value.png and cell4_value.png");
 }
 
-fn scaled_cell2_range(seed: &Seed, point: &Point2<f32>) -> f32 {
-    cell2_range(seed, &[point[0] / 32.0f32, point[1] / 32.00])
+fn scaled_cell2_value(seed: &Seed, point: &Point2<f32>) -> f32 {
+    cell2_value(seed, &[point[0] / 32.0f32, point[1] / 32.00])
 }
 
-fn scaled_cell3_range(seed: &Seed, point: &Point2<f32>) -> f32 {
-    cell3_range(seed, &[point[0] / 32.0f32, point[1] / 32.00, 0.0])
+fn scaled_cell3_value(seed: &Seed, point: &Point2<f32>) -> f32 {
+    cell3_value(seed, &[point[0] / 32.0f32, point[1] / 32.00, 0.0])
 }
 
-fn scaled_cell4_range(seed: &Seed, point: &Point2<f32>) -> f32 {
-    cell4_range(seed, &[point[0] / 32.0f32, point[1] / 32.00, 0.0, 0.0])
+fn scaled_cell4_value(seed: &Seed, point: &Point2<f32>) -> f32 {
+    cell4_value(seed, &[point[0] / 32.0f32, point[1] / 32.00, 0.0, 0.0])
 }
