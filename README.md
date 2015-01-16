@@ -24,6 +24,12 @@ pub type Point3<T> = [T; 3];
 pub type Point4<T> = [T; 4];
 ~~~
 
+Gradient Noise
+--------------
+Gradient noise produces a smooth, continuous value over space. It's achieved by dividing space into regions, and placing a random gradient at each vertex, then blending between those gradients.
+
+**Perlin Noise**
+
 Perlin noise is a very fast and reasonable quality gradient noise.
 ~~~rust
 fn perlin2<T: Float>(seed: &Seed, point: &Point2<T>) -> T;
@@ -31,13 +37,17 @@ fn perlin3<T: Float>(seed: &Seed, point: &Point3<T>) -> T;
 fn perlin4<T: Float>(seed: &Seed, point: &Point4<T>) -> T;
 ~~~
 
+**OpenSimplex Noise**
+
 OpenSimplex noise is a slower but higher quality form of gradient noise.
 ~~~rust
 fn open_simplex2<T: Float>(seed: &Seed, point: &Point2<T>) -> T;
 fn open_simplex3<T: Float>(seed: &Seed, point: &Point3<T>) -> T;
 ~~~
 
-Fractional Brownian Motion is a way of combining multiple versions of a noise function to create a richer and more varied output.
+**Fractional Brownian Motion**
+
+Fractional Brownian Motion is a way of combining multiple octaves of a noise function to create a richer and more varied output. It can theoretically be used with any noise function, but it tends to only produce good results with gradient noise functions.
 
 Example:
 ~~~rust
@@ -93,13 +103,8 @@ impl<T, F> Brownian3<T, F> {
 impl<T, F> Fn(&Seed, &Point4<T>) -> T for Brownian4<T, F> { ... }
 ~~~
 
-Coming soon
------------
-Everything below this line is planned, but not yet implemented.
-
-~~~rust
-fn open_simplex4<T: Float>(seed: &Seed, point: &Point4<T>) -> T;
-~~~
+Cell Noise
+----------
 
 Cell noise, also called worley noise or voronoi noise, is based on dividing space into cells based on proximity to a random set of seed points. In this API, this is accomplished in three categories.
 
@@ -199,4 +204,12 @@ fn cell3_seed_cell<T, F>(seed: &Seed, point: &Point3<T>, range: F) -> Point3<i64
     where T: Float, F: fn(Point3<T>, Point3<T>) -> T;
 fn cell4_seed_cell<T, F>(seed: &Seed, point: &Point4<T>, range: F) -> Point4<i64>
     where T: Float, F: fn(Point4<T>, Point4<T>) -> T;
+~~~
+
+Coming soon
+-----------
+Everything below this line is planned, but not yet implemented.
+
+~~~rust
+fn open_simplex4<T: Float>(seed: &Seed, point: &Point4<T>) -> T;
 ~~~
