@@ -39,6 +39,10 @@ name = "cell_range_inv"
 
 [[example]]
 
+name = "cell_value"
+
+[[example]]
+
 name = "cell_manhattan"
 
 [[example]]
