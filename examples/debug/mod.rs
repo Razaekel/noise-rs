@@ -36,7 +36,7 @@ fn clamp<F: Float>(val: F, min: F, max: F) -> F {
 
 pub fn render_png<T, F>(filename: &str, seed: &noise::Seed, width: u32, height: u32, func: F) where
     T: Float + NumCast,
-    F: Fn(&noise::Seed, &noise::Point2<T>) -> T,
+    F: noise::GenFn2<T>,
 {
     let mut pixels = Vec::with_capacity((width * height) as usize);
 
