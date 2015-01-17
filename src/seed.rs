@@ -20,6 +20,8 @@ use math;
 
 const TABLE_SIZE: usize = 256;
 
+/// A noise seed, required by all noise functions. In most circumstances, you'll
+/// only want to create one of these and use it everywhere.
 #[allow(missing_copy_implementations)]
 pub struct Seed {
     values: [u8; TABLE_SIZE],

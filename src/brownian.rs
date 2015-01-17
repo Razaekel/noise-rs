@@ -19,26 +19,115 @@ use {math, Seed};
 use {GenFn2, GenFn3, GenFn4};
 use {Point2, Point3, Point4};
 
-macro_rules! brownian {
-    { $Brownian:ident, $Point:ident, $GenFn:ident } => {
-        /// A callable struct for applying [fractional Brownian motion]
-        /// (http://en.wikipedia.org/wiki/Fractional_Brownian_motion).
-        #[derive(Copy, Clone)]
-        pub struct $Brownian<T, F: $GenFn<T>> {
-            /// The underlying noise function
-            pub function: F,
-            /// The number of octaves to use
-            pub octaves: usize,
-            /// The base frequency of the noise
-            pub frequency: T,
-            /// How quickly the amplitude of each octave decreases
-            pub persistence: T,
-            /// How quickly the frequency changes for each octave
-            pub lacunarity: T,
-        }
+/// A callable struct for applying 2-dimensional [fractional Brownian motion]
+/// (http://en.wikipedia.org/wiki/Fractional_Brownian_motion).
+///
+/// Fractional Brownian motion is a way of combining multiple octaves of a noise
+/// function to create a richer and more varied output. It can theoretically be
+/// used with any noise function, but it tends to only produce good results with
+/// gradient noise functions.
+///
+/// The struct contains many parameters, which can either be set using the
+/// builder methods provided, or by constructing the type manually.
+///
+/// # Example
+///
+/// ```rust
+/// use noise::{Brownian2, perlin2};
+/// use std::rand;
+///
+/// let seed = rand::random();
+/// let noise = Brownian2::new(perlin2, 4).wavelength(32.0);
+/// let val = noise(&seed, &[42.0, 37.0]);
+/// ```
+#[derive(Copy, Clone)]
+pub struct Brownian2<T, F: GenFn2<T>> {
+    /// The underlying noise function to call.
+    pub function: F,
+    /// The number of times to call the noise function.
+    pub octaves: usize,
+    /// The base frequency of the noise
+    pub frequency: T,
+    /// The rate at which the amplitude of the noise is reduced for each octave.
+    pub persistence: T,
+    /// The rate at which the frequency of the noise increases for each octave.
+    pub lacunarity: T,
+}
 
+/// A callable struct for applying 3-dimensional [fractional Brownian motion]
+/// (http://en.wikipedia.org/wiki/Fractional_Brownian_motion).
+///
+/// Fractional Brownian motion is a way of combining multiple octaves of a noise
+/// function to create a richer and more varied output. It can theoretically be
+/// used with any noise function, but it tends to only produce good results with
+/// gradient noise functions.
+///
+/// The struct contains many parameters, which can either be set using the
+/// builder methods provided, or by constructing the type manually.
+///
+/// # Example
+///
+/// ```rust
+/// use noise::{Brownian3, perlin3};
+/// use std::rand;
+///
+/// let seed = rand::random();
+/// let noise = Brownian3::new(perlin3, 4).wavelength(32.0);
+/// let val = noise(&seed, &[42.0, 37.0, 2.0]);
+/// ```
+#[derive(Copy, Clone)]
+pub struct Brownian3<T, F: GenFn3<T>> {
+    /// The underlying noise function to call.
+    pub function: F,
+    /// The number of times to call the noise function.
+    pub octaves: usize,
+    /// The base frequency of the noise
+    pub frequency: T,
+    /// The rate at which the amplitude of the noise is reduced for each octave.
+    pub persistence: T,
+    /// The rate at which the frequency of the noise increases for each octave.
+    pub lacunarity: T,
+}
+
+/// A callable struct for applying 4-dimensional [fractional Brownian motion]
+/// (http://en.wikipedia.org/wiki/Fractional_Brownian_motion).
+///
+/// Fractional Brownian motion is a way of combining multiple octaves of a noise
+/// function to create a richer and more varied output. It can theoretically be
+/// used with any noise function, but it tends to only produce good results with
+/// gradient noise functions.
+///
+/// The struct contains many parameters, which can either be set using the
+/// builder methods provided, or by constructing the type manually.
+///
+/// # Example
+///
+/// ```rust
+/// use noise::{Brownian4, perlin4};
+/// use std::rand;
+///
+/// let seed = rand::random();
+/// let noise = Brownian4::new(perlin4, 4).wavelength(32.0);
+/// let val = noise(&seed, &[42.0, 37.0, 2.0, 3.0]);
+/// ```
+#[derive(Copy, Clone)]
+pub struct Brownian4<T, F: GenFn4<T>> {
+    /// The underlying noise function to call on each octave.
+    pub function: F,
+    /// The number of times to call the noise function.
+    pub octaves: usize,
+    /// The base frequency of the noise
+    pub frequency: T,
+    /// The rate at which the amplitude of the noise is reduced on each octave.
+    pub persistence: T,
+    /// The rate at which the frequency of the noise increases on each octave.
+    pub lacunarity: T,
+}
+
+macro_rules! impl_brownian {
+    { $Brownian:ident, $GenFn:ident } => {
         impl<T: Float, F: $GenFn<T>> $Brownian<T, F> {
-            /// Consructs a new brownian noise function, defaulting to:
+            /// Constructs a new brownian noise function, defaulting to:
             ///
             /// - frequency: `1.0`
             /// - lacunarity: `2.0`
@@ -54,8 +143,8 @@ macro_rules! brownian {
                 }
             }
 
-            /// A builder method that sets the function that will be iteratively
-            /// applied on each octave.
+            /// A builder method that sets underlying noise function to call on
+            /// each octave.
             #[inline]
             pub fn function<Q: $GenFn<T>>(self, function: Q) -> $Brownian<T, Q> {
                 let $Brownian { octaves, frequency, lacunarity, persistence, .. } = self;
@@ -68,7 +157,8 @@ macro_rules! brownian {
                 }
             }
 
-            /// A builder method that sets the number of octaves to use.
+            /// A builder method that sets the number of times to call the noise
+            /// function.
             #[inline]
             pub fn octaves(self, octaves: usize) -> $Brownian<T, F> {
                 $Brownian { octaves: octaves, ..self }
@@ -81,20 +171,21 @@ macro_rules! brownian {
                 self.frequency(wavelength.recip())
             }
 
-            /// A builder method that sets the frequency.
+            /// A builder method that sets the base frequency of the noise.
             #[inline]
             pub fn frequency(self, frequency: T) -> $Brownian<T, F> {
                 $Brownian { frequency: frequency, ..self }
             }
 
-            /// A builder method that sets the persistence to use on each
-            /// octave.
+            /// A builder method that sets the rate at which the amplitude of
+            /// the noise is reduced on each octave.
             #[inline]
             pub fn persistence(self, persistence: T) -> $Brownian<T, F> {
                 $Brownian { persistence: persistence, ..self }
             }
 
-            /// A builder method that sets the lacunarity to use on each octave.
+            /// A builder method that sets the rate at which the frequency of
+            /// the noise increases on each octave.
             #[inline]
             pub fn lacunarity(self, lacunarity: T) -> $Brownian<T, F> {
                 $Brownian { lacunarity: lacunarity, ..self }
@@ -103,9 +194,9 @@ macro_rules! brownian {
     }
 }
 
-brownian! { Brownian2, Point2, GenFn2 }
-brownian! { Brownian3, Point3, GenFn3 }
-brownian! { Brownian4, Point4, GenFn4 }
+impl_brownian! { Brownian2, GenFn2 }
+impl_brownian! { Brownian3, GenFn3 }
+impl_brownian! { Brownian4, GenFn4 }
 
 impl<'a, 'b, T, F> Fn(&'a Seed, &'b Point2<T>) -> T for Brownian2<T, F> where
     T: Float,
