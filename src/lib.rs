@@ -40,3 +40,46 @@ mod brownian;
 mod perlin;
 mod open_simplex;
 mod cell;
+
+/// A trait alias for a 2-dimensional noise function.
+///
+/// This is useful for succinctly parameterising over valid noise functions.
+///
+/// # Example
+///
+/// ```rust
+/// use noise::{GenFn2, Seed, Point2};
+///
+/// fn apply_noise2<F: GenFn2<f32>>(s: &Seed, p: &Point2<f32>, f: F) -> f32 { f(s, p) }
+/// ```
+pub trait GenFn2<T>: Fn(&Seed, &Point2<T>) -> T {}
+
+/// A trait alias for a 3-dimensional noise function.
+///
+/// This is useful for succinctly parameterising over valid noise functions.
+///
+/// # Example
+///
+/// ```rust
+/// use noise::{GenFn3, Seed, Point3};
+///
+/// fn apply_noise3<F: GenFn3<f32>>(s: &Seed, p: &Point3<f32>, f: F) -> f32 { f(s, p) }
+/// ```
+pub trait GenFn3<T>: Fn(&Seed, &Point3<T>) -> T {}
+
+/// A trait alias for a 4-dimensional noise function.
+///
+/// This is useful for succinctly parameterising over valid noise functions.
+///
+/// # Example
+///
+/// ```rust
+/// use noise::{GenFn4, Seed, Point4};
+///
+/// fn apply_noise4<F: GenFn4<f32>>(s: &Seed, p: &Point4<f32>, f: F) -> f32 { f(s, p) }
+/// ```
+pub trait GenFn4<T>: Fn(&Seed, &Point4<T>) -> T {}
+
+impl<T, F> GenFn2<T> for F where F: Fn(&Seed, &Point2<T>) -> T {}
+impl<T, F> GenFn3<T> for F where F: Fn(&Seed, &Point3<T>) -> T {}
+impl<T, F> GenFn4<T> for F where F: Fn(&Seed, &Point4<T>) -> T {}

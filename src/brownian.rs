@@ -15,14 +15,16 @@
 
 use std::num::Float;
 
-use {math, Seed, Point2, Point3, Point4};
+use {math, Seed};
+use {GenFn2, GenFn3, GenFn4};
+use {Point2, Point3, Point4};
 
 macro_rules! brownian {
-    { $Brownian:ident, $Point:ident } => {
+    { $Brownian:ident, $Point:ident, $GenFn:ident } => {
         /// A callable struct for applying [fractional Brownian motion]
         /// (http://en.wikipedia.org/wiki/Fractional_Brownian_motion).
         #[derive(Copy, Clone)]
-        pub struct $Brownian<T, F: Fn(&Seed, &$Point<T>) -> T> {
+        pub struct $Brownian<T, F: $GenFn<T>> {
             /// The underlying noise function
             pub function: F,
             /// The number of octaves to use
@@ -35,9 +37,7 @@ macro_rules! brownian {
             pub lacunarity: T,
         }
 
-        impl<T: Float, F> $Brownian<T, F> where
-            F: Fn(&Seed, &$Point<T>) -> T,
-        {
+        impl<T: Float, F: $GenFn<T>> $Brownian<T, F> {
             /// Consructs a new brownian noise function, defaulting to:
             ///
             /// - frequency: `1.0`
@@ -57,9 +57,7 @@ macro_rules! brownian {
             /// A builder method that sets the function that will be iteratively
             /// applied on each octave.
             #[inline]
-            pub fn function<Q>(self, function: Q) -> $Brownian<T, Q> where
-                Q: Fn(&Seed, &$Point<T>) -> T,
-            {
+            pub fn function<Q: $GenFn<T>>(self, function: Q) -> $Brownian<T, Q> {
                 let $Brownian { octaves, frequency, lacunarity, persistence, .. } = self;
                 $Brownian {
                     function: function,
@@ -105,13 +103,13 @@ macro_rules! brownian {
     }
 }
 
-brownian! { Brownian2, Point2 }
-brownian! { Brownian3, Point3 }
-brownian! { Brownian4, Point4 }
+brownian! { Brownian2, Point2, GenFn2 }
+brownian! { Brownian3, Point3, GenFn3 }
+brownian! { Brownian4, Point4, GenFn4 }
 
 impl<'a, 'b, T, F> Fn(&'a Seed, &'b Point2<T>) -> T for Brownian2<T, F> where
     T: Float,
-    F: Fn(&Seed, &Point2<T>) -> T,
+    F: GenFn2<T>,
 {
     /// Applies the brownian noise function for the supplied seed and point.
     extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b Point2<T>)) -> T {
@@ -131,7 +129,7 @@ impl<'a, 'b, T, F> Fn(&'a Seed, &'b Point2<T>) -> T for Brownian2<T, F> where
 
 impl<'a, 'b, T, F> Fn(&'a Seed, &'b Point3<T>) -> T for Brownian3<T, F> where
     T: Float,
-    F: Fn(&Seed, &::Point3<T>) -> T,
+    F: GenFn3<T>,
 {
     /// Applies the brownian noise function for the supplied seed and point.
     extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b Point3<T>)) -> T {
@@ -152,7 +150,7 @@ impl<'a, 'b, T, F> Fn(&'a Seed, &'b Point3<T>) -> T for Brownian3<T, F> where
 
 impl<'a, 'b, T, F> Fn(&'a Seed, &'b ::Point4<T>) -> T for Brownian4<T, F> where
     T: Float,
-    F: Fn(&Seed, &::Point4<T>) -> T,
+    F: GenFn4<T>,
 {
     /// Applies the brownian noise function for the supplied seed and point.
     extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b Point4<T>)) -> T {
