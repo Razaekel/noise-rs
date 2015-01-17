@@ -20,14 +20,34 @@ use math;
 
 const TABLE_SIZE: usize = 256;
 
-/// A noise seed, required by all noise functions. In most circumstances, you'll
-/// only want to create one of these and use it everywhere.
+/// A seed table, required by all noise functions.
+///
+/// Table creation is expensive, so in most circumstances you'll only want to
+/// create one of these and reuse it everywhere.
 #[allow(missing_copy_implementations)]
 pub struct Seed {
     values: [u8; TABLE_SIZE],
 }
 
 impl Rand for Seed {
+    /// Generates a random seed.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use noise::Seed;
+    /// use std::rand;
+    ///
+    /// let seed = rand::random::<Seed>();
+    /// ```
+    ///
+    /// ```rust
+    /// use noise::Seed;
+    /// use std::rand::{SeedableRng, Rng, XorShiftRng};
+    ///
+    /// let mut rng: XorShiftRng = SeedableRng::from_seed([1, 2, 3, 4]);
+    /// let seed = rng.gen::<Seed>();
+    /// ```
     fn rand<R: Rng>(rng: &mut R) -> Seed {
         let mut seq: Vec<u8> = ::std::iter::range_inclusive(0, (TABLE_SIZE - 1) as u8).collect();
         rng.shuffle(&mut *seq);
@@ -43,6 +63,18 @@ impl Rand for Seed {
 }
 
 impl Seed {
+    /// Deterministically generates a new seed table based on a `u32` value.
+    ///
+    /// Internally this uses a `XorShiftRng`, but we don't really need to worry
+    /// about cryptographic security when working with procedural noise.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use noise::Seed;
+    ///
+    /// let seed = Seed::new(12);
+    /// ```
     pub fn new(seed: u32) -> Seed {
         let mut rng: XorShiftRng = SeedableRng::from_seed([1, seed, seed, seed]);
         rng.gen()

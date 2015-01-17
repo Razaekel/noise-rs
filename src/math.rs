@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! An ultra-light private math library to make our short lives easier whilst
-//! implementing super-complex noise stuff.
+//! An ultra-light private math library to make our short lives easier as we
+//! implement super-complex noise stuff.
 
 use std::num::{self, Float, NumCast};
 use std::ops::{Add, Sub, Mul};
