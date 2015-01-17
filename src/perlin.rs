@@ -24,32 +24,19 @@ pub fn perlin2<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
         math::dot2(frac, gradient::get2(seed.get2(whole)))
     }
 
-    let one: T = math::cast(1);
+    let floored = math::map2(*point, Float::floor);
+    let whole0  = math::map2(*point, math::cast);
+    let whole1  = math::add2(whole0, math::one2());
+    let frac0   = math::sub2(*point, floored);
+    let frac1   = math::sub2(*point, math::one2());
+    let curve   = math::map2(frac0, math::scurve5);
 
-    let xfloor = point[0].floor();
-    let yfloor = point[1].floor();
+    let f00 = gradient(seed, [whole0[0], whole0[1]], [frac0[0], frac0[1]]);
+    let f10 = gradient(seed, [whole1[0], whole0[1]], [frac1[0], frac0[1]]);
+    let f01 = gradient(seed, [whole0[0], whole1[1]], [frac0[0], frac1[1]]);
+    let f11 = gradient(seed, [whole1[0], whole1[1]], [frac1[0], frac1[1]]);
 
-    let x0_whole: isize = math::cast(xfloor);
-    let y0_whole: isize = math::cast(yfloor);
-
-    let x1_whole = x0_whole + 1;
-    let y1_whole = y0_whole + 1;
-
-    let x0_frac = point[0] - xfloor;
-    let y0_frac = point[1] - yfloor;
-
-    let x1_frac = x0_frac - one;
-    let y1_frac = y0_frac - one;
-
-    let x_curve = math::scurve5(x0_frac);
-    let y_curve = math::scurve5(y0_frac);
-
-    let f00 = gradient(seed, [x0_whole, y0_whole], [x0_frac, y0_frac]);
-    let f10 = gradient(seed, [x1_whole, y0_whole], [x1_frac, y0_frac]);
-    let f01 = gradient(seed, [x0_whole, y1_whole], [x0_frac, y1_frac]);
-    let f11 = gradient(seed, [x1_whole, y1_whole], [x1_frac, y1_frac]);
-
-    math::bilerp(x_curve, y_curve, f00, f10, f01, f11)
+    math::bilerp(curve, f00, f10, f01, f11)
 }
 
 /// 3-dimensional perlin noise
@@ -59,42 +46,23 @@ pub fn perlin3<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
         math::dot3(frac, gradient::get3(seed.get3(whole)))
     }
 
-    let one: T = math::cast(1);
+    let floored = math::map3(*point, Float::floor);
+    let whole0  = math::map3(*point, math::cast);
+    let whole1  = math::add3(whole0, math::one3());
+    let frac0   = math::sub3(*point, floored);
+    let frac1   = math::sub3(*point, math::one3());
+    let curve   = math::map3(frac0, math::scurve5);
 
-    let xfloor = point[0].floor();
-    let yfloor = point[1].floor();
-    let zfloor = point[2].floor();
+    let f000 = gradient(seed, [whole0[0], whole0[1], whole0[2]], [frac0[0], frac0[1], frac0[2]]);
+    let f100 = gradient(seed, [whole1[0], whole0[1], whole0[2]], [frac1[0], frac0[1], frac0[2]]);
+    let f010 = gradient(seed, [whole0[0], whole1[1], whole0[2]], [frac0[0], frac1[1], frac0[2]]);
+    let f110 = gradient(seed, [whole1[0], whole1[1], whole0[2]], [frac1[0], frac1[1], frac0[2]]);
+    let f001 = gradient(seed, [whole0[0], whole0[1], whole1[2]], [frac0[0], frac0[1], frac1[2]]);
+    let f101 = gradient(seed, [whole1[0], whole0[1], whole1[2]], [frac1[0], frac0[1], frac1[2]]);
+    let f011 = gradient(seed, [whole0[0], whole1[1], whole1[2]], [frac0[0], frac1[1], frac1[2]]);
+    let f111 = gradient(seed, [whole1[0], whole1[1], whole1[2]], [frac1[0], frac1[1], frac1[2]]);
 
-    let x0_whole: isize = math::cast(xfloor);
-    let y0_whole: isize = math::cast(yfloor);
-    let z0_whole: isize = math::cast(zfloor);
-
-    let x1_whole = x0_whole + 1;
-    let y1_whole = y0_whole + 1;
-    let z1_whole = z0_whole + 1;
-
-    let x0_frac = point[0] - xfloor;
-    let y0_frac = point[1] - yfloor;
-    let z0_frac = point[2] - zfloor;
-
-    let x1_frac = x0_frac - one;
-    let y1_frac = y0_frac - one;
-    let z1_frac = z0_frac - one;
-
-    let x_curve = math::scurve5(x0_frac);
-    let y_curve = math::scurve5(y0_frac);
-    let z_curve = math::scurve5(z0_frac);
-
-    let f000 = gradient(seed, [x0_whole, y0_whole, z0_whole], [x0_frac, y0_frac, z0_frac]);
-    let f100 = gradient(seed, [x1_whole, y0_whole, z0_whole], [x1_frac, y0_frac, z0_frac]);
-    let f010 = gradient(seed, [x0_whole, y1_whole, z0_whole], [x0_frac, y1_frac, z0_frac]);
-    let f110 = gradient(seed, [x1_whole, y1_whole, z0_whole], [x1_frac, y1_frac, z0_frac]);
-    let f001 = gradient(seed, [x0_whole, y0_whole, z1_whole], [x0_frac, y0_frac, z1_frac]);
-    let f101 = gradient(seed, [x1_whole, y0_whole, z1_whole], [x1_frac, y0_frac, z1_frac]);
-    let f011 = gradient(seed, [x0_whole, y1_whole, z1_whole], [x0_frac, y1_frac, z1_frac]);
-    let f111 = gradient(seed, [x1_whole, y1_whole, z1_whole], [x1_frac, y1_frac, z1_frac]);
-
-    math::trilerp(x_curve, y_curve, z_curve, f000, f100, f010, f110, f001, f101, f011, f111)
+    math::trilerp(curve, f000, f100, f010, f110, f001, f101, f011, f111)
 }
 
 /// 4-dimensional perlin noise
@@ -104,54 +72,29 @@ pub fn perlin4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
         math::dot4(frac, gradient::get4(seed.get4(whole)))
     }
 
-    let one: T = math::cast(1);
+    let floored = math::map4(*point, Float::floor);
+    let whole0  = math::map4(*point, math::cast);
+    let whole1  = math::add4(whole0, math::one4());
+    let frac0   = math::sub4(*point, floored);
+    let frac1   = math::sub4(*point, math::one4());
+    let curve   = math::map4(frac0, math::scurve5);
 
-    let xfloor = point[0].floor();
-    let yfloor = point[1].floor();
-    let zfloor = point[2].floor();
-    let wfloor = point[3].floor();
+    let f0000 = gradient(seed, [whole0[0], whole0[1], whole0[2], whole0[3]], [frac0[0], frac0[1], frac0[2], frac0[3]]);
+    let f1000 = gradient(seed, [whole1[0], whole0[1], whole0[2], whole0[3]], [frac1[0], frac0[1], frac0[2], frac0[3]]);
+    let f0001 = gradient(seed, [whole0[0], whole1[1], whole0[2], whole0[3]], [frac0[0], frac1[1], frac0[2], frac0[3]]);
+    let f1001 = gradient(seed, [whole1[0], whole1[1], whole0[2], whole0[3]], [frac1[0], frac1[1], frac0[2], frac0[3]]);
+    let f0010 = gradient(seed, [whole0[0], whole0[1], whole1[2], whole0[3]], [frac0[0], frac0[1], frac1[2], frac0[3]]);
+    let f1010 = gradient(seed, [whole1[0], whole0[1], whole1[2], whole0[3]], [frac1[0], frac0[1], frac1[2], frac0[3]]);
+    let f0011 = gradient(seed, [whole0[0], whole1[1], whole1[2], whole0[3]], [frac0[0], frac1[1], frac1[2], frac0[3]]);
+    let f1011 = gradient(seed, [whole1[0], whole1[1], whole1[2], whole0[3]], [frac1[0], frac1[1], frac1[2], frac0[3]]);
+    let f0100 = gradient(seed, [whole0[0], whole0[1], whole0[2], whole1[3]], [frac0[0], frac0[1], frac0[2], frac1[3]]);
+    let f1100 = gradient(seed, [whole1[0], whole0[1], whole0[2], whole1[3]], [frac1[0], frac0[1], frac0[2], frac1[3]]);
+    let f0101 = gradient(seed, [whole0[0], whole1[1], whole0[2], whole1[3]], [frac0[0], frac1[1], frac0[2], frac1[3]]);
+    let f1101 = gradient(seed, [whole1[0], whole1[1], whole0[2], whole1[3]], [frac1[0], frac1[1], frac0[2], frac1[3]]);
+    let f0110 = gradient(seed, [whole0[0], whole0[1], whole1[2], whole1[3]], [frac0[0], frac0[1], frac1[2], frac1[3]]);
+    let f1110 = gradient(seed, [whole1[0], whole0[1], whole1[2], whole1[3]], [frac1[0], frac0[1], frac1[2], frac1[3]]);
+    let f0111 = gradient(seed, [whole0[0], whole1[1], whole1[2], whole1[3]], [frac0[0], frac1[1], frac1[2], frac1[3]]);
+    let f1111 = gradient(seed, [whole1[0], whole1[1], whole1[2], whole1[3]], [frac1[0], frac1[1], frac1[2], frac1[3]]);
 
-    let x0_whole: isize = math::cast(xfloor);
-    let y0_whole: isize = math::cast(yfloor);
-    let z0_whole: isize = math::cast(zfloor);
-    let w0_whole: isize = math::cast(wfloor);
-
-    let x1_whole = x0_whole + 1;
-    let y1_whole = y0_whole + 1;
-    let z1_whole = z0_whole + 1;
-    let w1_whole = w0_whole + 1;
-
-    let x0_frac = point[0] - xfloor;
-    let y0_frac = point[1] - yfloor;
-    let z0_frac = point[2] - zfloor;
-    let w0_frac = point[2] - wfloor;
-
-    let x1_frac = x0_frac - one;
-    let y1_frac = y0_frac - one;
-    let z1_frac = z0_frac - one;
-    let w1_frac = w0_frac - one;
-
-    let x_curve = math::scurve5(x0_frac);
-    let y_curve = math::scurve5(y0_frac);
-    let z_curve = math::scurve5(z0_frac);
-    let w_curve = math::scurve5(w0_frac);
-
-    let f0000 = gradient(seed, [x0_whole, y0_whole, z0_whole, w0_whole], [x0_frac, y0_frac, z0_frac, w0_frac]);
-    let f1000 = gradient(seed, [x1_whole, y0_whole, z0_whole, w0_whole], [x1_frac, y0_frac, z0_frac, w0_frac]);
-    let f0001 = gradient(seed, [x0_whole, y1_whole, z0_whole, w0_whole], [x0_frac, y1_frac, z0_frac, w0_frac]);
-    let f1001 = gradient(seed, [x1_whole, y1_whole, z0_whole, w0_whole], [x1_frac, y1_frac, z0_frac, w0_frac]);
-    let f0010 = gradient(seed, [x0_whole, y0_whole, z1_whole, w0_whole], [x0_frac, y0_frac, z1_frac, w0_frac]);
-    let f1010 = gradient(seed, [x1_whole, y0_whole, z1_whole, w0_whole], [x1_frac, y0_frac, z1_frac, w0_frac]);
-    let f0011 = gradient(seed, [x0_whole, y1_whole, z1_whole, w0_whole], [x0_frac, y1_frac, z1_frac, w0_frac]);
-    let f1011 = gradient(seed, [x1_whole, y1_whole, z1_whole, w0_whole], [x1_frac, y1_frac, z1_frac, w0_frac]);
-    let f0100 = gradient(seed, [x0_whole, y0_whole, z0_whole, w1_whole], [x0_frac, y0_frac, z0_frac, w1_frac]);
-    let f1100 = gradient(seed, [x1_whole, y0_whole, z0_whole, w1_whole], [x1_frac, y0_frac, z0_frac, w1_frac]);
-    let f0101 = gradient(seed, [x0_whole, y1_whole, z0_whole, w1_whole], [x0_frac, y1_frac, z0_frac, w1_frac]);
-    let f1101 = gradient(seed, [x1_whole, y1_whole, z0_whole, w1_whole], [x1_frac, y1_frac, z0_frac, w1_frac]);
-    let f0110 = gradient(seed, [x0_whole, y0_whole, z1_whole, w1_whole], [x0_frac, y0_frac, z1_frac, w1_frac]);
-    let f1110 = gradient(seed, [x1_whole, y0_whole, z1_whole, w1_whole], [x1_frac, y0_frac, z1_frac, w1_frac]);
-    let f0111 = gradient(seed, [x0_whole, y1_whole, z1_whole, w1_whole], [x0_frac, y1_frac, z1_frac, w1_frac]);
-    let f1111 = gradient(seed, [x1_whole, y1_whole, z1_whole, w1_whole], [x1_frac, y1_frac, z1_frac, w1_frac]);
-
-    math::quadlerp(x_curve, y_curve, z_curve, w_curve, f0000, f1000, f0001, f1001, f0010, f1010, f0011, f1011, f0100, f1100, f0101, f1101, f0110, f1110, f0111, f1111)
+    math::quadlerp(curve, f0000, f1000, f0001, f1001, f0010, f1010, f0011, f1011, f0100, f1100, f0101, f1101, f0110, f1110, f0111, f1111)
 }

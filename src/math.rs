@@ -14,6 +14,7 @@
 // limitations under the License.
 
 use std::num::{self, Float, NumCast};
+use std::ops::{Add, Sub, Mul};
 
 pub fn cast<T: NumCast, U: NumCast>(x: T) -> U {
     num::cast(x).unwrap()
@@ -24,19 +25,19 @@ pub fn lerp<T: Float>(u: T, f0: T, f1: T) -> T {
     u * (f1 - f0) + f0
 }
 
-pub fn bilerp<T: Float>(u: T, v: T, f00: T, f10: T, f01: T, f11: T) -> T {
+pub fn bilerp<T: Float>([u, v]: Vector2<T>, f00: T, f10: T, f01: T, f11: T) -> T {
     lerp(v, lerp(u, f00, f10),
             lerp(u, f01, f11))
 }
 
-pub fn trilerp<T: Float>(u: T, v: T, w: T, f000: T, f100: T, f010: T, f110: T, f001: T, f101: T, f011: T, f111: T) -> T {
-    lerp(w, bilerp(u, v, f000, f100, f010, f110),
-            bilerp(u, v, f001, f101, f011, f111))
+pub fn trilerp<T: Float>([u, v, w]: Vector3<T>, f000: T, f100: T, f010: T, f110: T, f001: T, f101: T, f011: T, f111: T) -> T {
+    lerp(w, bilerp([u, v], f000, f100, f010, f110),
+            bilerp([u, v], f001, f101, f011, f111))
 }
 
-pub fn quadlerp<T: Float>(u: T, v: T, w: T, x: T, f0000: T, f1000: T, f0001: T, f1001: T, f0010: T, f1010: T, f0011: T, f1011: T, f0100: T, f1100: T, f0101: T, f1101: T, f0110: T, f1110: T, f0111: T, f1111: T) -> T {
-    lerp(x, trilerp(u, v, w, f0000, f1000, f0001, f1001, f0010, f1010, f0011, f1011),
-            trilerp(u, v, w, f0100, f1100, f0101, f1101, f0110, f1110, f0111, f1111))
+pub fn quadlerp<T: Float>([u, v, w, x]: Vector4<T>, f0000: T, f1000: T, f0001: T, f1001: T, f0010: T, f1010: T, f0011: T, f1011: T, f0100: T, f1100: T, f0101: T, f1101: T, f0110: T, f1110: T, f0111: T, f1111: T) -> T {
+    lerp(x, trilerp([u, v, w], f0000, f1000, f0001, f1001, f0010, f1010, f0011, f1011),
+            trilerp([u, v, w], f0100, f1100, f0101, f1101, f0110, f1110, f0111, f1111))
 }
 
 pub fn scurve5<T: Float>(t: T) -> T {
@@ -60,77 +61,42 @@ pub type Vector3<T> = [T; 3];
 /// A 4-dimensional vector
 pub type Vector4<T> = [T; 4];
 
-/// Cast a 2-dimensional point
-pub fn cast2<T: NumCast + Copy, U: NumCast + Copy>(x: Point2<T>) -> Point2<U> {
-    [cast(x[0]), cast(x[1])]
-}
+pub fn map2<T, U, F: Fn(T) -> U>([ax, ay        ]: Vector2<T>, f: F) -> Vector2<U> { [f(ax), f(ay)] }
+pub fn map3<T, U, F: Fn(T) -> U>([ax, ay, az    ]: Vector3<T>, f: F) -> Vector3<U> { [f(ax), f(ay), f(az)] }
+pub fn map4<T, U, F: Fn(T) -> U>([ax, ay, az, aw]: Vector4<T>, f: F) -> Vector4<U> { [f(ax), f(ay), f(az), f(aw)] }
 
-/// Cast a 3-dimensional point
-pub fn cast3<T: NumCast + Copy, U: NumCast + Copy>(x: Point3<T>) -> Point3<U> {
-    [cast(x[0]), cast(x[1]), cast(x[2])]
-}
+pub fn zip_with2<T, U, V, F: Fn(T, U) -> V>([ax, ay        ]: Vector2<T>, [bx, by        ]: Vector2<U>, f: F) -> Vector2<V> { [f(ax, bx), f(ay, by)] }
+pub fn zip_with3<T, U, V, F: Fn(T, U) -> V>([ax, ay, az    ]: Vector3<T>, [bx, by, bz    ]: Vector3<U>, f: F) -> Vector3<V> { [f(ax, bx), f(ay, by), f(az, bz)] }
+pub fn zip_with4<T, U, V, F: Fn(T, U) -> V>([ax, ay, az, aw]: Vector4<T>, [bx, by, bz, bw]: Vector4<U>, f: F) -> Vector4<V> { [f(ax, bx), f(ay, by), f(az, bz), f(aw, bw)] }
 
-/// Cast a 4-dimensional point
-pub fn cast4<T: NumCast + Copy, U: NumCast + Copy>(x: Point4<T>) -> Point4<U> {
-    [cast(x[0]), cast(x[1]), cast(x[2]), cast(x[3])]
-}
+pub fn fold2<T, F: Fn(T, T) -> T>([ax, ay        ]: Vector2<T>, f: F) -> T { f(ax, ay) }
+pub fn fold3<T, F: Fn(T, T) -> T>([ax, ay, az    ]: Vector3<T>, f: F) -> T { f(f(ax, ay), az) }
+pub fn fold4<T, F: Fn(T, T) -> T>([ax, ay, az, aw]: Vector4<T>, f: F) -> T { f(f(f(ax, ay), az), aw) }
 
-/// Get the vector between two 2-dimensional points
-pub fn sub2<T: Float>(a: Point2<T>, b: Point2<T>) -> Vector2<T> {
-    [a[0] - b[0], a[1] - b[1]]
-}
+pub fn add2<T: Add<T, Output = T>>(a: Point2<T>, b: Vector2<T>) -> Point2<T> { zip_with2(a, b, Add::add) }
+pub fn add3<T: Add<T, Output = T>>(a: Point3<T>, b: Vector3<T>) -> Point3<T> { zip_with3(a, b, Add::add) }
+pub fn add4<T: Add<T, Output = T>>(a: Point4<T>, b: Vector4<T>) -> Point4<T> { zip_with4(a, b, Add::add) }
 
-/// Get the vector between two 3-dimensional points
-pub fn sub3<T: Float>(a: Point3<T>, b: Point3<T>) -> Vector3<T> {
-    [a[0] - b[0], a[1] - b[1], a[2] - b[2]]
-}
+pub fn sub2<T: Sub<T, Output = T>>(a: Point2<T>, b: Point2<T>) -> Vector2<T> { zip_with2(a, b, Sub::sub) }
+pub fn sub3<T: Sub<T, Output = T>>(a: Point3<T>, b: Point3<T>) -> Vector3<T> { zip_with3(a, b, Sub::sub) }
+pub fn sub4<T: Sub<T, Output = T>>(a: Point4<T>, b: Point4<T>) -> Vector4<T> { zip_with4(a, b, Sub::sub) }
 
-/// Get the vector between two 4-dimensional points
-pub fn sub4<T: Float>(a: Point4<T>, b: Point4<T>) -> Vector4<T> {
-    [a[0] - b[0], a[1] - b[1], a[2] - b[2], a[3] - b[3]]
-}
+pub fn mul2<T: Mul<T, Output = T> + Copy>(a: Vector2<T>, b: T) -> Vector2<T> { zip_with2(a, const2(b), Mul::mul) }
+pub fn mul3<T: Mul<T, Output = T> + Copy>(a: Vector3<T>, b: T) -> Vector3<T> { zip_with3(a, const3(b), Mul::mul) }
+pub fn mul4<T: Mul<T, Output = T> + Copy>(a: Vector4<T>, b: T) -> Vector4<T> { zip_with4(a, const4(b), Mul::mul) }
 
-/// Translate a 2-dimensional point by a vector
-pub fn add2<T: Float>(a: Point2<T>, b: Vector2<T>) -> Point2<T> {
-    [a[0] + b[0], a[1] + b[1]]
-}
+pub fn dot2<T: Float>(a: Vector2<T>, b: Vector2<T>) -> T { fold2(zip_with2(a, b, Mul::mul), Add::add) }
+pub fn dot3<T: Float>(a: Vector3<T>, b: Vector3<T>) -> T { fold3(zip_with3(a, b, Mul::mul), Add::add) }
+pub fn dot4<T: Float>(a: Vector4<T>, b: Vector4<T>) -> T { fold4(zip_with4(a, b, Mul::mul), Add::add) }
 
-/// Translate a 3-dimensional point by a vector
-pub fn add3<T: Float>(a: Point3<T>, b: Vector3<T>) -> Point3<T> {
-    [a[0] + b[0], a[1] + b[1], a[2] + b[2]]
-}
+pub fn const2<T: Copy>(x: T) -> Vector2<T> { [x, x] }
+pub fn const3<T: Copy>(x: T) -> Vector3<T> { [x, x, x] }
+pub fn const4<T: Copy>(x: T) -> Vector4<T> { [x, x, x, x] }
 
-/// Translate a 4-dimensional point by a vector
-pub fn add4<T: Float>(a: Point4<T>, b: Vector4<T>) -> Point4<T> {
-    [a[0] + b[0], a[1] + b[1], a[2] + b[2], a[3] + b[3]]
-}
+pub fn one2<T: Copy + NumCast>() -> Vector2<T> { cast2(const2(1)) }
+pub fn one3<T: Copy + NumCast>() -> Vector3<T> { cast3(const3(1)) }
+pub fn one4<T: Copy + NumCast>() -> Vector4<T> { cast4(const4(1)) }
 
-/// Scale a 2-dimensional point by a scalar
-pub fn mul2<T: Float>(a: Point2<T>, b: T) -> Point2<T> {
-    [a[0] * b, a[1] * b]
-}
-
-/// Scale a 3-dimensional point by a scalar
-pub fn mul3<T: Float>(a: Point3<T>, b: T) -> Point3<T> {
-    [a[0] * b, a[1] * b, a[2] * b]
-}
-
-/// Scale a 4-dimensional point by a scalar
-pub fn mul4<T: Float>(a: Point4<T>, b: T) -> Point4<T> {
-    [a[0] * b, a[1] * b, a[2] * b, a[3] * b]
-}
-
-/// The dot product of two 2-dimensional vectors
-pub fn dot2<T: Float>(a: Vector2<T>, b: Vector2<T>) -> T {
-    a[0] * b[0] + a[1] * b[1]
-}
-
-/// The dot product of two 3-dimensional vectors
-pub fn dot3<T: Float>(a: Vector3<T>, b: Vector3<T>) -> T {
-    a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
-}
-
-/// The dot product of two 4-dimensional vectors
-pub fn dot4<T: Float>(a: Vector4<T>, b: Vector4<T>) -> T {
-    a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3]
-}
+pub fn cast2<T: NumCast + Copy, U: NumCast + Copy>(x: Point2<T>) -> Point2<U> { map2(x, cast) }
+pub fn cast3<T: NumCast + Copy, U: NumCast + Copy>(x: Point3<T>) -> Point3<U> { map3(x, cast) }
+pub fn cast4<T: NumCast + Copy, U: NumCast + Copy>(x: Point4<T>) -> Point4<U> { map4(x, cast) }
