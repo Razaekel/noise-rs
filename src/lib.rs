@@ -13,6 +13,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//! A procedural noise generation library for Rust.
+//!
+//! # Example
+//!
+//! ```rust
+//! use noise::{Brownian3, Seed};
+//!
+//! let seed = Seed::new(12);
+//! let noise = Brownian3::new(noise::perlin3, 4).wavelength(32.0);
+//! let val = noise(&seed, &[42.0, 37.0, 2.0]);
+//! ```
+
 #![feature(unboxed_closures)]
 #![deny(missing_copy_implementations)]
 #![allow(unstable)]

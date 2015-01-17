@@ -29,6 +29,9 @@ const SQUISH_CONSTANT_3D: f64 = 1.0 / 3.0; //(Math.sqrt(3+1)-1)/3;
 const NORM_CONSTANT_2D: f32 = 1.0 / 14.0;
 const NORM_CONSTANT_3D: f32 = 1.0 / 14.0;
 
+/// 2-dimensional [OpenSimplex Noise](http://uniblock.tumblr.com/post/97868843242/noise)
+///
+/// This is a slower but higher quality form of gradient noise than `noise::perlin2`.
 pub fn open_simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
     fn gradient<T: Float>(seed: &Seed, xs_floor: T, ys_floor: T, dx: T, dy: T) -> T {
         let zero: T = math::cast(0);
@@ -98,6 +101,9 @@ pub fn open_simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
     value * math::cast(NORM_CONSTANT_2D)
 }
 
+/// 3-dimensional [OpenSimplex Noise](http://uniblock.tumblr.com/post/97868843242/noise)
+///
+/// This is a slower but higher quality form of gradient noise than `noise::perlin3`.
 pub fn open_simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
     fn gradient<T: Float>(seed: &Seed, xs_floor: T, ys_floor: T, zs_floor: T, dx: T, dy: T, dz: T) -> T {
         let zero: T = math::cast(0);
