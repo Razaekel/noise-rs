@@ -28,7 +28,7 @@ pub fn perlin2<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
     let whole0  = math::map2(*point, math::cast);
     let whole1  = math::add2(whole0, math::one2());
     let frac0   = math::sub2(*point, floored);
-    let frac1   = math::sub2(*point, math::one2());
+    let frac1   = math::sub2(frac0, math::one2());
     let curve   = math::map2(frac0, math::scurve5);
 
     let f00 = gradient(seed, [whole0[0], whole0[1]], [frac0[0], frac0[1]]);
@@ -50,7 +50,7 @@ pub fn perlin3<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
     let whole0  = math::map3(*point, math::cast);
     let whole1  = math::add3(whole0, math::one3());
     let frac0   = math::sub3(*point, floored);
-    let frac1   = math::sub3(*point, math::one3());
+    let frac1   = math::sub3(frac0, math::one3());
     let curve   = math::map3(frac0, math::scurve5);
 
     let f000 = gradient(seed, [whole0[0], whole0[1], whole0[2]], [frac0[0], frac0[1], frac0[2]]);
@@ -76,7 +76,7 @@ pub fn perlin4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
     let whole0  = math::map4(*point, math::cast);
     let whole1  = math::add4(whole0, math::one4());
     let frac0   = math::sub4(*point, floored);
-    let frac1   = math::sub4(*point, math::one4());
+    let frac1   = math::sub4(frac0, math::one4());
     let curve   = math::map4(frac0, math::scurve5);
 
     let f0000 = gradient(seed, [whole0[0], whole0[1], whole0[2], whole0[3]], [frac0[0], frac0[1], frac0[2], frac0[3]]);
