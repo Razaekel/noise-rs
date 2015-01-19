@@ -29,13 +29,13 @@ fn main() {
 }
 
 fn scaled_cell2_manhattan(seed: &Seed, point: &Point2<f32>) -> f32 {
-    cell2_manhattan(seed, &[point[0] / 32.0f32, point[1] / 32.00])
+    cell2_manhattan(seed, &[point[0] / 32.0f32, point[1] / 32.00]) * 2.0 - 1.0
 }
 
 fn scaled_cell3_manhattan(seed: &Seed, point: &Point2<f32>) -> f32 {
-    cell3_manhattan(seed, &[point[0] / 32.0f32, point[1] / 32.00, 0.0])
+    cell3_manhattan(seed, &[point[0] / 32.0f32, point[1] / 32.00, 0.0]) * 2.0 - 1.0
 }
 
 fn scaled_cell4_manhattan(seed: &Seed, point: &Point2<f32>) -> f32 {
-    cell4_manhattan(seed, &[point[0] / 32.0f32, point[1] / 32.00, 0.0, 0.0])
+    cell4_manhattan(seed, &[point[0] / 32.0f32, point[1] / 32.00, 0.0, 0.0]) * 2.0 - 1.0
 }
