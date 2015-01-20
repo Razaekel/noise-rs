@@ -83,6 +83,10 @@ pub fn one2<T: Copy + NumCast>() -> Vector2<T> { cast2(const2(1)) }
 pub fn one3<T: Copy + NumCast>() -> Vector3<T> { cast3(const3(1)) }
 pub fn one4<T: Copy + NumCast>() -> Vector4<T> { cast4(const4(1)) }
 
+pub fn zero2<T: Copy + NumCast>() -> Vector2<T> { cast2(const2(0)) }
+pub fn zero3<T: Copy + NumCast>() -> Vector3<T> { cast3(const3(0)) }
+pub fn zero4<T: Copy + NumCast>() -> Vector4<T> { cast4(const4(0)) }
+
 pub fn cast2<T: NumCast + Copy, U: NumCast + Copy>(x: Point2<T>) -> Point2<U> { map2(x, cast) }
 pub fn cast3<T: NumCast + Copy, U: NumCast + Copy>(x: Point3<T>) -> Point3<U> { map3(x, cast) }
 pub fn cast4<T: NumCast + Copy, U: NumCast + Copy>(x: Point4<T>) -> Point4<U> { map4(x, cast) }
