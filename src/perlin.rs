@@ -30,7 +30,7 @@ pub fn perlin2<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
     }
 
     let floored = math::map2(*point, Float::floor);
-    let whole0  = math::map2(*point, math::cast);
+    let whole0  = math::map2(floored, math::cast);
     let whole1  = math::add2(whole0, math::one2());
     let frac0   = math::sub2(*point, floored);
     let frac1   = math::sub2(frac0, math::one2());
@@ -57,7 +57,7 @@ pub fn perlin3<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
     }
 
     let floored = math::map3(*point, Float::floor);
-    let whole0  = math::map3(*point, math::cast);
+    let whole0  = math::map3(floored, math::cast);
     let whole1  = math::add3(whole0, math::one3());
     let frac0   = math::sub3(*point, floored);
     let frac1   = math::sub3(frac0, math::one3());
@@ -88,7 +88,7 @@ pub fn perlin4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
     }
 
     let floored = math::map4(*point, Float::floor);
-    let whole0  = math::map4(*point, math::cast);
+    let whole0  = math::map4(floored, math::cast);
     let whole1  = math::add4(whole0, math::one4());
     let frac0   = math::sub4(*point, floored);
     let frac1   = math::sub4(frac0, math::one4());
