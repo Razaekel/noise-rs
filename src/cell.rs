@@ -188,7 +188,8 @@ pub fn cell2_seed_point<T, F>(seed: &Seed, point: &math::Point2<T>, range_func: 
         math::add2(get_vec2(seed.get2(whole)), math::cast2::<_,T>(whole))
     }
 
-    let whole0  = math::map2(*point, math::cast);
+    let floored = math::map2(*point, Float::floor);
+    let whole0  = math::map2(floored, math::cast);
     let whole1  = math::add2(whole0, math::one2());
 
     let mut range: T = Float::max_value();
@@ -224,7 +225,8 @@ pub fn cell3_seed_point<T, F>(seed: &Seed, point: &math::Point3<T>, range_func: 
         math::add3(get_vec3(seed.get3(whole)), math::cast3::<_,T>(whole))
     }
 
-    let whole0  = math::map3(*point, math::cast);
+    let floored = math::map3(*point, Float::floor);
+    let whole0  = math::map3(floored, math::cast);
     let whole1  = math::add3(whole0, math::one3());
 
     let mut range: T = Float::max_value();
@@ -264,7 +266,8 @@ pub fn cell4_seed_point<T, F>(seed: &Seed, point: &math::Point4<T>, range_func: 
         math::add4(get_vec4(seed.get4(whole)), math::cast4::<_,T>(whole))
     }
 
-    let whole0  = math::map4(*point, math::cast);
+    let floored = math::map4(*point, Float::floor);
+    let whole0  = math::map4(floored, math::cast);
     let whole1  = math::add4(whole0, math::one4());
 
     let mut range: T = Float::max_value();
