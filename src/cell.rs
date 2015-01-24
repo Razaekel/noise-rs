@@ -188,12 +188,23 @@ pub fn cell2_seed_point<T, F>(seed: &Seed, point: &math::Point2<T>, range_func: 
         math::add2(get_vec2(seed.get2(whole)), math::cast2::<_,T>(whole))
     }
 
-    let floored = math::map2(*point, Float::floor);
-    let whole0  = math::map2(floored, math::cast);
-    let whole1  = math::add2(whole0, math::one2());
+    let half: T = math::cast(0.5);
 
-    let mut range: T = Float::max_value();
-    let mut seed_point = math::zero2::<T>();
+    let floored = math::map2(*point, Float::floor);
+    let whole   = math::map2(floored, math::cast::<_, isize>);
+    let frac    = math::sub2(*point, floored);
+
+    let x_half = frac[0] > half;
+    let y_half = frac[1] > half;
+
+    let near = [whole[0] + (x_half as isize), whole[1] + (y_half as isize)];
+    let far = [whole[0] + (!x_half as isize), whole[1] + (!y_half as isize)];
+
+    let mut seed_point = get_point(seed, near);
+    let mut range: T = range_func(*point, seed_point);
+
+    let x_range = (half - frac[0]) * (half - frac[0]); // x-distance squared to center line
+    let y_range = (half - frac[1]) * (half - frac[1]); // y-distance squared to center line
 
     macro_rules! test_point(
         [$x:expr, $y:expr] => {
@@ -208,10 +219,10 @@ pub fn cell2_seed_point<T, F>(seed: &Seed, point: &math::Point2<T>, range_func: 
         }
     );
 
-    test_point![whole0[0], whole0[1]];
-    test_point![whole1[0], whole0[1]];
-    test_point![whole0[0], whole1[1]];
-    test_point![whole1[0], whole1[1]];
+    if x_range < range { test_point![far[0], near[1]]; }
+    if y_range < range { test_point![near[0], far[1]]; }
+
+    if x_range < range && y_range < range { test_point![far[0], far[1]]; }
 
     (seed_point, range)
 }
@@ -225,12 +236,25 @@ pub fn cell3_seed_point<T, F>(seed: &Seed, point: &math::Point3<T>, range_func: 
         math::add3(get_vec3(seed.get3(whole)), math::cast3::<_,T>(whole))
     }
 
-    let floored = math::map3(*point, Float::floor);
-    let whole0  = math::map3(floored, math::cast);
-    let whole1  = math::add3(whole0, math::one3());
+    let half: T = math::cast(0.5);
 
-    let mut range: T = Float::max_value();
-    let mut seed_point = math::zero3::<T>();
+    let floored = math::map3(*point, Float::floor);
+    let whole   = math::map3(floored, math::cast::<_, isize>);
+    let frac    = math::sub3(*point, floored);
+
+    let x_half = frac[0] > half;
+    let y_half = frac[1] > half;
+    let z_half = frac[2] > half;
+
+    let near = [whole[0] + (x_half as isize), whole[1] + (y_half as isize), whole[2] + (z_half as isize)];
+    let far = [whole[0] + (!x_half as isize), whole[1] + (!y_half as isize), whole[2] + (!z_half as isize)];
+
+    let mut seed_point = get_point(seed, near);
+    let mut range: T = range_func(*point, seed_point);
+
+    let x_range = (half - frac[0]) * (half - frac[0]); // x-distance squared to center line
+    let y_range = (half - frac[1]) * (half - frac[1]); // y-distance squared to center line
+    let z_range = (half - frac[2]) * (half - frac[2]); // z-distance squared to center line
 
     macro_rules! test_point(
         [$x:expr, $y:expr, $z:expr] => {
@@ -245,14 +269,15 @@ pub fn cell3_seed_point<T, F>(seed: &Seed, point: &math::Point3<T>, range_func: 
         }
     );
 
-    test_point![whole0[0], whole0[1], whole0[2]];
-    test_point![whole1[0], whole0[1], whole0[2]];
-    test_point![whole0[0], whole1[1], whole0[2]];
-    test_point![whole1[0], whole1[1], whole0[2]];
-    test_point![whole0[0], whole0[1], whole1[2]];
-    test_point![whole1[0], whole0[1], whole1[2]];
-    test_point![whole0[0], whole1[1], whole1[2]];
-    test_point![whole1[0], whole1[1], whole1[2]];
+    if x_range < range { test_point![far[0], near[1], near[2]]; }
+    if y_range < range { test_point![near[0], far[1], near[2]]; }
+    if z_range < range { test_point![near[0], near[1], far[2]]; }
+
+    if x_range < range && y_range < range { test_point![far[0], far[1], near[2]]; }
+    if x_range < range && z_range < range { test_point![far[0], near[1], far[2]]; }
+    if y_range < range && z_range < range { test_point![near[0], far[1], far[2]]; }
+
+    if x_range < range && y_range < range && z_range < range { test_point![far[0], far[1], far[2]]; }
 
     (seed_point, range)
 }
@@ -266,12 +291,27 @@ pub fn cell4_seed_point<T, F>(seed: &Seed, point: &math::Point4<T>, range_func: 
         math::add4(get_vec4(seed.get4(whole)), math::cast4::<_,T>(whole))
     }
 
-    let floored = math::map4(*point, Float::floor);
-    let whole0  = math::map4(floored, math::cast);
-    let whole1  = math::add4(whole0, math::one4());
+    let half: T = math::cast(0.5);
 
-    let mut range: T = Float::max_value();
-    let mut seed_point = math::zero4::<T>();
+    let floored = math::map4(*point, Float::floor);
+    let whole   = math::map4(floored, math::cast::<_, isize>);
+    let frac    = math::sub4(*point, floored);
+
+    let x_half = frac[0] > half;
+    let y_half = frac[1] > half;
+    let z_half = frac[2] > half;
+    let w_half = frac[3] > half;
+
+    let near = [whole[0] + (x_half as isize), whole[1] + (y_half as isize), whole[2] + (z_half as isize), whole[3] + (w_half as isize)];
+    let far = [whole[0] + (!x_half as isize), whole[1] + (!y_half as isize), whole[2] + (!z_half as isize), whole[3] + (!w_half as isize)];
+
+    let mut seed_point = get_point(seed, near);
+    let mut range: T = range_func(*point, seed_point);
+
+    let x_range = (half - frac[0]) * (half - frac[0]); // x-distance squared to center line
+    let y_range = (half - frac[1]) * (half - frac[1]); // y-distance squared to center line
+    let z_range = (half - frac[2]) * (half - frac[2]); // z-distance squared to center line
+    let w_range = (half - frac[3]) * (half - frac[3]); // w-distance squared to center line
 
     macro_rules! test_point(
         [$x:expr, $y:expr, $z:expr, $w:expr] => {
@@ -286,22 +326,24 @@ pub fn cell4_seed_point<T, F>(seed: &Seed, point: &math::Point4<T>, range_func: 
         }
     );
 
-    test_point![whole0[0], whole0[1], whole0[2], whole0[3]];
-    test_point![whole1[0], whole0[1], whole0[2], whole0[3]];
-    test_point![whole0[0], whole1[1], whole0[2], whole0[3]];
-    test_point![whole1[0], whole1[1], whole0[2], whole0[3]];
-    test_point![whole0[0], whole0[1], whole1[2], whole0[3]];
-    test_point![whole1[0], whole0[1], whole1[2], whole0[3]];
-    test_point![whole0[0], whole1[1], whole1[2], whole0[3]];
-    test_point![whole1[0], whole1[1], whole1[2], whole0[3]];
-    test_point![whole0[0], whole0[1], whole0[2], whole1[3]];
-    test_point![whole1[0], whole0[1], whole0[2], whole1[3]];
-    test_point![whole0[0], whole1[1], whole0[2], whole1[3]];
-    test_point![whole1[0], whole1[1], whole0[2], whole1[3]];
-    test_point![whole0[0], whole0[1], whole1[2], whole1[3]];
-    test_point![whole1[0], whole0[1], whole1[2], whole1[3]];
-    test_point![whole0[0], whole1[1], whole1[2], whole1[3]];
-    test_point![whole1[0], whole1[1], whole1[2], whole1[3]];
+    if x_range < range { test_point![far[0], near[1], near[2], near[3]]; }
+    if y_range < range { test_point![near[0], far[1], near[2], near[3]]; }
+    if z_range < range { test_point![near[0], near[1], far[2], near[3]]; }
+    if w_range < range { test_point![near[0], near[1], near[2], far[3]]; }
+
+    if x_range < range && y_range < range { test_point![far[0], far[1], near[2], near[3]]; }
+    if x_range < range && z_range < range { test_point![far[0], near[1], far[2], near[3]]; }
+    if x_range < range && w_range < range { test_point![far[0], near[1], near[2], far[3]]; }
+    if y_range < range && z_range < range { test_point![near[0], far[1], far[2], near[3]]; }
+    if y_range < range && w_range < range { test_point![near[0], far[1], near[2], far[3]]; }
+    if z_range < range && w_range < range { test_point![near[0], near[1], far[2], far[3]]; }
+
+    if x_range < range && y_range < range && z_range < range { test_point![far[0], far[1], far[2], near[3]]; }
+    if x_range < range && y_range < range && w_range < range { test_point![far[0], far[1], near[2], far[3]]; }
+    if x_range < range && z_range < range && w_range < range { test_point![far[0], near[1], far[2], far[3]]; }
+    if y_range < range && z_range < range && w_range < range { test_point![near[0], far[1], far[2], far[3]]; }
+
+    if x_range < range && y_range < range && z_range < range && w_range < range { test_point![far[0], far[1], far[2], far[3]]; }
 
     (seed_point, range)
 }
