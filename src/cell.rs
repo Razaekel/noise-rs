@@ -33,24 +33,24 @@ fn get_cell4<T: Float>(point: math::Point4<T>) -> math::Point4<T> {
 
 #[inline(always)]
 fn get_cell_point2<T: Float>(seed: &Seed, cell: math::Point2<T>) -> math::Point2<T> {
-    let val = seed.get2(math::cast2::<_,i64>(cell));
-    math::add2(cell, math::mul2(math::cast2([val & 0x0F, val & 0xF0 >> 4]), math::cast(1.0 / 15.0)))
+    let val = seed.get2(math::cast2::<_, i64>(cell));
+    math::add2(cell, math::mul2(math::cast2([val & 0x0F, (val & 0xF0) >> 4]), math::cast(1.0 / 15.0)))
 }
 
 #[inline(always)]
 fn get_cell_point3<T: Float>(seed: &Seed, cell: math::Point3<T>) -> math::Point3<T> {
-    let cell_int = math::cast3::<_,i64>(cell);
+    let cell_int = math::cast3::<_, i64>(cell);
     let val1 = seed.get3(cell_int);
     let val2 = seed.get3([cell_int[0], cell_int[1], cell_int[2] + 128]);
-    math::add3(cell, math::mul3(math::cast3([val1 & 0x0F, val1 & 0xF0 >> 4, val2 & 0x0F]), math::cast(1.0 / 15.0)))
+    math::add3(cell, math::mul3(math::cast3([val1 & 0x0F, (val1 & 0xF0) >> 4, val2 & 0x0F]), math::cast(1.0 / 15.0)))
 }
 
 #[inline(always)]
 fn get_cell_point4<T: Float>(seed: &Seed, cell: math::Point4<T>) -> math::Point4<T> {
-    let cell_int = math::cast4::<_,i64>(cell);
+    let cell_int = math::cast4::<_, i64>(cell);
     let val1 = seed.get4(cell_int);
     let val2 = seed.get4([cell_int[0], cell_int[1], cell_int[2], cell_int[3] + 128]);
-    math::add4(cell, math::mul4(math::cast4([val1 & 0x0F, val1 & 0xF0 >> 4, val2 & 0x0F, val2 & 0xF0 >> 4]), math::cast(1.0 / 15.0)))
+    math::add4(cell, math::mul4(math::cast4([val1 & 0x0F, (val1 & 0xF0) >> 4, val2 & 0x0F, (val2 & 0xF0) >> 4]), math::cast(1.0 / 15.0)))
 }
 
 #[inline(always)]
@@ -92,9 +92,9 @@ pub fn range_manhattan4<T: Float>(p1: math::Point4<T>, p2: math::Point4<T>) -> T
 #[inline(always)]
 pub fn get_vec2<T: Float>(index: usize) -> math::Point2<T> {
     let length = math::cast::<_,T>((index & 0xF8) >> 3) * math::cast(0.5 / 31.0);
-    let diag = length * math::cast(0.70710678118f32);
+    let diag = length * math::cast(0.70710678118);
     let one = length;
-    let zero: T = math::cast(0.0f32);
+    let zero: T = math::cast(0.0);
     match index & 0x07 {
         0 => [ diag,  diag],
         1 => [ diag, -diag],
@@ -113,7 +113,7 @@ pub fn get_vec3<T: Float>(index: usize) -> math::Point3<T> {
     let length = math::cast::<_,T>((index & 0xE0) >> 5) * math::cast(0.5 / 7.0);
     let diag = length * math::cast(0.70710678118f32);
     let one = length;
-    let zero = math::cast(0.0f32);
+    let zero = math::cast(0.0);
     match index % 18 {
         0  => [ diag,  diag,  zero],
         1  => [ diag, -diag,  zero],
@@ -140,8 +140,8 @@ pub fn get_vec3<T: Float>(index: usize) -> math::Point3<T> {
 #[inline(always)]
 pub fn get_vec4<T: Float>(index: usize) -> math::Point4<T> {
     let length = math::cast::<_,T>((index & 0xE0) >> 5) * math::cast(0.5 / 7.0);
-    let diag = length * math::cast(0.57735026919f32);
-    let zero = math::cast(0.0f32);
+    let diag = length * math::cast(0.57735026919);
+    let zero = math::cast(0.0);
     match index % 32 {
         0  => [ diag,  diag,  diag,  zero],
         1  => [ diag, -diag,  diag,  zero],
@@ -185,7 +185,7 @@ pub fn cell2_seed_point<T, F>(seed: &Seed, point: &math::Point2<T>, range_func: 
 {
     #[inline(always)]
     fn get_point<T: Float>(seed: &Seed, whole: math::Point2<isize>) -> math::Point2<T> {
-        math::add2(get_vec2(seed.get2(whole)), math::cast2::<_,T>(whole))
+        math::add2(get_vec2(seed.get2(whole)), math::cast2::<_, T>(whole))
     }
 
     let half: T = math::cast(0.5);
@@ -201,7 +201,7 @@ pub fn cell2_seed_point<T, F>(seed: &Seed, point: &math::Point2<T>, range_func: 
     let far = [whole[0] + (!x_half as isize), whole[1] + (!y_half as isize)];
 
     let mut seed_point = get_point(seed, near);
-    let mut range: T = range_func(*point, seed_point);
+    let mut range = range_func(*point, seed_point);
 
     let x_range = (half - frac[0]) * (half - frac[0]); // x-distance squared to center line
     let y_range = (half - frac[1]) * (half - frac[1]); // y-distance squared to center line
@@ -233,7 +233,7 @@ pub fn cell3_seed_point<T, F>(seed: &Seed, point: &math::Point3<T>, range_func: 
 {
     #[inline(always)]
     fn get_point<T: Float>(seed: &Seed, whole: math::Point3<isize>) -> math::Point3<T> {
-        math::add3(get_vec3(seed.get3(whole)), math::cast3::<_,T>(whole))
+        math::add3(get_vec3(seed.get3(whole)), math::cast3::<_, T>(whole))
     }
 
     let half: T = math::cast(0.5);
@@ -250,7 +250,7 @@ pub fn cell3_seed_point<T, F>(seed: &Seed, point: &math::Point3<T>, range_func: 
     let far = [whole[0] + (!x_half as isize), whole[1] + (!y_half as isize), whole[2] + (!z_half as isize)];
 
     let mut seed_point = get_point(seed, near);
-    let mut range: T = range_func(*point, seed_point);
+    let mut range = range_func(*point, seed_point);
 
     let x_range = (half - frac[0]) * (half - frac[0]); // x-distance squared to center line
     let y_range = (half - frac[1]) * (half - frac[1]); // y-distance squared to center line
@@ -288,7 +288,7 @@ pub fn cell4_seed_point<T, F>(seed: &Seed, point: &math::Point4<T>, range_func: 
 {
     #[inline(always)]
     fn get_point<T: Float>(seed: &Seed, whole: math::Point4<isize>) -> math::Point4<T> {
-        math::add4(get_vec4(seed.get4(whole)), math::cast4::<_,T>(whole))
+        math::add4(get_vec4(seed.get4(whole)), math::cast4::<_, T>(whole))
     }
 
     let half: T = math::cast(0.5);
@@ -306,7 +306,7 @@ pub fn cell4_seed_point<T, F>(seed: &Seed, point: &math::Point4<T>, range_func: 
     let far = [whole[0] + (!x_half as isize), whole[1] + (!y_half as isize), whole[2] + (!z_half as isize), whole[3] + (!w_half as isize)];
 
     let mut seed_point = get_point(seed, near);
-    let mut range: T = range_func(*point, seed_point);
+    let mut range = range_func(*point, seed_point);
 
     let x_range = (half - frac[0]) * (half - frac[0]); // x-distance squared to center line
     let y_range = (half - frac[1]) * (half - frac[1]); // y-distance squared to center line
@@ -348,103 +348,184 @@ pub fn cell4_seed_point<T, F>(seed: &Seed, point: &math::Point4<T>, range_func: 
     (seed_point, range)
 }
 
+// These would be faster if we unrolled them like in the 2D version
+// Doing that, however, increases the compile time of library users from
+// 1 second to 120 seconds which is a poor tradeoff
+static CELL3_SEARCH_ORDER: [math::Point3<isize>; 26] = [
+    [-1,  0,  0], [ 1,  0,  0], [ 0, -1,  0], [ 0,  1,  0], [ 0,  0, -1],
+    [ 0,  0,  1], [-1, -1,  0], [-1,  1,  0], [ 1, -1,  0], [ 1,  1,  0],
+    [-1,  0, -1], [-1,  0,  1], [ 1,  0, -1], [ 1,  0,  1], [ 0, -1, -1],
+    [ 0, -1,  1], [ 0,  1, -1], [ 0,  1,  1], [-1, -1, -1], [-1, -1,  1],
+    [-1,  1, -1], [-1,  1,  1], [ 1, -1, -1], [ 1, -1,  1], [ 1,  1, -1],
+    [ 1,  1,  1],
+];
+
+static CELL4_SEARCH_ORDER: [math::Point4<isize>; 80] = [
+    [-1,  0,  0,  0], [ 1,  0,  0,  0], [ 0, -1,  0,  0], [ 0,  1,  0,  0],
+    [ 0,  0, -1,  0], [ 0,  0,  1,  0], [ 0,  0,  0, -1], [ 0,  0,  0,  1],
+    [-1, -1,  0,  0], [-1,  1,  0,  0], [ 1, -1,  0,  0], [ 1,  1,  0,  0],
+    [-1,  0, -1,  0], [-1,  0,  1,  0], [ 1,  0, -1,  0], [ 1,  0,  1,  0],
+    [-1,  0,  0, -1], [-1,  0,  0,  1], [ 1,  0,  0, -1], [ 1,  0,  0,  1],
+    [ 0, -1, -1,  0], [ 0, -1,  1,  0], [ 0,  1, -1,  0], [ 0,  1,  1,  0],
+    [ 0, -1,  0, -1], [ 0, -1,  0,  1], [ 0,  1,  0, -1], [ 0,  1,  0,  1],
+    [ 0,  0, -1, -1], [ 0,  0, -1,  1], [ 0,  0,  1, -1], [ 0,  0,  1,  1],
+    [-1, -1, -1,  0], [-1, -1,  1,  0], [-1,  1, -1,  0], [-1,  1,  1,  0],
+    [ 1, -1, -1,  0], [ 1, -1,  1,  0], [ 1,  1, -1,  0], [ 1,  1,  1,  0],
+    [-1, -1,  0, -1], [-1, -1,  0,  1], [-1,  1,  0, -1], [-1,  1,  0,  1],
+    [ 1, -1,  0, -1], [ 1, -1,  0,  1], [ 1,  1,  0, -1], [ 1,  1,  0,  1],
+    [-1,  0, -1, -1], [-1,  0, -1,  1], [-1,  0,  1, -1], [-1,  0,  1,  1],
+    [ 1,  0, -1, -1], [ 1,  0, -1,  1], [ 1,  0,  1, -1], [ 1,  0,  1,  1],
+    [ 0, -1, -1, -1], [ 0, -1, -1,  1], [ 0, -1,  1, -1], [ 0, -1,  1,  1],
+    [ 0,  1, -1, -1], [ 0,  1, -1,  1], [ 0,  1,  1, -1], [ 0,  1,  1,  1],
+    [-1, -1, -1, -1], [-1, -1, -1,  1], [-1, -1,  1, -1], [-1, -1,  1,  1],
+    [-1,  1, -1, -1], [-1,  1, -1,  1], [-1,  1,  1, -1], [-1,  1,  1,  1],
+    [ 1, -1, -1, -1], [ 1, -1, -1,  1], [ 1, -1,  1, -1], [ 1, -1,  1,  1],
+    [ 1,  1, -1, -1], [ 1,  1, -1,  1], [ 1,  1,  1, -1], [ 1,  1,  1,  1],
+];
+
 #[inline(always)]
 pub fn cell2_seed_2_points<T, F>(seed: &Seed, point: &math::Point2<T>, range_func: F) -> (math::Point2<T>, T, math::Point2<T>, T)
     where T: Float, F: Fn(math::Point2<T>, math::Point2<T>) -> T
 {
-    let zero: T = math::cast(0);
+    let one: T = math::cast(1.0);
+    let zero: T = math::cast(0.0);
 
-    let cell = get_cell2(*point);
-    let mut range1: T = Float::max_value();
-    let mut range2: T = Float::max_value();
-    let mut seed_point1: math::Point2<T> = [zero, zero];
-    let mut seed_point2: math::Point2<T> = [zero, zero];
+    let cell = math::map2(*point, Float::floor);
+    let frac = math::sub2(*point, cell);
 
-    for x_offset in -1..2 {
-        for y_offset in -1..2 {
-            let cur_seed_point = get_cell_point2(seed, math::add2(cell, math::cast2([x_offset, y_offset])));
-            let cur_range = range_func(*point, cur_seed_point);
-            if cur_range < range1 {
-                range2 = range1;
-                seed_point2 = seed_point1;
-                range1 = cur_range;
-                seed_point1 = cur_seed_point;
-            } else if cur_range < range2 {
-                range2 = cur_range;
-                seed_point2 = cur_seed_point;
+    let mut seed_point0 = get_cell_point2(seed, cell);
+    let mut seed_point1 = [one, one];
+    let mut range0 = range_func(*point, seed_point0);
+    let mut range1 = Float::max_value();
+
+    // Distance squared for the previous, current, and next cells in each dimension
+    let dx2 = [frac[0] * frac[0], zero, (one - frac[0]) * (one - frac[0])];
+    let dy2 = [frac[1] * frac[1], zero, (one - frac[1]) * (one - frac[1])];
+
+    macro_rules! test_point(
+        [$x:expr, $y:expr] => {
+            {
+                let x_range = dx2[($x + 1) as usize];
+                let y_range = dy2[($y + 1) as usize];
+
+                if x_range + y_range < range1 {
+                    let cur_point = get_cell_point2(seed, math::add2(cell, math::cast2([$x, $y])));
+                    let cur_range = range_func(*point, cur_point);
+                    if cur_range < range0 {
+                        range1 = range0;
+                        seed_point1 = seed_point0;
+                        range0 = cur_range;
+                        seed_point0 = cur_point;
+                    } else if cur_range < range1 {
+                        range1 = cur_range;
+                        seed_point1 = cur_point;
+                    }
+                }
             }
         }
-    }
+    );
 
-    (seed_point1, range1, seed_point2, range2)
+    // Check four facing cells
+    test_point![-1,  0];
+    test_point![ 1,  0];
+    test_point![ 0, -1];
+    test_point![ 0,  1];
+
+    // Check four corner cells
+    test_point![-1, -1];
+    test_point![-1,  1];
+    test_point![ 1, -1];
+    test_point![ 1,  1];
+
+    (seed_point0, range0, seed_point1, range1)
 }
 
 #[inline(always)]
 pub fn cell3_seed_2_points<T, F>(seed: &Seed, point: &math::Point3<T>, range_func: F) -> (math::Point3<T>, T, math::Point3<T>, T)
     where T: Float, F: Fn(math::Point3<T>, math::Point3<T>) -> T
 {
-    let zero: T = math::cast(0);
+    let one: T = math::cast(1.0);
+    let zero: T = math::cast(0.0);
 
-    let cell = get_cell3(*point);
-    let mut range1: T = Float::max_value();
-    let mut range2: T = Float::max_value();
-    let mut seed_point1: math::Point3<T> = [zero, zero, zero];
-    let mut seed_point2: math::Point3<T> = [zero, zero, zero];
+    let cell = math::map3(*point, Float::floor);
+    let frac = math::sub3(*point, cell);
 
-    for x_offset in -1..2 {
-        for y_offset in -1..2 {
-            for z_offset in -1..2 {
-                let cur_seed_point = get_cell_point3(seed, math::add3(cell, math::cast3([x_offset, y_offset, z_offset])));
-                let cur_range = range_func(*point, cur_seed_point);
-                if cur_range < range1 {
-                    range2 = range1;
-                    seed_point2 = seed_point1;
-                    range1 = cur_range;
-                    seed_point1 = cur_seed_point;
-                } else if cur_range < range2 {
-                    range2 = cur_range;
-                    seed_point2 = cur_seed_point;
-                }
+    let mut seed_point0 = get_cell_point3(seed, cell);
+    let mut seed_point1 = [one, one, one];
+    let mut range0 = range_func(*point, seed_point0);
+    let mut range1 = Float::max_value();
+
+    // Distance squared for the previous, current, and next cells in each dimension
+    let dx2 = [frac[0] * frac[0], zero, (one - frac[0]) * (one - frac[0])];
+    let dy2 = [frac[1] * frac[1], zero, (one - frac[1]) * (one - frac[1])];
+    let dz2 = [frac[2] * frac[2], zero, (one - frac[2]) * (one - frac[2])];
+
+    for offset in CELL3_SEARCH_ORDER.iter() {
+        let x_range = dx2[(offset[0] + 1) as usize];
+        let y_range = dy2[(offset[1] + 1) as usize];
+        let z_range = dz2[(offset[2] + 1) as usize];
+
+        if x_range + y_range + z_range < range1 {
+            let cur_point = get_cell_point3(seed, math::add3(cell, math::cast3(*offset)));
+            let cur_range = range_func(*point, cur_point);
+            if cur_range < range0 {
+                range1 = range0;
+                seed_point1 = seed_point0;
+                range0 = cur_range;
+                seed_point0 = cur_point;
+            } else if cur_range < range1 {
+                range1 = cur_range;
+                seed_point1 = cur_point;
             }
         }
     }
 
-    (seed_point1, range1, seed_point2, range2)
+    (seed_point0, range0, seed_point1, range1)
 }
 
 #[inline(always)]
 pub fn cell4_seed_2_points<T, F>(seed: &Seed, point: &math::Point4<T>, range_func: F) -> (math::Point4<T>, T, math::Point4<T>, T)
     where T: Float, F: Fn(math::Point4<T>, math::Point4<T>) -> T
 {
-    let zero: T = math::cast(0);
+    let one: T = math::cast(1.0);
+    let zero: T = math::cast(0.0);
 
-    let cell = get_cell4(*point);
-    let mut range1: T = Float::max_value();
-    let mut range2: T = Float::max_value();
-    let mut seed_point1: math::Point4<T> = [zero, zero, zero, zero];
-    let mut seed_point2: math::Point4<T> = [zero, zero, zero, zero];
+    let cell = math::map4(*point, Float::floor);
+    let frac = math::sub4(*point, cell);
 
-    for x_offset in -1..2 {
-        for y_offset in -1..2 {
-            for z_offset in -1..2 {
-                for w_offset in -1..2 {
-                    let cur_seed_point = get_cell_point4(seed, math::add4(cell, math::cast4([x_offset, y_offset, z_offset, w_offset])));
-                    let cur_range = range_func(*point, cur_seed_point);
-                    if cur_range < range1 {
-                        range2 = range1;
-                        seed_point2 = seed_point1;
-                        range1 = cur_range;
-                        seed_point1 = cur_seed_point;
-                    } else if cur_range < range2 {
-                        range2 = cur_range;
-                        seed_point2 = cur_seed_point;
-                    }
-                }
+    let mut seed_point0 = get_cell_point4(seed, cell);
+    let mut seed_point1 = [one, one, one, one];
+    let mut range0 = range_func(*point, seed_point0);
+    let mut range1 = Float::max_value();
+
+    // Distance squared for the previous, current, and next cells in each dimension
+    let dx2 = [frac[0] * frac[0], zero, (one - frac[0]) * (one - frac[0])];
+    let dy2 = [frac[1] * frac[1], zero, (one - frac[1]) * (one - frac[1])];
+    let dz2 = [frac[2] * frac[2], zero, (one - frac[2]) * (one - frac[2])];
+    let dw2 = [frac[3] * frac[3], zero, (one - frac[3]) * (one - frac[3])];
+
+    for offset in CELL4_SEARCH_ORDER.iter() {
+        let x_range = dx2[(offset[0] + 1) as usize];
+        let y_range = dy2[(offset[1] + 1) as usize];
+        let z_range = dz2[(offset[2] + 1) as usize];
+        let w_range = dw2[(offset[3] + 1) as usize];
+
+        if x_range + y_range + z_range + w_range < range1 {
+            let cur_point = get_cell_point4(seed, math::add4(cell, math::cast4(*offset)));
+            let cur_range = range_func(*point, cur_point);
+            if cur_range < range0 {
+                range1 = range0;
+                seed_point1 = seed_point0;
+                range0 = cur_range;
+                seed_point0 = cur_point;
+            } else if cur_range < range1 {
+                range1 = cur_range;
+                seed_point1 = cur_point;
             }
         }
     }
 
-    (seed_point1, range1, seed_point2, range2)
+    (seed_point0, range0, seed_point1, range1)
 }
 
 #[inline(always)]
