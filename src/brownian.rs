@@ -198,10 +198,11 @@ impl_brownian! { Brownian2, GenFn2 }
 impl_brownian! { Brownian3, GenFn3 }
 impl_brownian! { Brownian4, GenFn4 }
 
-impl<'a, 'b, T, F> Fn(&'a Seed, &'b Point2<T>) -> T for Brownian2<T, F> where
+impl<'a, 'b, T, F> Fn<(&'a Seed, &'b Point2<T>)> for Brownian2<T, F> where
     T: Float,
     F: GenFn2<T>,
 {
+    type Output = T;
     /// Applies the brownian noise function for the supplied seed and point.
     extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b Point2<T>)) -> T {
         let mut frequency: T = self.frequency;
@@ -218,10 +219,11 @@ impl<'a, 'b, T, F> Fn(&'a Seed, &'b Point2<T>) -> T for Brownian2<T, F> where
     }
 }
 
-impl<'a, 'b, T, F> Fn(&'a Seed, &'b Point3<T>) -> T for Brownian3<T, F> where
+impl<'a, 'b, T, F> Fn<(&'a Seed, &'b Point3<T>)> for Brownian3<T, F> where
     T: Float,
     F: GenFn3<T>,
 {
+    type Output = T;
     /// Applies the brownian noise function for the supplied seed and point.
     extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b Point3<T>)) -> T {
         let mut frequency: T = self.frequency;
@@ -239,10 +241,11 @@ impl<'a, 'b, T, F> Fn(&'a Seed, &'b Point3<T>) -> T for Brownian3<T, F> where
     }
 }
 
-impl<'a, 'b, T, F> Fn(&'a Seed, &'b ::Point4<T>) -> T for Brownian4<T, F> where
+impl<'a, 'b, T, F> Fn<(&'a Seed, &'b ::Point4<T>)> for Brownian4<T, F> where
     T: Float,
     F: GenFn4<T>,
 {
+    type Output = T;
     /// Applies the brownian noise function for the supplied seed and point.
     extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b Point4<T>)) -> T {
         let mut frequency: T = self.frequency;
