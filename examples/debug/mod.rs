@@ -46,5 +46,5 @@ pub fn render_png<T, F>(filename: &str, seed: &noise::Seed, width: u32, height: 
         }
     }
 
-    let _ = image::save_buffer(&Path::new(filename), &*pixels, width, height, image::ColorType::Grey(8));
+    let _ = image::save_buffer(&Path::new(filename), &*pixels, width, height, image::Gray(8));
 }
