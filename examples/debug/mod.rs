@@ -1,5 +1,4 @@
-// Copyright 2013 The noise-rs developers. For a full listing of the authors,
-// refer to the AUTHORS file at the top-level directory of this distribution.
+// Copyright 2015 The Noise-rs Developers.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
