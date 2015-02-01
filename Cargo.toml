@@ -53,6 +53,6 @@ name = "cell_manhattan_value"
 
 name = "benches"
 
-[dev-dependencies.image]
+[dev-dependencies]
 
-git = "https://github.com/PistonDevelopers/image.git"
+image = "*"
