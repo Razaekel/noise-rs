@@ -14,6 +14,9 @@
 
 //! An example of using cell range noise
 
+#![feature(core)]
+#![feature(path)]
+
 extern crate noise;
 
 use noise::{cell2_manhattan, cell3_manhattan, cell4_manhattan, Seed, Point2};

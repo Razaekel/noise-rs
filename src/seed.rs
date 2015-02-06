@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::rand::{Rand, Rng, SeedableRng, XorShiftRng};
+use rand::{Rand, Rng, SeedableRng, XorShiftRng};
 use std::num::SignedInt;
 
 use math;
@@ -34,18 +34,27 @@ impl Rand for Seed {
     /// # Examples
     ///
     /// ```rust
-    /// use noise::Seed;
-    /// use std::rand;
+    /// extern crate noise;
+    /// extern crate rand;
     ///
+    /// use noise::Seed;
+    ///
+    /// # fn main() {
     /// let seed = rand::random::<Seed>();
+    /// # }
     /// ```
     ///
     /// ```rust
-    /// use noise::Seed;
-    /// use std::rand::{SeedableRng, Rng, XorShiftRng};
+    /// extern crate noise;
+    /// extern crate rand;
     ///
+    /// use noise::Seed;
+    /// use rand::{SeedableRng, Rng, XorShiftRng};
+    ///
+    /// # fn main() {
     /// let mut rng: XorShiftRng = SeedableRng::from_seed([1, 2, 3, 4]);
     /// let seed = rng.gen::<Seed>();
+    /// # }
     /// ```
     fn rand<R: Rng>(rng: &mut R) -> Seed {
         let mut seq: Vec<u8> = ::std::iter::range_inclusive(0, (TABLE_SIZE - 1) as u8).collect();
@@ -106,7 +115,7 @@ impl Seed {
 
 #[cfg(test)]
 mod tests {
-    use std::rand::random;
+    use rand::random;
     use perlin::perlin3;
     use super::Seed;
 
