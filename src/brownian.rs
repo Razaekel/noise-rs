@@ -32,12 +32,16 @@ use {Point2, Point3, Point4};
 /// # Example
 ///
 /// ```rust
-/// use noise::{Brownian2, perlin2};
-/// use std::rand;
+/// extern crate noise;
+/// extern crate rand;
 ///
+/// use noise::{Brownian2, perlin2};
+///
+/// # fn main() {
 /// let seed = rand::random();
 /// let noise = Brownian2::new(perlin2, 4).wavelength(32.0);
 /// let val = noise(&seed, &[42.0, 37.0]);
+/// # }
 /// ```
 #[derive(Copy, Clone)]
 pub struct Brownian2<T, F: GenFn2<T>> {
@@ -67,12 +71,16 @@ pub struct Brownian2<T, F: GenFn2<T>> {
 /// # Example
 ///
 /// ```rust
-/// use noise::{Brownian3, perlin3};
-/// use std::rand;
+/// extern crate noise;
+/// extern crate rand;
 ///
+/// use noise::{Brownian3, perlin3};
+///
+/// # fn main() {
 /// let seed = rand::random();
 /// let noise = Brownian3::new(perlin3, 4).wavelength(32.0);
 /// let val = noise(&seed, &[42.0, 37.0, 2.0]);
+/// # }
 /// ```
 #[derive(Copy, Clone)]
 pub struct Brownian3<T, F: GenFn3<T>> {
@@ -102,12 +110,16 @@ pub struct Brownian3<T, F: GenFn3<T>> {
 /// # Example
 ///
 /// ```rust
-/// use noise::{Brownian4, perlin4};
-/// use std::rand;
+/// extern crate noise;
+/// extern crate rand;
 ///
+/// use noise::{Brownian4, perlin4};
+///
+/// # fn main() {
 /// let seed = rand::random();
 /// let noise = Brownian4::new(perlin4, 4).wavelength(32.0);
 /// let val = noise(&seed, &[42.0, 37.0, 2.0, 3.0]);
+/// # }
 /// ```
 #[derive(Copy, Clone)]
 pub struct Brownian4<T, F: GenFn4<T>> {

@@ -53,6 +53,9 @@ name = "cell_manhattan_value"
 
 name = "benches"
 
+[dependencies]
+rand = "0.1"
+
 [dev-dependencies]
 
 image = "*"

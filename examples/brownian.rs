@@ -14,6 +14,8 @@
 
 //! An example of using fractal brownian motion on perlin noise
 
+#![feature(core)]
+#![feature(path)]
 #![feature(unboxed_closures)]
 
 extern crate noise;

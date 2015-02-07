@@ -14,6 +14,9 @@
 
 //! An example of using perlin noise
 
+#![feature(core)]
+#![feature(path)]
+
 extern crate noise;
 
 use noise::{perlin2, perlin3, perlin4, Seed, Point2};

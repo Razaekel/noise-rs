@@ -24,9 +24,12 @@
 //! let val = noise(&seed, &[42.0, 37.0, 2.0]);
 //! ```
 
+#![feature(core)]
+#![feature(std_misc)]
 #![feature(unboxed_closures)]
 #![deny(missing_copy_implementations)]
-#![allow(unstable)]
+
+extern crate rand;
 
 pub use seed::Seed;
 pub use math::{Point2, Point3, Point4};
