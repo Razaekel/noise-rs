@@ -17,6 +17,7 @@
 extern crate image;
 
 use noise;
+use std::path::Path;
 use std::num::{self, Float, NumCast};
 
 fn cast<T: NumCast, R: NumCast>(val: T) -> R {
