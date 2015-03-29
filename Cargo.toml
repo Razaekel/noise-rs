@@ -14,48 +14,37 @@ authors = ["The Noise-rs Developers."]
 name = "noise"
 
 [[example]]
-
 name = "perlin"
 
 [[example]]
-
 name = "open_simplex"
 
 [[example]]
-
 name = "brownian"
 
 [[example]]
-
 name = "cell_range"
 
 [[example]]
-
 name = "cell_range_inv"
 
 [[example]]
-
 name = "cell_value"
 
 [[example]]
-
 name = "cell_manhattan"
 
 [[example]]
-
 name = "cell_manhattan_inv"
 
 [[example]]
-
 name = "cell_manhattan_value"
 
 [[bench]]
-
 name = "benches"
 
 [dependencies]
-rand = "0.2"
+rand = "*"
 
 [dev-dependencies]
-
 image = "*"
