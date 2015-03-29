@@ -15,7 +15,6 @@
 //! An example of using simplex noise
 
 #![feature(core)]
-#![feature(path)]
 
 extern crate noise;
 

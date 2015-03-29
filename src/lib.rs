@@ -25,6 +25,7 @@
 //! ```
 
 #![feature(core)]
+#![feature(slice_patterns)]
 #![feature(std_misc)]
 #![feature(unboxed_closures)]
 #![deny(missing_copy_implementations)]

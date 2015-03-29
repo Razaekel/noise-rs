@@ -15,7 +15,6 @@
 //! An example of using perlin noise
 
 #![feature(core)]
-#![feature(path)]
 
 extern crate noise;
 
