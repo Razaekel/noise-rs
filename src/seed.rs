@@ -57,7 +57,7 @@ impl Rand for Seed {
     /// # }
     /// ```
     fn rand<R: Rng>(rng: &mut R) -> Seed {
-        let mut seq: Vec<u8> = ::std::iter::range_inclusive(0, (TABLE_SIZE - 1) as u8).collect();
+        let mut seq: Vec<u8> = (0 .. TABLE_SIZE).map(|x| x as u8).collect();
         rng.shuffle(&mut *seq);
 
         // It's unfortunate that this double-initializes the array, but Rust doesn't currently provide a
