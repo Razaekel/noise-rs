@@ -40,7 +40,7 @@ use {Point2, Point3, Point4};
 /// # fn main() {
 /// let seed = rand::random();
 /// let noise = Brownian2::new(perlin2, 4).wavelength(32.0);
-/// let val = noise(&seed, &[42.0, 37.0]);
+/// let val = noise.apply(&seed, &[42.0, 37.0]);
 /// # }
 /// ```
 #[derive(Copy, Clone)]
@@ -79,7 +79,7 @@ pub struct Brownian2<T, F: GenFn2<T>> {
 /// # fn main() {
 /// let seed = rand::random();
 /// let noise = Brownian3::new(perlin3, 4).wavelength(32.0);
-/// let val = noise(&seed, &[42.0, 37.0, 2.0]);
+/// let val = noise.apply(&seed, &[42.0, 37.0, 2.0]);
 /// # }
 /// ```
 #[derive(Copy, Clone)]
@@ -118,7 +118,7 @@ pub struct Brownian3<T, F: GenFn3<T>> {
 /// # fn main() {
 /// let seed = rand::random();
 /// let noise = Brownian4::new(perlin4, 4).wavelength(32.0);
-/// let val = noise(&seed, &[42.0, 37.0, 2.0, 3.0]);
+/// let val = noise.apply(&seed, &[42.0, 37.0, 2.0, 3.0]);
 /// # }
 /// ```
 #[derive(Copy, Clone)]
@@ -136,7 +136,7 @@ pub struct Brownian4<T, F: GenFn4<T>> {
 }
 
 macro_rules! impl_brownian {
-    { $Brownian:ident, $GenFn:ident } => {
+    { $Brownian:ident, $GenFn:ident, $Point:ident, $mapn:path } => {
         impl<T: Float, F: $GenFn<T>> $Brownian<T, F> {
             /// Constructs a new brownian noise function, defaulting to:
             ///
@@ -201,35 +201,43 @@ macro_rules! impl_brownian {
             pub fn lacunarity(self, lacunarity: T) -> $Brownian<T, F> {
                 $Brownian { lacunarity: lacunarity, ..self }
             }
+
+            /// Apply the Brownian noise function for the supplied seed and point.
+            #[inline]
+            pub fn apply(&self, seed: &Seed, point: &$Point<T>) -> T {
+                let mut frequency: T = self.frequency;
+                let mut amplitude: T = math::cast(1);
+                let mut result: T = math::cast(0);
+                let point = *point;
+                for _ in 0..self.octaves {
+                    let scaled_point = $mapn(point, |v| v * frequency);
+                    result = result + ((self.function)(seed, &scaled_point) * amplitude);
+                    amplitude = amplitude * self.persistence;
+                    frequency = frequency * self.lacunarity;
+                }
+                result
+            }
         }
     }
 }
 
-impl_brownian! { Brownian2, GenFn2 }
-impl_brownian! { Brownian3, GenFn3 }
-impl_brownian! { Brownian4, GenFn4 }
+impl_brownian! { Brownian2, GenFn2, Point2, math::map2 }
+impl_brownian! { Brownian3, GenFn3, Point3, math::map3 }
+impl_brownian! { Brownian4, GenFn4, Point4, math::map4 }
 
-impl<'a, 'b, T, F> Fn<(&'a Seed, &'b Point2<T>)> for Brownian2<T, F> where
+#[cfg(rust_unstable)]
+impl<'a, 'b, T, F> Fn(&'a Seed, &'b Point2<T>) for Brownian2<T, F> where
     T: Float,
     F: GenFn2<T>,
 {
     /// Applies the brownian noise function for the supplied seed and point.
     extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b Point2<T>)) -> T {
-        let mut frequency: T = self.frequency;
-        let mut amplitude: T = math::cast(1);
-        let mut result: T = math::cast(0);
-        for _ in 0..self.octaves {
-            let scaled_point = [point[0] * frequency,
-                                point[1] * frequency];
-            result = result + ((self.function)(seed, &scaled_point) * amplitude);
-            amplitude = amplitude * self.persistence;
-            frequency = frequency * self.lacunarity;
-        }
-        result
+        self.apply(seed, point)
     }
 }
 
-impl<'a, 'b, T, F> FnMut<(&'a Seed, &'b Point2<T>)> for Brownian2<T, F> where
+#[cfg(rust_unstable)]
+impl<'a, 'b, T, F> FnMut(&'a Seed, &'b Point2<T>) for Brownian2<T, F> where
     T: Float,
     F: GenFn2<T>,
 {
@@ -238,7 +246,8 @@ impl<'a, 'b, T, F> FnMut<(&'a Seed, &'b Point2<T>)> for Brownian2<T, F> where
     }
 }
 
-impl<'a, 'b, T, F> FnOnce<(&'a Seed, &'b Point2<T>)> for Brownian2<T, F> where
+#[cfg(rust_unstable)]
+impl<'a, 'b, T, F> FnOnce(&'a Seed, &'b Point2<T>) for Brownian2<T, F> where
     T: Float,
     F: GenFn2<T>,
 {
@@ -248,28 +257,19 @@ impl<'a, 'b, T, F> FnOnce<(&'a Seed, &'b Point2<T>)> for Brownian2<T, F> where
     }
 }
 
-impl<'a, 'b, T, F> Fn<(&'a Seed, &'b Point3<T>)> for Brownian3<T, F> where
+#[cfg(rust_unstable)]
+impl<'a, 'b, T, F> Fn(&'a Seed, &'b Point3<T>) for Brownian3<T, F> where
     T: Float,
     F: GenFn3<T>,
 {
     /// Applies the brownian noise function for the supplied seed and point.
     extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b Point3<T>)) -> T {
-        let mut frequency: T = self.frequency;
-        let mut amplitude: T = math::cast(1);
-        let mut result: T = math::cast(0);
-        for _ in 0..self.octaves {
-            let scaled_point = [point[0] * frequency,
-                                point[1] * frequency,
-                                point[2] * frequency];
-            result = result + ((self.function)(seed, &scaled_point) * amplitude);
-            amplitude = amplitude * self.persistence;
-            frequency = frequency * self.lacunarity;
-        }
-        result
+        self.apply(seed, point)
     }
 }
 
-impl<'a, 'b, T, F> FnMut<(&'a Seed, &'b Point3<T>)> for Brownian3<T, F> where
+#[cfg(rust_unstable)]
+impl<'a, 'b, T, F> FnMut(&'a Seed, &'b Point3<T>) for Brownian3<T, F> where
     T: Float,
     F: GenFn3<T>,
 {
@@ -278,7 +278,8 @@ impl<'a, 'b, T, F> FnMut<(&'a Seed, &'b Point3<T>)> for Brownian3<T, F> where
     }
 }
 
-impl<'a, 'b, T, F> FnOnce<(&'a Seed, &'b Point3<T>)> for Brownian3<T, F> where
+#[cfg(rust_unstable)]
+impl<'a, 'b, T, F> FnOnce(&'a Seed, &'b Point3<T>) for Brownian3<T, F> where
     T: Float,
     F: GenFn3<T>,
 {
@@ -288,29 +289,19 @@ impl<'a, 'b, T, F> FnOnce<(&'a Seed, &'b Point3<T>)> for Brownian3<T, F> where
     }
 }
 
-impl<'a, 'b, T, F> Fn<(&'a Seed, &'b ::Point4<T>)> for Brownian4<T, F> where
+#[cfg(rust_unstable)]
+impl<'a, 'b, T, F> Fn(&'a Seed, &'b ::Point4<T>) for Brownian4<T, F> where
     T: Float,
     F: GenFn4<T>,
 {
     /// Applies the brownian noise function for the supplied seed and point.
     extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b Point4<T>)) -> T {
-        let mut frequency: T = self.frequency;
-        let mut amplitude: T = math::cast(1);
-        let mut result: T = math::cast(0);
-        for _ in 0..self.octaves {
-            let scaled_point = [point[0] * frequency,
-                                point[1] * frequency,
-                                point[2] * frequency,
-                                point[3] * frequency];
-            result = result + ((self.function)(seed, &scaled_point) * amplitude);
-            amplitude = amplitude * self.persistence;
-            frequency = frequency * self.lacunarity;
-        }
-        result
+        self.apply(seed, point)
     }
 }
 
-impl<'a, 'b, T, F> FnMut<(&'a Seed, &'b Point4<T>)> for Brownian4<T, F> where
+#[cfg(rust_unstable)]
+impl<'a, 'b, T, F> FnMut(&'a Seed, &'b Point4<T>) for Brownian4<T, F> where
     T: Float,
     F: GenFn4<T>,
 {
@@ -319,7 +310,8 @@ impl<'a, 'b, T, F> FnMut<(&'a Seed, &'b Point4<T>)> for Brownian4<T, F> where
     }
 }
 
-impl<'a, 'b, T, F> FnOnce<(&'a Seed, &'b Point4<T>)> for Brownian4<T, F> where
+#[cfg(rust_unstable)]
+impl<'a, 'b, T, F> FnOnce(&'a Seed, &'b Point4<T>) for Brownian4<T, F> where
     T: Float,
     F: GenFn4<T>,
 {

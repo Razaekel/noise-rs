@@ -21,12 +21,10 @@
 //!
 //! let seed = Seed::new(12);
 //! let noise = Brownian3::new(noise::perlin3, 4).wavelength(32.0);
-//! let val = noise(&seed, &[42.0, 37.0, 2.0]);
+//! let val = noise.apply(&seed, &[42.0, 37.0, 2.0]);
 //! ```
 
-#![feature(core)]
 #![feature(std_misc)]
-#![feature(unboxed_closures)]
 #![deny(missing_copy_implementations)]
 
 extern crate rand;
