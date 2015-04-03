@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num::Float;
+use num::Float;
 
 use {gradient, math, Seed};
 
@@ -21,10 +21,10 @@ pub fn perlin2<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
     #[inline(always)]
     fn gradient<T: Float>(seed: &Seed, whole: math::Point2<isize>, frac: math::Vector2<T>) -> T {
         let attn = math::cast::<_, T>(1.0) - math::dot2(frac, frac);
-        if attn > Float::zero() {
+        if attn > T::zero() {
             (attn * attn) * math::dot2(frac, gradient::get2(seed.get2(whole)))
         } else {
-            Float::zero()
+            T::zero()
         }
     }
 
@@ -48,10 +48,10 @@ pub fn perlin3<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
     #[inline(always)]
     fn gradient<T: Float>(seed: &Seed, whole: math::Point3<isize>, frac: math::Vector3<T>) -> T {
         let attn = math::cast::<_, T>(1.0) - math::dot3(frac, frac);
-        if attn > Float::zero() {
+        if attn > T::zero() {
             (attn * attn) * math::dot3(frac, gradient::get3(seed.get3(whole)))
         } else {
-            Float::zero()
+            T::zero()
         }
     }
 
@@ -79,10 +79,10 @@ pub fn perlin4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
     #[inline(always)]
     fn gradient<T: Float>(seed: &Seed, whole: math::Point4<isize>, frac: math::Vector4<T>) -> T {
         let attn = math::cast::<_, T>(1.0) - math::dot4(frac, frac);
-        if attn > Float::zero() {
+        if attn > T::zero() {
             (attn * attn) * math::dot4(frac, gradient::get4(seed.get4(whole)))
         } else {
-            Float::zero()
+            T::zero()
         }
     }
 

@@ -24,10 +24,9 @@
 //! let val = noise.apply(&seed, &[42.0, 37.0, 2.0]);
 //! ```
 
-#![feature(core)]
-#![feature(std_misc)]
 #![deny(missing_copy_implementations)]
 
+extern crate num;
 extern crate rand;
 
 pub use seed::Seed;

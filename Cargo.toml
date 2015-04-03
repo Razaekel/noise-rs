@@ -45,6 +45,7 @@ name = "benches"
 
 [dependencies]
 rand = "*"
+num = "0.1.21"
 
 [dev-dependencies]
 image = "*"
