@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use {math, Seed};
-use std::num::Float;
+use num::Float;
 
 #[inline(always)]
 fn get_cell_point2<T: Float>(seed: &Seed, cell: math::Point2<T>) -> math::Point2<T> {

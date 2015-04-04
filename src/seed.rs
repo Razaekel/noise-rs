@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// TODO: Use PrimInt + Signed instead of SignedInt + NumCast once num has
+// PrimInt implementations
+use num::NumCast;
 use rand::{Rand, Rng, SeedableRng, XorShiftRng};
 use std::num::SignedInt;
 
@@ -89,25 +92,25 @@ impl Seed {
     }
 
     #[inline(always)]
-    pub fn get1<T: SignedInt>(&self, x: T) -> usize {
+    pub fn get1<T: SignedInt + NumCast>(&self, x: T) -> usize {
         let x: usize = math::cast(x & math::cast(0xff));
         self.values[x] as usize
     }
 
     #[inline(always)]
-    pub fn get2<T: SignedInt>(&self, pos: math::Point2<T>) -> usize {
+    pub fn get2<T: SignedInt + NumCast>(&self, pos: math::Point2<T>) -> usize {
         let y: usize = math::cast(pos[1] & math::cast(0xff));
         self.values[self.get1(pos[0]) ^ y] as usize
     }
 
     #[inline(always)]
-    pub fn get3<T: SignedInt>(&self, pos: math::Point3<T>) -> usize {
+    pub fn get3<T: SignedInt + NumCast>(&self, pos: math::Point3<T>) -> usize {
         let z: usize = math::cast(pos[2] & math::cast(0xff));
         self.values[self.get2([pos[0], pos[1]]) ^ z] as usize
     }
 
     #[inline(always)]
-    pub fn get4<T: SignedInt>(&self, pos: math::Point4<T>) -> usize {
+    pub fn get4<T: SignedInt + NumCast>(&self, pos: math::Point4<T>) -> usize {
         let w: usize = math::cast(pos[3] & math::cast(0xff));
         self.values[self.get3([pos[0], pos[1], pos[2]]) ^ w] as usize
     }

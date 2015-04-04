@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::num::Float;
+use num::Float;
 
 use math;
 
 #[inline(always)]
 fn gradient<T: Float>(index: usize) -> math::Point4<T> {
-    let one: T = Float::one();
-    let zero: T = Float::zero();
+    let one = T::one();
+    let zero = T::zero();
 
     match index % 32 {
         0  => [ zero,  one,   one,   one],

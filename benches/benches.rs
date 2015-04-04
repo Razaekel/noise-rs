@@ -14,8 +14,6 @@
 
 //! An example of using simplectic noise
 
-#![feature(asm)]
-#![feature(core)]
 #![feature(test)]
 
 extern crate noise;
@@ -30,14 +28,7 @@ use noise::{cell2_value, cell3_value, cell4_value};
 use noise::{cell2_manhattan, cell3_manhattan, cell4_manhattan};
 use noise::{cell2_manhattan_inv, cell3_manhattan_inv, cell4_manhattan_inv};
 use noise::{cell2_manhattan_value, cell3_manhattan_value, cell4_manhattan_value};
-use test::Bencher;
-
-fn black_box<T>(dummy: T) -> T {
-    // we need to "use" the argument in some way LLVM can't
-    // introspect.
-    unsafe { asm!("" : : "r"(&dummy)) }
-    dummy
-}
+use test::{Bencher, black_box};
 
 #[bench]
 fn bench_perlin2(bencher: &mut Bencher) {

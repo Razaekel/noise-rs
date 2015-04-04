@@ -15,13 +15,13 @@
 //! An ultra-light private math library to make our short lives easier as we
 //! implement super-complex noise stuff.
 
-use std::num::{self, Float, NumCast};
+use num::{self, Float, NumCast};
 use std::ops::{Add, Sub, Mul};
 
 /// Cast a numeric type without having to unwrap - we don't expect any overflow
 /// errors...
 pub fn cast<T: NumCast, U: NumCast>(x: T) -> U {
-    num::cast(x).unwrap()
+    num::traits::cast(x).unwrap()
 }
 
 /// Raises the number to the power of `4`
