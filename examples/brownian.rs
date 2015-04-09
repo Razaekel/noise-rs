@@ -14,9 +14,6 @@
 
 //! An example of using fractal brownian motion on perlin noise
 
-#![feature(core)]
-#![feature(unboxed_closures)]
-
 extern crate noise;
 
 use noise::{Brownian2, Brownian3, Brownian4, perlin2, perlin3, perlin4, Seed, Point2};
