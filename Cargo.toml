@@ -1,5 +1,4 @@
 [package]
-
 name = "noise"
 description = "Procedural noise generation library."
 homepage = "https://github.com/bjz/noise-rs"
@@ -10,7 +9,6 @@ keywords = ["math", "random"]
 authors = ["The Noise-rs Developers."]
 
 [lib]
-
 name = "noise"
 
 [[example]]
@@ -45,7 +43,7 @@ name = "benches"
 
 [dependencies]
 rand = "*"
-num = "0.1.21"
+num = "*"
 
 [dev-dependencies]
 image = "*"
