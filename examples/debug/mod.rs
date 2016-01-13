@@ -39,9 +39,9 @@ pub fn render_png<T, F>(filename: &str, seed: &noise::Seed, width: u32, height: 
 {
     let mut pixels = Vec::with_capacity((width * height) as usize);
 
-    for y in (0..height) {
-        for x in (0..width) {
-            let value: f32 = cast(func(seed, &[cast::<_,T>(x) - cast::<_,T>(width/2), cast::<_,T>(y) - cast::<_,T>(height/2)]));
+    for y in 0..height {
+        for x in 0..width {
+            let value: f64 = cast(func(seed, &[cast::<_,T>(x) - cast::<_,T>(width/2), cast::<_,T>(y) - cast::<_,T>(height/2)]));
             pixels.push(cast(clamp(value * 0.5 + 0.5, 0.0, 1.0) * 255.0));
         }
     }

@@ -21,20 +21,20 @@ use noise::{cell2_manhattan, cell3_manhattan, cell4_manhattan, Seed, Point2};
 mod debug;
 
 fn main() {
-    debug::render_png("cell2_manhattan.png", &Seed::new(0), 256, 256, scaled_cell2_manhattan);
-    debug::render_png("cell3_manhattan.png", &Seed::new(0), 256, 256, scaled_cell3_manhattan);
-    debug::render_png("cell4_manhattan.png", &Seed::new(0), 256, 256, scaled_cell4_manhattan);
+    debug::render_png("cell2_manhattan.png", &Seed::new(0), 1024, 1024, scaled_cell2_manhattan);
+    debug::render_png("cell3_manhattan.png", &Seed::new(0), 1024, 1024, scaled_cell3_manhattan);
+    debug::render_png("cell4_manhattan.png", &Seed::new(0), 1024, 1024, scaled_cell4_manhattan);
     println!("\nGenerated cell2_manhattan.png, cell3_manhattan.png and cell4_manhattan.png");
 }
 
-fn scaled_cell2_manhattan(seed: &Seed, point: &Point2<f32>) -> f32 {
-    cell2_manhattan(seed, &[point[0] / 32.0f32, point[1] / 32.00]) * 2.0 - 1.0
+fn scaled_cell2_manhattan(seed: &Seed, point: &Point2<f64>) -> f64 {
+    cell2_manhattan(seed, &[point[0] / 16.0, point[1] / 16.0]) * 2.0 - 1.0
 }
 
-fn scaled_cell3_manhattan(seed: &Seed, point: &Point2<f32>) -> f32 {
-    cell3_manhattan(seed, &[point[0] / 32.0f32, point[1] / 32.00, 0.0]) * 2.0 - 1.0
+fn scaled_cell3_manhattan(seed: &Seed, point: &Point2<f64>) -> f64 {
+    cell3_manhattan(seed, &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0]) * 2.0 - 1.0
 }
 
-fn scaled_cell4_manhattan(seed: &Seed, point: &Point2<f32>) -> f32 {
-    cell4_manhattan(seed, &[point[0] / 32.0f32, point[1] / 32.00, 0.0, 0.0]) * 2.0 - 1.0
+fn scaled_cell4_manhattan(seed: &Seed, point: &Point2<f64>) -> f64 {
+    cell4_manhattan(seed, &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0, point[1] / 32.0]) * 2.0 - 1.0
 }
