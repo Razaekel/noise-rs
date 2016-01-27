@@ -244,7 +244,7 @@ pub fn open_simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
 // These factors are derived by sampling the input function (in this case open_simplex2 and
 // open_siplex3). The output range is then divided into bins (in this case 1000), and the
 // respective bin value is incremented. When doing a high number of samples, this will give us a
-// histogram of the probability distrobution of the function.
+// histogram of the probability distribution of the function.
 //
 // The next step is to perform a Probability integral transform. In our case this is done by doing
 // a cumulative sum on the histogram, from left to right. This would be the integral. This would
@@ -261,7 +261,7 @@ const FACTORS: [f32; 11] = [
     -3.72274565e-03, 2.29025865e+00, 4.93543117e-03];
 
 /// Takes the output of one of the open_simplexn functions as an argument, returns the same value
-/// range as inputted, except transformed to a uniform probabilty distrobution.
+/// range as inputted, except transformed to a uniform probabilty distribution.
 pub fn normalize_simplex(val: f32) -> f32 {
     let mut acc = 0f32;
     acc += FACTORS[0] * val.powi(10);
