@@ -27,14 +27,14 @@ fn main() {
     println!("\nGenerated brownian2.png, brownian3.png and brownian4.png");
 }
 
-fn brownian2_for_image(seed: &Seed, point: &Point2<f32>) -> f32 {
-    Brownian2::new(perlin2, 4).wavelength(16.0).apply(seed, point)
+fn brownian2_for_image(seed: &Seed, point: &Point2<f64>) -> f64 {
+    Brownian2::new(perlin2, 8).wavelength(1024.0).apply(seed, point)
 }
 
-fn brownian3_for_image(seed: &Seed, point: &Point2<f32>) -> f32 {
-    Brownian3::new(perlin3, 4).wavelength(16.0).apply(seed, &[point[0], point[1], 0.0])
+fn brownian3_for_image(seed: &Seed, point: &Point2<f64>) -> f64 {
+    Brownian3::new(perlin3, 8).wavelength(1024.0).apply(seed, &[point[0], point[1], point[0] / 2.0])
 }
 
-fn brownian4_for_image(seed: &Seed, point: &Point2<f32>) -> f32 {
-    Brownian4::new(perlin4, 4).wavelength(16.0).apply(seed, &[point[0], point[1], 0.0, 0.0])
+fn brownian4_for_image(seed: &Seed, point: &Point2<f64>) -> f64 {
+    Brownian4::new(perlin4, 8).wavelength(1024.0).apply(seed, &[point[0], point[1], point[0] / 2.0, point[1] / 2.0])
 }

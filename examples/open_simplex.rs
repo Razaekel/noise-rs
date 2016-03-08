@@ -26,10 +26,10 @@ fn main() {
     println!("\nGenerated open_simplex2.png and open_simplex3.png");
 }
 
-fn scaled_open_simplex2(seed: &Seed, point: &Point2<f32>) -> f32 {
+fn scaled_open_simplex2(seed: &Seed, point: &Point2<f64>) -> f64 {
     open_simplex2(seed, &[point[0] / 16.0, point[1] / 16.0])
 }
 
-fn scaled_open_simplex3(seed: &Seed, point: &Point2<f32>) -> f32 {
-    open_simplex3(seed, &[point[0] / 16.0, point[1] / 16.0, 0.0])
+fn scaled_open_simplex3(seed: &Seed, point: &Point2<f64>) -> f64 {
+    open_simplex3(seed, &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0])
 }

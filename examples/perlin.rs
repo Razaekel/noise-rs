@@ -27,14 +27,14 @@ fn main() {
     println!("\nGenerated perlin2.png, perlin3.png and perlin4.png");
 }
 
-fn scaled_perlin2(seed: &Seed, point: &Point2<f32>) -> f32 {
+fn scaled_perlin2(seed: &Seed, point: &Point2<f64>) -> f64 {
     perlin2(seed, &[point[0] / 16.0, point[1] / 16.0])
 }
 
-fn scaled_perlin3(seed: &Seed, point: &Point2<f32>) -> f32 {
-    perlin3(seed, &[point[0] / 16.0, point[1] / 16.0, 0.0])
+fn scaled_perlin3(seed: &Seed, point: &Point2<f64>) -> f64 {
+    perlin3(seed, &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0])
 }
 
-fn scaled_perlin4(seed: &Seed, point: &Point2<f32>) -> f32 {
-    perlin4(seed, &[point[0] / 16.0, point[1] / 16.0, 0.0, 0.0])
+fn scaled_perlin4(seed: &Seed, point: &Point2<f64>) -> f64 {
+    perlin4(seed, &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0, point[1] / 32.0])
 }
