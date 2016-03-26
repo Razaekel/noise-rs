@@ -3,7 +3,7 @@ name = "noise"
 description = "Procedural noise generation library."
 homepage = "https://github.com/bjz/noise-rs"
 repository = "https://github.com/bjz/noise-rs"
-version = "0.1.5"
+version = "0.2.0"
 license = "Apache-2.0"
 keywords = ["math", "random"]
 authors = ["The Noise-rs Developers."]
@@ -42,8 +42,8 @@ name = "cell_manhattan_value"
 name = "benches"
 
 [dependencies]
-rand = "*"
-num = "*"
+rand = "0.3"
+num = "0.1"
 
 [dev-dependencies]
-image = "*"
+image = "0.7"
