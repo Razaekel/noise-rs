@@ -42,8 +42,8 @@ name = "cell_manhattan_value"
 name = "benches"
 
 [dependencies]
-rand = "*"
-num = "*"
+rand = "0.3"
+num = "0.1"
 
 [dev-dependencies]
-image = "*"
+image = "0.7"
