@@ -17,6 +17,7 @@ use num_traits::Float;
 use math;
 
 #[inline(always)]
+#[cfg_attr(rustfmt, rustfmt_skip)]
 pub fn get2<T: Float>(index: usize) -> math::Vector2<T> {
     let zero = T::zero();
     let one = T::one();
@@ -37,6 +38,7 @@ pub fn get2<T: Float>(index: usize) -> math::Vector2<T> {
 }
 
 #[inline(always)]
+#[cfg_attr(rustfmt, rustfmt_skip)]
 pub fn get3<T: Float>(index: usize) -> math::Vector3<T> {
     let zero = T::zero();
     // Vectors are combinations of -1, 0, and 1, precompute the normalized elements
@@ -82,6 +84,7 @@ pub fn get3<T: Float>(index: usize) -> math::Vector3<T> {
 }
 
 #[inline(always)]
+#[cfg_attr(rustfmt, rustfmt_skip)]
 pub fn get4<T: Float>(index: usize) -> math::Vector4<T> {
     let zero = T::zero();
     // Vectors are combinations of -1, 0, and 1, precompute the normalized elements

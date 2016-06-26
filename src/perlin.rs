@@ -14,12 +14,15 @@
 
 use num_traits::Float;
 
-use {gradient, math, PermutationTable};
+use {PermutationTable, gradient, math};
 
 /// 2-dimensional perlin noise
 pub fn perlin2<T: Float>(perm_table: &PermutationTable, point: &math::Point2<T>) -> T {
     #[inline(always)]
-    fn surflet<T: Float>(perm_table: &PermutationTable, corner: math::Point2<isize>, distance: math::Vector2<T>) -> T {
+    fn surflet<T: Float>(perm_table: &PermutationTable,
+                         corner: math::Point2<isize>,
+                         distance: math::Vector2<T>)
+                         -> T {
         let attn = T::one() - math::dot2(distance, distance);
         if attn > T::zero() {
             math::pow4(attn) * math::dot2(distance, gradient::get2(perm_table.get2(corner)))
@@ -28,7 +31,7 @@ pub fn perlin2<T: Float>(perm_table: &PermutationTable, point: &math::Point2<T>)
         }
     }
 
-    let floored = math::map2(*point, Float::floor);
+    let floored = math::map2(*point, T::floor);
     let near_corner = math::map2(floored, math::cast);
     let far_corner = math::add2(near_corner, math::one2());
     let near_distance = math::sub2(*point, floored);
@@ -54,7 +57,10 @@ pub fn perlin2<T: Float>(perm_table: &PermutationTable, point: &math::Point2<T>)
 /// 3-dimensional perlin noise
 pub fn perlin3<T: Float>(perm_table: &PermutationTable, point: &math::Point3<T>) -> T {
     #[inline(always)]
-    fn surflet<T: Float>(perm_table: &PermutationTable, corner: math::Point3<isize>, distance: math::Vector3<T>) -> T {
+    fn surflet<T: Float>(perm_table: &PermutationTable,
+                         corner: math::Point3<isize>,
+                         distance: math::Vector3<T>)
+                         -> T {
         let attn = T::one() - math::dot3(distance, distance);
         if attn > T::zero() {
             math::pow4(attn) * math::dot3(distance, gradient::get3(perm_table.get3(corner)))
@@ -63,7 +69,7 @@ pub fn perlin3<T: Float>(perm_table: &PermutationTable, point: &math::Point3<T>)
         }
     }
 
-    let floored = math::map3(*point, Float::floor);
+    let floored = math::map3(*point, T::floor);
     let near_corner = math::map3(floored, math::cast);
     let far_corner = math::add3(near_corner, math::one3());
     let near_distance = math::sub3(*point, floored);
@@ -101,7 +107,10 @@ pub fn perlin3<T: Float>(perm_table: &PermutationTable, point: &math::Point3<T>)
 /// 4-dimensional perlin noise
 pub fn perlin4<T: Float>(perm_table: &PermutationTable, point: &math::Point4<T>) -> T {
     #[inline(always)]
-    fn surflet<T: Float>(perm_table: &PermutationTable, corner: math::Point4<isize>, distance: math::Vector4<T>) -> T {
+    fn surflet<T: Float>(perm_table: &PermutationTable,
+                         corner: math::Point4<isize>,
+                         distance: math::Vector4<T>)
+                         -> T {
         let attn = T::one() - math::dot4(distance, distance);
         if attn > T::zero() {
             math::pow4(attn) * math::dot4(distance, gradient::get4(perm_table.get4(corner)))
@@ -110,7 +119,7 @@ pub fn perlin4<T: Float>(perm_table: &PermutationTable, point: &math::Point4<T>)
         }
     }
 
-    let floored = math::map4(*point, Float::floor);
+    let floored = math::map4(*point, T::floor);
     let near_corner = math::map4(floored, math::cast);
     let far_corner = math::add4(near_corner, math::one4());
     let near_distance = math::sub4(*point, floored);
