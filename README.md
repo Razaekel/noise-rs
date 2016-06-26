@@ -35,6 +35,19 @@ A slower but higher quality form of gradient noise:
 - `open_simplex2`
 - `open_simplex3`
 
+### Value Noise
+
+Value noise (sometimes mistaken with gradient noise) produces lower quality
+smooth noise. It exhibits pronounced grid artifacts, but can be slightly faster
+than gradient noise. Benchmarks show it's about 1.2–1.3× faster than Perlin noise.
+
+Cell neighbours are blended using a weighted S-curve linear interpolation
+method. This removes any discontinuities across grid edges.
+
+- `value2`
+- `value3`
+- `value4`
+
 ### Fractional Brownian Motion
 
 A way of combining multiple octaves of a noise function to create a richer and
