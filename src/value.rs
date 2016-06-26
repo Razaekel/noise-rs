@@ -21,11 +21,12 @@ fn lerp<T: Float>(a: T, b: T, x: T) -> T {
     a + x * (b - a)
 }
 
-/// Map value between `0.0` and `1.0` to a Cubic Hermite curve.
+/// Map value between `0.0` and `1.0` to a Quintic Hermite curve.
 fn smoothstep<T: Float>(x: T) -> T {
-    let _3: T = math::cast(3.0);
-    let _2: T = math::cast(2.0);
-    x * x * (_3 - _2 * x)
+    let _15: T = math::cast(15.0);
+    let _10: T = math::cast(10.0);
+    let _6: T = math::cast(6.0);
+    x * x * x * (x * (x * _6 - _15) + _10)
 }
 
 /// 2-dimensional value noise
