@@ -52,7 +52,7 @@ pub fn value2<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
     d * math::cast(2) - math::cast(1)
 }
 
-// 3-dimensional value noise
+/// 3-dimensional value noise
 pub fn value3<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
     #[inline(always)]
     fn get<T: Float>(seed: &Seed, corner: math::Point3<isize>) -> T {
@@ -84,7 +84,7 @@ pub fn value3<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
     d * math::cast(2) - math::cast(1)
 }
 
-// 4-dimensional value noise
+/// 4-dimensional value noise
 pub fn value4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
     #[inline(always)]
     fn get<T: Float>(seed: &Seed, corner: math::Point4<isize>) -> T {
