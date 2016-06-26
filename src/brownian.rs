@@ -209,13 +209,15 @@ macro_rules! impl_brownian {
                 let mut amplitude: T = math::cast(1);
                 let mut total_amplitude = T::zero();
                 let mut result: T = math::cast(0);
+                let mut offset: T = math::cast(1.73205080756887);
                 let point = *point;
                 for _ in 0..self.octaves {
-                    let scaled_point = $mapn(point, |v| v * frequency);
+                    let scaled_point = $mapn(point, |v| v * frequency + offset);
                     result = result + ((self.function)(seed, &scaled_point) * amplitude);
                     total_amplitude = total_amplitude + amplitude;
                     amplitude = amplitude * self.persistence;
                     frequency = frequency * self.lacunarity;
+                    offset = offset + math::cast(1.73205080756887);
                 }
                 result / total_amplitude
             }
