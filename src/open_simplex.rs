@@ -70,7 +70,7 @@ pub fn open_simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
     // Sum those together to get a value that determines which region we're in.
     let frac_sum = xs_frac + ys_frac;
 
-    // Positions relative to origin point.
+    // Positions relative to origin point (0, 0).
     let mut dx0 = point[0] - x_floor;
     let mut dy0 = point[1] - y_floor;
 
