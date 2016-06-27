@@ -165,7 +165,6 @@ pub fn open_simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
     let mut dz0 = point[2] - zb;
 
     let mut value = zero;
-    let c0 = one + two * squish_constant;
 
     if frac_sum <= one {
         // We're inside the tetrahedron (3-Simplex) at (0, 0, 0)
@@ -192,6 +191,7 @@ pub fn open_simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
         value = value + gradient(seed, xsb, ysb, zsb + one, dx3, dy3, dz3);
     } else if frac_sum >= two {
         // We're inside the tetrahedron (3-Simplex) at (1, 1, 1)
+        let c0 = one + two * squish_constant;
 
         // Contribution at (1, 1, 0)
         let dx3 = dx0 - c0;
@@ -238,8 +238,8 @@ pub fn open_simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
         value = value + gradient(seed, xsb, ysb, zsb + one, dx3, dy3, dz3);
 
         // Contribution at (1, 1, 0)
-        let dx4 = dx0 - c0;
-        let dy4 = dy0 - c0;
+        let dx4 = dx1 - squish_constant;
+        let dy4 = dy2 - squish_constant;
         let dz4 = dz1 - squish_constant;
         value = value + gradient(seed, xsb + one, ysb + one, zsb, dx4, dy4, dz4);
 
