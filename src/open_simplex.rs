@@ -49,51 +49,62 @@ pub fn open_simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
     let one: T = math::cast(1);
     let squish_constant: T = math::cast(SQUISH_CONSTANT_2D);
 
-    //Place input coordinates onto grid.
+    // Place input coordinates onto grid.
     let stretch_offset = (point[0] + point[1]) * math::cast(STRETCH_CONSTANT_2D);
     let xs = point[0] + stretch_offset;
     let ys = point[1] + stretch_offset;
 
-    //Floor to get grid coordinates of rhombus (stretched square) super-cell origin.
+    // Floor to get grid coordinates of rhombus (stretched square) cell origin.
     let mut xs_floor = xs.floor();
     let mut ys_floor = ys.floor();
 
-    //Skew out to get actual coordinates of rhombus origin. We'll need these later.
+    // Skew out to get actual coordinates of rhombus origin. We'll need these later.
     let squish_offset = (xs_floor + ys_floor) * squish_constant;
     let x_floor = xs_floor + squish_offset;
     let y_floor = ys_floor + squish_offset;
 
-    //Compute grid coordinates relative to rhombus origin.
+    // Compute grid coordinates relative to rhombus origin.
     let xs_frac = xs - xs_floor;
     let ys_frac = ys - ys_floor;
 
-    //Sum those together to get a value that determines which region we're in.
+    // Sum those together to get a value that determines which region we're in.
     let frac_sum = xs_frac + ys_frac;
 
-    //Positions relative to origin point.
+    // Positions relative to origin point.
     let mut dx0 = point[0] - x_floor;
     let mut dy0 = point[1] - y_floor;
 
     let mut value: T = zero;
 
-    //Contribution (1,0)
+    // (0, 0) --- (1, 0)
+    // |   A     /     |
+    // |       /       |
+    // |     /     B   |
+    // (0, 1) --- (1, 1)
+
+    // Point (1, 0)
     let dx1 = dx0 - one - squish_constant;
     let dy1 = dy0 - squish_constant;
     value = value + gradient(seed, xs_floor + one, ys_floor, dx1, dy1);
 
-    //Contribution (0,1)
-    let dx2 = dx0 - squish_constant;
+    // Point (0, 1)
+    let dx2 = dx1 + one;
     let dy2 = dy1 - one;
     value = value + gradient(seed, xs_floor, ys_floor + one, dx2, dy2);
 
+    // See the graph for an intuitive explanation; the sum of `x` and `y` is
+    // only greater than `1` if we're on Region B.
     if frac_sum > one {
+        // Point (1, 1)
         xs_floor = xs_floor + one;
         ys_floor = ys_floor + one;
+        // We are moving across the diagonal `/`, so we'll need to add by the
+        // squish constant
         dx0 = dx1 - squish_constant;
         dy0 = dy2 - squish_constant;
     }
 
-    //Contribution (0,0) or (1,1)
+    // Point (0, 0) or (1, 1)
     value = value + gradient(seed, xs_floor, ys_floor, dx0, dy0);
 
     value * math::cast(NORM_CONSTANT_2D)
