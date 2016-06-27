@@ -195,10 +195,9 @@ pub fn open_simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
         value = value + gradient(seed, xsb, ysb + one, zsb + one, dx1, dy1, dz1);
 
         //Contribution (1,1,1)
-        let c1 = c0 + squish_constant;
-        dx0 = dx0 - c1;
-        dy0 = dy0 - c1;
-        dz0 = dz0 - c1;
+        dx0 = dx3 - squish_constant;
+        dy0 = dy3 - squish_constant;
+        dz0 = dz2 - squish_constant;
         value = value + gradient(seed, xsb + one, ysb + one, zsb + one, dx0, dy0, dz0);
     } else { //We're inside the octahedron (Rectified 3-Simplex) in between.
         //Contribution (1,0,0)
@@ -222,7 +221,7 @@ pub fn open_simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
         //Contribution (1,1,0)
         let dx4 = dx0 - c0;
         let dy4 = dy0 - c0;
-        let dz4 = dz0 - c0 + one;
+        let dz4 = dz1 - squish_constant;
         value = value + gradient(seed, xsb + one, ysb + one, zsb, dx4, dy4, dz4);
 
         //Contribution (1,0,1)
