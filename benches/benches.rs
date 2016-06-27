@@ -22,6 +22,7 @@ extern crate test;
 use noise::Seed;
 use noise::{perlin2, perlin3, perlin4};
 use noise::{open_simplex2, open_simplex3};
+use noise::{value2, value3, value4};
 use noise::{cell2_range, cell3_range, cell4_range};
 use noise::{cell2_range_inv, cell3_range_inv, cell4_range_inv};
 use noise::{cell2_value, cell3_value, cell4_value};
@@ -58,6 +59,24 @@ fn bench_open_simplex2(bencher: &mut Bencher) {
 fn bench_open_simplex3(bencher: &mut Bencher) {
     let seed = Seed::new(0);
     bencher.iter(|| open_simplex3(black_box(&seed), black_box(&[42.0f64, 37.0, 26.0])));
+}
+
+#[bench]
+fn bench_value2(bencher: &mut Bencher) {
+    let seed = Seed::new(0);
+    bencher.iter(|| value2(black_box(&seed), black_box(&[42.0f64, 37.0])));
+}
+
+#[bench]
+fn bench_value3(bencher: &mut Bencher) {
+    let seed = Seed::new(0);
+    bencher.iter(|| value3(black_box(&seed), black_box(&[42.0f64, 37.0, 26.0])));
+}
+
+#[bench]
+fn bench_value4(bencher: &mut Bencher) {
+    let seed = Seed::new(0);
+    bencher.iter(|| value4(black_box(&seed), black_box(&[42.0f64, 37.0, 26.0, 128.0])));
 }
 
 #[bench]
@@ -223,6 +242,42 @@ fn bench_open_simplex3_64x64(bencher: &mut Bencher) {
         for y in 0..64 {
             for x in 0..64 {
                 black_box(open_simplex3(black_box(&seed), &[x as f64, y as f64, x as f64]));
+            }
+        }
+    });
+}
+
+#[bench]
+fn bench_value2_64x64(bencher: &mut Bencher) {
+    let seed = Seed::new(0);
+    bencher.iter(|| {
+        for y in 0..64 {
+            for x in 0..64 {
+                black_box(value2(black_box(&seed), &[x as f64, y as f64]));
+            }
+        }
+    });
+}
+
+#[bench]
+fn bench_value3_64x64(bencher: &mut Bencher) {
+    let seed = Seed::new(0);
+    bencher.iter(|| {
+        for y in 0..64 {
+            for x in 0..64 {
+                black_box(value3(black_box(&seed), &[x as f64, y as f64, x as f64]));
+            }
+        }
+    });
+}
+
+#[bench]
+fn bench_value4_64x64(bencher: &mut Bencher) {
+    let seed = Seed::new(0);
+    bencher.iter(|| {
+        for y in 0..64 {
+            for x in 0..64 {
+                black_box(value4(black_box(&seed), &[x as f64, y as f64, x as f64, y as f64]));
             }
         }
     });
