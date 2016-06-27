@@ -14,7 +14,7 @@
 
 // TODO: Use PrimInt + Signed instead of SignedInt + NumCast once num has
 // PrimInt implementations
-use num::{NumCast,Signed,PrimInt};
+use num_traits::{NumCast,Signed,PrimInt};
 use rand::{Rand, Rng, SeedableRng, XorShiftRng};
 use std::fmt;
 

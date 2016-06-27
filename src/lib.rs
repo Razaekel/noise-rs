@@ -26,7 +26,7 @@
 
 #![deny(missing_copy_implementations)]
 
-extern crate num;
+extern crate num_traits;
 extern crate rand;
 
 pub use seed::Seed;

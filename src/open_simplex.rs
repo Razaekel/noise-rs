@@ -16,7 +16,7 @@
 //! Instead, these functions use the OpenSimplex algorithm, as detailed here:
 //! http://uniblock.tumblr.com/post/97868843242/noise
 
-use num::Float;
+use num_traits::Float;
 
 use {gradient, math, Seed};
 
