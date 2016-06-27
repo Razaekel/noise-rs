@@ -16,6 +16,7 @@
 // PrimInt implementations
 use num::{NumCast,Signed,PrimInt};
 use rand::{Rand, Rng, SeedableRng, XorShiftRng};
+use std::fmt;
 
 use math;
 
@@ -112,6 +113,18 @@ impl Seed {
     pub fn get4<T: Signed + PrimInt + NumCast>(&self, pos: math::Point4<T>) -> usize {
         let w: usize = math::cast(pos[3] & math::cast(0xff));
         self.values[self.get3([pos[0], pos[1], pos[2]]) ^ w] as usize
+    }
+}
+
+impl Clone for Seed {
+    fn clone(&self) -> Seed {
+        Seed { values: self.values }
+    }
+}
+
+impl fmt::Debug for Seed {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Seed {{ .. }}")
     }
 }
 
