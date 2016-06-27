@@ -83,15 +83,16 @@ pub fn open_simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
     value = value + gradient(seed, xs_floor + one, ys_floor + zero, dx1, dy1);
 
     //Contribution (0,1)
-    let dx2 = dx0 - zero - squish_constant;
-    let dy2 = dy0 - one - squish_constant;
+    let dx2 = dx1 + one;
+    let dy2 = dy1 - one;
     value = value + gradient(seed, xs_floor + zero, ys_floor + one, dx2, dy2);
 
     if frac_sum > one {
         xs_floor = xs_floor + one;
         ys_floor = ys_floor + one;
-        dx0 = dx0 - one - two * squish_constant;
-        dy0 = dy0 - one - two * squish_constant;
+        let t = one + two * squish_constant;
+        dx0 = dx0 - t;
+        dy0 = dy0 - t;
     }
 
     //Contribution (0,0) or (1,1)
