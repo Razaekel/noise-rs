@@ -121,7 +121,6 @@ pub fn open_simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
     let zero: T = math::cast(0);
     let one: T = math::cast(1);
     let two: T = math::cast(2);
-    let three: T = math::cast(3);
     let squish_constant: T = math::cast(SQUISH_CONSTANT_3D);
 
     //Place input coordinates on simplectic honeycomb.
@@ -156,7 +155,6 @@ pub fn open_simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
 
     let mut value = zero;
     let c0 = one + two * squish_constant;
-    // let c1 = one - squish_constant;
 
     if in_sum <= one { //We're inside the tetrahedron (3-Simplex) at (0,0,0)
         //Contribution (0,0,0)
@@ -199,15 +197,16 @@ pub fn open_simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
         value = value + gradient(seed, xsb, ysb + one, zsb + one, dx1, dy1, dz1);
 
         //Contribution (1,1,1)
-        dx0 = dx0 - one - three * squish_constant;
-        dy0 = dy0 - one - three * squish_constant;
-        dz0 = dz0 - one - three * squish_constant;
+        let c1 = c0 + squish_constant;
+        dx0 = dx0 - c1;
+        dy0 = dy0 - c1;
+        dz0 = dz0 - c1;
         value = value + gradient(seed, xsb + one, ysb + one, zsb + one, dx0, dy0, dz0);
     } else { //We're inside the octahedron (Rectified 3-Simplex) in between.
         //Contribution (1,0,0)
         let dx1 = dx0 - one - squish_constant;
-        let dy1 = dy0 - zero - squish_constant;
-        let dz1 = dz0 - zero - squish_constant;
+        let dy1 = dy0 - squish_constant;
+        let dz1 = dz0 - squish_constant;
         value = value + gradient(seed, xsb + one, ysb, zsb, dx1, dy1, dz1);
 
         //Contribution (0,1,0)
@@ -219,7 +218,7 @@ pub fn open_simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
         //Contribution (0,0,1)
         let dx3 = dx2;
         let dy3 = dy1;
-        let dz3 = dz0 - one - squish_constant;
+        let dz3 = dz1 - one;
         value = value + gradient(seed, xsb, ysb, zsb + one, dx3, dy3, dz3);
 
         //Contribution (1,1,0)
