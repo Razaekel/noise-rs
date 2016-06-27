@@ -47,7 +47,6 @@ pub fn open_simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
 
     let zero: T = math::cast(0);
     let one: T = math::cast(1);
-    let two: T = math::cast(2);
     let squish_constant: T = math::cast(SQUISH_CONSTANT_2D);
 
     //Place input coordinates onto grid.
@@ -79,20 +78,19 @@ pub fn open_simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
 
     //Contribution (1,0)
     let dx1 = dx0 - one - squish_constant;
-    let dy1 = dy0 - zero - squish_constant;
+    let dy1 = dy0 - squish_constant;
     value = value + gradient(seed, xs_floor + one, ys_floor, dx1, dy1);
 
     //Contribution (0,1)
-    let dx2 = dx1 + one;
+    let dx2 = dx0 - squish_constant;
     let dy2 = dy1 - one;
     value = value + gradient(seed, xs_floor, ys_floor + one, dx2, dy2);
 
     if frac_sum > one {
         xs_floor = xs_floor + one;
         ys_floor = ys_floor + one;
-        let t = one + two * squish_constant;
-        dx0 = dx0 - t;
-        dy0 = dy0 - t;
+        dx0 = dx1 - squish_constant;
+        dy0 = dy2 - squish_constant;
     }
 
     //Contribution (0,0) or (1,1)
@@ -167,7 +165,7 @@ pub fn open_simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
         value = value + gradient(seed, xsb + one, ysb, zsb, dx1, dy1, dz1);
 
         //Contribution (0,1,0)
-        let dx2 = dx1 + one;
+        let dx2 = dx0 - squish_constant;
         let dy2 = dy1 - one;
         let dz2 = dz1;
         value = value + gradient(seed, xsb, ysb + one, zsb, dx2, dy2, dz2);
@@ -175,7 +173,7 @@ pub fn open_simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
         //Contribution (0,0,1)
         let dx3 = dx2;
         let dy3 = dy1;
-        let dz3 = dz0 - one - squish_constant;
+        let dz3 = dz1 - one;
         value = value + gradient(seed, xsb, ysb, zsb + one, dx3, dy3, dz3);
     } else if in_sum >= two { //We're inside the tetrahedron (3-Simplex) at (1,11)
         //Contribution (1,1,0)
@@ -234,7 +232,7 @@ pub fn open_simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
         value = value + gradient(seed, xsb + one, ysb, zsb + one, dx5, dy5, dz5);
 
         //Contribution (0,1,1)
-        let dx6 = dx5 + one;
+        let dx6 = dx4 + one;
         let dy6 = dy4;
         let dz6 = dz5;
         value = value + gradient(seed, xsb, ysb + one, zsb + one, dx6, dy6, dz6);
