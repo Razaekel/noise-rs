@@ -30,6 +30,7 @@ const SQUISH_CONSTANT_4D: f64 = 0.309016994374947; //(Math.sqrt(4+1)-1)/4;
 
 const NORM_CONSTANT_2D: f32 = 1.0 / 14.0;
 const NORM_CONSTANT_3D: f32 = 1.0 / 14.0;
+const NORM_CONSTANT_4D: f32 = 1.0 / 15.0;
 
 /// 2-dimensional [OpenSimplex Noise](http://uniblock.tumblr.com/post/97868843242/noise)
 ///
@@ -703,8 +704,5 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
         }
     }
 
-    // Please tell me you did not just read the whole thing thinking how to
-    // optimize it.
-
-    value
+    value * math::cast(NORM_CONSTANT_4D)
 }
