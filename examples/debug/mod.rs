@@ -15,14 +15,14 @@
 //! Useful things for debugging noise functions.
 
 extern crate image;
-extern crate num;
+extern crate num_traits;
 
 use noise;
-use self::num::{Float, NumCast};
+use self::num_traits::{Float, NumCast};
 use std::path::Path;
 
 fn cast<T: NumCast, R: NumCast>(val: T) -> R {
-    num::traits::cast(val).unwrap()
+    num_traits::cast(val).unwrap()
 }
 
 fn clamp<F: Float>(val: F, min: F, max: F) -> F {
