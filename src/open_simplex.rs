@@ -30,7 +30,7 @@ const SQUISH_CONSTANT_4D: f64 = 0.309016994374947; //(Math.sqrt(4+1)-1)/4;
 
 const NORM_CONSTANT_2D: f32 = 1.0 / 14.0;
 const NORM_CONSTANT_3D: f32 = 1.0 / 14.0;
-const NORM_CONSTANT_4D: f32 = 1.0 / 15.0;
+const NORM_CONSTANT_4D: f32 = 1.0 / 6.8699090070956625;
 
 /// 2-dimensional [OpenSimplex Noise](http://uniblock.tumblr.com/post/97868843242/noise)
 ///
