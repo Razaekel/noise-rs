@@ -337,8 +337,8 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
         {
             let vertex = math::add4(stretched_floor, [zero, one, zero, zero]);
             pos2 = [
-                pos1[0] - one,
-                pos1[1] + one,
+                pos1[0] + one,
+                pos1[1] - one,
                 pos1[2],
                 pos1[3]
             ];
@@ -361,7 +361,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
         // Contribution at (0, 0, 0, 1)
         let pos4;
         {
-            let vertex = math::add4(stretched_floor, [zero, zero, one, zero]);
+            let vertex = math::add4(stretched_floor, [zero, zero, zero, one]);
             pos4 = [
                 pos2[0],
                 pos1[1],
@@ -418,7 +418,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
         {
             let vertex = math::add4(stretched_floor, [zero, one, one, one]);
             pos1 = [
-                pos4[0] + one,
+                pos0[0] - squish_constant_3,
                 pos4[1],
                 pos4[2],
                 pos3[3]
@@ -587,7 +587,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
         // Contribution at (1, 1, 0, 1)
         let pos3;
         {
-            let vertex = math::add4(stretched_floor, [zero, one, zero, zero]);
+            let vertex = math::add4(stretched_floor, [one, one, zero, one]);
             pos3 = [
                 pos4[0],
                 pos4[1],
@@ -596,8 +596,6 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
             ];
             value = value + gradient(seed, &vertex, &pos3);
         }
-
-        // oh my god this is tiring.
 
         // Contribution at (1, 0, 1, 1)
         let pos2;
