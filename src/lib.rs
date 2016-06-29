@@ -33,7 +33,7 @@ pub use seed::Seed;
 pub use math::{Point2, Point3, Point4};
 pub use perlin::{perlin2, perlin3, perlin4};
 pub use value::{value2, value3, value4};
-pub use open_simplex::{open_simplex2, open_simplex3};
+pub use open_simplex::{open_simplex2, open_simplex3, open_simplex4};
 pub use brownian::{Brownian2, Brownian3, Brownian4};
 
 pub use cell::{range_sqr_euclidian2, range_sqr_euclidian3, range_sqr_euclidian4};

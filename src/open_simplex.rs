@@ -17,6 +17,7 @@
 //! http://uniblock.tumblr.com/post/97868843242/noise
 
 use num_traits::Float;
+use std::ops::{Add};
 
 use {gradient, math, Seed};
 
@@ -24,9 +25,12 @@ const STRETCH_CONSTANT_2D: f64 = -0.211324865405187; //(1/sqrt(2+1)-1)/2;
 const SQUISH_CONSTANT_2D: f64 = 0.366025403784439; //(sqrt(2+1)-1)/2;
 const STRETCH_CONSTANT_3D: f64 = -1.0 / 6.0; //(1/Math.sqrt(3+1)-1)/3;
 const SQUISH_CONSTANT_3D: f64 = 1.0 / 3.0; //(Math.sqrt(3+1)-1)/3;
+const STRETCH_CONSTANT_4D: f64 = -0.138196601125011; //(Math.sqrt(4+1)-1)/4;
+const SQUISH_CONSTANT_4D: f64 = 0.309016994374947; //(Math.sqrt(4+1)-1)/4;
 
 const NORM_CONSTANT_2D: f32 = 1.0 / 14.0;
 const NORM_CONSTANT_3D: f32 = 1.0 / 14.0;
+const NORM_CONSTANT_4D: f32 = 1.0 / 6.8699090070956625;
 
 /// 2-dimensional [OpenSimplex Noise](http://uniblock.tumblr.com/post/97868843242/noise)
 ///
@@ -257,4 +261,446 @@ pub fn open_simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
     }
 
     return value * math::cast(NORM_CONSTANT_3D);
+}
+
+/// 4-dimensional [OpenSimplex Noise](http://uniblock.tumblr.com/post/97868843242/noise)
+///
+/// This is a slower but higher quality form of gradient noise than
+/// `noise::perlin4`.
+pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
+    fn gradient<T: Float>(seed: &Seed, vertex: &math::Point4<T>, pos: &math::Point4<T>) -> T {
+        let zero = T::zero();
+        let attn = math::cast::<_, T>(2.0_f64) - math::dot4(*pos, *pos);
+        if attn > zero {
+            let index = seed.get4::<isize>(math::cast4::<_, isize>(*vertex));
+            let vec = gradient::get4::<T>(index);
+            math::pow4(attn) * math::dot4(*pos, vec)
+        } else {
+            zero
+        }
+    }
+
+    // Constants.
+    let stretch_constant: T = math::cast(STRETCH_CONSTANT_4D);
+    let squish_constant: T = math::cast(SQUISH_CONSTANT_4D);
+    let zero = T::zero();
+    let one = T::one();
+    let two: T = math::cast(2.0);
+    let three: T = math::cast(3.0);
+
+    // Place input coordinates on simplectic honeycomb.
+    let stretch_offset = math::fold4(*point, Add::add) * stretch_constant;
+    let stretched = math::map4(*point, |v| v + stretch_offset);
+
+    // Floor to get simplectic honeycomb coordinates of rhombo-hypercube
+    // super-cell origin.
+    let stretched_floor = math::map4(stretched, Float::floor);
+
+    // Skew out to get actual coordinates of stretched rhombo-hypercube origin.
+    // We'll need these later.
+    let squish_offset = math::fold4(stretched_floor, Add::add) * squish_constant;
+    let skewed_floor = math::map4(stretched_floor, |v| v + squish_offset);
+
+    // Compute simplectic honeycomb coordinates relative to rhombo-hypercube
+    // origin.
+    let rel_coords = math::sub4(stretched, stretched_floor);
+
+    // Sum those together to get a value that determines which region
+    // we're in.
+    let region_sum = math::fold4(rel_coords, Add::add);
+
+    // Position relative to origin point.
+    let mut pos0 = math::sub4(*point, skewed_floor);
+
+    let mut value = zero;
+    if region_sum <= one {
+        // We're inside the pentachoron (4-Simplex) at (0, 0, 0, 0)
+
+        // Contribution at (0, 0, 0, 0)
+        value = value + gradient(seed, &stretched_floor, &pos0);
+
+        // Contribution at (1, 0, 0, 0)
+        let pos1;
+        {
+            let vertex = math::add4(stretched_floor, [one, zero, zero, zero]);
+            pos1 = math::sub4(pos0, [
+                one + squish_constant,
+                squish_constant,
+                squish_constant,
+                squish_constant
+            ]);
+            value = value + gradient(seed, &vertex, &pos1);
+        }
+
+        // Contribution at (0, 1, 0, 0)
+        let pos2;
+        {
+            let vertex = math::add4(stretched_floor, [zero, one, zero, zero]);
+            pos2 = [
+                pos1[0] + one,
+                pos1[1] - one,
+                pos1[2],
+                pos1[3]
+            ];
+            value = value + gradient(seed, &vertex, &pos2);
+        }
+
+        // Contribution at (0, 0, 1, 0)
+        let pos3;
+        {
+            let vertex = math::add4(stretched_floor, [zero, zero, one, zero]);
+            pos3 = [
+                pos2[0],
+                pos1[1],
+                pos1[2] - one,
+                pos1[3]
+            ];
+            value = value + gradient(seed, &vertex, &pos3);
+        }
+
+        // Contribution at (0, 0, 0, 1)
+        let pos4;
+        {
+            let vertex = math::add4(stretched_floor, [zero, zero, zero, one]);
+            pos4 = [
+                pos2[0],
+                pos1[1],
+                pos1[2],
+                pos1[3] - one
+            ];
+            value = value + gradient(seed, &vertex, &pos4);
+        }
+    } else if region_sum >= three {
+        // We're inside the pentachoron (4-Simplex) at (1, 1, 1, 1)
+        let squish_constant_3 = three * squish_constant;
+
+        // Contribution at (1, 1, 1, 0)
+        let pos4;
+        {
+            let vertex = math::add4(stretched_floor, [one, one, one, zero]);
+            pos4 = math::sub4(pos0, [
+                one + squish_constant_3,
+                one + squish_constant_3,
+                one + squish_constant_3,
+                squish_constant_3
+            ]);
+            value = value + gradient(seed, &vertex, &pos4);
+        }
+
+        // Contribution at (1, 1, 0, 1)
+        let pos3;
+        {
+            let vertex = math::add4(stretched_floor, [one, one, zero, one]);
+            pos3 = [
+                pos4[0],
+                pos4[1],
+                pos4[2] + one,
+                pos4[3] - one
+            ];
+            value = value + gradient(seed, &vertex, &pos3);
+        }
+
+        // Contribution at (1, 0, 1, 1)
+        let pos2;
+        {
+            let vertex = math::add4(stretched_floor, [one, zero, one, one]);
+            pos2 = [
+                pos4[0],
+                pos4[1] + one,
+                pos4[2],
+                pos3[3]
+            ];
+            value = value + gradient(seed, &vertex, &pos2);
+        }
+
+        // Contribution at (0, 1, 1, 1)
+        let pos1;
+        {
+            let vertex = math::add4(stretched_floor, [zero, one, one, one]);
+            pos1 = [
+                pos0[0] - squish_constant_3,
+                pos4[1],
+                pos4[2],
+                pos3[3]
+            ];
+            value = value + gradient(seed, &vertex, &pos1);
+        }
+
+        // Contribution at (1, 1, 1, 1)
+        {
+            let vertex = math::add4(stretched_floor, [one, one, one, one]);
+            pos0[0] = pos4[0] - squish_constant;
+            pos0[1] = pos4[1] - squish_constant;
+            pos0[2] = pos4[2] - squish_constant;
+            pos0[3] = pos3[3] - squish_constant;
+            value = value + gradient(seed, &vertex, &pos0);
+        }
+    } else if region_sum <= two {
+        // We're inside the first dispentachoron (Rectified 4-Simplex)
+
+        // Contribution at (1, 0, 0, 0)
+        let pos1;
+        {
+            let vertex = math::add4(stretched_floor, [one, zero, zero, zero]);
+            pos1 = math::sub4(pos0, [
+                one + squish_constant,
+                squish_constant,
+                squish_constant,
+                squish_constant
+            ]);
+            value = value + gradient(seed, &vertex, &pos1);
+        }
+
+        // Contribution at (0, 1, 0, 0)
+        let pos2;
+        {
+            let vertex = math::add4(stretched_floor, [zero, one, zero, zero]);
+            pos2 = [
+                pos1[0] + one,
+                pos1[1] - one,
+                pos1[2],
+                pos1[3]
+            ];
+            value = value + gradient(seed, &vertex, &pos2);
+        }
+
+        // Contribution at (0, 0, 1, 0)
+        let pos3;
+        {
+            let vertex = math::add4(stretched_floor, [zero, zero, one, zero]);
+            pos3 = [
+                pos2[0],
+                pos1[1],
+                pos1[2] - one,
+                pos1[3]
+            ];
+            value = value + gradient(seed, &vertex, &pos3);
+        }
+
+        // Contribution at (0, 0, 0, 1)
+        let pos4;
+        {
+            let vertex = math::add4(stretched_floor, [zero, zero, zero, one]);
+            pos4 = [
+                pos2[0],
+                pos1[1],
+                pos1[2],
+                pos1[3] - one
+            ];
+            value = value + gradient(seed, &vertex, &pos4);
+        }
+
+        // Contribution at (1, 1, 0, 0)
+        let pos5;
+        {
+            let vertex = math::add4(stretched_floor, [one, one, zero, zero]);
+            pos5 = [
+                pos1[0] - squish_constant,
+                pos2[1] - squish_constant,
+                pos1[2] - squish_constant,
+                pos1[3] - squish_constant
+            ];
+            value = value + gradient(seed, &vertex, &pos5);
+        }
+
+        // Contribution at (1, 0, 1, 0)
+        let pos6;
+        {
+            let vertex = math::add4(stretched_floor, [one, zero, one, zero]);
+            pos6 = [
+                pos5[0],
+                pos5[1] + one,
+                pos5[2] - one,
+                pos5[3]
+            ];
+            value = value + gradient(seed, &vertex, &pos6);
+        }
+
+        // Contribution at (1, 0, 0, 1)
+        let pos7;
+        {
+            let vertex = math::add4(stretched_floor, [one, zero, zero, one]);
+            pos7 = [
+                pos5[0],
+                pos6[1],
+                pos5[2],
+                pos5[3] - one
+            ];
+            value = value + gradient(seed, &vertex, &pos7);
+        }
+
+        // Contribution at (0, 1, 1, 0)
+        let pos8;
+        {
+            let vertex = math::add4(stretched_floor, [zero, one, one, zero]);
+            pos8 = [
+                pos5[0] + one,
+                pos5[1],
+                pos6[2],
+                pos5[3]
+            ];
+            value = value + gradient(seed, &vertex, &pos8);
+        }
+
+        // Contribution at (0, 1, 0, 1)
+        let pos9;
+        {
+            let vertex = math::add4(stretched_floor, [zero, one, zero, one]);
+            pos9 = [
+                pos8[0],
+                pos5[1],
+                pos5[2],
+                pos7[3]
+            ];
+            value = value + gradient(seed, &vertex, &pos9);
+        }
+
+        // Contribution at (0, 0, 1, 1)
+        let pos10;
+        {
+            let vertex = math::add4(stretched_floor, [zero, zero, one, one]);
+            pos10 = [
+                pos8[0],
+                pos6[1],
+                pos6[2],
+                pos7[3]
+            ];
+            value = value + gradient(seed, &vertex, &pos10);
+        }
+    } else {
+        // We're inside the second dispentachoron (Rectified 4-Simplex)
+        let squish_constant_3 = three * squish_constant;
+
+        // Contribution at (1, 1, 1, 0)
+        let pos4;
+        {
+            let vertex = math::add4(stretched_floor, [one, one, one, zero]);
+            pos4 = math::sub4(pos0, [
+                one + squish_constant_3,
+                one + squish_constant_3,
+                one + squish_constant_3,
+                squish_constant_3
+            ]);
+            value = value + gradient(seed, &vertex, &pos4);
+        }
+
+        // Contribution at (1, 1, 0, 1)
+        let pos3;
+        {
+            let vertex = math::add4(stretched_floor, [one, one, zero, one]);
+            pos3 = [
+                pos4[0],
+                pos4[1],
+                pos4[2] + one,
+                pos4[3] - one
+            ];
+            value = value + gradient(seed, &vertex, &pos3);
+        }
+
+        // Contribution at (1, 0, 1, 1)
+        let pos2;
+        {
+            let vertex = math::add4(stretched_floor, [one, zero, one, one]);
+            pos2 = [
+                pos4[0],
+                pos4[1] + one,
+                pos4[2],
+                pos3[3]
+            ];
+            value = value + gradient(seed, &vertex, &pos2);
+        }
+
+        // Contribution at (0, 1, 1, 1)
+        let pos1;
+        {
+            let vertex = math::add4(stretched_floor, [zero, one, one, one]);
+            pos1 = [
+                pos4[0] + one,
+                pos4[1],
+                pos4[2],
+                pos3[3]
+            ];
+            value = value + gradient(seed, &vertex, &pos1);
+        }
+
+        // Contribution at (1, 1, 0, 0)
+        let pos5;
+        {
+            let vertex = math::add4(stretched_floor, [one, one, zero, zero]);
+            pos5 = [
+                pos4[0] + squish_constant,
+                pos4[1] + squish_constant,
+                pos3[2] + squish_constant,
+                pos4[3] + squish_constant
+            ];
+            value = value + gradient(seed, &vertex, &pos5);
+        }
+
+        // Contribution at (1, 0, 1, 0)
+        let pos6;
+        {
+            let vertex = math::add4(stretched_floor, [one, zero, one, zero]);
+            pos6 = [
+                pos5[0],
+                pos5[1] + one,
+                pos5[2] - one,
+                pos5[3]
+            ];
+            value = value + gradient(seed, &vertex, &pos6);
+        }
+
+        // Contribution at (1, 0, 0, 1)
+        let pos7;
+        {
+            let vertex = math::add4(stretched_floor, [one, zero, zero, one]);
+            pos7 = [
+                pos5[0],
+                pos6[1],
+                pos5[2],
+                pos5[3] - one
+            ];
+            value = value + gradient(seed, &vertex, &pos7);
+        }
+
+        // Contribution at (0, 1, 1, 0)
+        let pos8;
+        {
+            let vertex = math::add4(stretched_floor, [zero, one, one, zero]);
+            pos8 = [
+                pos5[0] + one,
+                pos5[1],
+                pos6[2],
+                pos5[3]
+            ];
+            value = value + gradient(seed, &vertex, &pos8);
+        }
+
+        // Contribution at (0, 1, 0, 1)
+        let pos9;
+        {
+            let vertex = math::add4(stretched_floor, [zero, one, zero, one]);
+            pos9 = [
+                pos8[0],
+                pos5[1],
+                pos5[2],
+                pos7[3]
+            ];
+            value = value + gradient(seed, &vertex, &pos9);
+        }
+
+        // Contribution at (0, 0, 1, 1)
+        let pos10;
+        {
+            let vertex = math::add4(stretched_floor, [zero, zero, one, one]);
+            pos10 = [
+                pos8[0],
+                pos6[1],
+                pos6[2],
+                pos7[3]
+            ];
+            value = value + gradient(seed, &vertex, &pos10);
+        }
+    }
+
+    value * math::cast(NORM_CONSTANT_4D)
 }

@@ -16,14 +16,15 @@
 
 extern crate noise;
 
-use noise::{open_simplex2, open_simplex3, Seed, Point2};
+use noise::{open_simplex2, open_simplex3, open_simplex4, Seed, Point2};
 
 mod debug;
 
 fn main() {
     debug::render_png("open_simplex2.png", &Seed::new(0), 1024, 1024, scaled_open_simplex2);
     debug::render_png("open_simplex3.png", &Seed::new(0), 1024, 1024, scaled_open_simplex3);
-    println!("\nGenerated open_simplex2.png and open_simplex3.png");
+    debug::render_png("open_simplex4.png", &Seed::new(0), 1024, 1024, scaled_open_simplex4);
+    println!("\nGenerated open_simplex2.png, open_simplex3.png and open_simplex4.png");
 }
 
 fn scaled_open_simplex2(seed: &Seed, point: &Point2<f64>) -> f64 {
@@ -32,4 +33,8 @@ fn scaled_open_simplex2(seed: &Seed, point: &Point2<f64>) -> f64 {
 
 fn scaled_open_simplex3(seed: &Seed, point: &Point2<f64>) -> f64 {
     open_simplex3(seed, &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0])
+}
+
+fn scaled_open_simplex4(seed: &Seed, point: &Point2<f64>) -> f64 {
+    open_simplex4(seed, &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0, point[1] / 32.0])
 }

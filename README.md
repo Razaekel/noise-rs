@@ -34,6 +34,7 @@ A slower but higher quality form of gradient noise:
 
 - `open_simplex2`
 - `open_simplex3`
+- `open_simplex4`
 
 ### Value Noise
 
@@ -164,9 +165,3 @@ These functions, when given a point, will return the cell of the nearest seed po
 - `cell2_seed_cell`
 - `cell3_seed_cell`
 - `cell4_seed_cell`
-
-### Coming soon
-
-Everything below this line is planned, but not yet implemented:
-
-- `open_simplex4`
