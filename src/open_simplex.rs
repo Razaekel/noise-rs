@@ -268,11 +268,11 @@ pub fn open_simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
 /// This is a slower but higher quality form of gradient noise than
 /// `noise::perlin4`.
 pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
-    fn gradient<T: Float>(seed: &Seed, stretched_floor: &math::Point4<T>, pos: &math::Point4<T>) -> T {
-        let zero: T = math::cast(0.0);
+    fn gradient<T: Float>(seed: &Seed, vertex: &math::Point4<T>, pos: &math::Point4<T>) -> T {
+        let zero = T::zero();
         let attn = math::cast::<_, T>(2.0_f64) - math::dot4(*pos, *pos);
         if attn > zero {
-            let index = seed.get4::<isize>(math::cast4::<_, isize>(*stretched_floor));
+            let index = seed.get4::<isize>(math::cast4::<_, isize>(*vertex));
             let vec = gradient::get4::<T>(index);
             math::pow4(attn) * math::dot4(*pos, vec)
         } else {
@@ -283,8 +283,8 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
     // Constants.
     let stretch_constant: T = math::cast(STRETCH_CONSTANT_4D);
     let squish_constant: T = math::cast(SQUISH_CONSTANT_4D);
-    let zero: T = math::cast(0.0);
-    let one: T = math::cast(1.0);
+    let zero = T::zero();
+    let one = T::one();
     let two: T = math::cast(2.0);
     let three: T = math::cast(3.0);
 
