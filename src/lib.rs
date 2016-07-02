@@ -17,11 +17,11 @@
 //! # Example
 //!
 //! ```rust
-//! use noise::{Brownian3, Seed};
+//! use noise::{Brownian3, PermutationTable};
 //!
-//! let seed = Seed::new(12);
+//! let perm_table = PermutationTable::new(12);
 //! let noise = Brownian3::new(noise::perlin3, 4).wavelength(32.0);
-//! let val = noise.apply(&seed, &[42.0, 37.0, 2.0]);
+//! let val = noise.apply(&perm_table, &[42.0, 37.0, 2.0]);
 //! ```
 
 #![deny(missing_copy_implementations)]
@@ -29,7 +29,7 @@
 extern crate num_traits;
 extern crate rand;
 
-pub use seed::Seed;
+pub use permutationtable::PermutationTable;
 pub use math::{Point2, Point3, Point4};
 pub use perlin::{perlin2, perlin3, perlin4};
 pub use value::{value2, value3, value4};
@@ -47,7 +47,7 @@ pub use cell::{cell2_manhattan_value, cell3_manhattan_value, cell4_manhattan_val
 
 mod gradient;
 mod math;
-mod seed;
+mod permutationtable;
 
 mod brownian;
 mod perlin;
@@ -62,11 +62,11 @@ mod cell;
 /// # Example
 ///
 /// ```rust
-/// use noise::{GenFn2, Seed, Point2};
+/// use noise::{GenFn2, PermutationTable, Point2};
 ///
-/// fn apply_noise2<F: GenFn2<f32>>(s: &Seed, p: &Point2<f32>, f: F) -> f32 { f(s, p) }
+/// fn apply_noise2<F: GenFn2<f32>>(t: &PermutationTable, p: &Point2<f32>, f: F) -> f32 { f(t, p) }
 /// ```
-pub trait GenFn2<T>: Fn(&Seed, &Point2<T>) -> T {}
+pub trait GenFn2<T>: Fn(&PermutationTable, &Point2<T>) -> T {}
 
 /// A trait alias for a 3-dimensional noise function.
 ///
@@ -75,11 +75,11 @@ pub trait GenFn2<T>: Fn(&Seed, &Point2<T>) -> T {}
 /// # Example
 ///
 /// ```rust
-/// use noise::{GenFn3, Seed, Point3};
+/// use noise::{GenFn3, PermutationTable, Point3};
 ///
-/// fn apply_noise3<F: GenFn3<f32>>(s: &Seed, p: &Point3<f32>, f: F) -> f32 { f(s, p) }
+/// fn apply_noise3<F: GenFn3<f32>>(t: &PermutationTable, p: &Point3<f32>, f: F) -> f32 { f(t, p) }
 /// ```
-pub trait GenFn3<T>: Fn(&Seed, &Point3<T>) -> T {}
+pub trait GenFn3<T>: Fn(&PermutationTable, &Point3<T>) -> T {}
 
 /// A trait alias for a 4-dimensional noise function.
 ///
@@ -88,12 +88,12 @@ pub trait GenFn3<T>: Fn(&Seed, &Point3<T>) -> T {}
 /// # Example
 ///
 /// ```rust
-/// use noise::{GenFn4, Seed, Point4};
+/// use noise::{GenFn4, PermutationTable, Point4};
 ///
-/// fn apply_noise4<F: GenFn4<f32>>(s: &Seed, p: &Point4<f32>, f: F) -> f32 { f(s, p) }
+/// fn apply_noise4<F: GenFn4<f32>>(t: &PermutationTable, p: &Point4<f32>, f: F) -> f32 { f(t, p) }
 /// ```
-pub trait GenFn4<T>: Fn(&Seed, &Point4<T>) -> T {}
+pub trait GenFn4<T>: Fn(&PermutationTable, &Point4<T>) -> T {}
 
-impl<T, F> GenFn2<T> for F where F: Fn(&Seed, &Point2<T>) -> T {}
-impl<T, F> GenFn3<T> for F where F: Fn(&Seed, &Point3<T>) -> T {}
-impl<T, F> GenFn4<T> for F where F: Fn(&Seed, &Point4<T>) -> T {}
+impl<T, F> GenFn2<T> for F where F: Fn(&PermutationTable, &Point2<T>) -> T {}
+impl<T, F> GenFn3<T> for F where F: Fn(&PermutationTable, &Point3<T>) -> T {}
+impl<T, F> GenFn4<T> for F where F: Fn(&PermutationTable, &Point4<T>) -> T {}

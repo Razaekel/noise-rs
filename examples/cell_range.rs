@@ -16,25 +16,25 @@
 
 extern crate noise;
 
-use noise::{cell2_range, cell3_range, cell4_range, Seed, Point2};
+use noise::{cell2_range, cell3_range, cell4_range, PermutationTable, Point2};
 
 mod debug;
 
 fn main() {
-    debug::render_png("cell2_range.png", &Seed::new(0), 1024, 1024, scaled_cell2_range);
-    debug::render_png("cell3_range.png", &Seed::new(0), 1024, 1024, scaled_cell3_range);
-    debug::render_png("cell4_range.png", &Seed::new(0), 1024, 1024, scaled_cell4_range);
+    debug::render_png("cell2_range.png", &PermutationTable::new(0), 1024, 1024, scaled_cell2_range);
+    debug::render_png("cell3_range.png", &PermutationTable::new(0), 1024, 1024, scaled_cell3_range);
+    debug::render_png("cell4_range.png", &PermutationTable::new(0), 1024, 1024, scaled_cell4_range);
     println!("\nGenerated cell2_range.png, cell3_range.png and cell4_range.png");
 }
 
-fn scaled_cell2_range(seed: &Seed, point: &Point2<f64>) -> f64 {
-    cell2_range(seed, &[point[0] / 16.0, point[1] / 16.0]) * 2.0 - 1.0
+fn scaled_cell2_range(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
+    cell2_range(perm_table, &[point[0] / 16.0, point[1] / 16.0]) * 2.0 - 1.0
 }
 
-fn scaled_cell3_range(seed: &Seed, point: &Point2<f64>) -> f64 {
-    cell3_range(seed, &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0]) * 2.0 - 1.0
+fn scaled_cell3_range(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
+    cell3_range(perm_table, &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0]) * 2.0 - 1.0
 }
 
-fn scaled_cell4_range(seed: &Seed, point: &Point2<f64>) -> f64 {
-    cell4_range(seed, &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0, point[1] / 32.0]) * 2.0 - 1.0
+fn scaled_cell4_range(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
+    cell4_range(perm_table, &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0, point[1] / 32.0]) * 2.0 - 1.0
 }

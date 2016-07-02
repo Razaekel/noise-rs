@@ -25,14 +25,14 @@ const TABLE_SIZE: usize = 256;
 /// A seed table, required by all noise functions.
 ///
 /// Table creation is expensive, so in most circumstances you'll only want to
-/// create one of these and reuse it everywhere.
+/// create one of these per generator.
 #[allow(missing_copy_implementations)]
-pub struct Seed {
+pub struct PermutationTable {
     values: [u8; TABLE_SIZE],
 }
 
-impl Rand for Seed {
-    /// Generates a random seed.
+impl Rand for PermutationTable {
+    /// Generates a PermutationTable using a random seed.
     ///
     /// # Examples
     ///
@@ -40,10 +40,10 @@ impl Rand for Seed {
     /// extern crate noise;
     /// extern crate rand;
     ///
-    /// use noise::Seed;
+    /// use noise::PermutationTable;
     ///
     /// # fn main() {
-    /// let seed = rand::random::<Seed>();
+    /// let perm_table = rand::random::<PermutationTable>();
     /// # }
     /// ```
     ///
@@ -51,30 +51,30 @@ impl Rand for Seed {
     /// extern crate noise;
     /// extern crate rand;
     ///
-    /// use noise::Seed;
+    /// use noise::PermutationTable;
     /// use rand::{SeedableRng, Rng, XorShiftRng};
     ///
     /// # fn main() {
     /// let mut rng: XorShiftRng = SeedableRng::from_seed([1, 2, 3, 4]);
-    /// let seed = rng.gen::<Seed>();
+    /// let perm_table = rng.gen::<PermutationTable>();
     /// # }
     /// ```
-    fn rand<R: Rng>(rng: &mut R) -> Seed {
+    fn rand<R: Rng>(rng: &mut R) -> PermutationTable {
         let mut seq: Vec<u8> = (0 .. TABLE_SIZE).map(|x| x as u8).collect();
         rng.shuffle(&mut *seq);
 
         // It's unfortunate that this double-initializes the array, but Rust doesn't currently provide a
         // clean way to do this in one pass. Hopefully won't matter, as Seed creation will usually be a
         // one-time event.
-        let mut seed = Seed { values: [0; TABLE_SIZE] };
+        let mut perm_table = PermutationTable { values: [0; TABLE_SIZE] };
         let seq_it = seq.iter();
-        for (x, y) in seed.values.iter_mut().zip(seq_it) { *x = *y }
-        seed
+        for (x, y) in perm_table.values.iter_mut().zip(seq_it) { *x = *y }
+        perm_table
     }
 }
 
-impl Seed {
-    /// Deterministically generates a new seed table based on a `u32` value.
+impl PermutationTable {
+    /// Deterministically generates a new permutation table based on a `u32` seed value.
     ///
     /// Internally this uses a `XorShiftRng`, but we don't really need to worry
     /// about cryptographic security when working with procedural noise.
@@ -82,11 +82,11 @@ impl Seed {
     /// # Example
     ///
     /// ```rust
-    /// use noise::Seed;
+    /// use noise::PermutationTable;
     ///
-    /// let seed = Seed::new(12);
+    /// let perm_table = PermutationTable::new(12);
     /// ```
-    pub fn new(seed: u32) -> Seed {
+    pub fn new(seed: u32) -> PermutationTable {
         let mut rng: XorShiftRng = SeedableRng::from_seed([1, seed, seed, seed]);
         rng.gen()
     }
@@ -116,15 +116,15 @@ impl Seed {
     }
 }
 
-impl Clone for Seed {
-    fn clone(&self) -> Seed {
-        Seed { values: self.values }
+impl Clone for PermutationTable {
+    fn clone(&self) -> PermutationTable {
+        PermutationTable { values: self.values }
     }
 }
 
-impl fmt::Debug for Seed {
+impl fmt::Debug for PermutationTable {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Seed {{ .. }}")
+        write!(f, "PermutationTable {{ .. }}")
     }
 }
 
@@ -132,7 +132,7 @@ impl fmt::Debug for Seed {
 mod tests {
     use rand::random;
     use perlin::perlin3;
-    use super::Seed;
+    use super::PermutationTable;
 
     #[test]
     fn test_random_seed() {
@@ -141,6 +141,6 @@ mod tests {
 
     #[test]
     fn test_negative_params() {
-        let _ = perlin3::<f32>(&Seed::new(0), &[-1.0, 2.0, 3.0]);
+        let _ = perlin3::<f32>(&PermutationTable::new(0), &[-1.0, 2.0, 3.0]);
     }
 }

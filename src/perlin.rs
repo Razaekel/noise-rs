@@ -14,15 +14,15 @@
 
 use num_traits::Float;
 
-use {gradient, math, Seed};
+use {gradient, math, PermutationTable};
 
 /// 2-dimensional perlin noise
-pub fn perlin2<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
+pub fn perlin2<T: Float>(perm_table: &PermutationTable, point: &math::Point2<T>) -> T {
     #[inline(always)]
-    fn surflet<T: Float>(seed: &Seed, corner: math::Point2<isize>, distance: math::Vector2<T>) -> T {
+    fn surflet<T: Float>(perm_table: &PermutationTable, corner: math::Point2<isize>, distance: math::Vector2<T>) -> T {
         let attn = T::one() - math::dot2(distance, distance);
         if attn > T::zero() {
-            math::pow4(attn) * math::dot2(distance, gradient::get2(seed.get2(corner)))
+            math::pow4(attn) * math::dot2(distance, gradient::get2(perm_table.get2(corner)))
         } else {
             T::zero()
         }
@@ -34,16 +34,16 @@ pub fn perlin2<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
     let near_distance = math::sub2(*point, floored);
     let far_distance = math::sub2(near_distance, math::one2());
 
-    let f00 = surflet(seed,
+    let f00 = surflet(perm_table,
                       [near_corner[0], near_corner[1]],
                       [near_distance[0], near_distance[1]]);
-    let f10 = surflet(seed,
+    let f10 = surflet(perm_table,
                       [far_corner[0], near_corner[1]],
                       [far_distance[0], near_distance[1]]);
-    let f01 = surflet(seed,
+    let f01 = surflet(perm_table,
                       [near_corner[0], far_corner[1]],
                       [near_distance[0], far_distance[1]]);
-    let f11 = surflet(seed,
+    let f11 = surflet(perm_table,
                       [far_corner[0], far_corner[1]],
                       [far_distance[0], far_distance[1]]);
 
@@ -52,12 +52,12 @@ pub fn perlin2<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
 }
 
 /// 3-dimensional perlin noise
-pub fn perlin3<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
+pub fn perlin3<T: Float>(perm_table: &PermutationTable, point: &math::Point3<T>) -> T {
     #[inline(always)]
-    fn surflet<T: Float>(seed: &Seed, corner: math::Point3<isize>, distance: math::Vector3<T>) -> T {
+    fn surflet<T: Float>(perm_table: &PermutationTable, corner: math::Point3<isize>, distance: math::Vector3<T>) -> T {
         let attn = T::one() - math::dot3(distance, distance);
         if attn > T::zero() {
-            math::pow4(attn) * math::dot3(distance, gradient::get3(seed.get3(corner)))
+            math::pow4(attn) * math::dot3(distance, gradient::get3(perm_table.get3(corner)))
         } else {
             T::zero()
         }
@@ -69,28 +69,28 @@ pub fn perlin3<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
     let near_distance = math::sub3(*point, floored);
     let far_distance = math::sub3(near_distance, math::one3());
 
-    let f000 = surflet(seed,
+    let f000 = surflet(perm_table,
                        [near_corner[0], near_corner[1], near_corner[2]],
                        [near_distance[0], near_distance[1], near_distance[2]]);
-    let f100 = surflet(seed,
+    let f100 = surflet(perm_table,
                        [far_corner[0], near_corner[1], near_corner[2]],
                        [far_distance[0], near_distance[1], near_distance[2]]);
-    let f010 = surflet(seed,
+    let f010 = surflet(perm_table,
                        [near_corner[0], far_corner[1], near_corner[2]],
                        [near_distance[0], far_distance[1], near_distance[2]]);
-    let f110 = surflet(seed,
+    let f110 = surflet(perm_table,
                        [far_corner[0], far_corner[1], near_corner[2]],
                        [far_distance[0], far_distance[1], near_distance[2]]);
-    let f001 = surflet(seed,
+    let f001 = surflet(perm_table,
                        [near_corner[0], near_corner[1], far_corner[2]],
                        [near_distance[0], near_distance[1], far_distance[2]]);
-    let f101 = surflet(seed,
+    let f101 = surflet(perm_table,
                        [far_corner[0], near_corner[1], far_corner[2]],
                        [far_distance[0], near_distance[1], far_distance[2]]);
-    let f011 = surflet(seed,
+    let f011 = surflet(perm_table,
                        [near_corner[0], far_corner[1], far_corner[2]],
                        [near_distance[0], far_distance[1], far_distance[2]]);
-    let f111 = surflet(seed,
+    let f111 = surflet(perm_table,
                        [far_corner[0], far_corner[1], far_corner[2]],
                        [far_distance[0], far_distance[1], far_distance[2]]);
 
@@ -99,12 +99,12 @@ pub fn perlin3<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
 }
 
 /// 4-dimensional perlin noise
-pub fn perlin4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
+pub fn perlin4<T: Float>(perm_table: &PermutationTable, point: &math::Point4<T>) -> T {
     #[inline(always)]
-    fn surflet<T: Float>(seed: &Seed, corner: math::Point4<isize>, distance: math::Vector4<T>) -> T {
+    fn surflet<T: Float>(perm_table: &PermutationTable, corner: math::Point4<isize>, distance: math::Vector4<T>) -> T {
         let attn = T::one() - math::dot4(distance, distance);
         if attn > T::zero() {
-            math::pow4(attn) * math::dot4(distance, gradient::get4(seed.get4(corner)))
+            math::pow4(attn) * math::dot4(distance, gradient::get4(perm_table.get4(corner)))
         } else {
             T::zero()
         }
@@ -116,52 +116,52 @@ pub fn perlin4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
     let near_distance = math::sub4(*point, floored);
     let far_distance = math::sub4(near_distance, math::one4());
 
-    let f0000 = surflet(seed,
+    let f0000 = surflet(perm_table,
                         [near_corner[0], near_corner[1], near_corner[2], near_corner[3]],
                         [near_distance[0], near_distance[1], near_distance[2], near_distance[3]]);
-    let f1000 = surflet(seed,
+    let f1000 = surflet(perm_table,
                         [far_corner[0], near_corner[1], near_corner[2], near_corner[3]],
                         [far_distance[0], near_distance[1], near_distance[2], near_distance[3]]);
-    let f0100 = surflet(seed,
+    let f0100 = surflet(perm_table,
                         [near_corner[0], far_corner[1], near_corner[2], near_corner[3]],
                         [near_distance[0], far_distance[1], near_distance[2], near_distance[3]]);
-    let f1100 = surflet(seed,
+    let f1100 = surflet(perm_table,
                         [far_corner[0], far_corner[1], near_corner[2], near_corner[3]],
                         [far_distance[0], far_distance[1], near_distance[2], near_distance[3]]);
-    let f0010 = surflet(seed,
+    let f0010 = surflet(perm_table,
                         [near_corner[0], near_corner[1], far_corner[2], near_corner[3]],
                         [near_distance[0], near_distance[1], far_distance[2], near_distance[3]]);
-    let f1010 = surflet(seed,
+    let f1010 = surflet(perm_table,
                         [far_corner[0], near_corner[1], far_corner[2], near_corner[3]],
                         [far_distance[0], near_distance[1], far_distance[2], near_distance[3]]);
-    let f0110 = surflet(seed,
+    let f0110 = surflet(perm_table,
                         [near_corner[0], far_corner[1], far_corner[2], near_corner[3]],
                         [near_distance[0], far_distance[1], far_distance[2], near_distance[3]]);
-    let f1110 = surflet(seed,
+    let f1110 = surflet(perm_table,
                         [far_corner[0], far_corner[1], far_corner[2], near_corner[3]],
                         [far_distance[0], far_distance[1], far_distance[2], near_distance[3]]);
-    let f0001 = surflet(seed,
+    let f0001 = surflet(perm_table,
                         [near_corner[0], near_corner[1], near_corner[2], far_corner[3]],
                         [near_distance[0], near_distance[1], near_distance[2], far_distance[3]]);
-    let f1001 = surflet(seed,
+    let f1001 = surflet(perm_table,
                         [far_corner[0], near_corner[1], near_corner[2], far_corner[3]],
                         [far_distance[0], near_distance[1], near_distance[2], far_distance[3]]);
-    let f0101 = surflet(seed,
+    let f0101 = surflet(perm_table,
                         [near_corner[0], far_corner[1], near_corner[2], far_corner[3]],
                         [near_distance[0], far_distance[1], near_distance[2], far_distance[3]]);
-    let f1101 = surflet(seed,
+    let f1101 = surflet(perm_table,
                         [far_corner[0], far_corner[1], near_corner[2], far_corner[3]],
                         [far_distance[0], far_distance[1], near_distance[2], far_distance[3]]);
-    let f0011 = surflet(seed,
+    let f0011 = surflet(perm_table,
                         [near_corner[0], near_corner[1], far_corner[2], far_corner[3]],
                         [near_distance[0], near_distance[1], far_distance[2], far_distance[3]]);
-    let f1011 = surflet(seed,
+    let f1011 = surflet(perm_table,
                         [far_corner[0], near_corner[1], far_corner[2], far_corner[3]],
                         [far_distance[0], near_distance[1], far_distance[2], far_distance[3]]);
-    let f0111 = surflet(seed,
+    let f0111 = surflet(perm_table,
                         [near_corner[0], far_corner[1], far_corner[2], far_corner[3]],
                         [near_distance[0], far_distance[1], far_distance[2], far_distance[3]]);
-    let f1111 = surflet(seed,
+    let f1111 = surflet(perm_table,
                         [far_corner[0], far_corner[1], far_corner[2], far_corner[3]],
                         [far_distance[0], far_distance[1], far_distance[2], far_distance[3]]);
 
