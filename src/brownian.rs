@@ -14,7 +14,7 @@
 
 use num_traits::Float;
 
-use {math, PermutationTable};
+use {PermutationTable, math};
 use {GenFn2, GenFn3, GenFn4};
 use {Point2, Point3, Point4};
 
@@ -207,7 +207,7 @@ macro_rules! impl_brownian {
             pub fn apply(&self, perm_table: &PermutationTable, point: &$Point<T>) -> T {
                 // Fixes weird accumulation at the origin.
                 //
-                // The chosen offset is the square root of 3. An irrational 
+                // The chosen offset is the square root of 3. An irrational
                 // number is chosen so grid-aligned noise values don't coincide
                 // with each other.
                 const OFFSET: f64 = 1.73205080756887;
@@ -237,20 +237,22 @@ impl_brownian! { Brownian3, GenFn3, Point3, math::map3 }
 impl_brownian! { Brownian4, GenFn4, Point4, math::map4 }
 
 #[cfg(rust_unstable)]
-impl<'a, 'b, T, F> Fn(&'a PermutationTable, &'b Point2<T>) for Brownian2<T, F> where
-    T: Float,
-    F: GenFn2<T>,
+impl<'a, 'b, T, F> Fn(&'a PermutationTable, &'b Point2<T>) for Brownian2<T, F>
+    where T: Float,
+          F: GenFn2<T>,
 {
     /// Applies the brownian noise function for the supplied permutation table and point.
-    extern "rust-call" fn call(&self, (perm_table, point): (&'a PermutationTable, &'b Point2<T>)) -> T {
+    extern "rust-call" fn call(&self,
+                               (perm_table, point): (&'a PermutationTable, &'b Point2<T>))
+                               -> T {
         self.apply(perm_table, point)
     }
 }
 
 #[cfg(rust_unstable)]
-impl<'a, 'b, T, F> FnMut(&'a PermutationTable, &'b Point2<T>) for Brownian2<T, F> where
-    T: Float,
-    F: GenFn2<T>,
+impl<'a, 'b, T, F> FnMut(&'a PermutationTable, &'b Point2<T>) for Brownian2<T, F>
+    where T: Float,
+          F: GenFn2<T>,
 {
     extern "rust-call" fn call_mut(&mut self, (table, point): (&'a Seed, &'b Point2<T>)) -> T {
         self.call((table, point))
@@ -258,9 +260,9 @@ impl<'a, 'b, T, F> FnMut(&'a PermutationTable, &'b Point2<T>) for Brownian2<T, F
 }
 
 #[cfg(rust_unstable)]
-impl<'a, 'b, T, F> FnOnce(&'a Seed, &'b Point2<T>) for Brownian2<T, F> where
-    T: Float,
-    F: GenFn2<T>,
+impl<'a, 'b, T, F> FnOnce(&'a Seed, &'b Point2<T>) for Brownian2<T, F>
+    where T: Float,
+          F: GenFn2<T>,
 {
     type Output = T;
     extern "rust-call" fn call_once(self, (seed, point): (&'a Seed, &'b Point2<T>)) -> T {
@@ -269,9 +271,9 @@ impl<'a, 'b, T, F> FnOnce(&'a Seed, &'b Point2<T>) for Brownian2<T, F> where
 }
 
 #[cfg(rust_unstable)]
-impl<'a, 'b, T, F> Fn(&'a Seed, &'b Point3<T>) for Brownian3<T, F> where
-    T: Float,
-    F: GenFn3<T>,
+impl<'a, 'b, T, F> Fn(&'a Seed, &'b Point3<T>) for Brownian3<T, F>
+    where T: Float,
+          F: GenFn3<T>,
 {
     /// Applies the brownian noise function for the supplied seed and point.
     extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b Point3<T>)) -> T {
@@ -280,9 +282,9 @@ impl<'a, 'b, T, F> Fn(&'a Seed, &'b Point3<T>) for Brownian3<T, F> where
 }
 
 #[cfg(rust_unstable)]
-impl<'a, 'b, T, F> FnMut(&'a Seed, &'b Point3<T>) for Brownian3<T, F> where
-    T: Float,
-    F: GenFn3<T>,
+impl<'a, 'b, T, F> FnMut(&'a Seed, &'b Point3<T>) for Brownian3<T, F>
+    where T: Float,
+          F: GenFn3<T>,
 {
     extern "rust-call" fn call_mut(&mut self, (seed, point): (&'a Seed, &'b Point3<T>)) -> T {
         self.call((seed, point))
@@ -290,9 +292,9 @@ impl<'a, 'b, T, F> FnMut(&'a Seed, &'b Point3<T>) for Brownian3<T, F> where
 }
 
 #[cfg(rust_unstable)]
-impl<'a, 'b, T, F> FnOnce(&'a Seed, &'b Point3<T>) for Brownian3<T, F> where
-    T: Float,
-    F: GenFn3<T>,
+impl<'a, 'b, T, F> FnOnce(&'a Seed, &'b Point3<T>) for Brownian3<T, F>
+    where T: Float,
+          F: GenFn3<T>,
 {
     type Output = T;
     extern "rust-call" fn call_once(self, (seed, point): (&'a Seed, &'b Point3<T>)) -> T {
@@ -301,9 +303,9 @@ impl<'a, 'b, T, F> FnOnce(&'a Seed, &'b Point3<T>) for Brownian3<T, F> where
 }
 
 #[cfg(rust_unstable)]
-impl<'a, 'b, T, F> Fn(&'a Seed, &'b ::Point4<T>) for Brownian4<T, F> where
-    T: Float,
-    F: GenFn4<T>,
+impl<'a, 'b, T, F> Fn(&'a Seed, &'b ::Point4<T>) for Brownian4<T, F>
+    where T: Float,
+          F: GenFn4<T>,
 {
     /// Applies the brownian noise function for the supplied seed and point.
     extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b Point4<T>)) -> T {
@@ -312,9 +314,9 @@ impl<'a, 'b, T, F> Fn(&'a Seed, &'b ::Point4<T>) for Brownian4<T, F> where
 }
 
 #[cfg(rust_unstable)]
-impl<'a, 'b, T, F> FnMut(&'a Seed, &'b Point4<T>) for Brownian4<T, F> where
-    T: Float,
-    F: GenFn4<T>,
+impl<'a, 'b, T, F> FnMut(&'a Seed, &'b Point4<T>) for Brownian4<T, F>
+    where T: Float,
+          F: GenFn4<T>,
 {
     extern "rust-call" fn call_mut(&mut self, (seed, point): (&'a Seed, &'b Point4<T>)) -> T {
         self.call((seed, point))
@@ -322,9 +324,9 @@ impl<'a, 'b, T, F> FnMut(&'a Seed, &'b Point4<T>) for Brownian4<T, F> where
 }
 
 #[cfg(rust_unstable)]
-impl<'a, 'b, T, F> FnOnce(&'a Seed, &'b Point4<T>) for Brownian4<T, F> where
-    T: Float,
-    F: GenFn4<T>,
+impl<'a, 'b, T, F> FnOnce(&'a Seed, &'b Point4<T>) for Brownian4<T, F>
+    where T: Float,
+          F: GenFn4<T>,
 {
     type Output = T;
     extern "rust-call" fn call_once(self, (seed, point): (&'a Seed, &'b Point4<T>)) -> T {

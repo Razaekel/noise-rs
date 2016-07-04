@@ -14,7 +14,7 @@
 
 use num_traits::Float;
 
-use {math, PermutationTable};
+use {PermutationTable, math};
 
 /// Linearly interpolate values.
 fn lerp<T: Float>(a: T, b: T, x: T) -> T {
@@ -30,13 +30,14 @@ fn smoothstep<T: Float>(x: T) -> T {
 }
 
 /// 2-dimensional value noise
+#[cfg_attr(rustfmt, rustfmt_skip)]
 pub fn value2<T: Float>(perm_table: &PermutationTable, point: &math::Point2<T>) -> T {
     #[inline(always)]
     fn get<T: Float>(perm_table: &PermutationTable, corner: math::Point2<isize>) -> T {
         math::cast::<_, T>(perm_table.get2(corner)) * math::cast(1.0 / 255.0)
     }
 
-    let floored = math::map2(*point, Float::floor);
+    let floored = math::map2(*point, T::floor);
     let near_corner = math::map2(floored, math::cast);
     let far_corner = math::add2(near_corner, math::one2());
     let weight = math::map2(math::sub2(*point, floored), smoothstep);
@@ -54,13 +55,14 @@ pub fn value2<T: Float>(perm_table: &PermutationTable, point: &math::Point2<T>) 
 }
 
 /// 3-dimensional value noise
+#[cfg_attr(rustfmt, rustfmt_skip)]
 pub fn value3<T: Float>(perm_table: &PermutationTable, point: &math::Point3<T>) -> T {
     #[inline(always)]
     fn get<T: Float>(perm_table: &PermutationTable, corner: math::Point3<isize>) -> T {
         math::cast::<_, T>(perm_table.get3(corner)) * math::cast(1.0 / 255.0)
     }
 
-    let floored = math::map3(*point, Float::floor);
+    let floored = math::map3(*point, T::floor);
     let near_corner = math::map3(floored, math::cast);
     let far_corner = math::add3(near_corner, math::one3());
     let weight = math::map3(math::sub3(*point, floored), smoothstep);
@@ -86,13 +88,14 @@ pub fn value3<T: Float>(perm_table: &PermutationTable, point: &math::Point3<T>) 
 }
 
 /// 4-dimensional value noise
+#[cfg_attr(rustfmt, rustfmt_skip)]
 pub fn value4<T: Float>(perm_table: &PermutationTable, point: &math::Point4<T>) -> T {
     #[inline(always)]
     fn get<T: Float>(perm_table: &PermutationTable, corner: math::Point4<isize>) -> T {
         math::cast::<_, T>(perm_table.get4(corner)) * math::cast(1.0 / 255.0)
     }
 
-    let floored = math::map4(*point, Float::floor);
+    let floored = math::map4(*point, T::floor);
     let near_corner = math::map4(floored, math::cast);
     let far_corner = math::add4(near_corner, math::one4());
     let weight = math::map4(math::sub4(*point, floored), smoothstep);

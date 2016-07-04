@@ -94,6 +94,6 @@ pub trait GenFn3<T>: Fn(&PermutationTable, &Point3<T>) -> T {}
 /// ```
 pub trait GenFn4<T>: Fn(&PermutationTable, &Point4<T>) -> T {}
 
-impl<T, F> GenFn2<T> for F where F: Fn(&PermutationTable, &Point2<T>) -> T {}
-impl<T, F> GenFn3<T> for F where F: Fn(&PermutationTable, &Point3<T>) -> T {}
-impl<T, F> GenFn4<T> for F where F: Fn(&PermutationTable, &Point4<T>) -> T {}
+impl<T, F> GenFn2<T> for F where F: Fn(&PermutationTable, &Point2<T>) -> T, {}
+impl<T, F> GenFn3<T> for F where F: Fn(&PermutationTable, &Point3<T>) -> T, {}
+impl<T, F> GenFn4<T> for F where F: Fn(&PermutationTable, &Point4<T>) -> T, {}
