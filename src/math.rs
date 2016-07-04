@@ -216,3 +216,23 @@ pub fn cast4<T, U>(x: Point4<T>) -> Point4<U>
 {
     map4(x, cast)
 }
+
+pub mod interp {
+    use num_traits::Float;
+    use math;
+
+    /// Performs linear interploation between two values.
+    pub fn linear<T: Float>(a: T, b: T, x: T) -> T {
+        x.mul_add((b - a), a)
+    }
+
+    /// Maps a value onto a cubic S-curve.
+    pub fn s_curve3<T: Float>(x: T) -> T {
+        x * x * (math::cast::<_, T>(3.0) - (x * math::cast(2.0)))
+    }
+
+    /// Maps a value onto a quintic S-curve.
+    pub fn s_curve5<T: Float>(x: T) -> T {
+        x * x * x * (x * (x * math::cast(6.0) - math::cast(15.0) + math::cast(10.0)))
+    }
+}

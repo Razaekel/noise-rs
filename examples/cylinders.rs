@@ -12,14 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! An example of using perlin noise
-
 extern crate noise;
 
-use noise::modules::Perlin;
+use noise::modules::Cylinders;
 
 mod debug;
 
 fn main() {
-    debug::render_png2("perlin.png", Perlin::new(0), 1024, 1024, 50);
+    debug::render_png2("cylinders.png", Cylinders::new(1.0), 1024, 1024, 50);
 }

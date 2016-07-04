@@ -55,6 +55,8 @@ mod value;
 mod open_simplex;
 mod cell;
 
+pub mod modules;
+
 /// A trait alias for a 2-dimensional noise function.
 ///
 /// This is useful for succinctly parameterising over valid noise functions.
@@ -97,3 +99,31 @@ pub trait GenFn4<T>: Fn(&PermutationTable, &Point4<T>) -> T {}
 impl<T, F> GenFn2<T> for F where F: Fn(&PermutationTable, &Point2<T>) -> T, {}
 impl<T, F> GenFn3<T> for F where F: Fn(&PermutationTable, &Point3<T>) -> T, {}
 impl<T, F> GenFn4<T> for F where F: Fn(&PermutationTable, &Point4<T>) -> T, {}
+
+/// Base trait for noise modules.
+///
+/// A noise module is a object that calculates and outputs a value given a
+/// n-Dimensional input value, where n is (2,3,4).
+///
+/// Each type of noise module uses a specific method to calculate an output
+/// value. Some of these methods include:
+///
+/// * Calculating a value using a coherent-noise function or some other
+///     mathematical function.
+/// * Mathematically changing the output value from another noise module
+///     in various ways.
+/// * Combining the output values from two noise modules in various ways.
+pub trait Module<T> {
+    type Output;
+
+    fn get(&self, point: T) -> Self::Output;
+}
+
+impl<'a, T, M: Module<T>> Module<T> for &'a M {
+    type Output = M::Output;
+
+    #[inline]
+    fn get(&self, point: T) -> M::Output {
+        M::get(*self, point)
+    }
+}
