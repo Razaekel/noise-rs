@@ -46,5 +46,11 @@ pub fn render_png<T, F>(filename: &str, perm_table: &noise::PermutationTable, wi
         }
     }
 
-    let _ = image::save_buffer(&Path::new(filename), &*pixels, width, height, image::Gray(8));
+    let _ = image::save_buffer(&Path::new(filename),
+                               &*pixels,
+                               width,
+                               height,
+                               image::Gray(8));
+
+    println!("\nGenerated {}", filename);
 }

@@ -24,7 +24,6 @@ fn main() {
     debug::render_png("brownian2.png", &PermutationTable::new(0), 1024, 1024, brownian2_for_image);
     debug::render_png("brownian3.png", &PermutationTable::new(0), 1024, 1024, brownian3_for_image);
     debug::render_png("brownian4.png", &PermutationTable::new(0), 1024, 1024, brownian4_for_image);
-    println!("\nGenerated brownian2.png, brownian3.png and brownian4.png");
 }
 
 fn brownian2_for_image(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
