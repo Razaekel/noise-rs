@@ -24,7 +24,6 @@ fn main() {
     debug::render_png("cell2_range_inv.png", &PermutationTable::new(0), 1024, 1024, scaled_cell2_range_inv);
     debug::render_png("cell3_range_inv.png", &PermutationTable::new(0), 1024, 1024, scaled_cell3_range_inv);
     debug::render_png("cell4_range_inv.png", &PermutationTable::new(0), 1024, 1024, scaled_cell4_range_inv);
-    println!("\nGenerated cell2_range_inv.png, cell3_range_inv.png and cell4_range_inv.png");
 }
 
 fn scaled_cell2_range_inv(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
