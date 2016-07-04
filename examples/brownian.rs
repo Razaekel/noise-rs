@@ -16,25 +16,25 @@
 
 extern crate noise;
 
-use noise::{Brownian2, Brownian3, Brownian4, perlin2, perlin3, perlin4, Seed, Point2};
+use noise::{Brownian2, Brownian3, Brownian4, perlin2, perlin3, perlin4, PermutationTable, Point2};
 
 mod debug;
 
 fn main() {
-    debug::render_png("brownian2.png", &Seed::new(0), 1024, 1024, brownian2_for_image);
-    debug::render_png("brownian3.png", &Seed::new(0), 1024, 1024, brownian3_for_image);
-    debug::render_png("brownian4.png", &Seed::new(0), 1024, 1024, brownian4_for_image);
+    debug::render_png("brownian2.png", &PermutationTable::new(0), 1024, 1024, brownian2_for_image);
+    debug::render_png("brownian3.png", &PermutationTable::new(0), 1024, 1024, brownian3_for_image);
+    debug::render_png("brownian4.png", &PermutationTable::new(0), 1024, 1024, brownian4_for_image);
     println!("\nGenerated brownian2.png, brownian3.png and brownian4.png");
 }
 
-fn brownian2_for_image(seed: &Seed, point: &Point2<f64>) -> f64 {
-    Brownian2::new(perlin2, 8).wavelength(1024.0).apply(seed, point)
+fn brownian2_for_image(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
+    Brownian2::new(perlin2, 8).wavelength(1024.0).apply(perm_table, point)
 }
 
-fn brownian3_for_image(seed: &Seed, point: &Point2<f64>) -> f64 {
-    Brownian3::new(perlin3, 8).wavelength(1024.0).apply(seed, &[point[0], point[1], point[0] / 2.0])
+fn brownian3_for_image(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
+    Brownian3::new(perlin3, 8).wavelength(1024.0).apply(perm_table, &[point[0], point[1], point[0] / 2.0])
 }
 
-fn brownian4_for_image(seed: &Seed, point: &Point2<f64>) -> f64 {
-    Brownian4::new(perlin4, 8).wavelength(1024.0).apply(seed, &[point[0], point[1], point[0] / 2.0, point[1] / 2.0])
+fn brownian4_for_image(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
+    Brownian4::new(perlin4, 8).wavelength(1024.0).apply(perm_table, &[point[0], point[1], point[0] / 2.0, point[1] / 2.0])
 }

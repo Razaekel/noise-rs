@@ -14,7 +14,7 @@
 
 use num_traits::Float;
 
-use {math, Seed};
+use {math, PermutationTable};
 use {GenFn2, GenFn3, GenFn4};
 use {Point2, Point3, Point4};
 
@@ -202,12 +202,12 @@ macro_rules! impl_brownian {
                 $Brownian { lacunarity: lacunarity, ..self }
             }
 
-            /// Apply the Brownian noise function for the supplied seed and point.
+            /// Apply the Brownian noise function for the supplied permutation table and point.
             #[inline]
-            pub fn apply(&self, seed: &Seed, point: &$Point<T>) -> T {
+            pub fn apply(&self, perm_table: &PermutationTable, point: &$Point<T>) -> T {
                 // Fixes weird accumulation at the origin.
                 //
-                // The chosen offset is the square root of 3. An irrational
+                // The chosen offset is the square root of 3. An irrational 
                 // number is chosen so grid-aligned noise values don't coincide
                 // with each other.
                 const OFFSET: f64 = 1.73205080756887;
@@ -220,7 +220,7 @@ macro_rules! impl_brownian {
                 let point = *point;
                 for _ in 0..self.octaves {
                     let scaled_point = $mapn(point, |v| v * frequency + offset);
-                    result = result + ((self.function)(seed, &scaled_point) * amplitude);
+                    result = result + ((self.function)(perm_table, &scaled_point) * amplitude);
                     total_amplitude = total_amplitude + amplitude;
                     amplitude = amplitude * self.persistence;
                     frequency = frequency * self.lacunarity;
@@ -237,23 +237,23 @@ impl_brownian! { Brownian3, GenFn3, Point3, math::map3 }
 impl_brownian! { Brownian4, GenFn4, Point4, math::map4 }
 
 #[cfg(rust_unstable)]
-impl<'a, 'b, T, F> Fn(&'a Seed, &'b Point2<T>) for Brownian2<T, F> where
+impl<'a, 'b, T, F> Fn(&'a PermutationTable, &'b Point2<T>) for Brownian2<T, F> where
     T: Float,
     F: GenFn2<T>,
 {
-    /// Applies the brownian noise function for the supplied seed and point.
-    extern "rust-call" fn call(&self, (seed, point): (&'a Seed, &'b Point2<T>)) -> T {
-        self.apply(seed, point)
+    /// Applies the brownian noise function for the supplied permutation table and point.
+    extern "rust-call" fn call(&self, (perm_table, point): (&'a PermutationTable, &'b Point2<T>)) -> T {
+        self.apply(perm_table, point)
     }
 }
 
 #[cfg(rust_unstable)]
-impl<'a, 'b, T, F> FnMut(&'a Seed, &'b Point2<T>) for Brownian2<T, F> where
+impl<'a, 'b, T, F> FnMut(&'a PermutationTable, &'b Point2<T>) for Brownian2<T, F> where
     T: Float,
     F: GenFn2<T>,
 {
-    extern "rust-call" fn call_mut(&mut self, (seed, point): (&'a Seed, &'b Point2<T>)) -> T {
-        self.call((seed, point))
+    extern "rust-call" fn call_mut(&mut self, (table, point): (&'a Seed, &'b Point2<T>)) -> T {
+        self.call((table, point))
     }
 }
 

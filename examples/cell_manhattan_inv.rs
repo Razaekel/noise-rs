@@ -16,25 +16,25 @@
 
 extern crate noise;
 
-use noise::{cell2_manhattan_inv, cell3_manhattan_inv, cell4_manhattan_inv, Seed, Point2};
+use noise::{cell2_manhattan_inv, cell3_manhattan_inv, cell4_manhattan_inv, PermutationTable, Point2};
 
 mod debug;
 
 fn main() {
-    debug::render_png("cell2_manhattan_inv.png", &Seed::new(0), 1024, 1024, scaled_cell2_manhattan_inv);
-    debug::render_png("cell3_manhattan_inv.png", &Seed::new(0), 1024, 1024, scaled_cell3_manhattan_inv);
-    debug::render_png("cell4_manhattan_inv.png", &Seed::new(0), 1024, 1024, scaled_cell4_manhattan_inv);
+    debug::render_png("cell2_manhattan_inv.png", &PermutationTable::new(0), 1024, 1024, scaled_cell2_manhattan_inv);
+    debug::render_png("cell3_manhattan_inv.png", &PermutationTable::new(0), 1024, 1024, scaled_cell3_manhattan_inv);
+    debug::render_png("cell4_manhattan_inv.png", &PermutationTable::new(0), 1024, 1024, scaled_cell4_manhattan_inv);
     println!("\nGenerated cell2_manhattan_inv.png, cell3_manhattan_inv.png and cell4_manhattan_inv.png");
 }
 
-fn scaled_cell2_manhattan_inv(seed: &Seed, point: &Point2<f64>) -> f64 {
-    cell2_manhattan_inv(seed, &[point[0] / 16.0, point[1] / 16.0]) * 2.0 - 1.0
+fn scaled_cell2_manhattan_inv(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
+    cell2_manhattan_inv(perm_table, &[point[0] / 16.0, point[1] / 16.0]) * 2.0 - 1.0
 }
 
-fn scaled_cell3_manhattan_inv(seed: &Seed, point: &Point2<f64>) -> f64 {
-    cell3_manhattan_inv(seed, &[point[0] / 16.0, point[1] / 16.0, point[0] / 16.0]) * 2.0 - 1.0
+fn scaled_cell3_manhattan_inv(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
+    cell3_manhattan_inv(perm_table, &[point[0] / 16.0, point[1] / 16.0, point[0] / 16.0]) * 2.0 - 1.0
 }
 
-fn scaled_cell4_manhattan_inv(seed: &Seed, point: &Point2<f64>) -> f64 {
-    cell4_manhattan_inv(seed, &[point[0] / 16.0, point[1] / 16.0, point[0] / 16.0, point[1] / 16.0]) * 2.0 - 1.0
+fn scaled_cell4_manhattan_inv(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
+    cell4_manhattan_inv(perm_table, &[point[0] / 16.0, point[1] / 16.0, point[0] / 16.0, point[1] / 16.0]) * 2.0 - 1.0
 }

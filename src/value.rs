@@ -14,7 +14,7 @@
 
 use num_traits::Float;
 
-use {math, Seed};
+use {math, PermutationTable};
 
 /// Linearly interpolate values.
 fn lerp<T: Float>(a: T, b: T, x: T) -> T {
@@ -30,10 +30,10 @@ fn smoothstep<T: Float>(x: T) -> T {
 }
 
 /// 2-dimensional value noise
-pub fn value2<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
+pub fn value2<T: Float>(perm_table: &PermutationTable, point: &math::Point2<T>) -> T {
     #[inline(always)]
-    fn get<T: Float>(seed: &Seed, corner: math::Point2<isize>) -> T {
-        math::cast::<_, T>(seed.get2(corner)) * math::cast(1.0 / 255.0)
+    fn get<T: Float>(perm_table: &PermutationTable, corner: math::Point2<isize>) -> T {
+        math::cast::<_, T>(perm_table.get2(corner)) * math::cast(1.0 / 255.0)
     }
 
     let floored = math::map2(*point, Float::floor);
@@ -41,10 +41,10 @@ pub fn value2<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
     let far_corner = math::add2(near_corner, math::one2());
     let weight = math::map2(math::sub2(*point, floored), smoothstep);
 
-    let f00 = get(seed, [near_corner[0], near_corner[1]]);
-    let f10 = get(seed, [far_corner[0], near_corner[1]]);
-    let f01 = get(seed, [near_corner[0], far_corner[1]]);
-    let f11 = get(seed, [far_corner[0], far_corner[1]]);
+    let f00 = get(perm_table, [near_corner[0], near_corner[1]]);
+    let f10 = get(perm_table, [far_corner[0], near_corner[1]]);
+    let f01 = get(perm_table, [near_corner[0], far_corner[1]]);
+    let f11 = get(perm_table, [far_corner[0], far_corner[1]]);
 
     let d0 = lerp(f00, f10, weight[0]);
     let d1 = lerp(f01, f11, weight[0]);
@@ -54,10 +54,10 @@ pub fn value2<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
 }
 
 /// 3-dimensional value noise
-pub fn value3<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
+pub fn value3<T: Float>(perm_table: &PermutationTable, point: &math::Point3<T>) -> T {
     #[inline(always)]
-    fn get<T: Float>(seed: &Seed, corner: math::Point3<isize>) -> T {
-        math::cast::<_, T>(seed.get3(corner)) * math::cast(1.0 / 255.0)
+    fn get<T: Float>(perm_table: &PermutationTable, corner: math::Point3<isize>) -> T {
+        math::cast::<_, T>(perm_table.get3(corner)) * math::cast(1.0 / 255.0)
     }
 
     let floored = math::map3(*point, Float::floor);
@@ -65,14 +65,14 @@ pub fn value3<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
     let far_corner = math::add3(near_corner, math::one3());
     let weight = math::map3(math::sub3(*point, floored), smoothstep);
 
-    let f000: T = get(seed, [near_corner[0], near_corner[1], near_corner[2]]);
-    let f100: T = get(seed, [far_corner[0], near_corner[1], near_corner[2]]);
-    let f010: T = get(seed, [near_corner[0], far_corner[1], near_corner[2]]);
-    let f110: T = get(seed, [far_corner[0], far_corner[1], near_corner[2]]);
-    let f001: T = get(seed, [near_corner[0], near_corner[1], far_corner[2]]);
-    let f101: T = get(seed, [far_corner[0], near_corner[1], far_corner[2]]);
-    let f011: T = get(seed, [near_corner[0], far_corner[1], far_corner[2]]);
-    let f111: T = get(seed, [far_corner[0], far_corner[1], far_corner[2]]);
+    let f000: T = get(perm_table, [near_corner[0], near_corner[1], near_corner[2]]);
+    let f100: T = get(perm_table, [far_corner[0], near_corner[1], near_corner[2]]);
+    let f010: T = get(perm_table, [near_corner[0], far_corner[1], near_corner[2]]);
+    let f110: T = get(perm_table, [far_corner[0], far_corner[1], near_corner[2]]);
+    let f001: T = get(perm_table, [near_corner[0], near_corner[1], far_corner[2]]);
+    let f101: T = get(perm_table, [far_corner[0], near_corner[1], far_corner[2]]);
+    let f011: T = get(perm_table, [near_corner[0], far_corner[1], far_corner[2]]);
+    let f111: T = get(perm_table, [far_corner[0], far_corner[1], far_corner[2]]);
 
     let d00 = lerp(f000, f100, weight[0]);
     let d01 = lerp(f001, f101, weight[0]);
@@ -86,10 +86,10 @@ pub fn value3<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
 }
 
 /// 4-dimensional value noise
-pub fn value4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
+pub fn value4<T: Float>(perm_table: &PermutationTable, point: &math::Point4<T>) -> T {
     #[inline(always)]
-    fn get<T: Float>(seed: &Seed, corner: math::Point4<isize>) -> T {
-        math::cast::<_, T>(seed.get4(corner)) * math::cast(1.0 / 255.0)
+    fn get<T: Float>(perm_table: &PermutationTable, corner: math::Point4<isize>) -> T {
+        math::cast::<_, T>(perm_table.get4(corner)) * math::cast(1.0 / 255.0)
     }
 
     let floored = math::map4(*point, Float::floor);
@@ -97,22 +97,22 @@ pub fn value4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
     let far_corner = math::add4(near_corner, math::one4());
     let weight = math::map4(math::sub4(*point, floored), smoothstep);
 
-    let f0000: T = get(seed, [near_corner[0], near_corner[1], near_corner[2], near_corner[3]]);
-    let f1000: T = get(seed, [far_corner[0], near_corner[1], near_corner[2], near_corner[3]]);
-    let f0100: T = get(seed, [near_corner[0], far_corner[1], near_corner[2], near_corner[3]]);
-    let f1100: T = get(seed, [far_corner[0], far_corner[1], near_corner[2], near_corner[3]]);
-    let f0010: T = get(seed, [near_corner[0], near_corner[1], far_corner[2], near_corner[3]]);
-    let f1010: T = get(seed, [far_corner[0], near_corner[1], far_corner[2], near_corner[3]]);
-    let f0110: T = get(seed, [near_corner[0], far_corner[1], far_corner[2], near_corner[3]]);
-    let f1110: T = get(seed, [far_corner[0], far_corner[1], far_corner[2], near_corner[3]]);
-    let f0001: T = get(seed, [near_corner[0], near_corner[1], near_corner[2], far_corner[3]]);
-    let f1001: T = get(seed, [far_corner[0], near_corner[1], near_corner[2], far_corner[3]]);
-    let f0101: T = get(seed, [near_corner[0], far_corner[1], near_corner[2], far_corner[3]]);
-    let f1101: T = get(seed, [far_corner[0], far_corner[1], near_corner[2], far_corner[3]]);
-    let f0011: T = get(seed, [near_corner[0], near_corner[1], far_corner[2], far_corner[3]]);
-    let f1011: T = get(seed, [far_corner[0], near_corner[1], far_corner[2], far_corner[3]]);
-    let f0111: T = get(seed, [near_corner[0], far_corner[1], far_corner[2], far_corner[3]]);
-    let f1111: T = get(seed, [far_corner[0], far_corner[1], far_corner[2], far_corner[3]]);
+    let f0000: T = get(perm_table, [near_corner[0], near_corner[1], near_corner[2], near_corner[3]]);
+    let f1000: T = get(perm_table, [far_corner[0], near_corner[1], near_corner[2], near_corner[3]]);
+    let f0100: T = get(perm_table, [near_corner[0], far_corner[1], near_corner[2], near_corner[3]]);
+    let f1100: T = get(perm_table, [far_corner[0], far_corner[1], near_corner[2], near_corner[3]]);
+    let f0010: T = get(perm_table, [near_corner[0], near_corner[1], far_corner[2], near_corner[3]]);
+    let f1010: T = get(perm_table, [far_corner[0], near_corner[1], far_corner[2], near_corner[3]]);
+    let f0110: T = get(perm_table, [near_corner[0], far_corner[1], far_corner[2], near_corner[3]]);
+    let f1110: T = get(perm_table, [far_corner[0], far_corner[1], far_corner[2], near_corner[3]]);
+    let f0001: T = get(perm_table, [near_corner[0], near_corner[1], near_corner[2], far_corner[3]]);
+    let f1001: T = get(perm_table, [far_corner[0], near_corner[1], near_corner[2], far_corner[3]]);
+    let f0101: T = get(perm_table, [near_corner[0], far_corner[1], near_corner[2], far_corner[3]]);
+    let f1101: T = get(perm_table, [far_corner[0], far_corner[1], near_corner[2], far_corner[3]]);
+    let f0011: T = get(perm_table, [near_corner[0], near_corner[1], far_corner[2], far_corner[3]]);
+    let f1011: T = get(perm_table, [far_corner[0], near_corner[1], far_corner[2], far_corner[3]]);
+    let f0111: T = get(perm_table, [near_corner[0], far_corner[1], far_corner[2], far_corner[3]]);
+    let f1111: T = get(perm_table, [far_corner[0], far_corner[1], far_corner[2], far_corner[3]]);
 
     let d000 = lerp(f0000, f1000, weight[0]);
     let d010 = lerp(f0010, f1010, weight[0]);

@@ -19,7 +19,7 @@
 use num_traits::Float;
 use std::ops::{Add};
 
-use {gradient, math, Seed};
+use {gradient, math, PermutationTable};
 
 const STRETCH_CONSTANT_2D: f64 = -0.211324865405187; //(1/sqrt(2+1)-1)/2;
 const SQUISH_CONSTANT_2D: f64 = 0.366025403784439; //(sqrt(2+1)-1)/2;
@@ -35,13 +35,13 @@ const NORM_CONSTANT_4D: f32 = 1.0 / 6.8699090070956625;
 /// 2-dimensional [OpenSimplex Noise](http://uniblock.tumblr.com/post/97868843242/noise)
 ///
 /// This is a slower but higher quality form of gradient noise than `noise::perlin2`.
-pub fn open_simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
-    fn gradient<T: Float>(seed: &Seed, xs_floor: T, ys_floor: T, dx: T, dy: T) -> T {
+pub fn open_simplex2<T: Float>(perm_table: &PermutationTable, point: &::Point2<T>) -> T {
+    fn gradient<T: Float>(perm_table: &PermutationTable, xs_floor: T, ys_floor: T, dx: T, dy: T) -> T {
         let zero: T = math::cast(0);
 
         let attn = math::cast::<_, T>(2.0_f64) - dx * dx - dy * dy;
         if attn > zero {
-            let index = seed.get2::<isize>([math::cast(xs_floor), math::cast(ys_floor)]);
+            let index = perm_table.get2::<isize>([math::cast(xs_floor), math::cast(ys_floor)]);
             let vec = gradient::get2::<T>(index);
             math::pow4(attn) * (dx * vec[0] + dy * vec[1])
         } else {
@@ -89,12 +89,12 @@ pub fn open_simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
     // Contribution (1, 0)
     let dx1 = dx0 - one - squish_constant;
     let dy1 = dy0 - squish_constant;
-    value = value + gradient(seed, xs_floor + one, ys_floor, dx1, dy1);
+    value = value + gradient(perm_table, xs_floor + one, ys_floor, dx1, dy1);
 
     // Contribution (0, 1)
     let dx2 = dx1 + one;
     let dy2 = dy1 - one;
-    value = value + gradient(seed, xs_floor, ys_floor + one, dx2, dy2);
+    value = value + gradient(perm_table, xs_floor, ys_floor + one, dx2, dy2);
 
     // See the graph for an intuitive explanation; the sum of `x` and `y` is
     // only greater than `1` if we're on Region B.
@@ -109,7 +109,7 @@ pub fn open_simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
     }
 
     // Point (0, 0) or (1, 1)
-    value = value + gradient(seed, xs_floor, ys_floor, dx0, dy0);
+    value = value + gradient(perm_table, xs_floor, ys_floor, dx0, dy0);
 
     value * math::cast(NORM_CONSTANT_2D)
 }
@@ -117,13 +117,13 @@ pub fn open_simplex2<T: Float>(seed: &Seed, point: &::Point2<T>) -> T {
 /// 3-dimensional [OpenSimplex Noise](http://uniblock.tumblr.com/post/97868843242/noise)
 ///
 /// This is a slower but higher quality form of gradient noise than `noise::perlin3`.
-pub fn open_simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
-    fn gradient<T: Float>(seed: &Seed, xs_floor: T, ys_floor: T, zs_floor: T, dx: T, dy: T, dz: T) -> T {
+pub fn open_simplex3<T: Float>(perm_table: &PermutationTable, point: &::Point3<T>) -> T {
+    fn gradient<T: Float>(perm_table: &PermutationTable, xs_floor: T, ys_floor: T, zs_floor: T, dx: T, dy: T, dz: T) -> T {
         let zero: T = math::cast(0);
 
         let attn = math::cast::<_, T>(2.0_f64) - dx * dx - dy * dy - dz * dz;
         if attn > zero {
-            let index = seed.get3::<isize>([math::cast(xs_floor), math::cast(ys_floor), math::cast(zs_floor)]);
+            let index = perm_table.get3::<isize>([math::cast(xs_floor), math::cast(ys_floor), math::cast(zs_floor)]);
             let vec = gradient::get3::<T>(index);
             math::pow4(attn) * (dx * vec[0] + dy * vec[1] + dz * vec[2])
         } else {
@@ -174,25 +174,25 @@ pub fn open_simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
         // We're inside the tetrahedron (3-Simplex) at (0, 0, 0)
 
         // Contribution at (0, 0, 0)
-        value = value + gradient(seed, xsb, ysb, zsb, dx0, dy0, dz0);
+        value = value + gradient(perm_table, xsb, ysb, zsb, dx0, dy0, dz0);
 
         // Contribution at (1, 0, 0)
         let dx1 = dx0 - one - squish_constant;
         let dy1 = dy0 - squish_constant;
         let dz1 = dz0 - squish_constant;
-        value = value + gradient(seed, xsb + one, ysb, zsb, dx1, dy1, dz1);
+        value = value + gradient(perm_table, xsb + one, ysb, zsb, dx1, dy1, dz1);
 
         // Contribution at (0, 1, 0)
         let dx2 = dx0 - squish_constant;
         let dy2 = dy1 - one;
         let dz2 = dz1;
-        value = value + gradient(seed, xsb, ysb + one, zsb, dx2, dy2, dz2);
+        value = value + gradient(perm_table, xsb, ysb + one, zsb, dx2, dy2, dz2);
 
         // Contribution at (0, 0, 1)
         let dx3 = dx2;
         let dy3 = dy1;
         let dz3 = dz1 - one;
-        value = value + gradient(seed, xsb, ysb, zsb + one, dx3, dy3, dz3);
+        value = value + gradient(perm_table, xsb, ysb, zsb + one, dx3, dy3, dz3);
     } else if frac_sum >= two {
         // We're inside the tetrahedron (3-Simplex) at (1, 1, 1)
         let c0 = one + two * squish_constant;
@@ -201,25 +201,25 @@ pub fn open_simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
         let dx3 = dx0 - c0;
         let dy3 = dy0 - c0;
         let dz3 = dz0 - c0 + one;
-        value = value + gradient(seed, xsb + one, ysb + one, zsb, dx3, dy3, dz3);
+        value = value + gradient(perm_table, xsb + one, ysb + one, zsb, dx3, dy3, dz3);
 
         // Contribution at (1, 0, 1)
         let dx2 = dx3;
         let dy2 = dy3 + one;
         let dz2 = dz3 - one;
-        value = value + gradient(seed, xsb + one, ysb, zsb + one, dx2, dy2, dz2);
+        value = value + gradient(perm_table, xsb + one, ysb, zsb + one, dx2, dy2, dz2);
 
         // Contribution at (0, 1, 1)
         let dx1 = dx3 + one;
         let dy1 = dy3;
         let dz1 = dz2;
-        value = value + gradient(seed, xsb, ysb + one, zsb + one, dx1, dy1, dz1);
+        value = value + gradient(perm_table, xsb, ysb + one, zsb + one, dx1, dy1, dz1);
 
         // Contribution at (1, 1, 1)
         dx0 = dx3 - squish_constant;
         dy0 = dy3 - squish_constant;
         dz0 = dz2 - squish_constant;
-        value = value + gradient(seed, xsb + one, ysb + one, zsb + one, dx0, dy0, dz0);
+        value = value + gradient(perm_table, xsb + one, ysb + one, zsb + one, dx0, dy0, dz0);
     } else {
         // We're inside the octahedron (Rectified 3-Simplex) inbetween.
 
@@ -227,37 +227,37 @@ pub fn open_simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
         let dx1 = dx0 - one - squish_constant;
         let dy1 = dy0 - squish_constant;
         let dz1 = dz0 - squish_constant;
-        value = value + gradient(seed, xsb + one, ysb, zsb, dx1, dy1, dz1);
+        value = value + gradient(perm_table, xsb + one, ysb, zsb, dx1, dy1, dz1);
 
         // Contribution at (0, 1, 0)
         let dx2 = dx1 + one;
         let dy2 = dy1 - one;
         let dz2 = dz1;
-        value = value + gradient(seed, xsb, ysb + one, zsb, dx2, dy2, dz2);
+        value = value + gradient(perm_table, xsb, ysb + one, zsb, dx2, dy2, dz2);
 
         // Contribution at (0, 0, 1)
         let dx3 = dx2;
         let dy3 = dy1;
         let dz3 = dz1 - one;
-        value = value + gradient(seed, xsb, ysb, zsb + one, dx3, dy3, dz3);
+        value = value + gradient(perm_table, xsb, ysb, zsb + one, dx3, dy3, dz3);
 
         // Contribution at (1, 1, 0)
         let dx4 = dx1 - squish_constant;
         let dy4 = dy2 - squish_constant;
         let dz4 = dz1 - squish_constant;
-        value = value + gradient(seed, xsb + one, ysb + one, zsb, dx4, dy4, dz4);
+        value = value + gradient(perm_table, xsb + one, ysb + one, zsb, dx4, dy4, dz4);
 
         // Contribution at (1, 0, 1)
         let dx5 = dx4;
         let dy5 = dy4 + one;
         let dz5 = dz4 - one;
-        value = value + gradient(seed, xsb + one, ysb, zsb + one, dx5, dy5, dz5);
+        value = value + gradient(perm_table, xsb + one, ysb, zsb + one, dx5, dy5, dz5);
 
         // Contribution at (0, 1, 1)
         let dx6 = dx4 + one;
         let dy6 = dy4;
         let dz6 = dz5;
-        value = value + gradient(seed, xsb, ysb + one, zsb + one, dx6, dy6, dz6);
+        value = value + gradient(perm_table, xsb, ysb + one, zsb + one, dx6, dy6, dz6);
     }
 
     return value * math::cast(NORM_CONSTANT_3D);
@@ -267,12 +267,12 @@ pub fn open_simplex3<T: Float>(seed: &Seed, point: &::Point3<T>) -> T {
 ///
 /// This is a slower but higher quality form of gradient noise than
 /// `noise::perlin4`.
-pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
-    fn gradient<T: Float>(seed: &Seed, vertex: &math::Point4<T>, pos: &math::Point4<T>) -> T {
+pub fn open_simplex4<T: Float>(perm_table: &PermutationTable, point: &math::Point4<T>) -> T {
+    fn gradient<T: Float>(perm_table: &PermutationTable, vertex: &math::Point4<T>, pos: &math::Point4<T>) -> T {
         let zero = T::zero();
         let attn = math::cast::<_, T>(2.0_f64) - math::dot4(*pos, *pos);
         if attn > zero {
-            let index = seed.get4::<isize>(math::cast4::<_, isize>(*vertex));
+            let index = perm_table.get4::<isize>(math::cast4::<_, isize>(*vertex));
             let vec = gradient::get4::<T>(index);
             math::pow4(attn) * math::dot4(*pos, vec)
         } else {
@@ -317,7 +317,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
         // We're inside the pentachoron (4-Simplex) at (0, 0, 0, 0)
 
         // Contribution at (0, 0, 0, 0)
-        value = value + gradient(seed, &stretched_floor, &pos0);
+        value = value + gradient(perm_table, &stretched_floor, &pos0);
 
         // Contribution at (1, 0, 0, 0)
         let pos1;
@@ -329,7 +329,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 squish_constant,
                 squish_constant
             ]);
-            value = value + gradient(seed, &vertex, &pos1);
+            value = value + gradient(perm_table, &vertex, &pos1);
         }
 
         // Contribution at (0, 1, 0, 0)
@@ -342,7 +342,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 pos1[2],
                 pos1[3]
             ];
-            value = value + gradient(seed, &vertex, &pos2);
+            value = value + gradient(perm_table, &vertex, &pos2);
         }
 
         // Contribution at (0, 0, 1, 0)
@@ -355,7 +355,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 pos1[2] - one,
                 pos1[3]
             ];
-            value = value + gradient(seed, &vertex, &pos3);
+            value = value + gradient(perm_table, &vertex, &pos3);
         }
 
         // Contribution at (0, 0, 0, 1)
@@ -368,7 +368,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 pos1[2],
                 pos1[3] - one
             ];
-            value = value + gradient(seed, &vertex, &pos4);
+            value = value + gradient(perm_table, &vertex, &pos4);
         }
     } else if region_sum >= three {
         // We're inside the pentachoron (4-Simplex) at (1, 1, 1, 1)
@@ -384,7 +384,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 one + squish_constant_3,
                 squish_constant_3
             ]);
-            value = value + gradient(seed, &vertex, &pos4);
+            value = value + gradient(perm_table, &vertex, &pos4);
         }
 
         // Contribution at (1, 1, 0, 1)
@@ -397,7 +397,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 pos4[2] + one,
                 pos4[3] - one
             ];
-            value = value + gradient(seed, &vertex, &pos3);
+            value = value + gradient(perm_table, &vertex, &pos3);
         }
 
         // Contribution at (1, 0, 1, 1)
@@ -410,7 +410,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 pos4[2],
                 pos3[3]
             ];
-            value = value + gradient(seed, &vertex, &pos2);
+            value = value + gradient(perm_table, &vertex, &pos2);
         }
 
         // Contribution at (0, 1, 1, 1)
@@ -423,7 +423,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 pos4[2],
                 pos3[3]
             ];
-            value = value + gradient(seed, &vertex, &pos1);
+            value = value + gradient(perm_table, &vertex, &pos1);
         }
 
         // Contribution at (1, 1, 1, 1)
@@ -433,7 +433,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
             pos0[1] = pos4[1] - squish_constant;
             pos0[2] = pos4[2] - squish_constant;
             pos0[3] = pos3[3] - squish_constant;
-            value = value + gradient(seed, &vertex, &pos0);
+            value = value + gradient(perm_table, &vertex, &pos0);
         }
     } else if region_sum <= two {
         // We're inside the first dispentachoron (Rectified 4-Simplex)
@@ -448,7 +448,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 squish_constant,
                 squish_constant
             ]);
-            value = value + gradient(seed, &vertex, &pos1);
+            value = value + gradient(perm_table, &vertex, &pos1);
         }
 
         // Contribution at (0, 1, 0, 0)
@@ -461,7 +461,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 pos1[2],
                 pos1[3]
             ];
-            value = value + gradient(seed, &vertex, &pos2);
+            value = value + gradient(perm_table, &vertex, &pos2);
         }
 
         // Contribution at (0, 0, 1, 0)
@@ -474,7 +474,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 pos1[2] - one,
                 pos1[3]
             ];
-            value = value + gradient(seed, &vertex, &pos3);
+            value = value + gradient(perm_table, &vertex, &pos3);
         }
 
         // Contribution at (0, 0, 0, 1)
@@ -487,7 +487,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 pos1[2],
                 pos1[3] - one
             ];
-            value = value + gradient(seed, &vertex, &pos4);
+            value = value + gradient(perm_table, &vertex, &pos4);
         }
 
         // Contribution at (1, 1, 0, 0)
@@ -500,7 +500,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 pos1[2] - squish_constant,
                 pos1[3] - squish_constant
             ];
-            value = value + gradient(seed, &vertex, &pos5);
+            value = value + gradient(perm_table, &vertex, &pos5);
         }
 
         // Contribution at (1, 0, 1, 0)
@@ -513,7 +513,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 pos5[2] - one,
                 pos5[3]
             ];
-            value = value + gradient(seed, &vertex, &pos6);
+            value = value + gradient(perm_table, &vertex, &pos6);
         }
 
         // Contribution at (1, 0, 0, 1)
@@ -526,7 +526,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 pos5[2],
                 pos5[3] - one
             ];
-            value = value + gradient(seed, &vertex, &pos7);
+            value = value + gradient(perm_table, &vertex, &pos7);
         }
 
         // Contribution at (0, 1, 1, 0)
@@ -539,7 +539,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 pos6[2],
                 pos5[3]
             ];
-            value = value + gradient(seed, &vertex, &pos8);
+            value = value + gradient(perm_table, &vertex, &pos8);
         }
 
         // Contribution at (0, 1, 0, 1)
@@ -552,7 +552,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 pos5[2],
                 pos7[3]
             ];
-            value = value + gradient(seed, &vertex, &pos9);
+            value = value + gradient(perm_table, &vertex, &pos9);
         }
 
         // Contribution at (0, 0, 1, 1)
@@ -565,7 +565,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 pos6[2],
                 pos7[3]
             ];
-            value = value + gradient(seed, &vertex, &pos10);
+            value = value + gradient(perm_table, &vertex, &pos10);
         }
     } else {
         // We're inside the second dispentachoron (Rectified 4-Simplex)
@@ -581,7 +581,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 one + squish_constant_3,
                 squish_constant_3
             ]);
-            value = value + gradient(seed, &vertex, &pos4);
+            value = value + gradient(perm_table, &vertex, &pos4);
         }
 
         // Contribution at (1, 1, 0, 1)
@@ -594,7 +594,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 pos4[2] + one,
                 pos4[3] - one
             ];
-            value = value + gradient(seed, &vertex, &pos3);
+            value = value + gradient(perm_table, &vertex, &pos3);
         }
 
         // Contribution at (1, 0, 1, 1)
@@ -607,7 +607,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 pos4[2],
                 pos3[3]
             ];
-            value = value + gradient(seed, &vertex, &pos2);
+            value = value + gradient(perm_table, &vertex, &pos2);
         }
 
         // Contribution at (0, 1, 1, 1)
@@ -620,7 +620,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 pos4[2],
                 pos3[3]
             ];
-            value = value + gradient(seed, &vertex, &pos1);
+            value = value + gradient(perm_table, &vertex, &pos1);
         }
 
         // Contribution at (1, 1, 0, 0)
@@ -633,7 +633,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 pos3[2] + squish_constant,
                 pos4[3] + squish_constant
             ];
-            value = value + gradient(seed, &vertex, &pos5);
+            value = value + gradient(perm_table, &vertex, &pos5);
         }
 
         // Contribution at (1, 0, 1, 0)
@@ -646,7 +646,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 pos5[2] - one,
                 pos5[3]
             ];
-            value = value + gradient(seed, &vertex, &pos6);
+            value = value + gradient(perm_table, &vertex, &pos6);
         }
 
         // Contribution at (1, 0, 0, 1)
@@ -659,7 +659,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 pos5[2],
                 pos5[3] - one
             ];
-            value = value + gradient(seed, &vertex, &pos7);
+            value = value + gradient(perm_table, &vertex, &pos7);
         }
 
         // Contribution at (0, 1, 1, 0)
@@ -672,7 +672,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 pos6[2],
                 pos5[3]
             ];
-            value = value + gradient(seed, &vertex, &pos8);
+            value = value + gradient(perm_table, &vertex, &pos8);
         }
 
         // Contribution at (0, 1, 0, 1)
@@ -685,7 +685,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 pos5[2],
                 pos7[3]
             ];
-            value = value + gradient(seed, &vertex, &pos9);
+            value = value + gradient(perm_table, &vertex, &pos9);
         }
 
         // Contribution at (0, 0, 1, 1)
@@ -698,7 +698,7 @@ pub fn open_simplex4<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
                 pos6[2],
                 pos7[3]
             ];
-            value = value + gradient(seed, &vertex, &pos10);
+            value = value + gradient(perm_table, &vertex, &pos10);
         }
     }
 

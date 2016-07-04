@@ -33,7 +33,7 @@ fn clamp<F: Float>(val: F, min: F, max: F) -> F {
     }
 }
 
-pub fn render_png<T, F>(filename: &str, seed: &noise::Seed, width: u32, height: u32, func: F) where
+pub fn render_png<T, F>(filename: &str, perm_table: &noise::PermutationTable, width: u32, height: u32, func: F) where
     T: Float + NumCast,
     F: noise::GenFn2<T>,
 {
@@ -41,7 +41,7 @@ pub fn render_png<T, F>(filename: &str, seed: &noise::Seed, width: u32, height: 
 
     for y in 0..height {
         for x in 0..width {
-            let value: f64 = cast(func(seed, &[cast::<_,T>(x) - cast::<_,T>(width/2), cast::<_,T>(y) - cast::<_,T>(height/2)]));
+            let value: f64 = cast(func(perm_table, &[cast::<_,T>(x) - cast::<_,T>(width/2), cast::<_,T>(y) - cast::<_,T>(height/2)]));
             pixels.push(cast(clamp(value * 0.5 + 0.5, 0.0, 1.0) * 255.0));
         }
     }

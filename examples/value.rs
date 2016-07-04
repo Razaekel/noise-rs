@@ -16,25 +16,25 @@
 
 extern crate noise;
 
-use noise::{value2, value3, value4, Seed, Point2};
+use noise::{value2, value3, value4, PermutationTable, Point2};
 
 mod debug;
 
 fn main() {
-    debug::render_png("value2.png", &Seed::new(0), 1024, 1024, scaled_value2);
-    debug::render_png("value3.png", &Seed::new(0), 1024, 1024, scaled_value3);
-    debug::render_png("value4.png", &Seed::new(0), 1024, 1024, scaled_value4);
+    debug::render_png("value2.png", &PermutationTable::new(0), 1024, 1024, scaled_value2);
+    debug::render_png("value3.png", &PermutationTable::new(0), 1024, 1024, scaled_value3);
+    debug::render_png("value4.png", &PermutationTable::new(0), 1024, 1024, scaled_value4);
     println!("\nGenerated value2.png, value3.png and value4.png");
 }
 
-fn scaled_value2(seed: &Seed, point: &Point2<f64>) -> f64 {
-    value2(seed, &[point[0] / 16.0, point[1] / 16.0])
+fn scaled_value2(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
+    value2(perm_table, &[point[0] / 16.0, point[1] / 16.0])
 }
 
-fn scaled_value3(seed: &Seed, point: &Point2<f64>) -> f64 {
-    value3(seed, &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0])
+fn scaled_value3(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
+    value3(perm_table, &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0])
 }
 
-fn scaled_value4(seed: &Seed, point: &Point2<f64>) -> f64 {
-    value4(seed, &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0, point[1] / 32.0])
+fn scaled_value4(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
+    value4(perm_table, &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0, point[1] / 32.0])
 }

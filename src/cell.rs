@@ -12,28 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use {math, Seed};
+use {math, PermutationTable};
 use num_traits::Float;
 
 #[inline(always)]
-fn get_cell_point2<T: Float>(seed: &Seed, cell: math::Point2<T>) -> math::Point2<T> {
-    let val = seed.get2(math::cast2::<_, i64>(cell));
+fn get_cell_point2<T: Float>(perm_table: &PermutationTable, cell: math::Point2<T>) -> math::Point2<T> {
+    let val = perm_table.get2(math::cast2::<_, i64>(cell));
     math::add2(cell, math::mul2(math::cast2([val & 0x0F, (val & 0xF0) >> 4]), math::cast(1.0 / 15.0)))
 }
 
 #[inline(always)]
-fn get_cell_point3<T: Float>(seed: &Seed, cell: math::Point3<T>) -> math::Point3<T> {
+fn get_cell_point3<T: Float>(perm_table: &PermutationTable, cell: math::Point3<T>) -> math::Point3<T> {
     let cell_int = math::cast3::<_, i64>(cell);
-    let val1 = seed.get3(cell_int);
-    let val2 = seed.get3([cell_int[0], cell_int[1], cell_int[2] + 128]);
+    let val1 = perm_table.get3(cell_int);
+    let val2 = perm_table.get3([cell_int[0], cell_int[1], cell_int[2] + 128]);
     math::add3(cell, math::mul3(math::cast3([val1 & 0x0F, (val1 & 0xF0) >> 4, val2 & 0x0F]), math::cast(1.0 / 15.0)))
 }
 
 #[inline(always)]
-fn get_cell_point4<T: Float>(seed: &Seed, cell: math::Point4<T>) -> math::Point4<T> {
+fn get_cell_point4<T: Float>(perm_table: &PermutationTable, cell: math::Point4<T>) -> math::Point4<T> {
     let cell_int = math::cast4::<_, i64>(cell);
-    let val1 = seed.get4(cell_int);
-    let val2 = seed.get4([cell_int[0], cell_int[1], cell_int[2], cell_int[3] + 128]);
+    let val1 = perm_table.get4(cell_int);
+    let val2 = perm_table.get4([cell_int[0], cell_int[1], cell_int[2], cell_int[3] + 128]);
     math::add4(cell, math::mul4(math::cast4([val1 & 0x0F, (val1 & 0xF0) >> 4, val2 & 0x0F, (val2 & 0xF0) >> 4]), math::cast(1.0 / 15.0)))
 }
 
@@ -164,12 +164,12 @@ pub fn get_vec4<T: Float>(index: usize) -> math::Point4<T> {
 }
 
 #[inline(always)]
-fn cell2_seed<T, F>(seed: &Seed, point: &math::Point2<T>, range_func: F) -> (math::Point2<i64>, math::Point2<T>, T)
+fn cell2_seed<T, F>(perm_table: &PermutationTable, point: &math::Point2<T>, range_func: F) -> (math::Point2<i64>, math::Point2<T>, T)
     where T: Float, F: Fn(math::Point2<T>, math::Point2<T>) -> T
 {
     #[inline(always)]
-    fn get_point<T: Float>(seed: &Seed, whole: math::Point2<i64>) -> math::Point2<T> {
-        math::add2(get_vec2(seed.get2(whole)), math::cast2::<_, T>(whole))
+    fn get_point<T: Float>(perm_table: &PermutationTable, whole: math::Point2<i64>) -> math::Point2<T> {
+        math::add2(get_vec2(perm_table.get2(whole)), math::cast2::<_, T>(whole))
     }
 
     let half: T = math::cast(0.5);
@@ -185,7 +185,7 @@ fn cell2_seed<T, F>(seed: &Seed, point: &math::Point2<T>, range_func: F) -> (mat
     let far = [whole[0] + (!x_half as i64), whole[1] + (!y_half as i64)];
 
     let mut seed_cell = near;
-    let mut seed_point = get_point(seed, near);
+    let mut seed_point = get_point(perm_table, near);
     let mut range = range_func(*point, seed_point);
 
     let x_range = (half - frac[0]) * (half - frac[0]); // x-distance squared to center line
@@ -194,7 +194,7 @@ fn cell2_seed<T, F>(seed: &Seed, point: &math::Point2<T>, range_func: F) -> (mat
     macro_rules! test_point(
         [$x:expr, $y:expr] => {
             {
-                let cur_point = get_point(seed, [$x, $y]);
+                let cur_point = get_point(perm_table, [$x, $y]);
                 let cur_range = range_func(*point, cur_point);
                 if cur_range < range {
                     range = cur_range;
@@ -214,12 +214,12 @@ fn cell2_seed<T, F>(seed: &Seed, point: &math::Point2<T>, range_func: F) -> (mat
 }
 
 #[inline(always)]
-fn cell3_seed<T, F>(seed: &Seed, point: &math::Point3<T>, range_func: F) -> (math::Point3<i64>, math::Point3<T>, T)
+fn cell3_seed<T, F>(perm_table: &PermutationTable, point: &math::Point3<T>, range_func: F) -> (math::Point3<i64>, math::Point3<T>, T)
     where T: Float, F: Fn(math::Point3<T>, math::Point3<T>) -> T
 {
     #[inline(always)]
-    fn get_point<T: Float>(seed: &Seed, whole: math::Point3<i64>) -> math::Point3<T> {
-        math::add3(get_vec3(seed.get3(whole)), math::cast3::<_, T>(whole))
+    fn get_point<T: Float>(perm_table: &PermutationTable, whole: math::Point3<i64>) -> math::Point3<T> {
+        math::add3(get_vec3(perm_table.get3(whole)), math::cast3::<_, T>(whole))
     }
 
     let half: T = math::cast(0.5);
@@ -236,7 +236,7 @@ fn cell3_seed<T, F>(seed: &Seed, point: &math::Point3<T>, range_func: F) -> (mat
     let far = [whole[0] + (!x_half as i64), whole[1] + (!y_half as i64), whole[2] + (!z_half as i64)];
 
     let mut seed_cell = near;
-    let mut seed_point = get_point(seed, near);
+    let mut seed_point = get_point(perm_table, near);
     let mut range = range_func(*point, seed_point);
 
     let x_range = (half - frac[0]) * (half - frac[0]); // x-distance squared to center line
@@ -246,7 +246,7 @@ fn cell3_seed<T, F>(seed: &Seed, point: &math::Point3<T>, range_func: F) -> (mat
     macro_rules! test_point(
         [$x:expr, $y:expr, $z:expr] => {
             {
-                let cur_point = get_point(seed, [$x, $y, $z]);
+                let cur_point = get_point(perm_table, [$x, $y, $z]);
                 let cur_range = range_func(*point, cur_point);
                 if cur_range < range {
                     range = cur_range;
@@ -271,12 +271,12 @@ fn cell3_seed<T, F>(seed: &Seed, point: &math::Point3<T>, range_func: F) -> (mat
 }
 
 #[inline(always)]
-fn cell4_seed<T, F>(seed: &Seed, point: &math::Point4<T>, range_func: F) -> (math::Point4<i64>, math::Point4<T>, T)
+fn cell4_seed<T, F>(perm_table: &PermutationTable, point: &math::Point4<T>, range_func: F) -> (math::Point4<i64>, math::Point4<T>, T)
     where T: Float, F: Fn(math::Point4<T>, math::Point4<T>) -> T
 {
     #[inline(always)]
-    fn get_point<T: Float>(seed: &Seed, whole: math::Point4<i64>) -> math::Point4<T> {
-        math::add4(get_vec4(seed.get4(whole)), math::cast4::<_, T>(whole))
+    fn get_point<T: Float>(perm_table: &PermutationTable, whole: math::Point4<i64>) -> math::Point4<T> {
+        math::add4(get_vec4(perm_table.get4(whole)), math::cast4::<_, T>(whole))
     }
 
     let half: T = math::cast(0.5);
@@ -294,7 +294,7 @@ fn cell4_seed<T, F>(seed: &Seed, point: &math::Point4<T>, range_func: F) -> (mat
     let far = [whole[0] + (!x_half as i64), whole[1] + (!y_half as i64), whole[2] + (!z_half as i64), whole[3] + (!w_half as i64)];
 
     let mut seed_cell = near;
-    let mut seed_point = get_point(seed, near);
+    let mut seed_point = get_point(perm_table, near);
     let mut range = range_func(*point, seed_point);
 
     let x_range = (half - frac[0]) * (half - frac[0]); // x-distance squared to center line
@@ -305,7 +305,7 @@ fn cell4_seed<T, F>(seed: &Seed, point: &math::Point4<T>, range_func: F) -> (mat
     macro_rules! test_point(
         [$x:expr, $y:expr, $z:expr, $w:expr] => {
             {
-                let cur_point = get_point(seed, [$x, $y, $z, $w]);
+                let cur_point = get_point(perm_table, [$x, $y, $z, $w]);
                 let cur_range = range_func(*point, cur_point);
                 if cur_range < range {
                     range = cur_range;
@@ -339,42 +339,42 @@ fn cell4_seed<T, F>(seed: &Seed, point: &math::Point4<T>, range_func: F) -> (mat
 }
 
 #[inline(always)]
-pub fn cell2_seed_point<T, F>(seed: &Seed, point: &math::Point2<T>, range_func: F) -> (math::Point2<T>, T)
+pub fn cell2_seed_point<T, F>(perm_table: &PermutationTable, point: &math::Point2<T>, range_func: F) -> (math::Point2<T>, T)
     where T: Float, F: Fn(math::Point2<T>, math::Point2<T>) -> T
 {
-    let (_, seed_point, range) = cell2_seed(seed, point, range_func);
+    let (_, seed_point, range) = cell2_seed(perm_table, point, range_func);
     (seed_point, range)
 }
 
 #[inline(always)]
-pub fn cell2_seed_cell<T, F>(seed: &Seed, point: &math::Point2<T>, range_func: F) -> math::Point2<i64>
+pub fn cell2_seed_cell<T, F>(perm_table: &PermutationTable, point: &math::Point2<T>, range_func: F) -> math::Point2<i64>
     where T: Float, F: Fn(math::Point2<T>, math::Point2<T>) -> T
 {
-    let (cell, _, _) = cell2_seed(seed, point, range_func);
+    let (cell, _, _) = cell2_seed(perm_table, point, range_func);
     cell
 }
 
 #[inline(always)]
-pub fn cell3_seed_point<T, F>(seed: &Seed, point: &math::Point3<T>, range_func: F) -> (math::Point3<T>, T)
+pub fn cell3_seed_point<T, F>(perm_table: &PermutationTable, point: &math::Point3<T>, range_func: F) -> (math::Point3<T>, T)
     where T: Float, F: Fn(math::Point3<T>, math::Point3<T>) -> T
 {
-    let (_, seed_point, range) = cell3_seed(seed, point, range_func);
+    let (_, seed_point, range) = cell3_seed(perm_table, point, range_func);
     (seed_point, range)
 }
 
 #[inline(always)]
-pub fn cell3_seed_cell<T, F>(seed: &Seed, point: &math::Point3<T>, range_func: F) -> math::Point3<i64>
+pub fn cell3_seed_cell<T, F>(perm_table: &PermutationTable, point: &math::Point3<T>, range_func: F) -> math::Point3<i64>
     where T: Float, F: Fn(math::Point3<T>, math::Point3<T>) -> T
 {
-    let (cell, _, _) = cell3_seed(seed, point, range_func);
+    let (cell, _, _) = cell3_seed(perm_table, point, range_func);
     cell
 }
 
 #[inline(always)]
-pub fn cell4_seed_point<T, F>(seed: &Seed, point: &math::Point4<T>, range_func: F) -> (math::Point4<T>, T)
+pub fn cell4_seed_point<T, F>(perm_table: &PermutationTable, point: &math::Point4<T>, range_func: F) -> (math::Point4<T>, T)
     where T: Float, F: Fn(math::Point4<T>, math::Point4<T>) -> T
 {
-    let (_, seed_point, range) = cell4_seed(seed, point, range_func);
+    let (_, seed_point, range) = cell4_seed(perm_table, point, range_func);
     (seed_point, range)
 }
 
@@ -414,15 +414,15 @@ static CELL4_SEARCH_ORDER: [math::Point4<isize>; 80] = [
 ];
 
 #[inline(always)]
-pub fn cell4_seed_cell<T, F>(seed: &Seed, point: &math::Point4<T>, range_func: F) -> math::Point4<i64>
+pub fn cell4_seed_cell<T, F>(perm_table: &PermutationTable, point: &math::Point4<T>, range_func: F) -> math::Point4<i64>
     where T: Float, F: Fn(math::Point4<T>, math::Point4<T>) -> T
 {
-    let (cell, _, _) = cell4_seed(seed, point, range_func);
+    let (cell, _, _) = cell4_seed(perm_table, point, range_func);
     cell
 }
 
 #[inline(always)]
-pub fn cell2_seed_2_points<T, F>(seed: &Seed, point: &math::Point2<T>, range_func: F) -> (math::Point2<T>, T, math::Point2<T>, T)
+pub fn cell2_seed_2_points<T, F>(perm_table: &PermutationTable, point: &math::Point2<T>, range_func: F) -> (math::Point2<T>, T, math::Point2<T>, T)
     where T: Float, F: Fn(math::Point2<T>, math::Point2<T>) -> T
 {
     let one: T = math::cast(1.0);
@@ -431,7 +431,7 @@ pub fn cell2_seed_2_points<T, F>(seed: &Seed, point: &math::Point2<T>, range_fun
     let cell = math::map2(*point, Float::floor);
     let frac = math::sub2(*point, cell);
 
-    let mut seed_point0 = get_cell_point2(seed, cell);
+    let mut seed_point0 = get_cell_point2(perm_table, cell);
     let mut seed_point1 = [one, one];
     let mut range0 = range_func(*point, seed_point0);
     let mut range1 = Float::max_value();
@@ -447,7 +447,7 @@ pub fn cell2_seed_2_points<T, F>(seed: &Seed, point: &math::Point2<T>, range_fun
                 let y_range = dy2[($y + 1) as usize];
 
                 if x_range + y_range < range1 {
-                    let cur_point = get_cell_point2(seed, math::add2(cell, math::cast2([$x, $y])));
+                    let cur_point = get_cell_point2(perm_table, math::add2(cell, math::cast2([$x, $y])));
                     let cur_range = range_func(*point, cur_point);
                     if cur_range < range0 {
                         range1 = range0;
@@ -479,7 +479,7 @@ pub fn cell2_seed_2_points<T, F>(seed: &Seed, point: &math::Point2<T>, range_fun
 }
 
 #[inline(always)]
-pub fn cell3_seed_2_points<T, F>(seed: &Seed, point: &math::Point3<T>, range_func: F) -> (math::Point3<T>, T, math::Point3<T>, T)
+pub fn cell3_seed_2_points<T, F>(perm_table: &PermutationTable, point: &math::Point3<T>, range_func: F) -> (math::Point3<T>, T, math::Point3<T>, T)
     where T: Float, F: Fn(math::Point3<T>, math::Point3<T>) -> T
 {
     let one: T = math::cast(1.0);
@@ -488,7 +488,7 @@ pub fn cell3_seed_2_points<T, F>(seed: &Seed, point: &math::Point3<T>, range_fun
     let cell = math::map3(*point, Float::floor);
     let frac = math::sub3(*point, cell);
 
-    let mut seed_point0 = get_cell_point3(seed, cell);
+    let mut seed_point0 = get_cell_point3(perm_table, cell);
     let mut seed_point1 = [one, one, one];
     let mut range0 = range_func(*point, seed_point0);
     let mut range1 = Float::max_value();
@@ -504,7 +504,7 @@ pub fn cell3_seed_2_points<T, F>(seed: &Seed, point: &math::Point3<T>, range_fun
         let z_range = dz2[(offset[2] + 1) as usize];
 
         if x_range + y_range + z_range < range1 {
-            let cur_point = get_cell_point3(seed, math::add3(cell, math::cast3(*offset)));
+            let cur_point = get_cell_point3(perm_table, math::add3(cell, math::cast3(*offset)));
             let cur_range = range_func(*point, cur_point);
             if cur_range < range0 {
                 range1 = range0;
@@ -522,7 +522,7 @@ pub fn cell3_seed_2_points<T, F>(seed: &Seed, point: &math::Point3<T>, range_fun
 }
 
 #[inline(always)]
-pub fn cell4_seed_2_points<T, F>(seed: &Seed, point: &math::Point4<T>, range_func: F) -> (math::Point4<T>, T, math::Point4<T>, T)
+pub fn cell4_seed_2_points<T, F>(perm_table: &PermutationTable, point: &math::Point4<T>, range_func: F) -> (math::Point4<T>, T, math::Point4<T>, T)
     where T: Float, F: Fn(math::Point4<T>, math::Point4<T>) -> T
 {
     let one: T = math::cast(1.0);
@@ -531,7 +531,7 @@ pub fn cell4_seed_2_points<T, F>(seed: &Seed, point: &math::Point4<T>, range_fun
     let cell = math::map4(*point, Float::floor);
     let frac = math::sub4(*point, cell);
 
-    let mut seed_point0 = get_cell_point4(seed, cell);
+    let mut seed_point0 = get_cell_point4(perm_table, cell);
     let mut seed_point1 = [one, one, one, one];
     let mut range0 = range_func(*point, seed_point0);
     let mut range1 = Float::max_value();
@@ -549,7 +549,7 @@ pub fn cell4_seed_2_points<T, F>(seed: &Seed, point: &math::Point4<T>, range_fun
         let w_range = dw2[(offset[3] + 1) as usize];
 
         if x_range + y_range + z_range + w_range < range1 {
-            let cur_point = get_cell_point4(seed, math::add4(cell, math::cast4(*offset)));
+            let cur_point = get_cell_point4(perm_table, math::add4(cell, math::cast4(*offset)));
             let cur_range = range_func(*point, cur_point);
             if cur_range < range0 {
                 range1 = range0;
@@ -566,92 +566,92 @@ pub fn cell4_seed_2_points<T, F>(seed: &Seed, point: &math::Point4<T>, range_fun
     (seed_point0, range0, seed_point1, range1)
 }
 
-pub fn cell2_range<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
-    let (_, range) = cell2_seed_point(seed, point, range_sqr_euclidian2);
+pub fn cell2_range<T: Float>(perm_table: &PermutationTable, point: &math::Point2<T>) -> T {
+    let (_, range) = cell2_seed_point(perm_table, point, range_sqr_euclidian2);
     range
 }
 
-pub fn cell3_range<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
-    let (_, range) = cell3_seed_point(seed, point, range_sqr_euclidian3);
+pub fn cell3_range<T: Float>(perm_table: &PermutationTable, point: &math::Point3<T>) -> T {
+    let (_, range) = cell3_seed_point(perm_table, point, range_sqr_euclidian3);
     range
 }
 
-pub fn cell4_range<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
-    let (_, range) = cell4_seed_point(seed, point, range_sqr_euclidian4);
+pub fn cell4_range<T: Float>(perm_table: &PermutationTable, point: &math::Point4<T>) -> T {
+    let (_, range) = cell4_seed_point(perm_table, point, range_sqr_euclidian4);
     range
 }
 
-pub fn cell2_range_inv<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
-    let (_, range1, _, range2) = cell2_seed_2_points(seed, point, range_sqr_euclidian2);
+pub fn cell2_range_inv<T: Float>(perm_table: &PermutationTable, point: &math::Point2<T>) -> T {
+    let (_, range1, _, range2) = cell2_seed_2_points(perm_table, point, range_sqr_euclidian2);
     range2 - range1
 }
 
-pub fn cell3_range_inv<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
-    let (_, range1, _, range2) = cell3_seed_2_points(seed, point, range_sqr_euclidian3);
+pub fn cell3_range_inv<T: Float>(perm_table: &PermutationTable, point: &math::Point3<T>) -> T {
+    let (_, range1, _, range2) = cell3_seed_2_points(perm_table, point, range_sqr_euclidian3);
     range2 - range1
 }
 
-pub fn cell4_range_inv<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
-    let (_, range1, _, range2) = cell4_seed_2_points(seed, point, range_sqr_euclidian4);
+pub fn cell4_range_inv<T: Float>(perm_table: &PermutationTable, point: &math::Point4<T>) -> T {
+    let (_, range1, _, range2) = cell4_seed_2_points(perm_table, point, range_sqr_euclidian4);
     range2 - range1
 }
 
-pub fn cell2_value<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
-    let cell = cell2_seed_cell(seed, point, range_sqr_euclidian2);
-    math::cast::<_,T>(seed.get2(cell)) * math::cast(1.0 / 255.0)
+pub fn cell2_value<T: Float>(perm_table: &PermutationTable, point: &math::Point2<T>) -> T {
+    let cell = cell2_seed_cell(perm_table, point, range_sqr_euclidian2);
+    math::cast::<_,T>(perm_table.get2(cell)) * math::cast(1.0 / 255.0)
 }
 
-pub fn cell3_value<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
-    let cell = cell3_seed_cell(seed, point, range_sqr_euclidian3);
-    math::cast::<_,T>(seed.get3(cell)) * math::cast(1.0 / 255.0)
+pub fn cell3_value<T: Float>(perm_table: &PermutationTable, point: &math::Point3<T>) -> T {
+    let cell = cell3_seed_cell(perm_table, point, range_sqr_euclidian3);
+    math::cast::<_,T>(perm_table.get3(cell)) * math::cast(1.0 / 255.0)
 }
 
-pub fn cell4_value<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
-    let cell = cell4_seed_cell(seed, point, range_sqr_euclidian4);
-    math::cast::<_,T>(seed.get4(cell)) * math::cast(1.0 / 255.0)
+pub fn cell4_value<T: Float>(perm_table: &PermutationTable, point: &math::Point4<T>) -> T {
+    let cell = cell4_seed_cell(perm_table, point, range_sqr_euclidian4);
+    math::cast::<_,T>(perm_table.get4(cell)) * math::cast(1.0 / 255.0)
 }
 
-pub fn cell2_manhattan<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
-    let (_, range) = cell2_seed_point(seed, point, range_manhattan2);
+pub fn cell2_manhattan<T: Float>(perm_table: &PermutationTable, point: &math::Point2<T>) -> T {
+    let (_, range) = cell2_seed_point(perm_table, point, range_manhattan2);
     range
 }
 
-pub fn cell3_manhattan<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
-    let (_, range) = cell3_seed_point(seed, point, range_manhattan3);
+pub fn cell3_manhattan<T: Float>(perm_table: &PermutationTable, point: &math::Point3<T>) -> T {
+    let (_, range) = cell3_seed_point(perm_table, point, range_manhattan3);
     range
 }
 
-pub fn cell4_manhattan<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
-    let (_, range) = cell4_seed_point(seed, point, range_manhattan4);
+pub fn cell4_manhattan<T: Float>(perm_table: &PermutationTable, point: &math::Point4<T>) -> T {
+    let (_, range) = cell4_seed_point(perm_table, point, range_manhattan4);
     range
 }
 
-pub fn cell2_manhattan_inv<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
-    let (_, range1, _, range2) = cell2_seed_2_points(seed, point, range_manhattan2);
+pub fn cell2_manhattan_inv<T: Float>(perm_table: &PermutationTable, point: &math::Point2<T>) -> T {
+    let (_, range1, _, range2) = cell2_seed_2_points(perm_table, point, range_manhattan2);
     range2 - range1
 }
 
-pub fn cell3_manhattan_inv<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
-    let (_, range1, _, range2) = cell3_seed_2_points(seed, point, range_manhattan3);
+pub fn cell3_manhattan_inv<T: Float>(perm_table: &PermutationTable, point: &math::Point3<T>) -> T {
+    let (_, range1, _, range2) = cell3_seed_2_points(perm_table, point, range_manhattan3);
     range2 - range1
 }
 
-pub fn cell4_manhattan_inv<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
-    let (_, range1, _, range2) = cell4_seed_2_points(seed, point, range_manhattan4);
+pub fn cell4_manhattan_inv<T: Float>(perm_table: &PermutationTable, point: &math::Point4<T>) -> T {
+    let (_, range1, _, range2) = cell4_seed_2_points(perm_table, point, range_manhattan4);
     range2 - range1
 }
 
-pub fn cell2_manhattan_value<T: Float>(seed: &Seed, point: &math::Point2<T>) -> T {
-    let cell = cell2_seed_cell(seed, point, range_manhattan2);
-    math::cast::<_,T>(seed.get2(cell)) * math::cast(1.0 / 255.0)
+pub fn cell2_manhattan_value<T: Float>(perm_table: &PermutationTable, point: &math::Point2<T>) -> T {
+    let cell = cell2_seed_cell(perm_table, point, range_manhattan2);
+    math::cast::<_,T>(perm_table.get2(cell)) * math::cast(1.0 / 255.0)
 }
 
-pub fn cell3_manhattan_value<T: Float>(seed: &Seed, point: &math::Point3<T>) -> T {
-    let cell = cell3_seed_cell(seed, point, range_manhattan3);
-    math::cast::<_,T>(seed.get3(cell)) * math::cast(1.0 / 255.0)
+pub fn cell3_manhattan_value<T: Float>(perm_table: &PermutationTable, point: &math::Point3<T>) -> T {
+    let cell = cell3_seed_cell(perm_table, point, range_manhattan3);
+    math::cast::<_,T>(perm_table.get3(cell)) * math::cast(1.0 / 255.0)
 }
 
-pub fn cell4_manhattan_value<T: Float>(seed: &Seed, point: &math::Point4<T>) -> T {
-    let cell = cell4_seed_cell(seed, point, range_manhattan4);
-    math::cast::<_,T>(seed.get4(cell)) * math::cast(1.0 / 255.0)
+pub fn cell4_manhattan_value<T: Float>(perm_table: &PermutationTable, point: &math::Point4<T>) -> T {
+    let cell = cell4_seed_cell(perm_table, point, range_manhattan4);
+    math::cast::<_,T>(perm_table.get4(cell)) * math::cast(1.0 / 255.0)
 }
