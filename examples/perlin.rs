@@ -24,7 +24,6 @@ fn main() {
     debug::render_png("perlin2.png", &PermutationTable::new(0), 1024, 1024, scaled_perlin2);
     debug::render_png("perlin3.png", &PermutationTable::new(0), 1024, 1024, scaled_perlin3);
     debug::render_png("perlin4.png", &PermutationTable::new(0), 1024, 1024, scaled_perlin4);
-    println!("\nGenerated perlin2.png, perlin3.png and perlin4.png");
 }
 
 fn scaled_perlin2(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
