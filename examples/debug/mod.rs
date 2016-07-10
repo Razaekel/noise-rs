@@ -18,7 +18,7 @@ extern crate image;
 extern crate num_traits;
 
 use noise;
-use noise::Module;
+use noise::NoiseModule;
 use self::num_traits::{Float, NumCast};
 use std::path::Path;
 
@@ -57,7 +57,7 @@ pub fn render_png<T, F>(filename: &str, perm_table: &noise::PermutationTable, wi
 }
 
 pub fn render_png2<M>(filename: &str, module: M, width: u32, height: u32, zoom: u32)
-    where M: Module<[f64; 3], Output = f64>
+    where M: NoiseModule<[f64; 3], Output = f64>
 {
     let mut pixels = Vec::with_capacity((width * height) as usize);
 

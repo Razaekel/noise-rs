@@ -113,13 +113,13 @@ impl<T, F> GenFn4<T> for F where F: Fn(&PermutationTable, &Point4<T>) -> T, {}
 /// * Mathematically changing the output value from another noise module
 ///     in various ways.
 /// * Combining the output values from two noise modules in various ways.
-pub trait Module<T> {
+pub trait NoiseModule<T> {
     type Output;
 
     fn get(&self, point: T) -> Self::Output;
 }
 
-impl<'a, T, M: Module<T>> Module<T> for &'a M {
+impl<'a, T, M: NoiseModule<T>> NoiseModule<T> for &'a M {
     type Output = M::Output;
 
     #[inline]

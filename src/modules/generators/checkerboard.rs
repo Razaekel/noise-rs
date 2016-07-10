@@ -14,8 +14,8 @@
 
 use num_traits::Float;
 use math;
-use Module;
 use math::{Point2, Point3, Point4};
+use NoiseModule;
 
 /// Noise module that outputs a checkerboard pattern.
 ///
@@ -47,7 +47,7 @@ fn fast_floor<T: Float>(x: T) -> usize {
 
 // These impl's should be made generic over Point, but there is no higher Point type.
 // Keep the code the same anyway.
-impl<T: Float> Module<Point2<T>> for Checkerboard {
+impl<T: Float> NoiseModule<Point2<T>> for Checkerboard {
     type Output = T;
 
     fn get(&self, point: Point2<T>) -> Self::Output {
@@ -63,7 +63,7 @@ impl<T: Float> Module<Point2<T>> for Checkerboard {
     }
 }
 
-impl<T: Float> Module<Point3<T>> for Checkerboard {
+impl<T: Float> NoiseModule<Point3<T>> for Checkerboard {
     type Output = T;
 
     fn get(&self, point: Point3<T>) -> Self::Output {
@@ -79,7 +79,7 @@ impl<T: Float> Module<Point3<T>> for Checkerboard {
     }
 }
 
-impl<T: Float> Module<Point4<T>> for Checkerboard {
+impl<T: Float> NoiseModule<Point4<T>> for Checkerboard {
     type Output = T;
 
     fn get(&self, point: Point4<T>) -> Self::Output {

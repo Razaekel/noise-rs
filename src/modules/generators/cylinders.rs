@@ -15,8 +15,7 @@
 use num_traits::Float;
 use math;
 use math::{Point2, Point3, Point4};
-
-use Module;
+use NoiseModule;
 
 /// Noise module that outputs concentric rings, cylinders, or spheres.
 ///
@@ -36,7 +35,7 @@ impl<T: Float> Cylinders<T> {
     }
 }
 
-impl<T: Float> Module<Point2<T>> for Cylinders<T> {
+impl<T: Float> NoiseModule<Point2<T>> for Cylinders<T> {
     type Output = T;
 
     fn get(&self, point: Point2<T>) -> Self::Output {
@@ -49,7 +48,7 @@ impl<T: Float> Module<Point2<T>> for Cylinders<T> {
     }
 }
 
-impl<T: Float> Module<Point3<T>> for Cylinders<T> {
+impl<T: Float> NoiseModule<Point3<T>> for Cylinders<T> {
     type Output = T;
 
     fn get(&self, point: Point3<T>) -> Self::Output {
@@ -64,7 +63,7 @@ impl<T: Float> Module<Point3<T>> for Cylinders<T> {
     }
 }
 
-impl<T: Float> Module<Point4<T>> for Cylinders<T> {
+impl<T: Float> NoiseModule<Point4<T>> for Cylinders<T> {
     type Output = T;
 
     fn get(&self, point: Point4<T>) -> Self::Output {

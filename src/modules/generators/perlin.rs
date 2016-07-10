@@ -14,10 +14,8 @@
 
 use num_traits::Float;
 use math;
-use Module;
 use math::{Point2, Point3, Point4};
-
-use {PermutationTable, gradient};
+use {NoiseModule, PermutationTable, gradient};
 
 /// Noise module that outputs 2/3/4-dimensional Perlin noise.
 #[derive(Clone, Copy, Debug)]
@@ -32,7 +30,7 @@ impl Perlin {
 }
 
 /// 2-dimensional perlin noise
-impl<T: Float> Module<Point2<T>> for Perlin {
+impl<T: Float> NoiseModule<Point2<T>> for Perlin {
     type Output = T;
 
     fn get(&self, point: Point2<T>) -> T {
@@ -74,7 +72,7 @@ impl<T: Float> Module<Point2<T>> for Perlin {
 }
 
 /// 3-dimensional perlin noise
-impl<T: Float> Module<Point3<T>> for Perlin {
+impl<T: Float> NoiseModule<Point3<T>> for Perlin {
     type Output = T;
 
     fn get(&self, point: Point3<T>) -> T {
@@ -128,7 +126,7 @@ impl<T: Float> Module<Point3<T>> for Perlin {
 }
 
 /// 4-dimensional perlin noise
-impl<T: Float> Module<Point4<T>> for Perlin {
+impl<T: Float> NoiseModule<Point4<T>> for Perlin {
     type Output = T;
 
     fn get(&self, point: Point4<T>) -> T {

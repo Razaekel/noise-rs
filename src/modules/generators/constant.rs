@@ -13,8 +13,7 @@
 // limitations under the License.
 
 use num_traits::Float;
-
-use Module;
+use NoiseModule;
 
 /// Noise module that outputs a constant value.
 ///
@@ -35,7 +34,7 @@ impl<T: Float> Constant<T> {
     }
 }
 
-impl<T, U> Module<U> for Constant<T>
+impl<T, U> NoiseModule<U> for Constant<T>
     where T: Float,
           U: Copy,
 {

@@ -14,7 +14,7 @@
 
 use num_traits::Float;
 use math::interp;
-use Module;
+use NoiseModule;
 
 /// Noise module that outputs the value selected from one of two source
 /// modules chosen by the output value from a control module.
@@ -61,10 +61,10 @@ impl<Source1, Source2, Control, T> Select<Source1, Source2, Control, T> {
     }
 }
 
-impl<Source1, Source2, Control, T, U> Module<T> for Select<Source1, Source2, Control, U>
-    where Source1: Module<T, Output = U>,
-          Source2: Module<T, Output = U>,
-          Control: Module<T, Output = U>,
+impl<Source1, Source2, Control, T, U> NoiseModule<T> for Select<Source1, Source2, Control, U>
+    where Source1: NoiseModule<T, Output = U>,
+          Source2: NoiseModule<T, Output = U>,
+          Control: NoiseModule<T, Output = U>,
           T: Copy,
           U: Float,
 {
