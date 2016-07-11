@@ -12,14 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! An example of using perlin noise
+//! An example of generating constant valued noise
 
 extern crate noise;
 
-use noise::modules::Perlin;
+use noise::modules::Constant;
 
 mod debug;
 
 fn main() {
-    debug::render_png2("perlin.png", Perlin::new(0), 1024, 1024, 50);
+    debug::render_png2("constant1.png", Constant::new(-1.0), 1024, 1024, 1);
+    debug::render_png2("constant2.png", Constant::new(0.0), 1024, 1024, 1);
+    debug::render_png2("constant3.png", Constant::new(1.0), 1024, 1024, 1);
 }

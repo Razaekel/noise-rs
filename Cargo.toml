@@ -41,6 +41,18 @@ name = "cell_manhattan_value"
 [[example]]
 name = "value"
 
+[[example]]
+name = "constant"
+
+[[example]]
+name = "checkerboard"
+
+[[example]]
+name = "cylinders"
+
+[[example]]
+name = "select"
+
 [[bench]]
 name = "benches"
 

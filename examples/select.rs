@@ -1,4 +1,4 @@
-// Copyright 2015 The Noise-rs Developers.
+// Copyright 2013 The Noise-rs Developers.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,14 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! An example of using perlin noise
-
 extern crate noise;
 
-use noise::modules::Perlin;
+use noise::modules::*;
 
 mod debug;
 
 fn main() {
-    debug::render_png2("perlin.png", Perlin::new(0), 1024, 1024, 50);
+    let checkerboard = Checkerboard::new(0);
+    let cylinders = Cylinders::new(1.0);
+    let perlin = Perlin::new(0);
+    let constant = Constant::new(0.5);
+    let select1 = Select::new(perlin, cylinders, checkerboard, 0.5, 0.0, 1.0);
+    let select2 = Select::new(perlin, constant, checkerboard, 0.0, 0.0, 1.0);
+
+    debug::render_png2("select1.png", select1, 1024, 1024, 100);
+    debug::render_png2("select2.png", select2, 1024, 1024, 100);
 }
