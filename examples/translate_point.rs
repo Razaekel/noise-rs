@@ -1,4 +1,4 @@
-// Copyright 2015 The Noise-rs Developers.
+// Copyright 2016 The Noise-rs Developers.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,16 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::combiners::*;
-pub use self::generators::*;
-pub use self::modifiers::*;
-pub use self::selectors::*;
-pub use self::cache::*;
-pub use self::transformers::*;
+extern crate noise;
 
-mod combiners;
-mod generators;
-mod modifiers;
-mod selectors;
-mod cache;
-mod transformers;
+use noise::modules::{Checkerboard, TranslatePoint};
+
+mod debug;
+
+fn main() {
+    let cboard = Checkerboard::new(0);
+    let translate_point = TranslatePoint::new(cboard).set_all_translations(0.0, 2.0, 3.0, 0.0);
+
+    debug::render_png2("translate_point.png", translate_point, 1024, 1024, 50);
+}
