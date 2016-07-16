@@ -1,4 +1,4 @@
-// Copyright 2015 The Noise-rs Developers.
+// Copyright 2016 The Noise-rs Developers.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,10 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::generators::*;
-pub use self::modifiers::*;
-pub use self::selectors::*;
+extern crate noise;
 
-mod generators;
-mod modifiers;
-mod selectors;
+use noise::modules::{Curve, Perlin};
+
+mod debug;
+
+fn main() {
+    let perlin = Perlin::new(0);
+    let curve = Curve::new(perlin)
+        .add_control_point(-2.0, -2.0)
+        .add_control_point(-1.0, -1.25)
+        .add_control_point(0.0, -0.75)
+        .add_control_point(0.5, -0.25)
+        .add_control_point(0.625, 0.875)
+        .add_control_point(0.75, 1.0)
+        .add_control_point(2.0, 1.25);
+
+    debug::render_png2("curve.png", curve, 1024, 1024, 100);
+}
