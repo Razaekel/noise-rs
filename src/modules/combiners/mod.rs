@@ -1,4 +1,4 @@
-// Copyright 2015 The Noise-rs Developers.
+// Copyright 2016 The Noise-rs Developers.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,12 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::combiners::*;
-pub use self::generators::*;
-pub use self::modifiers::*;
-pub use self::selectors::*;
+pub use self::add::*;
+pub use self::max::*;
+pub use self::min::*;
+pub use self::multiply::*;
+pub use self::power::*;
 
-mod combiners;
-mod generators;
-mod modifiers;
-mod selectors;
+mod add;
+mod max;
+mod min;
+mod multiply;
+mod power;
