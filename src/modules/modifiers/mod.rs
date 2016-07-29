@@ -1,4 +1,4 @@
-// Copyright 2015 The Noise-rs Developers.
+// Copyright 2016 The Noise-rs Developers.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,10 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::generators::*;
-pub use self::modifiers::*;
-pub use self::selectors::*;
+pub use self::abs::*;
+pub use self::clamp::*;
+pub use self::curve::*;
+pub use self::exponent::*;
+pub use self::invert::*;
+pub use self::scale_bias::*;
+pub use self::terrace::*;
 
-mod generators;
-mod modifiers;
-mod selectors;
+mod abs;
+mod clamp;
+mod curve;
+mod exponent;
+mod invert;
+mod scale_bias;
+mod terrace;

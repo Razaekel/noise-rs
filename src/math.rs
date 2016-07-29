@@ -226,6 +226,26 @@ pub mod interp {
         x.mul_add((b - a), a)
     }
 
+    /// Performs cubic interpolation between two values bound between two other
+    /// values.
+    ///
+    /// - n0 - The value before the first value.
+    /// - n1 - The first value.
+    /// - n2 - The second value.
+    /// - n3 - The value after the second value.
+    /// - x - The alpha value.
+    ///
+    /// The alpha value should range from 0.0 to 1.0. If the alpha value is
+    /// 0.0, this function returns _n1_. If the alpha value is 1.0, this
+    /// function returns _n2_.
+    pub fn cubic<T: Float>(n0: T, n1: T, n2: T, n3: T, x: T) -> T {
+        let p = (n3 - n2) - (n0 - n1);
+        let q = (n0 - n1) - p;
+        let r = n2 - n0;
+        let s = n1;
+        p * x * x * x + q * x * x + r * x + s
+    }
+
     /// Maps a value onto a cubic S-curve.
     pub fn s_curve3<T: Float>(x: T) -> T {
         x * x * (math::cast::<_, T>(3.0) - (x * math::cast(2.0)))

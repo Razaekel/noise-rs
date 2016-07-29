@@ -53,6 +53,27 @@ name = "cylinders"
 [[example]]
 name = "select"
 
+[[example]]
+name = "abs"
+
+[[example]]
+name = "clamp"
+
+[[example]]
+name = "curve"
+
+[[example]]
+name = "exponent"
+
+[[example]]
+name = "invert"
+
+[[example]]
+name = "scale_bias"
+
+[[example]]
+name = "terrace"
+
 [[bench]]
 name = "benches"
 

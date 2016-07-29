@@ -1,4 +1,4 @@
-// Copyright 2015 The Noise-rs Developers.
+// Copyright 2016 The Noise-rs Developers.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,10 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::generators::*;
-pub use self::modifiers::*;
-pub use self::selectors::*;
+extern crate noise;
 
-mod generators;
-mod modifiers;
-mod selectors;
+use noise::modules::{Clamp, Perlin};
+
+mod debug;
+
+fn main() {
+    let perlin = Perlin::new(0);
+    let clamp = Clamp::new(perlin).set_lower_bound(0.0).set_upper_bound(0.5);
+
+    debug::render_png2("clamp.png", clamp, 1024, 1024, 100);
+}
