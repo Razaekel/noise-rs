@@ -74,6 +74,21 @@ name = "scale_bias"
 [[example]]
 name = "terrace"
 
+[[example]]
+name = "add"
+
+[[example]]
+name = "max"
+
+[[example]]
+name = "min"
+
+[[example]]
+name = "multiply"
+
+[[example]]
+name = "power"
+
 [[bench]]
 name = "benches"
 
