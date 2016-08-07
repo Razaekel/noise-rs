@@ -98,6 +98,9 @@ name = "billow"
 [[example]]
 name = "basicmulti"
 
+[[example]]
+name = "ridgedmulti"
+
 [[bench]]
 name = "benches"
 

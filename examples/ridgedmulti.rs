@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::basicmulti::*;
-pub use self::billow::*;
-pub use self::fbm::*;
-pub use self::ridgedmulti::*;
+//! An example of using perlin noise
 
-mod basicmulti;
-mod billow;
-mod fbm;
-mod ridgedmulti;
-mod util;
+extern crate noise;
+
+use noise::modules::RidgedMulti;
+
+mod debug;
+
+fn main() {
+    debug::render_png2("ridgedmulti.png", RidgedMulti::new(), 1024, 1024, 100);
+}
