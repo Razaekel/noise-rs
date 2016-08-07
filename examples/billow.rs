@@ -12,9 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::billow::*;
-pub use self::fbm::*;
+//! An example of using perlin noise
 
-mod billow;
-mod fbm;
-mod util;
+extern crate noise;
+
+use noise::modules::Billow;
+
+mod debug;
+
+fn main() {
+    debug::render_png2("billow.png", Billow::new(), 1024, 1024, 400);
+}
