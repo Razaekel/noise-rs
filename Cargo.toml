@@ -101,6 +101,9 @@ name = "basicmulti"
 [[example]]
 name = "ridgedmulti"
 
+[[example]]
+name = "hybridmulti"
+
 [[bench]]
 name = "benches"
 
