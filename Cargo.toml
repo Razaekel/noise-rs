@@ -95,6 +95,9 @@ name = "fbm"
 [[example]]
 name = "billow"
 
+[[example]]
+name = "basicmulti"
+
 [[bench]]
 name = "benches"
 

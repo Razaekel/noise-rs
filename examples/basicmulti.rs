@@ -12,11 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::basicmulti::*;
-pub use self::billow::*;
-pub use self::fbm::*;
+//! An example of using perlin noise
 
-mod basicmulti;
-mod billow;
-mod fbm;
-mod util;
+extern crate noise;
+
+use noise::modules::BasicMulti;
+
+mod debug;
+
+fn main() {
+    debug::render_png2("basicmulti.png", BasicMulti::new(), 1024, 1024, 100);
+}
