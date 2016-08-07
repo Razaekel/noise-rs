@@ -89,6 +89,9 @@ name = "multiply"
 [[example]]
 name = "power"
 
+[[example]]
+name = "fbm"
+
 [[bench]]
 name = "benches"
 
