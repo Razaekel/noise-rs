@@ -17,7 +17,6 @@ use math;
 use math::{Point2, Point3, Point4};
 use NoiseModule;
 use modules::Perlin;
-use super::util::*;
 
 /// Default noise seed for the RidgedMulti noise module.
 pub const DEFAULT_RIDGED_SEED: usize = 0;
@@ -41,10 +40,6 @@ pub const RIDGED_MAX_OCTAVES: usize = 32;
 /// the same way as fBm noise, except the output of each octave is modified by
 /// an absolute-value function. Modifying the octave values in this way
 /// produces ridge-like formations.
-///
-/// Ridged-multifractal noise does not use a persistence value. This is
-/// because the persistence values of the octaves are based on the values
-/// generated from previous octaves, creating a feedback loop.
 ///
 /// The values output from this module will usually range from -1.0 to 1.0 with
 /// default values for the parameters, but there are no guarantees that all
@@ -102,7 +97,7 @@ impl<T: Float> RidgedMulti<T> {
             lacunarity: math::cast(DEFAULT_RIDGED_LACUNARITY),
             persistence: math::cast(DEFAULT_RIDGED_PERSISTENCE),
             gain: math::cast(DEFAULT_RIDGED_GAIN),
-            sources: build_sources(DEFAULT_RIDGED_SEED, DEFAULT_RIDGED_OCTAVE_COUNT),
+            sources: super::build_sources(DEFAULT_RIDGED_SEED, DEFAULT_RIDGED_OCTAVE_COUNT),
         }
     }
 
@@ -112,7 +107,7 @@ impl<T: Float> RidgedMulti<T> {
         }
         RidgedMulti {
             seed: seed,
-            sources: build_sources(seed, self.octaves),
+            sources: super::build_sources(seed, self.octaves),
             ..self
         }
     }
@@ -127,7 +122,7 @@ impl<T: Float> RidgedMulti<T> {
         }
         RidgedMulti {
             octaves: octaves,
-            sources: build_sources(self.seed, octaves),
+            sources: super::build_sources(self.seed, octaves),
             ..self
         }
     }

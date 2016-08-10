@@ -17,7 +17,6 @@ use math;
 use math::{Point2, Point3, Point4};
 use NoiseModule;
 use modules::Perlin;
-use super::util::*;
 
 // Default noise seed for the fBm noise module.
 pub const DEFAULT_FBM_SEED: usize = 0;
@@ -32,13 +31,13 @@ pub const DEFAULT_FBM_PERSISTENCE: f32 = 0.5;
 // Maximum number of octaves for the fBm noise module.
 pub const FBM_MAX_OCTAVES: usize = 32;
 
-/// Noise module that outputs fBm noise.
+/// Noise module that outputs fBm (fractal Brownian motion) noise.
 ///
-/// fBm stands for Fractal Brownian Motion, which is a _monofractal_ method. In
-/// essence, fBm has a_constant_ fractal dimension. It is as close to
-/// statistically _homogeneous_ and _isotropic_ as possible. Homogeneous means
-/// "the same everywhere" and isotropic means "the same in all directions"
-/// (note that the two do not mean the same thing).
+/// fBm is a _monofractal_ method. In essence, fBm has a_constant_ fractal
+/// dimension. It is as close to statistically _homogeneous_ and _isotropic_
+/// as possible. Homogeneous means "the same everywhere" and isotropic means
+/// "the same in all directions" (note that the two do not mean the same
+/// thing).
 ///
 /// The main difference between fractal Brownian motion and regular Brownian
 /// motion is that while the increments in Brownian motion are independent,
@@ -90,7 +89,7 @@ impl<T: Float> Fbm<T> {
             frequency: math::cast(DEFAULT_FBM_FREQUENCY),
             lacunarity: math::cast(DEFAULT_FBM_LACUNARITY),
             persistence: math::cast(DEFAULT_FBM_PERSISTENCE),
-            sources: build_sources(DEFAULT_FBM_SEED, DEFAULT_FBM_OCTAVE_COUNT),
+            sources: super::build_sources(DEFAULT_FBM_SEED, DEFAULT_FBM_OCTAVE_COUNT),
         }
     }
 
@@ -100,7 +99,7 @@ impl<T: Float> Fbm<T> {
         }
         Fbm {
             seed: seed,
-            sources: build_sources(seed, self.octaves),
+            sources: super::build_sources(seed, self.octaves),
             ..self
         }
     }
@@ -115,7 +114,7 @@ impl<T: Float> Fbm<T> {
         }
         Fbm {
             octaves: octaves,
-            sources: build_sources(self.seed, octaves),
+            sources: super::build_sources(self.seed, octaves),
             ..self
         }
     }

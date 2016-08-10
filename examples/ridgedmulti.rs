@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! An example of using perlin noise
+//! An example of using the RidgedMulti noise module
 
 extern crate noise;
 

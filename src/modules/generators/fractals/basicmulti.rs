@@ -17,7 +17,6 @@ use math;
 use math::{Point2, Point3, Point4};
 use NoiseModule;
 use modules::Perlin;
-use super::util::*;
 
 /// Default noise seed for the BasicMulti noise module.
 pub const DEFAULT_BASICMULTI_SEED: usize = 0;
@@ -86,7 +85,7 @@ impl<T: Float> BasicMulti<T> {
             frequency: math::cast(DEFAULT_BASICMULTI_FREQUENCY),
             lacunarity: math::cast(DEFAULT_BASICMULTI_LACUNARITY),
             persistence: math::cast(DEFAULT_BASICMULTI_PERSISTENCE),
-            sources: build_sources(DEFAULT_BASICMULTI_SEED, DEFAULT_BASICMULTI_OCTAVES),
+            sources: super::build_sources(DEFAULT_BASICMULTI_SEED, DEFAULT_BASICMULTI_OCTAVES),
         }
     }
 
@@ -96,7 +95,7 @@ impl<T: Float> BasicMulti<T> {
         }
         BasicMulti {
             seed: seed,
-            sources: build_sources(seed, self.octaves),
+            sources: super::build_sources(seed, self.octaves),
             ..self
         }
     }
@@ -111,7 +110,7 @@ impl<T: Float> BasicMulti<T> {
         }
         BasicMulti {
             octaves: octaves,
-            sources: build_sources(self.seed, octaves),
+            sources: super::build_sources(self.seed, octaves),
             ..self
         }
     }

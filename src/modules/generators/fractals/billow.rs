@@ -17,7 +17,6 @@ use math;
 use math::{Point2, Point3, Point4};
 use NoiseModule;
 use modules::Perlin;
-use super::util::*;
 
 /// Default noise seed for the Billow noise module.
 pub const DEFAULT_BILLOW_SEED: usize = 0;
@@ -34,7 +33,7 @@ pub const BILLOW_MAX_OCTAVES: usize = 32;
 
 /// Noise module that outputs "billowy" noise.
 ///
-/// This noise module "billowy" noise suitable for clouds and rocks.
+/// This noise module produces "billowy" noise suitable for clouds and rocks.
 ///
 /// This noise module is nearly identical to fBm noise, except this noise
 /// module modifes each octave with an absolute-value function. See the
@@ -83,7 +82,7 @@ impl<T: Float> Billow<T> {
             frequency: math::cast(DEFAULT_BILLOW_FREQUENCY),
             lacunarity: math::cast(DEFAULT_BILLOW_LACUNARITY),
             persistence: math::cast(DEFAULT_BILLOW_PERSISTENCE),
-            sources: build_sources(DEFAULT_BILLOW_SEED, DEFAULT_BILLOW_OCTAVE_COUNT),
+            sources: super::build_sources(DEFAULT_BILLOW_SEED, DEFAULT_BILLOW_OCTAVE_COUNT),
         }
     }
 
@@ -93,7 +92,7 @@ impl<T: Float> Billow<T> {
         }
         Billow {
             seed: seed,
-            sources: build_sources(seed, self.octaves),
+            sources: super::build_sources(seed, self.octaves),
             ..self
         }
     }
@@ -106,7 +105,7 @@ impl<T: Float> Billow<T> {
         }
         Billow {
             octaves: octaves,
-            sources: build_sources(self.seed, octaves),
+            sources: super::build_sources(self.seed, octaves),
             ..self
         }
     }

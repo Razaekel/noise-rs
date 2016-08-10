@@ -17,7 +17,6 @@ use math;
 use math::{Point2, Point3, Point4};
 use NoiseModule;
 use modules::Perlin;
-use super::util::*;
 
 /// Default noise seed for the BasicMulti noise module.
 pub const DEFAULT_HYBRIDMULTI_SEED: usize = 0;
@@ -80,7 +79,7 @@ impl<T: Float> HybridMulti<T> {
             frequency: math::cast(DEFAULT_HYBRIDMULTI_FREQUENCY),
             lacunarity: math::cast(DEFAULT_HYBRIDMULTI_LACUNARITY),
             persistence: math::cast(DEFAULT_HYBRIDMULTI_PERSISTENCE),
-            sources: build_sources(DEFAULT_HYBRIDMULTI_SEED, DEFAULT_HYBRIDMULTI_OCTAVES),
+            sources: super::build_sources(DEFAULT_HYBRIDMULTI_SEED, DEFAULT_HYBRIDMULTI_OCTAVES),
         }
     }
 
@@ -90,7 +89,7 @@ impl<T: Float> HybridMulti<T> {
         }
         HybridMulti {
             seed: seed,
-            sources: build_sources(seed, self.octaves),
+            sources: super::build_sources(seed, self.octaves),
             ..self
         }
     }
@@ -105,7 +104,7 @@ impl<T: Float> HybridMulti<T> {
         }
         HybridMulti {
             octaves: octaves,
-            sources: build_sources(self.seed, octaves),
+            sources: super::build_sources(self.seed, octaves),
             ..self
         }
     }
