@@ -1,4 +1,4 @@
-// Copyright 2015 The Noise-rs Developers.
+// Copyright 2016 The Noise-rs Developers.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::checkerboard::*;
-pub use self::constant::*;
-pub use self::cylinders::*;
-pub use self::fractals::*;
-pub use self::perlin::*;
+//! An example of using the Billow noise module
 
-mod constant;
-mod checkerboard;
-mod cylinders;
-mod fractals;
-mod perlin;
+extern crate noise;
+
+use noise::modules::Billow;
+
+mod debug;
+
+fn main() {
+    debug::render_png2("billow.png", Billow::new(), 1024, 1024, 400);
+}

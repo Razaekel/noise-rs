@@ -89,6 +89,21 @@ name = "multiply"
 [[example]]
 name = "power"
 
+[[example]]
+name = "fbm"
+
+[[example]]
+name = "billow"
+
+[[example]]
+name = "basicmulti"
+
+[[example]]
+name = "ridgedmulti"
+
+[[example]]
+name = "hybridmulti"
+
 [[bench]]
 name = "benches"
 
