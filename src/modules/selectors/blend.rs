@@ -16,8 +16,11 @@ use num_traits::Float;
 use math::interp;
 use NoiseModule;
 
-/// Noise module that outputs the weighted blend of the output values from two
+/// Noise module that outputs a weighted blend of the output values from two
 /// source modules given the output value supplied by a control module.
+///
+/// This noise module uses linear interpolation to perform the blending
+/// operation.
 #[derive(Clone, Debug)]
 pub struct Blend<Source1, Source2, Control> {
     /// Outputs one of the values to blend.
@@ -27,8 +30,8 @@ pub struct Blend<Source1, Source2, Control> {
     pub source2: Source2,
 
     /// Determines the weight of the blending operation. Negative values weight
-    /// the blend towards the output value from the _Source1_ module. Positive
-    /// values weight the blend towards the output value from the _Source2_
+    /// the blend towards the output value from the `source1` module. Positive
+    /// values weight the blend towards the output value from the `source2`
     /// module.
     pub control: Control,
 }
