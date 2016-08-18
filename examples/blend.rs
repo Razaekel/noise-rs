@@ -1,4 +1,4 @@
-// Copyright 2015 The Noise-rs Developers.
+// Copyright 2016 The Noise-rs Developers.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,8 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::blend::*;
-pub use self::select::*;
+extern crate noise;
 
-mod blend;
-mod select;
+use noise::modules::{Blend, Fbm, Perlin, RidgedMulti};
+
+mod debug;
+
+fn main() {
+    let perlin = Perlin::new(0);
+    let ridged = RidgedMulti::new();
+    let fbm = Fbm::new();
+    let blend = Blend::new(perlin, ridged, fbm);
+
+    debug::render_png2("blend.png", blend, 1024, 1024, 100);
+}

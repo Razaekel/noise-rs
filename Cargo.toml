@@ -54,6 +54,9 @@ name = "cylinders"
 name = "select"
 
 [[example]]
+name = "blend"
+
+[[example]]
 name = "abs"
 
 [[example]]
