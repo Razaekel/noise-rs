@@ -34,6 +34,7 @@ fn clamp<F: Float>(val: F, min: F, max: F) -> F {
     }
 }
 
+#[allow(dead_code)]
 pub fn render_png<T, F>(filename: &str, perm_table: &noise::PermutationTable, width: u32, height: u32, func: F) where
     T: Float + NumCast,
     F: noise::GenFn2<T>,
@@ -56,6 +57,7 @@ pub fn render_png<T, F>(filename: &str, perm_table: &noise::PermutationTable, wi
     println!("\nGenerated {}", filename);
 }
 
+#[allow(dead_code)]
 pub fn render_png2<M>(filename: &str, module: M, width: u32, height: u32, zoom: u32)
     where M: NoiseModule<[f64; 3], Output = f64>
 {
