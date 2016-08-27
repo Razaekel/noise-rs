@@ -67,10 +67,12 @@ impl<Source, T> NoiseModule<Point2<T>> for Cache<Source, T>
                 let value = self.source.get(point);
                 self.value.set(Some(value));
 
-                *self.point.borrow_mut() = point.to_vec();
+                let mut cached_point = self.point.borrow_mut();
+                cached_point.clear();
+                cached_point.extend_from_slice(&point);
 
                 value
-            }
+            },
         }
     }
 }
@@ -88,10 +90,12 @@ impl<Source, T> NoiseModule<Point3<T>> for Cache<Source, T>
                 let value = self.source.get(point);
                 self.value.set(Some(value));
 
-                *self.point.borrow_mut() = point.to_vec();
+                let mut cached_point = self.point.borrow_mut();
+                cached_point.clear();
+                cached_point.extend_from_slice(&point);
 
                 value
-            }
+            },
         }
     }
 }
@@ -109,10 +113,12 @@ impl<Source, T> NoiseModule<Point4<T>> for Cache<Source, T>
                 let value = self.source.get(point);
                 self.value.set(Some(value));
 
-                *self.point.borrow_mut() = point.to_vec();
+                let mut cached_point = self.point.borrow_mut();
+                cached_point.clear();
+                cached_point.extend_from_slice(&point);
 
                 value
-            }
+            },
         }
     }
 }
