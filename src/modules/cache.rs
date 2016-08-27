@@ -61,17 +61,17 @@ impl<Source, T> NoiseModule<Point2<T>> for Cache<Source, T>
     type Output = T;
 
     fn get(&self, point: Point2<T>) -> Self::Output {
-        let cached_point: Vec<T>;
-        {
-            cached_point = self.point.borrow().clone();
-        }
+        match self.value.get() {
+            Some(value) if *self.point.borrow() == point => value,
+            Some(_) | None => {
+                let value = self.source.get(point);
+                self.value.set(Some(value));
 
-        if self.value.get() == None || point[0] != cached_point[0] || point[1] != cached_point[1] {
-            self.value.set(Some(self.source.get(point)));
-            *self.point.borrow_mut() = point.to_vec();
-        }
+                *self.point.borrow_mut() = point.to_vec();
 
-        return self.value.get().unwrap();
+                value
+            }
+        }
     }
 }
 
@@ -82,18 +82,17 @@ impl<Source, T> NoiseModule<Point3<T>> for Cache<Source, T>
     type Output = T;
 
     fn get(&self, point: Point3<T>) -> Self::Output {
-        let cached_point: Vec<T>;
-        {
-            cached_point = self.point.borrow().clone();
-        }
+        match self.value.get() {
+            Some(value) if *self.point.borrow() == point => value,
+            Some(_) | None => {
+                let value = self.source.get(point);
+                self.value.set(Some(value));
 
-        if self.value.get() == None || point[0] != cached_point[0] ||
-           point[1] != cached_point[1] || point[2] != cached_point[2] {
-            self.value.set(Some(self.source.get(point)));
-            *self.point.borrow_mut() = point.to_vec();
-        }
+                *self.point.borrow_mut() = point.to_vec();
 
-        return self.value.get().unwrap();
+                value
+            }
+        }
     }
 }
 
@@ -104,18 +103,16 @@ impl<Source, T> NoiseModule<Point4<T>> for Cache<Source, T>
     type Output = T;
 
     fn get(&self, point: Point4<T>) -> Self::Output {
-        let cached_point: Vec<T>;
-        {
-            cached_point = self.point.borrow().clone();
-        }
+        match self.value.get() {
+            Some(value) if *self.point.borrow() == point => value,
+            Some(_) | None => {
+                let value = self.source.get(point);
+                self.value.set(Some(value));
 
-        if self.value.get() == None || point[0] != cached_point[0] ||
-           point[1] != cached_point[1] || point[2] != cached_point[2] ||
-           point[3] != cached_point[3] {
-            self.value.set(Some(self.source.get(point)));
-            *self.point.borrow_mut() = point.to_vec();
-        }
+                *self.point.borrow_mut() = point.to_vec();
 
-        return self.value.get().unwrap();
+                value
+            }
+        }
     }
 }
