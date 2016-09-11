@@ -17,9 +17,11 @@ pub use self::constant::*;
 pub use self::cylinders::*;
 pub use self::fractals::*;
 pub use self::perlin::*;
+pub use self::worley::*;
 
 mod constant;
 mod checkerboard;
 mod cylinders;
 mod fractals;
 mod perlin;
+mod worley;
