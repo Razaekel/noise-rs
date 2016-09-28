@@ -187,53 +187,37 @@ impl<T: Float> NoiseModule<Point2<T>> for Worley<T> {
     type Output = T;
 
     fn get(&self, point: Point2<T>) -> T {
-        let (cell, range) = cell2(&self, &point);
-
-        let mut value = T::zero();
-
-        if self.enable_range {
-            value = range;
+        #[inline(always)]
+        fn get_point<T: Float>(perm_table: &PermutationTable, whole: Point2<i64>) -> Point2<T> {
+            math::add2(get_vec2(perm_table.get2(whole)), math::cast2::<_, T>(whole))
         }
 
-        (value +
-         (self.displacement * math::cast::<_, T>(self.perm_table.get2(cell)) *
-          math::cast(1.0 / 255.0))) * math::cast(2.0) - T::one()
-    }
-}
+        let half: T = math::cast(0.5);
 
-#[inline(always)]
-fn cell2<T: Float>(worley: &Worley<T>, point: &Point2<T>) -> (Point2<i64>, T) {
-    #[inline(always)]
-    fn get_point<T: Float>(perm_table: &PermutationTable, whole: Point2<i64>) -> Point2<T> {
-        math::add2(get_vec2(perm_table.get2(whole)), math::cast2::<_, T>(whole))
-    }
+        let point = &math::mul2(point, self.frequency);
 
-    let half: T = math::cast(0.5);
+        let cell = math::map2(*point, T::floor);
+        let whole = math::map2(cell, math::cast::<_, i64>);
+        let frac = math::sub2(*point, cell);
 
-    let point = &math::mul2(*point, worley.frequency);
+        let x_half = frac[0] > half;
+        let y_half = frac[1] > half;
 
-    let cell = math::map2(*point, T::floor);
-    let whole = math::map2(cell, math::cast::<_, i64>);
-    let frac = math::sub2(*point, cell);
+        let near = [whole[0] + (x_half as i64), whole[1] + (y_half as i64)];
+        let far = [whole[0] + (!x_half as i64), whole[1] + (!y_half as i64)];
 
-    let x_half = frac[0] > half;
-    let y_half = frac[1] > half;
+        let mut seed_cell = near;
+        let seed_point = get_point(&self.perm_table, near);
+        let mut range = calculate_range(self.range_function, point, &seed_point);
 
-    let near = [whole[0] + (x_half as i64), whole[1] + (y_half as i64)];
-    let far = [whole[0] + (!x_half as i64), whole[1] + (!y_half as i64)];
+        let x_range = (half - frac[0]) * (half - frac[0]); // x-distance squared to center line
+        let y_range = (half - frac[1]) * (half - frac[1]); // y-distance squared to center line
 
-    let mut seed_cell = near;
-    let seed_point = get_point(&worley.perm_table, near);
-    let mut range = calculate_range(worley.range_function, point, &seed_point);
-
-    let x_range = (half - frac[0]) * (half - frac[0]); // x-distance squared to center line
-    let y_range = (half - frac[1]) * (half - frac[1]); // y-distance squared to center line
-
-    macro_rules! test_point(
+        macro_rules! test_point(
             [$x:expr, $y:expr] => {
                 {
-                    let cur_point = get_point(&worley.perm_table, [$x, $y]);
-                    let cur_range = calculate_range(worley.range_function, point, &cur_point);
+                    let cur_point = get_point(&self.perm_table, [$x, $y]);
+                    let cur_range = calculate_range(self.range_function, point, &cur_point);
                     if cur_range < range {
                         range = cur_range;
                         seed_cell = [$x, $y];
@@ -242,19 +226,28 @@ fn cell2<T: Float>(worley: &Worley<T>, point: &Point2<T>) -> (Point2<i64>, T) {
             }
         );
 
-    if x_range < range {
-        test_point![far[0], near[1]];
-    }
+        if x_range < range {
+            test_point![far[0], near[1]];
+        }
 
-    if y_range < range {
-        test_point![near[0], far[1]];
-    }
+        if y_range < range {
+            test_point![near[0], far[1]];
+        }
 
-    if x_range < range && y_range < range {
-        test_point![far[0], far[1]];
-    }
+        if x_range < range && y_range < range {
+            test_point![far[0], far[1]];
+        }
 
-    (seed_cell, range)
+        let mut value = T::zero();
+
+        if self.enable_range {
+            value = range;
+        }
+
+        (value +
+         (self.displacement * math::cast::<_, T>(self.perm_table.get2(seed_cell)) *
+          math::cast(1.0 / 255.0))) * math::cast(2.0) - T::one()
+    }
 }
 
 #[inline(always)]
@@ -281,56 +274,43 @@ impl<T: Float> NoiseModule<Point3<T>> for Worley<T> {
     type Output = T;
 
     fn get(&self, point: Point3<T>) -> T {
-        let (cell, range) = cell3(&self, &point);
-
-        let mut value = T::zero();
-
-        if self.enable_range {
-            value = range;
+        #[inline(always)]
+        fn get_point<T: Float>(perm_table: &PermutationTable,
+                               whole: math::Point3<i64>)
+                               -> Point3<T> {
+            math::add3(get_vec3(perm_table.get3(whole)), math::cast3::<_, T>(whole))
         }
 
-        value +
-         (self.displacement * math::cast::<_, T>(self.perm_table.get3(cell)) *
-          math::cast(1.0 / 255.0) * math::cast(2.0) - T::one())
-    }
-}
+        let half: T = math::cast(0.5);
 
-#[inline(always)]
-fn cell3<T: Float>(worley: &Worley<T>, point: &Point3<T>) -> (math::Point3<i64>, T) {
-    #[inline(always)]
-    fn get_point<T: Float>(perm_table: &PermutationTable, whole: math::Point3<i64>) -> Point3<T> {
-        math::add3(get_vec3(perm_table.get3(whole)), math::cast3::<_, T>(whole))
-    }
+        let point = &math::mul3(point, self.frequency);
 
-    let half: T = math::cast(0.5);
+        let cell = math::map3(*point, T::floor);
+        let whole = math::map3(cell, math::cast::<_, i64>);
+        let frac = math::sub3(*point, cell);
 
-    let point = &math::mul3(*point, worley.frequency);
+        let x_half = frac[0] > half;
+        let y_half = frac[1] > half;
+        let z_half = frac[2] > half;
 
-    let cell = math::map3(*point, T::floor);
-    let whole = math::map3(cell, math::cast::<_, i64>);
-    let frac = math::sub3(*point, cell);
+        let near =
+            [whole[0] + (x_half as i64), whole[1] + (y_half as i64), whole[2] + (z_half as i64)];
+        let far =
+            [whole[0] + (!x_half as i64), whole[1] + (!y_half as i64), whole[2] + (!z_half as i64)];
 
-    let x_half = frac[0] > half;
-    let y_half = frac[1] > half;
-    let z_half = frac[2] > half;
+        let mut seed_cell = near;
+        let seed_point = get_point(&self.perm_table, near);
+        let mut range = calculate_range(self.range_function, point, &seed_point);
 
-    let near = [whole[0] + (x_half as i64), whole[1] + (y_half as i64), whole[2] + (z_half as i64)];
-    let far =
-        [whole[0] + (!x_half as i64), whole[1] + (!y_half as i64), whole[2] + (!z_half as i64)];
+        let x_range = (half - frac[0]) * (half - frac[0]); // x-distance squared to center line
+        let y_range = (half - frac[1]) * (half - frac[1]); // y-distance squared to center line
+        let z_range = (half - frac[2]) * (half - frac[2]); // z-distance squared to center line
 
-    let mut seed_cell = near;
-    let seed_point = get_point(&worley.perm_table, near);
-    let mut range = calculate_range(worley.range_function, point, &seed_point);
-
-    let x_range = (half - frac[0]) * (half - frac[0]); // x-distance squared to center line
-    let y_range = (half - frac[1]) * (half - frac[1]); // y-distance squared to center line
-    let z_range = (half - frac[2]) * (half - frac[2]); // z-distance squared to center line
-
-    macro_rules! test_point(
+        macro_rules! test_point(
             [$x:expr, $y:expr, $z:expr] => {
                 {
-                    let cur_point = get_point(&worley.perm_table, [$x, $y, $z]);
-                    let cur_range = calculate_range(worley.range_function, point, &cur_point);
+                    let cur_point = get_point(&self.perm_table, [$x, $y, $z]);
+                    let cur_range = calculate_range(self.range_function, point, &cur_point);
                     if cur_range < range {
                         range = cur_range;
                         seed_cell = [$x, $y, $z];
@@ -339,31 +319,40 @@ fn cell3<T: Float>(worley: &Worley<T>, point: &Point3<T>) -> (math::Point3<i64>,
             }
         );
 
-    if x_range < range {
-        test_point![far[0], near[1], near[2]];
-    }
-    if y_range < range {
-        test_point![near[0], far[1], near[2]];
-    }
-    if z_range < range {
-        test_point![near[0], near[1], far[2]];
-    }
+        if x_range < range {
+            test_point![far[0], near[1], near[2]];
+        }
+        if y_range < range {
+            test_point![near[0], far[1], near[2]];
+        }
+        if z_range < range {
+            test_point![near[0], near[1], far[2]];
+        }
 
-    if x_range < range && y_range < range {
-        test_point![far[0], far[1], near[2]];
-    }
-    if x_range < range && z_range < range {
-        test_point![far[0], near[1], far[2]];
-    }
-    if y_range < range && z_range < range {
-        test_point![near[0], far[1], far[2]];
-    }
+        if x_range < range && y_range < range {
+            test_point![far[0], far[1], near[2]];
+        }
+        if x_range < range && z_range < range {
+            test_point![far[0], near[1], far[2]];
+        }
+        if y_range < range && z_range < range {
+            test_point![near[0], far[1], far[2]];
+        }
 
-    if x_range < range && y_range < range && z_range < range {
-        test_point![far[0], far[1], far[2]];
-    }
+        if x_range < range && y_range < range && z_range < range {
+            test_point![far[0], far[1], far[2]];
+        }
 
-    (seed_cell, range)
+        let mut value = T::zero();
+
+        if self.enable_range {
+            value = range;
+        }
+
+        value +
+        (self.displacement * math::cast::<_, T>(self.perm_table.get3(seed_cell)) *
+         math::cast(1.0 / 255.0) * math::cast(2.0) - T::one())
+    }
 }
 
 #[inline(always)]
@@ -400,63 +389,47 @@ impl<T: Float> NoiseModule<Point4<T>> for Worley<T> {
     type Output = T;
 
     fn get(&self, point: Point4<T>) -> T {
-        let (cell, range) = cell4(&self, &point);
-
-        let mut value = T::zero();
-
-        if self.enable_range {
-            value = range;
+        #[inline(always)]
+        fn get_point<T: Float>(perm_table: &PermutationTable, whole: Point4<i64>) -> Point4<T> {
+            math::add4(get_vec4(perm_table.get4(whole)), math::cast4::<_, T>(whole))
         }
 
-        value +
-         (self.displacement * math::cast::<_, T>(self.perm_table.get4(cell)) *
-          math::cast(1.0 / 255.0) * math::cast(2.0) - T::one())
-    }
-}
+        let half: T = math::cast(0.5);
 
-#[inline(always)]
-fn cell4<T: Float>(worley: &Worley<T>, point: &Point4<T>) -> (Point4<i64>, T) {
-    #[inline(always)]
-    fn get_point<T: Float>(perm_table: &PermutationTable, whole: Point4<i64>) -> Point4<T> {
-        math::add4(get_vec4(perm_table.get4(whole)), math::cast4::<_, T>(whole))
-    }
+        let point = &math::mul4(point, self.frequency);
 
-    let half: T = math::cast(0.5);
+        let cell = math::map4(*point, T::floor);
+        let whole = math::map4(cell, math::cast::<_, i64>);
+        let frac = math::sub4(*point, cell);
 
-    let point = &math::mul4(*point, worley.frequency);
+        let x_half = frac[0] > half;
+        let y_half = frac[1] > half;
+        let z_half = frac[2] > half;
+        let w_half = frac[3] > half;
 
-    let cell = math::map4(*point, T::floor);
-    let whole = math::map4(cell, math::cast::<_, i64>);
-    let frac = math::sub4(*point, cell);
+        let near = [whole[0] + (x_half as i64),
+                    whole[1] + (y_half as i64),
+                    whole[2] + (z_half as i64),
+                    whole[3] + (w_half as i64)];
+        let far = [whole[0] + (!x_half as i64),
+                   whole[1] + (!y_half as i64),
+                   whole[2] + (!z_half as i64),
+                   whole[3] + (!w_half as i64)];
 
-    let x_half = frac[0] > half;
-    let y_half = frac[1] > half;
-    let z_half = frac[2] > half;
-    let w_half = frac[3] > half;
+        let mut seed_cell = near;
+        let seed_point = get_point(&self.perm_table, near);
+        let mut range = calculate_range(self.range_function, point, &seed_point);
 
-    let near = [whole[0] + (x_half as i64),
-                whole[1] + (y_half as i64),
-                whole[2] + (z_half as i64),
-                whole[3] + (w_half as i64)];
-    let far = [whole[0] + (!x_half as i64),
-               whole[1] + (!y_half as i64),
-               whole[2] + (!z_half as i64),
-               whole[3] + (!w_half as i64)];
+        let x_range = (half - frac[0]) * (half - frac[0]); // x-distance squared to center line
+        let y_range = (half - frac[1]) * (half - frac[1]); // y-distance squared to center line
+        let z_range = (half - frac[2]) * (half - frac[2]); // z-distance squared to center line
+        let w_range = (half - frac[3]) * (half - frac[3]); // w-distance squared to center line
 
-    let mut seed_cell = near;
-    let seed_point = get_point(&worley.perm_table, near);
-    let mut range = calculate_range(worley.range_function, point, &seed_point);
-
-    let x_range = (half - frac[0]) * (half - frac[0]); // x-distance squared to center line
-    let y_range = (half - frac[1]) * (half - frac[1]); // y-distance squared to center line
-    let z_range = (half - frac[2]) * (half - frac[2]); // z-distance squared to center line
-    let w_range = (half - frac[3]) * (half - frac[3]); // w-distance squared to center line
-
-    macro_rules! test_point(
+        macro_rules! test_point(
             [$x:expr, $y:expr, $z:expr, $w:expr] => {
                 {
-                    let cur_point = get_point(&worley.perm_table, [$x, $y, $z, $w]);
-                    let cur_range = calculate_range(worley.range_function, point, &cur_point);
+                    let cur_point = get_point(&self.perm_table, [$x, $y, $z, $w]);
+                    let cur_range = calculate_range(self.range_function, point, &cur_point);
                     if cur_range < range {
                         range = cur_range;
                         seed_cell = [$x, $y, $z, $w];
@@ -465,56 +438,65 @@ fn cell4<T: Float>(worley: &Worley<T>, point: &Point4<T>) -> (Point4<i64>, T) {
             }
         );
 
-    if x_range < range {
-        test_point![far[0], near[1], near[2], near[3]];
-    }
-    if y_range < range {
-        test_point![near[0], far[1], near[2], near[3]];
-    }
-    if z_range < range {
-        test_point![near[0], near[1], far[2], near[3]];
-    }
-    if w_range < range {
-        test_point![near[0], near[1], near[2], far[3]];
-    }
+        if x_range < range {
+            test_point![far[0], near[1], near[2], near[3]];
+        }
+        if y_range < range {
+            test_point![near[0], far[1], near[2], near[3]];
+        }
+        if z_range < range {
+            test_point![near[0], near[1], far[2], near[3]];
+        }
+        if w_range < range {
+            test_point![near[0], near[1], near[2], far[3]];
+        }
 
-    if x_range < range && y_range < range {
-        test_point![far[0], far[1], near[2], near[3]];
-    }
-    if x_range < range && z_range < range {
-        test_point![far[0], near[1], far[2], near[3]];
-    }
-    if x_range < range && w_range < range {
-        test_point![far[0], near[1], near[2], far[3]];
-    }
-    if y_range < range && z_range < range {
-        test_point![near[0], far[1], far[2], near[3]];
-    }
-    if y_range < range && w_range < range {
-        test_point![near[0], far[1], near[2], far[3]];
-    }
-    if z_range < range && w_range < range {
-        test_point![near[0], near[1], far[2], far[3]];
-    }
+        if x_range < range && y_range < range {
+            test_point![far[0], far[1], near[2], near[3]];
+        }
+        if x_range < range && z_range < range {
+            test_point![far[0], near[1], far[2], near[3]];
+        }
+        if x_range < range && w_range < range {
+            test_point![far[0], near[1], near[2], far[3]];
+        }
+        if y_range < range && z_range < range {
+            test_point![near[0], far[1], far[2], near[3]];
+        }
+        if y_range < range && w_range < range {
+            test_point![near[0], far[1], near[2], far[3]];
+        }
+        if z_range < range && w_range < range {
+            test_point![near[0], near[1], far[2], far[3]];
+        }
 
-    if x_range < range && y_range < range && z_range < range {
-        test_point![far[0], far[1], far[2], near[3]];
-    }
-    if x_range < range && y_range < range && w_range < range {
-        test_point![far[0], far[1], near[2], far[3]];
-    }
-    if x_range < range && z_range < range && w_range < range {
-        test_point![far[0], near[1], far[2], far[3]];
-    }
-    if y_range < range && z_range < range && w_range < range {
-        test_point![near[0], far[1], far[2], far[3]];
-    }
+        if x_range < range && y_range < range && z_range < range {
+            test_point![far[0], far[1], far[2], near[3]];
+        }
+        if x_range < range && y_range < range && w_range < range {
+            test_point![far[0], far[1], near[2], far[3]];
+        }
+        if x_range < range && z_range < range && w_range < range {
+            test_point![far[0], near[1], far[2], far[3]];
+        }
+        if y_range < range && z_range < range && w_range < range {
+            test_point![near[0], far[1], far[2], far[3]];
+        }
 
-    if x_range < range && y_range < range && z_range < range && w_range < range {
-        test_point![far[0], far[1], far[2], far[3]];
-    }
+        if x_range < range && y_range < range && z_range < range && w_range < range {
+            test_point![far[0], far[1], far[2], far[3]];
+        }
 
-    (seed_cell, range)
+        let mut value = T::zero();
+
+        if self.enable_range {
+            value = range;
+        }
+
+        value +
+        (self.displacement * math::cast::<_, T>(self.perm_table.get4(seed_cell)) *
+         math::cast(1.0 / 255.0) * math::cast(2.0) - T::one())
+    }
 }
 
 #[inline(always)]
