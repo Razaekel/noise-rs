@@ -110,6 +110,9 @@ name = "hybridmulti"
 [[example]]
 name = "cache"
 
+[[example]]
+name = "worley"
+
 [[bench]]
 name = "benches"
 
