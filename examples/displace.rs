@@ -1,4 +1,4 @@
-// Copyright 2015 The Noise-rs Developers.
+// Copyright 2016 The Noise-rs Developers.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,16 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::combiners::*;
-pub use self::generators::*;
-pub use self::modifiers::*;
-pub use self::selectors::*;
-pub use self::cache::*;
-pub use self::transformers::*;
+extern crate noise;
 
-mod combiners;
-mod generators;
-mod modifiers;
-mod selectors;
-mod cache;
-mod transformers;
+use noise::modules::{Checkerboard, Constant, Cylinders, Displace, Perlin};
+
+mod debug;
+
+fn main() {
+    let cboard = Checkerboard::new(0);
+    let constant = Constant::new(0.0);
+    let cylinders = Cylinders::new(1.0);
+    let perlin = Perlin::new(0);
+    let displace = Displace::new(cylinders, cboard, perlin, constant, constant);
+
+    debug::render_png2("displace.png", displace, 1024, 1024, 50);
+}

@@ -12,16 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::combiners::*;
-pub use self::generators::*;
-pub use self::modifiers::*;
-pub use self::selectors::*;
-pub use self::cache::*;
-pub use self::transformers::*;
+pub use self::displace::*;
+pub use self::rotate_point::*;
+pub use self::scale_point::*;
+pub use self::translate_point::*;
+pub use self::turbulence::*;
 
-mod combiners;
-mod generators;
-mod modifiers;
-mod selectors;
-mod cache;
-mod transformers;
+mod displace;
+mod rotate_point;
+mod scale_point;
+mod translate_point;
+mod turbulence;

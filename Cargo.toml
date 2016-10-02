@@ -113,6 +113,21 @@ name = "cache"
 [[example]]
 name = "worley"
 
+[[example]]
+name = "displace"
+
+[[example]]
+name = "rotate_point"
+
+[[example]]
+name = "scale_point"
+
+[[example]]
+name = "translate_point"
+
+[[example]]
+name = "turbulence"
+
 [[bench]]
 name = "benches"
 
