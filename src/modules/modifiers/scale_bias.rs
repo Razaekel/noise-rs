@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use num_traits::Float;
-use NoiseModule;
+use modules::NoiseModule;
 
 /// Noise module that applies a scaling factor and a bias to the output value
 /// from the source module.
@@ -29,7 +29,7 @@ pub struct ScaleBias<Source, T> {
     scale: T,
 
     /// Bias to apply to the scaled output value from the source module.
-    /// The default value is 1.0.
+    /// The default value is 0.0.
     bias: T,
 }
 
@@ -40,7 +40,7 @@ impl<Source, T> ScaleBias<Source, T>
         ScaleBias {
             source: source,
             scale: T::one(),
-            bias: T::one(),
+            bias: T::zero(),
         }
     }
 

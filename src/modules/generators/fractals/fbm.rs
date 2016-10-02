@@ -15,8 +15,7 @@
 use num_traits::Float;
 use math;
 use math::{Point2, Point3, Point4};
-use NoiseModule;
-use modules::Perlin;
+use modules::{MultiFractal, NoiseModule, Perlin, Seedable};
 
 // Default noise seed for the fBm noise module.
 pub const DEFAULT_FBM_SEED: usize = 0;
@@ -33,7 +32,7 @@ pub const FBM_MAX_OCTAVES: usize = 32;
 
 /// Noise module that outputs fBm (fractal Brownian motion) noise.
 ///
-/// fBm is a _monofractal_ method. In essence, fBm has a_constant_ fractal
+/// fBm is a _monofractal_ method. In essence, fBm has a _constant_ fractal
 /// dimension. It is as close to statistically _homogeneous_ and _isotropic_
 /// as possible. Homogeneous means "the same everywhere" and isotropic means
 /// "the same in all directions" (note that the two do not mean the same
@@ -45,6 +44,8 @@ pub const FBM_MAX_OCTAVES: usize = 32;
 ///
 /// fBm is the result of several noise functions of ever-increasing frequency
 /// and ever-decreasing amplitude.
+///
+/// fBm is commonly referred to as Perlin noise.
 #[derive(Clone, Debug)]
 pub struct Fbm<T> {
     /// Seed.
@@ -92,19 +93,10 @@ impl<T: Float> Fbm<T> {
             sources: super::build_sources(DEFAULT_FBM_SEED, DEFAULT_FBM_OCTAVE_COUNT),
         }
     }
+}
 
-    pub fn set_seed(self, seed: usize) -> Fbm<T> {
-        if self.seed == seed {
-            return self;
-        }
-        Fbm {
-            seed: seed,
-            sources: super::build_sources(seed, self.octaves),
-            ..self
-        }
-    }
-
-    pub fn set_octaves(self, mut octaves: usize) -> Fbm<T> {
+impl<T> MultiFractal<T> for Fbm<T> {
+    fn set_octaves(self, mut octaves: usize) -> Fbm<T> {
         if self.octaves == octaves {
             return self;
         } else if octaves > FBM_MAX_OCTAVES {
@@ -119,16 +111,29 @@ impl<T: Float> Fbm<T> {
         }
     }
 
-    pub fn set_frequency(self, frequency: T) -> Fbm<T> {
+    fn set_frequency(self, frequency: T) -> Fbm<T> {
         Fbm { frequency: frequency, ..self }
     }
 
-    pub fn set_lacunarity(self, lacunarity: T) -> Fbm<T> {
+    fn set_lacunarity(self, lacunarity: T) -> Fbm<T> {
         Fbm { lacunarity: lacunarity, ..self }
     }
 
-    pub fn set_persistence(self, persistence: T) -> Fbm<T> {
+    fn set_persistence(self, persistence: T) -> Fbm<T> {
         Fbm { persistence: persistence, ..self }
+    }
+}
+
+impl<T> Seedable for Fbm<T> {
+    fn set_seed(self, seed: usize) -> Fbm<T> {
+        if self.seed == seed {
+            return self;
+        }
+        Fbm {
+            seed: seed,
+            sources: super::build_sources(seed, self.octaves),
+            ..self
+        }
     }
 }
 

@@ -13,8 +13,9 @@
 // limitations under the License.
 
 use num_traits::Float;
-use {NoiseModule, PermutationTable, math};
+use {PermutationTable, math};
 use math::{Point2, Point3, Point4};
+use modules::{NoiseModule, Seedable};
 
 /// Default noise seed for the Worley noise module.
 pub const DEFAULT_WORLEY_SEED: usize = 0;
@@ -67,15 +68,6 @@ impl<T> Worley<T>
         }
     }
 
-    /// Sets the seed value used by the Worley cells.
-    pub fn set_seed(self, seed: usize) -> Worley<T> {
-        Worley {
-            perm_table: PermutationTable::new(seed as u32),
-            seed: seed,
-            ..self
-        }
-    }
-
     /// Sets the range function used by the Worley cells.
     pub fn set_range_function(self, range_function: RangeFunction) -> Worley<T> {
         Worley { range_function: range_function, ..self }
@@ -94,6 +86,17 @@ impl<T> Worley<T>
 
     pub fn set_displacement(self, displacement: T) -> Worley<T> {
         Worley { displacement: displacement, ..self }
+    }
+}
+
+impl<T> Seedable for Worley<T> {
+    /// Sets the seed value used by the Worley cells.
+    fn set_seed(self, seed: usize) -> Worley<T> {
+        Worley {
+            perm_table: PermutationTable::new(seed as u32),
+            seed: seed,
+            ..self
+        }
     }
 }
 
@@ -381,7 +384,7 @@ pub fn get_vec3<T: Float>(index: usize) -> Point3<T> {
         15 => [-one,   zero,  zero],
         16 => [ zero, -one,   zero],
         17 => [ zero,  zero, -one],
-        _ => panic!("Attempt to access 3D gradient {} of 12", index % 12),
+        _ => panic!("Attempt to access 3D gradient {} of 18", index % 18),
     }
 }
 

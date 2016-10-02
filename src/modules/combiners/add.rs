@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use num_traits::Float;
-use NoiseModule;
+use modules::NoiseModule;
 
 /// Noise module that outputs the sum of the two output values from two source
 /// modules.

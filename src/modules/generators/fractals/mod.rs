@@ -26,10 +26,20 @@ mod ridgedmulti;
 
 use modules::Perlin;
 
+pub trait MultiFractal<T> {
+    fn set_octaves(self, octaves: usize) -> Self;
+
+    fn set_frequency(self, frequency: T) -> Self;
+
+    fn set_lacunarity(self, lacunarity: T) -> Self;
+
+    fn set_persistence(self, persistence: T) -> Self;
+}
+
 fn build_sources(seed: usize, octaves: usize) -> Vec<Perlin> {
     let mut sources = Vec::with_capacity(octaves);
     for x in 0..octaves {
-        sources.push(Perlin::new(seed + x));
+        sources.push(Perlin::new().set_seed(seed + x));
     }
     sources
 }

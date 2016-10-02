@@ -15,8 +15,7 @@
 use num_traits::Float;
 use math;
 use math::{Point2, Point3, Point4};
-use NoiseModule;
-use modules::Perlin;
+use modules::{MultiFractal, NoiseModule, Perlin, Seedable};
 
 /// Default noise seed for the RidgedMulti noise module.
 pub const DEFAULT_RIDGED_SEED: usize = 0;
@@ -28,8 +27,8 @@ pub const DEFAULT_RIDGED_FREQUENCY: f32 = 1.0;
 pub const DEFAULT_RIDGED_LACUNARITY: f32 = 2.0;
 /// Default persistence for the RidgedMulti noise module.
 pub const DEFAULT_RIDGED_PERSISTENCE: f32 = 1.0;
-/// Default gain for the RidgedMulti noise module.
-pub const DEFAULT_RIDGED_GAIN: f32 = 2.0;
+/// Default attenuation for the RidgedMulti noise module.
+pub const DEFAULT_RIDGED_ATTENUATION: f32 = 2.0;
 /// Maximum number of octaves for the RidgedMulti noise module.
 pub const RIDGED_MAX_OCTAVES: usize = 32;
 
@@ -82,8 +81,11 @@ pub struct RidgedMulti<T> {
     /// persistence produces "rougher" noise.
     pub persistence: T,
 
-    /// The gain to apply to the weight on each octave.
-    pub gain: T,
+    /// The attenuation to apply to the weight on each octave. This reduces
+    /// the strength of each successive octave, making their respective
+    /// ridges smaller. The default attenuation is 2.0, making each octave
+    /// half the height of the previous.
+    pub attenuation: T,
 
     sources: Vec<Perlin>,
 }
@@ -96,23 +98,18 @@ impl<T: Float> RidgedMulti<T> {
             frequency: math::cast(DEFAULT_RIDGED_FREQUENCY),
             lacunarity: math::cast(DEFAULT_RIDGED_LACUNARITY),
             persistence: math::cast(DEFAULT_RIDGED_PERSISTENCE),
-            gain: math::cast(DEFAULT_RIDGED_GAIN),
+            attenuation: math::cast(DEFAULT_RIDGED_ATTENUATION),
             sources: super::build_sources(DEFAULT_RIDGED_SEED, DEFAULT_RIDGED_OCTAVE_COUNT),
         }
     }
 
-    pub fn set_seed(self, seed: usize) -> RidgedMulti<T> {
-        if self.seed == seed {
-            return self;
-        }
-        RidgedMulti {
-            seed: seed,
-            sources: super::build_sources(seed, self.octaves),
-            ..self
-        }
+    pub fn set_attenuation(self, attenuation: T) -> RidgedMulti<T> {
+        RidgedMulti { attenuation: attenuation, ..self }
     }
+}
 
-    pub fn set_octaves(self, mut octaves: usize) -> RidgedMulti<T> {
+impl<T> MultiFractal<T> for RidgedMulti<T> {
+    fn set_octaves(self, mut octaves: usize) -> RidgedMulti<T> {
         if self.octaves == octaves {
             return self;
         } else if octaves > RIDGED_MAX_OCTAVES {
@@ -127,20 +124,29 @@ impl<T: Float> RidgedMulti<T> {
         }
     }
 
-    pub fn set_frequency(self, frequency: T) -> RidgedMulti<T> {
+    fn set_frequency(self, frequency: T) -> RidgedMulti<T> {
         RidgedMulti { frequency: frequency, ..self }
     }
 
-    pub fn set_lacunarity(self, lacunarity: T) -> RidgedMulti<T> {
+    fn set_lacunarity(self, lacunarity: T) -> RidgedMulti<T> {
         RidgedMulti { lacunarity: lacunarity, ..self }
     }
 
-    pub fn set_persistence(self, persistence: T) -> RidgedMulti<T> {
+    fn set_persistence(self, persistence: T) -> RidgedMulti<T> {
         RidgedMulti { persistence: persistence, ..self }
     }
+}
 
-    pub fn set_gain(self, gain: T) -> RidgedMulti<T> {
-        RidgedMulti { gain: gain, ..self }
+impl<T> Seedable for RidgedMulti<T> {
+    fn set_seed(self, seed: usize) -> RidgedMulti<T> {
+        if self.seed == seed {
+            return self;
+        }
+        RidgedMulti {
+            seed: seed,
+            sources: super::build_sources(seed, self.octaves),
+            ..self
+        }
     }
 }
 
@@ -170,8 +176,8 @@ impl<T: Float> NoiseModule<Point2<T>> for RidgedMulti<T> {
             // the ridges.
             signal = signal * weight;
 
-            // Weight succesive contributions by the previous signal.
-            weight = signal * self.gain;
+            // Weight successive contributions by the previous signal.
+            weight = signal / self.attenuation;
 
             // Clamp the weight to [0,1] to prevent the result from diverging.
             if math::cast::<_, f32>(weight) > 1.0 {
@@ -191,7 +197,8 @@ impl<T: Float> NoiseModule<Point2<T>> for RidgedMulti<T> {
         }
 
         // Scale and shift the result into the [-1,1] range
-        result.mul_add(math::cast(1.0 / 3.0), -T::one())
+        let scale = 2.0 - 0.5.powi(self.octaves as i32 - 1);
+        result.mul_add(math::cast(2.0 / scale), -T::one())
     }
 }
 
@@ -221,8 +228,8 @@ impl<T: Float> NoiseModule<Point3<T>> for RidgedMulti<T> {
             // the ridges.
             signal = signal * weight;
 
-            // Weight succesive contributions by the previous signal.
-            weight = signal * self.gain;
+            // Weight successive contributions by the previous signal.
+            weight = signal / self.attenuation;
 
             // Clamp the weight to [0,1] to prevent the result from diverging.
             if math::cast::<_, f32>(weight) > 1.0 {
@@ -242,7 +249,8 @@ impl<T: Float> NoiseModule<Point3<T>> for RidgedMulti<T> {
         }
 
         // Scale and shift the result into the [-1,1] range
-        result.mul_add(math::cast(1.0 / 3.0), -T::one())
+        let scale = 2.0 - 0.5.powi(self.octaves as i32 - 1);
+        result.mul_add(math::cast(2.0 / scale), -T::one())
     }
 }
 
@@ -272,8 +280,8 @@ impl<T: Float> NoiseModule<Point4<T>> for RidgedMulti<T> {
             // the ridges.
             signal = signal * weight;
 
-            // Weight succesive contributions by the previous signal.
-            weight = signal * self.gain;
+            // Weight successive contributions by the previous signal.
+            weight = signal * self.attenuation;
 
             // Clamp the weight to [0,1] to prevent the result from diverging.
             if math::cast::<_, f32>(weight) > 1.0 {
@@ -293,6 +301,7 @@ impl<T: Float> NoiseModule<Point4<T>> for RidgedMulti<T> {
         }
 
         // Scale and shift the result into the [-1,1] range
-        result.mul_add(math::cast(1.0 / 3.0), -T::one())
+        let scale = 2.0 - 0.5.powi(self.octaves as i32 - 1);
+        result.mul_add(math::cast(2.0 / scale), -T::one())
     }
 }

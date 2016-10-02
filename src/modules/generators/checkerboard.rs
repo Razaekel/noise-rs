@@ -15,11 +15,14 @@
 use num_traits::Float;
 use math;
 use math::{Point2, Point3, Point4};
-use NoiseModule;
+use modules::NoiseModule;
+
+/// Default Checkerboard size
+pub const DEFAULT_CHECKERBOARD_SIZE: usize = 0;
 
 /// Noise module that outputs a checkerboard pattern.
 ///
-/// This noise module takes one input, size, and outputs 2<sup>size</sup>-sized blocks
+/// This noise module can take one input, size, and outputs 2<sup>size</sup>-sized blocks
 /// of alternating values. The values of these blocks alternate between -1.0
 /// and 1.0.
 ///
@@ -29,11 +32,22 @@ use NoiseModule;
 pub struct Checkerboard {
     /// Controls the size of the block in 2^(size).
     pub size: usize,
+
+    // Dummy field to prevent struct initialization except through the
+    // new() constructor.
+    _dummy: (),
 }
 
 impl Checkerboard {
-    pub fn new(size: usize) -> Checkerboard {
-        Checkerboard { size: 1 << size }
+    pub fn new() -> Checkerboard {
+        Checkerboard {
+            size: 1 << DEFAULT_CHECKERBOARD_SIZE,
+            _dummy: (),
+        }
+    }
+
+    pub fn set_size(self, size: usize) -> Checkerboard {
+        Checkerboard { size: 1 << size, ..self }
     }
 }
 
@@ -51,15 +65,7 @@ impl<T: Float> NoiseModule<Point2<T>> for Checkerboard {
     type Output = T;
 
     fn get(&self, point: Point2<T>) -> Self::Output {
-        let result = point.iter()
-            .map(|&a| fast_floor(a))
-            .fold(0, |a, b| (a & self.size) ^ (b & self.size));
-
-        if result > 0 {
-            -T::one()
-        } else {
-            T::one()
-        }
+        calculate_checkerboard(&point, self.size)
     }
 }
 
@@ -67,15 +73,7 @@ impl<T: Float> NoiseModule<Point3<T>> for Checkerboard {
     type Output = T;
 
     fn get(&self, point: Point3<T>) -> Self::Output {
-        let result = point.iter()
-            .map(|&a| fast_floor(a))
-            .fold(0, |a, b| (a & self.size) ^ (b & self.size));
-
-        if result > 0 {
-            -T::one()
-        } else {
-            T::one()
-        }
+        calculate_checkerboard(&point, self.size)
     }
 }
 
@@ -83,14 +81,18 @@ impl<T: Float> NoiseModule<Point4<T>> for Checkerboard {
     type Output = T;
 
     fn get(&self, point: Point4<T>) -> Self::Output {
-        let result = point.iter()
-            .map(|&a| fast_floor(a))
-            .fold(0, |a, b| (a & self.size) ^ (b & self.size));
+        calculate_checkerboard(&point, self.size)
+    }
+}
 
-        if result > 0 {
-            -T::one()
-        } else {
-            T::one()
-        }
+fn calculate_checkerboard<T: Float>(point: &[T], size: usize) -> T {
+    let result = point.iter()
+        .map(|&a| fast_floor(a))
+        .fold(0, |a, b| (a & size) ^ (b & size));
+
+    if result > 0 {
+        -T::one()
+    } else {
+        T::one()
     }
 }

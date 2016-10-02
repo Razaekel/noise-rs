@@ -21,7 +21,7 @@ use noise::modules::Constant;
 mod debug;
 
 fn main() {
-    debug::render_png2("constant1.png", Constant::new(-1.0), 1024, 1024, 1);
-    debug::render_png2("constant2.png", Constant::new(0.0), 1024, 1024, 1);
-    debug::render_png2("constant3.png", Constant::new(1.0), 1024, 1024, 1);
+    debug::render_noise_module("constant1.png", Constant::new(-1.0), 1024, 1024, 1);
+    debug::render_noise_module("constant2.png", Constant::new(0.0), 1024, 1024, 1);
+    debug::render_noise_module("constant3.png", Constant::new(1.0), 1024, 1024, 1);
 }

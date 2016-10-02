@@ -19,11 +19,11 @@ use noise::modules::{Checkerboard, Constant, Cylinders, Displace, Perlin};
 mod debug;
 
 fn main() {
-    let cboard = Checkerboard::new(0);
+    let cboard = Checkerboard::new();
     let constant = Constant::new(0.0);
-    let cylinders = Cylinders::new(1.0);
-    let perlin = Perlin::new(0);
+    let cylinders = Cylinders::new();
+    let perlin = Perlin::new();
     let displace = Displace::new(cylinders, cboard, perlin, constant, constant);
 
-    debug::render_png2("displace.png", displace, 1024, 1024, 50);
+    debug::render_noise_module("displace.png", displace, 1024, 1024, 50);
 }

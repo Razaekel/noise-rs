@@ -13,19 +13,40 @@
 // limitations under the License.
 
 use num_traits::Float;
-use math;
+use {PermutationTable, gradient, math};
 use math::{Point2, Point3, Point4};
-use {NoiseModule, PermutationTable, gradient};
+use modules::NoiseModule;
+
+/// Default Seed for the Perlin noise module.
+pub const DEFAULT_PERLIN_SEED: usize = 0;
 
 /// Noise module that outputs 2/3/4-dimensional Perlin noise.
 #[derive(Clone, Copy, Debug)]
 pub struct Perlin {
+    /// Seed value for Perlin
+    pub seed: usize,
+
     perm_table: PermutationTable,
 }
 
 impl Perlin {
-    pub fn new(seed: usize) -> Perlin {
-        Perlin { perm_table: PermutationTable::new(seed as u32) }
+    pub fn new() -> Perlin {
+        Perlin {
+            seed: DEFAULT_PERLIN_SEED,
+            perm_table: PermutationTable::new(DEFAULT_PERLIN_SEED as u32),
+        }
+    }
+
+    pub fn set_seed(self, seed: usize) -> Perlin {
+        // If the new seed is the same as the current seed, just return self.
+        if self.seed == seed {
+            return self;
+        }
+        // Otherwise, regenerate the permutation table based on the new seed.
+        Perlin {
+            seed: seed,
+            perm_table: PermutationTable::new(seed as u32),
+        }
     }
 }
 

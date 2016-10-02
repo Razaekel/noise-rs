@@ -19,7 +19,7 @@ use noise::modules::{Perlin, Turbulence};
 mod debug;
 
 fn main() {
-    let perlin = Perlin::new(0);
+    let perlin = Perlin::new();
 
-    debug::render_png2("turbulence.png", Turbulence::new(perlin), 1024, 1024, 50);
+    debug::render_noise_module("turbulence.png", Turbulence::new(perlin), 1024, 1024, 50);
 }

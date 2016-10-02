@@ -21,5 +21,6 @@ use noise::modules::Perlin;
 mod debug;
 
 fn main() {
-    debug::render_png2("perlin.png", Perlin::new(0), 1024, 1024, 50);
+    debug::render_noise_module("perlin.png", Perlin::new(), 1024, 1024, 50);
+    debug::render_noise_module("perlin.png", Perlin::new().set_seed(1), 1024, 1024, 50);
 }
