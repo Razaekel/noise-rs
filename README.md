@@ -4,6 +4,8 @@
 
 A procedural noise generation library for Rust.
 
+[Documentation](https://docs.rs/noise/)
+
 ```rust
 use noise::{Brownian3, Seed};
 
