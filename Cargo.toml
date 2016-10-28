@@ -3,6 +3,7 @@ name = "noise"
 description = "Procedural noise generation library."
 homepage = "https://github.com/bjz/noise-rs"
 repository = "https://github.com/bjz/noise-rs"
+documentation = "https://docs.rs/noise/"
 version = "0.2.0"
 license = "Apache-2.0"
 keywords = ["math", "random"]
