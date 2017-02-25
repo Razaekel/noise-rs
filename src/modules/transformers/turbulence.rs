@@ -15,8 +15,7 @@
 use num_traits::Float;
 use math;
 use math::{Point2, Point3, Point4};
-use NoiseModule;
-use modules::Fbm;
+use modules::{Fbm, MultiFractal, NoiseModule, Seedable};
 
 pub const DEFAULT_TURBULENCE_SEED: usize = 0;
 pub const DEFAULT_TURBULENCE_FREQUENCY: f32 = 1.0;
@@ -32,10 +31,21 @@ pub const DEFAULT_TURBULENCE_ROUGHNESS: usize = 3;
 /// turbulence, an application can modify its frequency, its power, and its
 /// roughness.
 pub struct Turbulence<Source, T> {
-    /// Source Module that outputs a value
+    /// Source Module that outputs a value.
     pub source: Source,
 
+    /// Seed value for the Turbulence module.
+    pub seed: usize,
+
+    /// Frequency value for the Turbulence module.
+    pub frequency: T,
+
+    /// Controls the strength of the turbulence by affecting how much each
+    /// point is moved.
     pub power: T,
+
+    /// Affects the roughness of the turbulence. Higher values are rougher.
+    pub roughness: usize,
 
     x_distort_module: Fbm<T>,
     y_distort_module: Fbm<T>,
@@ -49,38 +59,32 @@ impl<Source, T> Turbulence<Source, T>
     pub fn new(source: Source) -> Turbulence<Source, T> {
         Turbulence {
             source: source,
-            power: math::cast::<_, T>(DEFAULT_TURBULENCE_POWER),
+            seed: DEFAULT_TURBULENCE_SEED,
+            frequency: math::cast(DEFAULT_TURBULENCE_FREQUENCY),
+            power: math::cast(DEFAULT_TURBULENCE_POWER),
+            roughness: DEFAULT_TURBULENCE_ROUGHNESS,
             x_distort_module: Fbm::new()
                 .set_seed(DEFAULT_TURBULENCE_SEED)
                 .set_octaves(DEFAULT_TURBULENCE_ROUGHNESS)
-                .set_frequency(math::cast::<_, T>(DEFAULT_TURBULENCE_FREQUENCY)),
+                .set_frequency(math::cast(DEFAULT_TURBULENCE_FREQUENCY)),
             y_distort_module: Fbm::new()
                 .set_seed(DEFAULT_TURBULENCE_SEED + 1)
                 .set_octaves(DEFAULT_TURBULENCE_ROUGHNESS)
-                .set_frequency(math::cast::<_, T>(DEFAULT_TURBULENCE_FREQUENCY)),
+                .set_frequency(math::cast(DEFAULT_TURBULENCE_FREQUENCY)),
             z_distort_module: Fbm::new()
                 .set_seed(DEFAULT_TURBULENCE_SEED + 2)
                 .set_octaves(DEFAULT_TURBULENCE_ROUGHNESS)
-                .set_frequency(math::cast::<_, T>(DEFAULT_TURBULENCE_FREQUENCY)),
+                .set_frequency(math::cast(DEFAULT_TURBULENCE_FREQUENCY)),
             u_distort_module: Fbm::new()
                 .set_seed(DEFAULT_TURBULENCE_SEED + 3)
                 .set_octaves(DEFAULT_TURBULENCE_ROUGHNESS)
-                .set_frequency(math::cast::<_, T>(DEFAULT_TURBULENCE_FREQUENCY)),
-        }
-    }
-
-    pub fn set_seed(self, seed: usize) -> Turbulence<Source, T> {
-        Turbulence {
-            x_distort_module: self.x_distort_module.set_seed(seed),
-            y_distort_module: self.y_distort_module.set_seed(seed + 1),
-            z_distort_module: self.z_distort_module.set_seed(seed + 2),
-            u_distort_module: self.u_distort_module.set_seed(seed + 3),
-            ..self
+                .set_frequency(math::cast(DEFAULT_TURBULENCE_FREQUENCY)),
         }
     }
 
     pub fn set_frequency(self, frequency: T) -> Turbulence<Source, T> {
         Turbulence {
+            frequency: frequency,
             x_distort_module: self.x_distort_module.set_frequency(frequency),
             y_distort_module: self.y_distort_module.set_frequency(frequency),
             z_distort_module: self.z_distort_module.set_frequency(frequency),
@@ -95,10 +99,24 @@ impl<Source, T> Turbulence<Source, T>
 
     pub fn set_roughness(self, roughness: usize) -> Turbulence<Source, T> {
         Turbulence {
+            roughness: roughness,
             x_distort_module: self.x_distort_module.set_octaves(roughness),
             y_distort_module: self.y_distort_module.set_octaves(roughness),
             z_distort_module: self.z_distort_module.set_octaves(roughness),
             u_distort_module: self.u_distort_module.set_octaves(roughness),
+            ..self
+        }
+    }
+}
+
+impl<Source, T> Seedable for Turbulence<Source, T> {
+    fn set_seed(self, seed: usize) -> Turbulence<Source, T> {
+        Turbulence {
+            seed: seed,
+            x_distort_module: self.x_distort_module.set_seed(seed),
+            y_distort_module: self.y_distort_module.set_seed(seed + 1),
+            z_distort_module: self.z_distort_module.set_seed(seed + 2),
+            u_distort_module: self.u_distort_module.set_seed(seed + 3),
             ..self
         }
     }

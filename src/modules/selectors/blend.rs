@@ -14,7 +14,7 @@
 
 use num_traits::Float;
 use math::interp;
-use NoiseModule;
+use modules::NoiseModule;
 
 /// Noise module that outputs a weighted blend of the output values from two
 /// source modules given the output value supplied by a control module.

@@ -21,5 +21,5 @@ use noise::modules::Fbm;
 mod debug;
 
 fn main() {
-    debug::render_png2("fbm.png", Fbm::new(), 1024, 1024, 400);
+    debug::render_noise_module("fbm.png", Fbm::new(), 1024, 1024, 400);
 }

@@ -19,7 +19,7 @@ use noise::modules::{Checkerboard, Cache};
 mod debug;
 
 fn main() {
-    let cboard = Checkerboard::new(0);
+    let cboard = Checkerboard::new();
 
-    debug::render_png2("cache.png", Cache::new(cboard), 1024, 1024, 100);
+    debug::render_noise_module("cache.png", Cache::new(cboard), 1024, 1024, 100);
 }

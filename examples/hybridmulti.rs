@@ -21,5 +21,5 @@ use noise::modules::HybridMulti;
 mod debug;
 
 fn main() {
-    debug::render_png2("hybridmulti.png", HybridMulti::new(), 1024, 1024, 200);
+    debug::render_noise_module("hybridmulti.png", HybridMulti::new(), 1024, 1024, 200);
 }

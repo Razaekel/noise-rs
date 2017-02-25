@@ -19,8 +19,8 @@ use noise::modules::{Add, Cylinders, Perlin};
 mod debug;
 
 fn main() {
-    let cyl = Cylinders::new(1.0);
-    let perlin = Perlin::new(1);
+    let cyl = Cylinders::new();
+    let perlin = Perlin::new();
 
-    debug::render_png2("add.png", Add::new(cyl, perlin), 1024, 1024, 100);
+    debug::render_noise_module("add.png", Add::new(cyl, perlin), 1024, 1024, 100);
 }

@@ -14,7 +14,7 @@
 
 use num_traits::Float;
 use math::interp;
-use NoiseModule;
+use modules::NoiseModule;
 
 /// Noise module that maps the output value from the source module onto a
 /// terrace-forming curve.

@@ -19,7 +19,7 @@ use noise::modules::{Abs, Perlin};
 mod debug;
 
 fn main() {
-    let perlin = Perlin::new(0);
+    let perlin = Perlin::new();
 
-    debug::render_png2("abs.png", Abs::new(perlin), 1024, 1024, 100);
+    debug::render_noise_module("abs.png", Abs::new(perlin), 1024, 1024, 100);
 }

@@ -15,8 +15,7 @@
 use num_traits::Float;
 use math;
 use math::{Point2, Point3, Point4};
-use NoiseModule;
-use modules::Perlin;
+use modules::{MultiFractal, NoiseModule, Perlin, Seedable};
 
 /// Default noise seed for the Billow noise module.
 pub const DEFAULT_BILLOW_SEED: usize = 0;
@@ -85,19 +84,10 @@ impl<T: Float> Billow<T> {
             sources: super::build_sources(DEFAULT_BILLOW_SEED, DEFAULT_BILLOW_OCTAVE_COUNT),
         }
     }
+}
 
-    pub fn set_seed(self, seed: usize) -> Billow<T> {
-        if self.seed == seed {
-            return self;
-        }
-        Billow {
-            seed: seed,
-            sources: super::build_sources(seed, self.octaves),
-            ..self
-        }
-    }
-
-    pub fn set_octaves(self, mut octaves: usize) -> Billow<T> {
+impl<T> MultiFractal<T> for Billow<T> {
+    fn set_octaves(self, mut octaves: usize) -> Billow<T> {
         if self.octaves == octaves {
             return self;
         } else if octaves > BILLOW_MAX_OCTAVES {
@@ -110,16 +100,29 @@ impl<T: Float> Billow<T> {
         }
     }
 
-    pub fn set_frequency(self, frequency: T) -> Billow<T> {
+    fn set_frequency(self, frequency: T) -> Billow<T> {
         Billow { frequency: frequency, ..self }
     }
 
-    pub fn set_lacunarity(self, lacunarity: T) -> Billow<T> {
+    fn set_lacunarity(self, lacunarity: T) -> Billow<T> {
         Billow { lacunarity: lacunarity, ..self }
     }
 
-    pub fn set_persistence(self, persistence: T) -> Billow<T> {
+    fn set_persistence(self, persistence: T) -> Billow<T> {
         Billow { persistence: persistence, ..self }
+    }
+}
+
+impl<T> Seedable for Billow<T> {
+    fn set_seed(self, seed: usize) -> Billow<T> {
+        if self.seed == seed {
+            return self;
+        }
+        Billow {
+            seed: seed,
+            sources: super::build_sources(seed, self.octaves),
+            ..self
+        }
     }
 }
 

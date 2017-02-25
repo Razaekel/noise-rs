@@ -14,7 +14,7 @@
 
 use num_traits::Float;
 use math::{Point2, Point3, Point4};
-use NoiseModule;
+use modules::NoiseModule;
 
 /// Noise Module that scales the coordinates of the input value before
 /// returning the output value from the source module.

@@ -16,7 +16,7 @@ use num_traits::Float;
 use math;
 use math::{Point2, Point3, Point4};
 use std::f64::consts::PI;
-use NoiseModule;
+use modules::NoiseModule;
 
 /// Noise Module that rotates the input value around the origin before
 /// returning the output value from the source module.
@@ -132,7 +132,7 @@ impl<Source, T> NoiseModule<Point3<T>> for RotatePoint<Source, T>
 
     fn get(&self, point: Point3<T>) -> Self::Output {
         // In three dimensions, we could rotate around any of the x, y, or z
-        // axes. Need a more complicated function to handle this case.this
+        // axes. Need a more complicated function to handle this case.
         let x_cos = deg_to_rad(self.x_angle).cos();
         let y_cos = deg_to_rad(self.y_angle).cos();
         let z_cos = deg_to_rad(self.z_angle).cos();

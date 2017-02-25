@@ -14,7 +14,7 @@
 
 use num_traits::Float;
 use math::interp;
-use NoiseModule;
+use modules::NoiseModule;
 
 /// Noise module that outputs the value selected from one of two source
 /// modules chosen by the output value from a control module.
@@ -32,32 +32,43 @@ pub struct Select<Source1, Source2, Control, T> {
     /// Otherwise, this noise module outputs the value from `source1`.
     pub control: Control,
 
-    /// Edge-falloff value.
-    pub edge_falloff: T,
-
-    /// Lower bound of the selection range.
+    /// Lower bound of the selection range. Default is 0.0.
     pub lower_bound: T,
 
-    /// Upper bound of the selection range.
+    /// Upper bound of the selection range. Default is 1.0.
     pub upper_bound: T,
+
+    /// Edge-falloff value. Default is 0.0.
+    pub edge_falloff: T,
 }
 
-impl<Source1, Source2, Control, T> Select<Source1, Source2, Control, T> {
+impl<Source1, Source2, Control, T> Select<Source1, Source2, Control, T>
+    where T: Float,
+{
     pub fn new(source1: Source1,
                source2: Source2,
-               control: Control,
-               falloff: T,
-               lower: T,
-               upper: T)
+               control: Control)
                -> Select<Source1, Source2, Control, T> {
         Select {
             source1: source1,
             source2: source2,
             control: control,
-            edge_falloff: falloff,
+            lower_bound: T::zero(),
+            upper_bound: T::one(),
+            edge_falloff: T::zero(),
+        }
+    }
+
+    pub fn set_bounds(self, lower: T, upper: T) -> Select<Source1, Source2, Control, T> {
+        Select {
             lower_bound: lower,
             upper_bound: upper,
+            ..self
         }
+    }
+
+    pub fn set_edge_falloff(self, falloff: T) -> Select<Source1, Source2, Control, T> {
+        Select { edge_falloff: falloff, ..self }
     }
 }
 

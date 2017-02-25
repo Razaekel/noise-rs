@@ -14,13 +14,13 @@
 
 extern crate noise;
 
-use noise::modules::{Checkerboard, RotatePoint};
+use noise::modules::{Cylinders, RotatePoint};
 
 mod debug;
 
 fn main() {
-    let cboard = Checkerboard::new(0);
-    let rotate_point = RotatePoint::new(cboard).set_z_angle(45.0);
+    let cylinders = Cylinders::new();
+    let rotate_point = RotatePoint::new(cylinders).set_x_angle(60.0);
 
-    debug::render_png2("rotate_point.png", rotate_point, 1024, 1024, 50);
+    debug::render_noise_module("rotate_point.png", rotate_point, 1024, 1024, 50);
 }

@@ -14,7 +14,7 @@
 
 use num_traits::Float;
 use math::{Point2, Point3, Point4};
-use NoiseModule;
+use modules::NoiseModule;
 
 /// Noise Module that uses multiple source modules to displace each coordinate
 /// of the input value before returning the output value from the `source` module.

@@ -17,6 +17,7 @@ use num_traits::Float;
 use {PermutationTable, gradient, math};
 
 /// 2-dimensional perlin noise
+#[deprecated(since="0.4.0", note="please use `noisemodule::Fbm` instead")]
 pub fn perlin2<T: Float>(perm_table: &PermutationTable, point: &math::Point2<T>) -> T {
     #[inline(always)]
     fn surflet<T: Float>(perm_table: &PermutationTable,
@@ -55,6 +56,7 @@ pub fn perlin2<T: Float>(perm_table: &PermutationTable, point: &math::Point2<T>)
 }
 
 /// 3-dimensional perlin noise
+#[deprecated(since="0.4.0", note="please use `noisemodule::Fbm` instead")]
 pub fn perlin3<T: Float>(perm_table: &PermutationTable, point: &math::Point3<T>) -> T {
     #[inline(always)]
     fn surflet<T: Float>(perm_table: &PermutationTable,
@@ -105,6 +107,7 @@ pub fn perlin3<T: Float>(perm_table: &PermutationTable, point: &math::Point3<T>)
 }
 
 /// 4-dimensional perlin noise
+#[deprecated(since="0.4.0", note="please use `noisemodule::Fbm` instead")]
 pub fn perlin4<T: Float>(perm_table: &PermutationTable, point: &math::Point4<T>) -> T {
     #[inline(always)]
     fn surflet<T: Float>(perm_table: &PermutationTable,

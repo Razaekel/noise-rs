@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use num_traits::Float;
-use NoiseModule;
+use modules::NoiseModule;
 
 /// Noise module that clamps the output value from the source module to a
 /// range of values.
@@ -45,6 +45,14 @@ impl<Source, T> Clamp<Source, T>
 
     pub fn set_upper_bound(self, upper_bound: T) -> Clamp<Source, T> {
         Clamp { upper_bound: upper_bound, ..self }
+    }
+
+    pub fn set_bounds(self, lower_bound: T, upper_bound: T) -> Clamp<Source, T> {
+        Clamp {
+            lower_bound: lower_bound,
+            upper_bound: upper_bound,
+            ..self
+        }
     }
 }
 

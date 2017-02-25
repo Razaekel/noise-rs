@@ -19,8 +19,8 @@ use noise::modules::{ScaleBias, Perlin};
 mod debug;
 
 fn main() {
-    let perlin = Perlin::new(0);
-    let scale_bias = ScaleBias::new(perlin).set_scale(0.5).set_bias(0.5);
+    let perlin = Perlin::new();
+    let scale_bias = ScaleBias::new(perlin).set_scale(0.0625).set_bias(0.0);
 
-    debug::render_png2("scale_bias.png", scale_bias, 1024, 1024, 100);
+    debug::render_noise_module("scale_bias.png", &scale_bias, 1024, 1024, 100);
 }
