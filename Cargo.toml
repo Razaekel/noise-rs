@@ -139,5 +139,15 @@ name = "translate_point"
 [[example]]
 name = "turbulence"
 
+[[example]]
+name = "texturewood"
 
+[[example]]
+name = "texturejade"
+
+[[example]]
+name = "texturegranite"
+
+[[example]]
+name = "textureslime"
 
