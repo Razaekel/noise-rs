@@ -144,6 +144,7 @@ macro_rules! impl_brownian {
             /// - lacunarity: `2.0`
             /// - persistence: `0.5`
             #[inline]
+            #[deprecated(since="0.3.0", note="please use `noisemodule::Fbm` instead")]
             pub fn new(function: F, octaves: usize) -> $Brownian<T, F> {
                 $Brownian {
                     function: function,

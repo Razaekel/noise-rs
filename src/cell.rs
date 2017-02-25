@@ -698,81 +698,97 @@ pub fn cell4_seed_2_points<T, F>(perm_table: &PermutationTable,
     (seed_point0, range0, seed_point1, range1)
 }
 
+#[deprecated(since="0.3.0", note="please use `noisemodule::Worley` instead with enable_range set to `true`")]
 pub fn cell2_range<T: Float>(perm_table: &PermutationTable, point: &math::Point2<T>) -> T {
     let (_, range) = cell2_seed_point(perm_table, point, range_sqr_euclidian2);
     range
 }
 
+#[deprecated(since="0.3.0", note="please use `noisemodule::Worley` instead with enable_range set to `true`")]
 pub fn cell3_range<T: Float>(perm_table: &PermutationTable, point: &math::Point3<T>) -> T {
     let (_, range) = cell3_seed_point(perm_table, point, range_sqr_euclidian3);
     range
 }
 
+#[deprecated(since="0.3.0", note="please use `noisemodule::Worley` instead with enable_range set to `true`")]
 pub fn cell4_range<T: Float>(perm_table: &PermutationTable, point: &math::Point4<T>) -> T {
     let (_, range) = cell4_seed_point(perm_table, point, range_sqr_euclidian4);
     range
 }
 
+#[deprecated(since="0.3.0", note="please use `noisemodule::Worley` instead with enable_range set to `true` and a `noisemodule::ScaleBias` with scale set to -1")]
 pub fn cell2_range_inv<T: Float>(perm_table: &PermutationTable, point: &math::Point2<T>) -> T {
     let (_, range1, _, range2) = cell2_seed_2_points(perm_table, point, range_sqr_euclidian2);
     range2 - range1
 }
 
+#[deprecated(since="0.3.0", note="please use `noisemodule::Worley` instead with enable_range set to `true` and a `noisemodule::ScaleBias` with scale set to -1")]
 pub fn cell3_range_inv<T: Float>(perm_table: &PermutationTable, point: &math::Point3<T>) -> T {
     let (_, range1, _, range2) = cell3_seed_2_points(perm_table, point, range_sqr_euclidian3);
     range2 - range1
 }
 
+#[deprecated(since="0.3.0", note="please use `noisemodule::Worley` instead with enable_range set to `true` and a `noisemodule::ScaleBias` with scale set to -1")]
 pub fn cell4_range_inv<T: Float>(perm_table: &PermutationTable, point: &math::Point4<T>) -> T {
     let (_, range1, _, range2) = cell4_seed_2_points(perm_table, point, range_sqr_euclidian4);
     range2 - range1
 }
 
+#[deprecated(since="0.3.0", note="please use `noisemodule::Worley` instead")]
 pub fn cell2_value<T: Float>(perm_table: &PermutationTable, point: &math::Point2<T>) -> T {
     let cell = cell2_seed_cell(perm_table, point, range_sqr_euclidian2);
     math::cast::<_, T>(perm_table.get2(cell)) * math::cast(1.0 / 255.0)
 }
 
+#[deprecated(since="0.3.0", note="please use `noisemodule::Worley` instead")]
 pub fn cell3_value<T: Float>(perm_table: &PermutationTable, point: &math::Point3<T>) -> T {
     let cell = cell3_seed_cell(perm_table, point, range_sqr_euclidian3);
     math::cast::<_, T>(perm_table.get3(cell)) * math::cast(1.0 / 255.0)
 }
 
+#[deprecated(since="0.3.0", note="please use `noisemodule::Worley` instead")]
 pub fn cell4_value<T: Float>(perm_table: &PermutationTable, point: &math::Point4<T>) -> T {
     let cell = cell4_seed_cell(perm_table, point, range_sqr_euclidian4);
     math::cast::<_, T>(perm_table.get4(cell)) * math::cast(1.0 / 255.0)
 }
 
+#[deprecated(since="0.3.0", note="please use `noisemodule::Worley` instead with the Manhattan RangeFunction")]
 pub fn cell2_manhattan<T: Float>(perm_table: &PermutationTable, point: &math::Point2<T>) -> T {
     let (_, range) = cell2_seed_point(perm_table, point, range_manhattan2);
     range
 }
 
+#[deprecated(since="0.3.0", note="please use `noisemodule::Worley` instead with the Manhattan RangeFunction")]
 pub fn cell3_manhattan<T: Float>(perm_table: &PermutationTable, point: &math::Point3<T>) -> T {
     let (_, range) = cell3_seed_point(perm_table, point, range_manhattan3);
     range
 }
 
+#[deprecated(since="0.3.0", note="please use `noisemodule::Worley` instead with the Manhattan RangeFunction")]
 pub fn cell4_manhattan<T: Float>(perm_table: &PermutationTable, point: &math::Point4<T>) -> T {
     let (_, range) = cell4_seed_point(perm_table, point, range_manhattan4);
     range
 }
 
+#[deprecated(since="0.3.0", note="please use `noisemodule::Worley` instead with the Manhattan RangeFunction, enable_range set to `true`, and a `noisemodule::ScaleBias` with scale set to -1")]
 pub fn cell2_manhattan_inv<T: Float>(perm_table: &PermutationTable, point: &math::Point2<T>) -> T {
     let (_, range1, _, range2) = cell2_seed_2_points(perm_table, point, range_manhattan2);
     range2 - range1
 }
 
+#[deprecated(since="0.3.0", note="please use `noisemodule::Worley` instead with the Manhattan RangeFunction, enable_range set to `true`, and a `noisemodule::ScaleBias` with scale set to -1")]
 pub fn cell3_manhattan_inv<T: Float>(perm_table: &PermutationTable, point: &math::Point3<T>) -> T {
     let (_, range1, _, range2) = cell3_seed_2_points(perm_table, point, range_manhattan3);
     range2 - range1
 }
 
+#[deprecated(since="0.3.0", note="please use `noisemodule::Worley` instead with the Manhattan RangeFunction, enable_range set to `true`, and a `noisemodule::ScaleBias` with scale set to -1")]
 pub fn cell4_manhattan_inv<T: Float>(perm_table: &PermutationTable, point: &math::Point4<T>) -> T {
     let (_, range1, _, range2) = cell4_seed_2_points(perm_table, point, range_manhattan4);
     range2 - range1
 }
 
+#[deprecated(since="0.3.0", note="please use `noisemodule::Worley` instead with the Manhattan RangeFunction and enable_range set to `true`")]
 pub fn cell2_manhattan_value<T: Float>(perm_table: &PermutationTable,
                                        point: &math::Point2<T>)
                                        -> T {
@@ -780,6 +796,7 @@ pub fn cell2_manhattan_value<T: Float>(perm_table: &PermutationTable,
     math::cast::<_, T>(perm_table.get2(cell)) * math::cast(1.0 / 255.0)
 }
 
+#[deprecated(since="0.3.0", note="please use `noisemodule::Worley` instead with the Manhattan RangeFunction and enable_range set to `true`")]
 pub fn cell3_manhattan_value<T: Float>(perm_table: &PermutationTable,
                                        point: &math::Point3<T>)
                                        -> T {
@@ -787,6 +804,7 @@ pub fn cell3_manhattan_value<T: Float>(perm_table: &PermutationTable,
     math::cast::<_, T>(perm_table.get3(cell)) * math::cast(1.0 / 255.0)
 }
 
+#[deprecated(since="0.3.0", note="please use `noisemodule::Worley` instead with the Manhattan RangeFunction and enable_range set to `true`")]
 pub fn cell4_manhattan_value<T: Float>(perm_table: &PermutationTable,
                                        point: &math::Point4<T>)
                                        -> T {
