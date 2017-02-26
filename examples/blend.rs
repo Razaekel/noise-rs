@@ -14,7 +14,7 @@
 
 extern crate noise;
 
-use noise::modules::{Blend, Fbm, Perlin, RidgedMulti};
+use noise::{Blend, Fbm, Perlin, RidgedMulti};
 
 mod debug;
 

@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::Float;
 use math;
 use math::{Point2, Point3, Point4};
 use modules::{MultiFractal, NoiseModule, Perlin, Seedable};
+use num_traits::Float;
 
 /// Default noise seed for the Billow noise module.
 pub const DEFAULT_BILLOW_SEED: usize = 0;

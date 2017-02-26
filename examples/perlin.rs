@@ -16,7 +16,7 @@
 
 extern crate noise;
 
-use noise::modules::Perlin;
+use noise::{Perlin, Seedable};
 
 mod debug;
 

@@ -14,7 +14,7 @@
 
 extern crate noise;
 
-use noise::modules::*;
+use noise::*;
 
 mod debug;
 

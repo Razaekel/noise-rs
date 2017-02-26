@@ -16,7 +16,7 @@
 
 extern crate noise;
 
-use noise::modules::Billow;
+use noise::Billow;
 
 mod debug;
 

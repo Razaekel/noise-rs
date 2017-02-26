@@ -14,7 +14,7 @@
 
 extern crate noise;
 
-use noise::modules::{Checkerboard, TranslatePoint};
+use noise::{Checkerboard, TranslatePoint};
 
 mod debug;
 

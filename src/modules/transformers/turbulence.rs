@@ -12,14 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::Float;
 use math;
 use math::{Point2, Point3, Point4};
 use modules::{Fbm, MultiFractal, NoiseModule, Seedable};
+use num_traits::Float;
 
+/// Default seed for the Turbulence noise module.
 pub const DEFAULT_TURBULENCE_SEED: usize = 0;
+/// Default frequency for the Turbulence noise module.
 pub const DEFAULT_TURBULENCE_FREQUENCY: f32 = 1.0;
+/// Default power for the turbulence noise module.
 pub const DEFAULT_TURBULENCE_POWER: f32 = 1.0;
+/// Default roughness for the Turbulence noise module.
 pub const DEFAULT_TURBULENCE_ROUGHNESS: usize = 3;
 
 /// Noise Module that randomly displaces the input value before returning the

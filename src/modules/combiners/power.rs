@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::Float;
 use modules::NoiseModule;
+use num_traits::Float;
 
 /// Noise module that raises the output vaule from the first source module
 /// to the power of the output value of the second source module.

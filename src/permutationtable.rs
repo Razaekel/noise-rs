@@ -14,11 +14,12 @@
 
 // TODO: Use PrimInt + Signed instead of SignedInt + NumCast once num has
 // PrimInt implementations
+
+
+use math;
 use num_traits::{NumCast, PrimInt, Signed};
 use rand::{Rand, Rng, SeedableRng, XorShiftRng};
 use std::fmt;
-
-use math;
 
 const TABLE_SIZE: usize = 256;
 
@@ -27,6 +28,7 @@ const TABLE_SIZE: usize = 256;
 /// Table creation is expensive, so in most circumstances you'll only want to
 /// create one of these per generator.
 #[derive(Copy)]
+#[deprecated(since="0.3.0", note="will be made private by 1.0")]
 pub struct PermutationTable {
     values: [u8; TABLE_SIZE],
 }
@@ -132,9 +134,9 @@ impl fmt::Debug for PermutationTable {
 
 #[cfg(test)]
 mod tests {
-    use rand::random;
-    use perlin::perlin3;
     use super::PermutationTable;
+    use perlin::perlin3;
+    use rand::random;
 
     #[test]
     fn test_random_seed() {

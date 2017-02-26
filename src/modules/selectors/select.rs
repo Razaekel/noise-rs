@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::Float;
 use math::interp;
 use modules::NoiseModule;
+use num_traits::Float;
 
 /// Noise module that outputs the value selected from one of two source
 /// modules chosen by the output value from a control module.

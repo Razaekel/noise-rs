@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::Float;
 use {PermutationTable, math};
 use math::{Point2, Point3, Point4};
 use modules::{NoiseModule, Seedable};
+use num_traits::Float;
 
 /// Default noise seed for the Worley noise module.
 pub const DEFAULT_WORLEY_SEED: usize = 0;
@@ -26,7 +26,7 @@ pub const DEFAULT_WORLEY_FREQUENCY: f32 = 1.0;
 /// Default displacement for the Worley noise module.
 pub const DEFAULT_WORLEY_DISPLACEMENT: f32 = 1.0;
 
-/// Noise module that outputs 2/3/4-dimensional Worley noise.
+/// Noise module that outputs Worley noise.
 #[derive(Clone, Copy, Debug)]
 pub struct Worley<T> {
     perm_table: PermutationTable,
@@ -100,6 +100,7 @@ impl<T> Seedable for Worley<T> {
     }
 }
 
+/// Set of distance functions that can be used in the Worley noise module.
 #[derive(Clone, Copy, Debug)]
 pub enum RangeFunction {
     /// The standard linear distance. Expensive to compute because it requires
@@ -241,15 +242,16 @@ impl<T: Float> NoiseModule<Point2<T>> for Worley<T> {
             test_point![far[0], far[1]];
         }
 
-        let mut value = T::zero();
+        let value;
 
         if self.enable_range {
             value = range;
+        } else {
+            value = self.displacement * math::cast::<_, T>(self.perm_table.get2(seed_cell)) *
+                    math::cast(1.0 / 255.0);
         }
 
-        (value +
-         (self.displacement * math::cast::<_, T>(self.perm_table.get2(seed_cell)) *
-          math::cast(1.0 / 255.0))) * math::cast(2.0) - T::one()
+        value * math::cast(2.0) - T::one()
     }
 }
 
@@ -257,7 +259,7 @@ impl<T: Float> NoiseModule<Point2<T>> for Worley<T> {
 #[cfg_attr(rustfmt, rustfmt_skip)]
 fn get_vec2<T: Float>(index: usize) -> Point2<T> {
     let length = math::cast::<_, T>((index & 0xF8) >> 3) * math::cast(0.5 / 31.0);
-    let diag = length * math::cast(0.70710678118);
+    let diag = length * math::cast(::std::f64::consts::FRAC_1_SQRT_2);
     let one = length;
     let zero = T::zero();
     match index & 0x07 {
@@ -346,23 +348,24 @@ impl<T: Float> NoiseModule<Point3<T>> for Worley<T> {
             test_point![far[0], far[1], far[2]];
         }
 
-        let mut value = T::zero();
+        let value;
 
         if self.enable_range {
             value = range;
+        } else {
+            value = self.displacement * math::cast::<_, T>(self.perm_table.get3(seed_cell)) *
+                    math::cast(1.0 / 255.0);
         }
 
-        value +
-        (self.displacement * math::cast::<_, T>(self.perm_table.get3(seed_cell)) *
-         math::cast(1.0 / 255.0) * math::cast(2.0) - T::one())
+        value * math::cast(2.0) - T::one()
     }
 }
 
 #[inline(always)]
 #[cfg_attr(rustfmt, rustfmt_skip)]
-pub fn get_vec3<T: Float>(index: usize) -> Point3<T> {
+fn get_vec3<T: Float>(index: usize) -> Point3<T> {
     let length = math::cast::<_, T>((index & 0xE0) >> 5) * math::cast(0.5 / 7.0);
-    let diag = length * math::cast(0.70710678118f32);
+    let diag = length * math::cast(::std::f64::consts::FRAC_1_SQRT_2);
     let one = length;
     let zero = T::zero();
     match index % 18 {
@@ -490,21 +493,22 @@ impl<T: Float> NoiseModule<Point4<T>> for Worley<T> {
             test_point![far[0], far[1], far[2], far[3]];
         }
 
-        let mut value = T::zero();
+        let value;
 
         if self.enable_range {
             value = range;
+        } else {
+            value = self.displacement * math::cast::<_, T>(self.perm_table.get4(seed_cell)) *
+                math::cast(1.0 / 255.0);
         }
 
-        value +
-        (self.displacement * math::cast::<_, T>(self.perm_table.get4(seed_cell)) *
-         math::cast(1.0 / 255.0) * math::cast(2.0) - T::one())
+        value * math::cast(2.0) - T::one()
     }
 }
 
 #[inline(always)]
 #[cfg_attr(rustfmt, rustfmt_skip)]
-pub fn get_vec4<T: Float>(index: usize) -> Point4<T> {
+fn get_vec4<T: Float>(index: usize) -> Point4<T> {
     let length = math::cast::<_, T>((index & 0xE0) >> 5) * math::cast(0.5 / 7.0);
     let diag = length * math::cast(0.57735026919);
     let zero = T::zero();

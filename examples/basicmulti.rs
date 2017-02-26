@@ -16,7 +16,7 @@
 
 extern crate noise;
 
-use noise::modules::BasicMulti;
+use noise::BasicMulti;
 
 mod debug;
 

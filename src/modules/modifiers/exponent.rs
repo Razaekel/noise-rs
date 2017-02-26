@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::Float;
 use math;
 use modules::NoiseModule;
+use num_traits::Float;
 
 /// Noise module that maps the output value from the source module onto an
 /// exponential curve.
@@ -25,11 +25,11 @@ use modules::NoiseModule;
 /// value back to the original range.
 pub struct Exponent<Source, T> {
     /// Outputs a value.
-    source: Source,
+    pub source: Source,
 
     /// Exponent to apply to the output value from the source module. Default
     /// is 1.0.
-    exponent: T,
+    pub exponent: T,
 }
 
 impl<Source, T> Exponent<Source, T>

@@ -14,7 +14,7 @@
 
 extern crate noise;
 
-use noise::modules::{Abs, Invert, Perlin};
+use noise::{Abs, Invert, Perlin};
 
 mod debug;
 

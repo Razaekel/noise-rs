@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::Float;
 use math;
 use math::{Point2, Point3, Point4};
 use modules::NoiseModule;
+use num_traits::Float;
 
 /// Default cylinders frequency
 pub const DEFAULT_CYLINDERS_FREQUENCY: f32 = 1.0;

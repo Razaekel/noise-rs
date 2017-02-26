@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::Float;
 
 use math;
+use num_traits::Float;
 
 #[inline(always)]
 #[cfg_attr(rustfmt, rustfmt_skip)]

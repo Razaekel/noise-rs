@@ -24,8 +24,9 @@ mod fbm;
 mod hybridmulti;
 mod ridgedmulti;
 
-use modules::Perlin;
+use modules::{Perlin, Seedable};
 
+/// Trait for MultiFractal modules
 pub trait MultiFractal<T> {
     fn set_octaves(self, octaves: usize) -> Self;
 

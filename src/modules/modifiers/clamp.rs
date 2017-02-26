@@ -12,20 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::Float;
 use modules::NoiseModule;
+use num_traits::Float;
 
 /// Noise module that clamps the output value from the source module to a
 /// range of values.
 pub struct Clamp<Source, T> {
     /// Outputs a value.
-    source: Source,
+    pub source: Source,
 
     /// Lower bound of the clamping range. Default is -1.0.
-    lower_bound: T,
+    pub lower_bound: T,
 
     /// Upper bound of the clamping range. Default is 1.0.
-    upper_bound: T,
+    pub upper_bound: T,
 }
 
 impl<Source, T> Clamp<Source, T>

@@ -21,9 +21,21 @@ use noise::{cell2_range_inv, cell3_range_inv, cell4_range_inv, PermutationTable,
 mod debug;
 
 fn main() {
-    debug::render_png("cell2_range_inv.png", &PermutationTable::new(0), 1024, 1024, scaled_cell2_range_inv);
-    debug::render_png("cell3_range_inv.png", &PermutationTable::new(0), 1024, 1024, scaled_cell3_range_inv);
-    debug::render_png("cell4_range_inv.png", &PermutationTable::new(0), 1024, 1024, scaled_cell4_range_inv);
+    debug::render_png("cell2_range_inv.png",
+                      &PermutationTable::new(0),
+                      1024,
+                      1024,
+                      scaled_cell2_range_inv);
+    debug::render_png("cell3_range_inv.png",
+                      &PermutationTable::new(0),
+                      1024,
+                      1024,
+                      scaled_cell3_range_inv);
+    debug::render_png("cell4_range_inv.png",
+                      &PermutationTable::new(0),
+                      1024,
+                      1024,
+                      scaled_cell4_range_inv);
 }
 
 fn scaled_cell2_range_inv(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
@@ -31,9 +43,12 @@ fn scaled_cell2_range_inv(perm_table: &PermutationTable, point: &Point2<f64>) ->
 }
 
 fn scaled_cell3_range_inv(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
-    cell3_range_inv(perm_table, &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0]) * 2.0 - 1.0
+    cell3_range_inv(perm_table,
+                    &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0]) * 2.0 - 1.0
 }
 
 fn scaled_cell4_range_inv(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
-    cell4_range_inv(perm_table, &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0, point[1] / 32.0]) * 2.0 - 1.0
+    cell4_range_inv(perm_table,
+                    &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0, point[1] / 32.0]) *
+    2.0 - 1.0
 }

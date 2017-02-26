@@ -14,7 +14,7 @@
 
 extern crate noise;
 
-use noise::modules::{Perlin, Turbulence};
+use noise::{Perlin, Turbulence};
 
 mod debug;
 

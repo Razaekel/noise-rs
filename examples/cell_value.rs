@@ -21,9 +21,21 @@ use noise::{cell2_value, cell3_value, cell4_value, PermutationTable, Point2};
 mod debug;
 
 fn main() {
-    debug::render_png("cell2_value.png", &PermutationTable::new(0), 1024, 1024, scaled_cell2_value);
-    debug::render_png("cell3_value.png", &PermutationTable::new(0), 1024, 1024, scaled_cell3_value);
-    debug::render_png("cell4_value.png", &PermutationTable::new(0), 1024, 1024, scaled_cell4_value);
+    debug::render_png("cell2_value.png",
+                      &PermutationTable::new(0),
+                      1024,
+                      1024,
+                      scaled_cell2_value);
+    debug::render_png("cell3_value.png",
+                      &PermutationTable::new(0),
+                      1024,
+                      1024,
+                      scaled_cell3_value);
+    debug::render_png("cell4_value.png",
+                      &PermutationTable::new(0),
+                      1024,
+                      1024,
+                      scaled_cell4_value);
 }
 
 fn scaled_cell2_value(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
@@ -31,9 +43,12 @@ fn scaled_cell2_value(perm_table: &PermutationTable, point: &Point2<f64>) -> f64
 }
 
 fn scaled_cell3_value(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
-    cell3_value(perm_table, &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0]) * 2.0 - 1.0
+    cell3_value(perm_table,
+                &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0]) * 2.0 - 1.0
 }
 
 fn scaled_cell4_value(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
-    cell4_value(perm_table, &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0, point[1] / 32.0]) * 2.0 - 1.0
+    cell4_value(perm_table,
+                &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0, point[1] / 32.0]) * 2.0 -
+    1.0
 }

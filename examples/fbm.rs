@@ -16,7 +16,7 @@
 
 extern crate noise;
 
-use noise::modules::Fbm;
+use noise::Fbm;
 
 mod debug;
 

@@ -14,7 +14,7 @@
 
 extern crate noise;
 
-use noise::modules::{Curve, Perlin};
+use noise::{Curve, Perlin};
 
 mod debug;
 
