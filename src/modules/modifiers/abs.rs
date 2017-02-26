@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::Float;
 use modules::NoiseModule;
+use num_traits::Float;
 
 /// Noise module that outputs the absolute value of the output value from the
 /// source module.
 pub struct Abs<Source> {
     /// Outputs a value.
-    source: Source,
+    pub source: Source,
 }
 
 impl<Source> Abs<Source> {

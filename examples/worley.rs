@@ -16,17 +16,12 @@
 
 extern crate noise;
 
-use noise::modules::{RangeFunction, Worley};
+use noise::{RangeFunction, Worley};
 
 mod debug;
 
 fn main() {
     debug::render_noise_module("worley-linear.png", Worley::new(), 1024, 1024, 50);
-    debug::render_noise_module("worley-linear-f4.png",
-                               Worley::new().set_frequency(4.0),
-                               1024,
-                               1024,
-                               50);
     debug::render_noise_module("worley-linear-range.png",
                                Worley::new().enable_range(true),
                                1024,
@@ -44,8 +39,8 @@ fn main() {
                                50);
     debug::render_noise_module("worley-manhattan-range.png",
                                Worley::new()
-                           .enable_range(true)
-                           .set_range_function(RangeFunction::Manhattan),
+                                   .enable_range(true)
+                                   .set_range_function(RangeFunction::Manhattan),
                                1024,
                                1024,
                                50);
@@ -56,8 +51,8 @@ fn main() {
                                50);
     debug::render_noise_module("worley-chebyshev-range.png",
                                Worley::new()
-                           .enable_range(true)
-                           .set_range_function(RangeFunction::Chebyshev),
+                                   .enable_range(true)
+                                   .set_range_function(RangeFunction::Chebyshev),
                                1024,
                                1024,
                                50);
@@ -68,8 +63,8 @@ fn main() {
                                50);
     debug::render_noise_module("worley-quadratic-range.png",
                                Worley::new()
-                           .enable_range(true)
-                           .set_range_function(RangeFunction::Quadratic),
+                                   .enable_range(true)
+                                   .set_range_function(RangeFunction::Quadratic),
                                1024,
                                1024,
                                50);

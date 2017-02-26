@@ -12,22 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::Float;
 use math;
 use math::{Point2, Point3, Point4};
 use modules::{MultiFractal, NoiseModule, Perlin, Seedable};
+use num_traits::Float;
 
-// Default noise seed for the fBm noise module.
+/// Default noise seed for the fBm noise module.
 pub const DEFAULT_FBM_SEED: usize = 0;
-// Default number of octaves for the fBm noise module.
+/// Default number of octaves for the fBm noise module.
 pub const DEFAULT_FBM_OCTAVE_COUNT: usize = 6;
-// Default frequency for the fBm noise module.
+/// Default frequency for the fBm noise module.
 pub const DEFAULT_FBM_FREQUENCY: f32 = 1.0;
-// Default lacunarity for the fBm noise module.
+/// Default lacunarity for the fBm noise module.
 pub const DEFAULT_FBM_LACUNARITY: f32 = 2.0;
-// Default Hurst exponent for the fBm noise module
+/// Default Hurst exponent for the fBm noise module
 pub const DEFAULT_FBM_PERSISTENCE: f32 = 0.5;
-// Maximum number of octaves for the fBm noise module.
+/// Maximum number of octaves for the fBm noise module.
 pub const FBM_MAX_OCTAVES: usize = 32;
 
 /// Noise module that outputs fBm (fractal Brownian motion) noise.

@@ -14,7 +14,7 @@
 
 extern crate noise;
 
-use noise::modules::*;
+use noise::*;
 
 mod debug;
 
@@ -197,12 +197,12 @@ fn main() {
         .set_lacunarity(CONTINENT_LACUNARITY)
         .set_octaves(14);
 
-//    debug::render_noise_module("complexplanet_images/00_0_baseContinentDef_fb0\
-//    .png",
-//                               &baseContinentDef_fb0,
-//                               1024,
-//                               1024,
-//                               100);
+    //    debug::render_noise_module("complexplanet_images/00_0_baseContinentDef_fb0\
+    //    .png",
+    //                               &baseContinentDef_fb0,
+    //                               1024,
+    //                               1024,
+    //                               100);
 
     // 2: [Continent-with-ranges module]: Next, a curve module modifies the
     // output value from the continent module so that very high values appear
@@ -219,12 +219,12 @@ fn main() {
         .add_control_point(1.0000 + SEA_LEVEL, 0.500 + SEA_LEVEL)
         .add_control_point(2.0000 + SEA_LEVEL, 0.500 + SEA_LEVEL);
 
-//    debug::render_noise_module("complexplanet_images/00_1_baseContinentDef_cu\
-//    .png",
-//                               &baseContinentDef_cu,
-//                               1024,
-//                               1024,
-//                               100);
+    //    debug::render_noise_module("complexplanet_images/00_1_baseContinentDef_cu\
+    //    .png",
+    //                               &baseContinentDef_cu,
+    //                               1024,
+    //                               1024,
+    //                               100);
 
     // 3: [Carver module]: This higher-frequency BasicMulti module will be
     // used by subsequent noise modules to carve out chunks from the
@@ -237,12 +237,12 @@ fn main() {
         .set_lacunarity(CONTINENT_LACUNARITY)
         .set_octaves(11);
 
-//    debug::render_noise_module("complexplanet_images/00_2_baseContinentDef_fb1\
-//    .png",
-//                               &baseContinentDef_fb1,
-//                               1024,
-//                               1024,
-//                               100);
+    //    debug::render_noise_module("complexplanet_images/00_2_baseContinentDef_fb1\
+    //    .png",
+    //                               &baseContinentDef_fb1,
+    //                               1024,
+    //                               1024,
+    //                               100);
 
     // 4: [Scaled-carver module]: This scale/bias module scales the output
     // value from the carver module such that it is usually near 1.0. This
@@ -251,12 +251,12 @@ fn main() {
         .set_scale(0.375)
         .set_bias(0.625);
 
-//    debug::render_noise_module("complexplanet_images/00_3_baseContinentDef_sb\
-//    .png",
-//                               &baseContinentDef_sb,
-//                               1024,
-//                               1024,
-//                               100);
+    //    debug::render_noise_module("complexplanet_images/00_3_baseContinentDef_sb\
+    //    .png",
+    //                               &baseContinentDef_sb,
+    //                               1024,
+    //                               1024,
+    //                               100);
 
     // 5: [Carved-continent module]: This minimum-value module carves out
     // chunks from the continent-with-ranges module. it does this by ensuring
@@ -270,12 +270,12 @@ fn main() {
     // value from the scaled-carver module is selected.
     let baseContinentDef_mi = Min::new(baseContinentDef_sb, baseContinentDef_cu);
 
-//    debug::render_noise_module("complexplanet_images/00_4_baseContinentDef_mi\
-//    .png",
-//                               &baseContinentDef_mi,
-//                               1024,
-//                               1024,
-//                               100);
+    //    debug::render_noise_module("complexplanet_images/00_4_baseContinentDef_mi\
+    //    .png",
+    //                               &baseContinentDef_mi,
+    //                               1024,
+    //                               1024,
+    //                               100);
 
     // 6: [Clamped-continent module]: Finally, a clamp module modifies the
     // carved continent module to ensure that the output value of this subgroup
@@ -286,11 +286,11 @@ fn main() {
     // the clamped-continent module.
     let baseContinentDef = Cache::new(baseContinentDef_cl);
 
-//    debug::render_noise_module("complexplanet_images/00_5_baseContinentDef.png",
-//                               &baseContinentDef,
-//                               1024,
-//                               1024,
-//                               100);
+    //    debug::render_noise_module("complexplanet_images/00_5_baseContinentDef.png",
+    //                               &baseContinentDef,
+    //                               1024,
+    //                               1024,
+    //                               100);
 
     // ////////////////////////////////////////////////////////////////////////
     // Module subgroup: continent definition (5 noise modules)
@@ -314,11 +314,11 @@ fn main() {
         .set_power(CONTINENT_FREQUENCY / 113.75)
         .set_roughness(13);
 
-//    debug::render_noise_module("complexplanet_images/01_0_continentDef_tu0.png",
-//                               &continentDef_tu0,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/01_0_continentDef_tu0.png",
+    //                               &continentDef_tu0,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // 2: [Intermediate-turbulence module]: This turbulence module warps the
     // output value from the coarse-turbulence module. This turbulence has a
@@ -330,11 +330,11 @@ fn main() {
         .set_power(CONTINENT_FREQUENCY / 433.75)
         .set_roughness(12);
 
-//    debug::render_noise_module("complexplanet_images/01_1_continentDef_tu1.png",
-//                               &continentDef_tu1,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/01_1_continentDef_tu1.png",
+    //                               &continentDef_tu1,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // 3: [Warped-base-continent-definition module]: This turbulence module
     // warps the output value from the intermediate-turbulence module. This
@@ -346,11 +346,11 @@ fn main() {
         .set_power(CONTINENT_FREQUENCY / 1019.75)
         .set_roughness(11);
 
-//    debug::render_noise_module("complexplanet_images/01_2_continentDef_tu2.png",
-//                               &continentDef_tu2,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/01_2_continentDef_tu2.png",
+    //                               &continentDef_tu2,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // 4: [Select-turbulence module]: At this stage, the turbulence is applied
     // to the entire base-continent-definition subgroup, producing some very
@@ -362,27 +362,26 @@ fn main() {
     // transition.  In effect, only the higher areas of the base-continent-
     // definition subgroup become warped; the underwater and coastal areas
     // remain unaffected.
-    let continentDef_se = Select::new(&baseContinentDef, continentDef_tu2,
-                                      &baseContinentDef)
+    let continentDef_se = Select::new(&baseContinentDef, continentDef_tu2, &baseContinentDef)
         .set_bounds(SEA_LEVEL - 0.0375, SEA_LEVEL + 1000.0375)
         .set_edge_falloff(0.0625);
 
-//    debug::render_noise_module("complexplanet_images/01_3_continentDef_se.png",
-//                               &continentDef_se,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/01_3_continentDef_se.png",
+    //                               &continentDef_se,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // 5: [Continent-definition group]: Caches the output value from the
     // clamped-continent module. This is the output value for the entire
     // continent-definition group.
     let continentDef = Cache::new(continentDef_se);
 
-//    debug::render_noise_module("complexplanet_images/01_4_continentDef.png",
-//                               &continentDef,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/01_4_continentDef.png",
+    //                               &continentDef,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // ////////////////////////////////////////////////////////////////////////
     // Module group: terrain type definition
@@ -518,7 +517,6 @@ fn main() {
     // 9: [Mountain-base-definition subgroup]: Caches the output value from the
     // warped-mountains-and-valleys module.
     let mountainBaseDef = Cache::new(mountainBaseDef_tu1);
-    ;
 
     // /////////////////////////////////////////////////////////////////////////
     // Module subgroup: high mountainous terrain (5 noise modules)
@@ -642,7 +640,6 @@ fn main() {
     // output value from the mountain-base-definition subgroup. Mountains now
     // appear all over the terrain.
     let mountainousTerrain_ad = Add::new(mountainousTerrain_sb1, &mountainBaseDef);
-    ;
 
     // 4: [Combined-mountainous-terrain module]: Note that at this point, the
     // entire terrain is covered in high mountainous terrain, even at the low
@@ -1005,11 +1002,11 @@ fn main() {
     // group.
     let badlandsTerrain = Cache::new(badlandsTerrain_ma);
 
-//    debug::render_noise_module("complexplanet_images/12_2_badlandsTerrain.png",
-//                               &badlandsTerrain,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/12_2_badlandsTerrain.png",
+    //                               &badlandsTerrain,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // ////////////////////////////////////////////////////////////////////////
     // Module group: river positions
@@ -1131,8 +1128,7 @@ fn main() {
     // number of low values. This means there will be a few peaks with much
     // higher elevations than the majority of the peaks, making the terrain
     // features more varied.
-    let scaledMountainousTerrain_ex = Exponent::new
-        (scaledMountainousTerrain_fb).set_exponent(1.25);
+    let scaledMountainousTerrain_ex = Exponent::new(scaledMountainousTerrain_fb).set_exponent(1.25);
 
     // 4: [Scaled-peak-modulation module]: This scale/bias module modifies the
     // range of the output value from the peak-modulation module so that it can
@@ -1287,12 +1283,12 @@ fn main() {
     // entire scaled-badlands-terrain group.
     let scaledBadlandsTerrain = Cache::new(scaledBadlandsTerrain_sb);
 
-//    debug::render_noise_module("complexplanet_images/17_0_scaledBadlandsTerrain\
-//    .png",
-//                               &scaledBadlandsTerrain,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/17_0_scaledBadlandsTerrain\
+    //    .png",
+    //                               &scaledBadlandsTerrain,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // /////////////////////////////////////////////////////////////////////////
     // Module group: final planet
@@ -1321,12 +1317,12 @@ fn main() {
         .add_control_point(SHELF_LEVEL)
         .add_control_point(1.0);
 
-//    debug::render_noise_module("complexplanet_images/18_0_continentalShelf_te\
-//    .png",
-//                               &continentalShelf_te,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/18_0_continentalShelf_te\
+    //    .png",
+    //                               &continentalShelf_te,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // 2: [Clamped-sea-bottom module]: This clamping module clamps the output
     // value from the shelf-creator module so that its possible range is from
@@ -1334,12 +1330,12 @@ fn main() {
     // is only concerned about the oceans.
     let continentalShelf_cl = Clamp::new(continentalShelf_te).set_bounds(-0.75, SEA_LEVEL);
 
-//    debug::render_noise_module("complexplanet_images/18_1_continentalShelf_cl\
-//    .png",
-//                               &continentalShelf_cl,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/18_1_continentalShelf_cl\
+    //    .png",
+    //                               &continentalShelf_cl,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // 3: [Oceanic-trench-basis module]: This ridged-multifractal-noise module
     // generates some coherent noise that will be used to generate the oceanic
@@ -1350,12 +1346,12 @@ fn main() {
         .set_lacunarity(CONTINENT_LACUNARITY)
         .set_octaves(16);
 
-//    debug::render_noise_module("complexplanet_images/18_2_continentalShelf_rm\
-//    .png",
-//                               &continentalShelf_rm,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/18_2_continentalShelf_rm\
+    //    .png",
+    //                               &continentalShelf_rm,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // 4: [Oceanic-trench module]: This scale/bias module inverts the ridges
     // from the oceanic-trench-basis-module so that the ridges become trenches.
@@ -1365,12 +1361,12 @@ fn main() {
         .set_scale(-0.125)
         .set_bias(-0.125);
 
-//    debug::render_noise_module("complexplanet_images/18_3_continentalShelf_sb\
-//    .png",
-//                               &continentalShelf_sb,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/18_3_continentalShelf_sb\
+    //    .png",
+    //                               &continentalShelf_sb,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // 5: [Shelf-and-trenches module]: This addition module adds the oceanic
     // trenches to the clamped-sea-bottom module.
@@ -1380,11 +1376,11 @@ fn main() {
     //    and-trenches module.
     let continentalShelf = Cache::new(continentalShelf_ad);
 
-//    debug::render_noise_module("complexplanet_images/18_4_continentalShelf.png",
-//                               &continentalShelf,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/18_4_continentalShelf.png",
+    //                               &continentalShelf,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // /////////////////////////////////////////////////////////////////////////
     // Module group: base continent elevations (3 noise modules)
@@ -1404,12 +1400,12 @@ fn main() {
         .set_scale(CONTINENT_HEIGHT_SCALE)
         .set_bias(0.0);
 
-//    debug::render_noise_module("complexplanet_images/19_0_baseContinentElev_sb\
-//    .png",
-//                               &baseContinentElev_sb,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/19_0_baseContinentElev_sb\
+    //    .png",
+    //                               &baseContinentElev_sb,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // 2: [Base-continent-with-oceans module]: This selector module applies the
     // elevations of the continental shelves to the base elevations of the
@@ -1426,12 +1422,12 @@ fn main() {
     // base-continent-with-oceans module.
     let baseContinentElev = Cache::new(baseContinentElev_se);
 
-//    debug::render_noise_module("complexplanet_images/19_1_baseContinentElev\
-//    .png",
-//                               &baseContinentElev,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/19_1_baseContinentElev\
+    //    .png",
+    //                               &baseContinentElev,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // /////////////////////////////////////////////////////////////////////////
     // Module subgroup: continents with plains (2 noise modules)
@@ -1452,12 +1448,12 @@ fn main() {
     // continents-with-plains module.
     let continentsWithPlains = Cache::new(continentsWithPlains_ad);
 
-//    debug::render_noise_module("complexplanet_images/20_0_continentsWithPlains\
-//    .png",
-//                               &continentsWithPlains,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/20_0_continentsWithPlains\
+    //    .png",
+    //                               &continentsWithPlains,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // /////////////////////////////////////////////////////////////////////////
     // Module subgroup: continents with hills (3 noise modules)
@@ -1474,11 +1470,11 @@ fn main() {
     // hilly-terrain group to the base-continent-elevation subgroup.
     let continentsWithHills_ad = Add::new(&baseContinentElev, scaledHillyTerrain);
 
-//    debug::render_noise_module("complexplanet_images/21_0_continentsWithHills_ad.png",
-//                               &continentsWithHills_ad,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/21_0_continentsWithHills_ad.png",
+    //                               &continentsWithHills_ad,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // 2: [Select-high-elevations module]: This selector module ensures that the
     // hills only appear at higher elevations. It does this by selecting the
@@ -1496,12 +1492,12 @@ fn main() {
     // select-high-elevations module.
     let continentsWithHills = Cache::new(continentsWithHills_se);
 
-//    debug::render_noise_module("complexplanet_images/21_1_continentsWithHills\
-//    .png",
-//                               &continentsWithHills,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/21_1_continentsWithHills\
+    //    .png",
+    //                               &continentsWithHills,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // /////////////////////////////////////////////////////////////////////////
     // Module subgroup: continents with mountains (5 noise modules)
@@ -1519,11 +1515,11 @@ fn main() {
     // subgroup.
     let continentsWithMountains_ad0 = Add::new(&baseContinentElev, scaledMountainousTerrain);
 
-//    debug::render_noise_module("complexplanet_images/22_0_continentsWithMountains_ad0.png",
-//                               &continentsWithMountains_ad0,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/22_0_continentsWithMountains_ad0.png",
+    //                               &continentsWithMountains_ad0,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // 2: [Increase-mountain-heights module]: This curve module applies a curve
     // to the output value from the continent-definition group. This modified
@@ -1536,11 +1532,11 @@ fn main() {
         .add_control_point(1.0 - MOUNTAINS_AMOUNT, 0.0625)
         .add_control_point(1.0, 0.2500);
 
-//    debug::render_noise_module("complexplanet_images/22_1_continentsWithMountains_cu.png",
-//                               &continentsWithMountains_cu,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/22_1_continentsWithMountains_cu.png",
+    //                               &continentsWithMountains_cu,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // 3: [Add-increased-mountain-heights module]: This addition module adds the
     // increased-mountain-heights module to the continents-and-mountains module.
@@ -1548,11 +1544,11 @@ fn main() {
     let continentsWithMountains_ad1 = Add::new(continentsWithMountains_ad0,
                                                continentsWithMountains_cu);
 
-//    debug::render_noise_module("complexplanet_images/22_2_continentsWithMountains_ad1.png",
-//                               &continentsWithMountains_ad1,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/22_2_continentsWithMountains_ad1.png",
+    //                               &continentsWithMountains_ad1,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // 4: [Select-high-elevations module]: This selector module ensures that
     // mountains only appear at higher elevations. It does this by selecting the
@@ -1571,11 +1567,11 @@ fn main() {
     // select-high-elevations module.
     let continentsWithMountains = Cache::new(continentsWithMountains_se);
 
-//    debug::render_noise_module("complexplanet_images/22_3_continentsWithMountains.png",
-//                               &continentsWithMountains,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/22_3_continentsWithMountains.png",
+    //                               &continentsWithMountains,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // /////////////////////////////////////////////////////////////////////////
     // Module subgroup: continents with badlands (5 noise modules)
@@ -1598,22 +1594,22 @@ fn main() {
         .set_lacunarity(CONTINENT_LACUNARITY)
         .set_octaves(2);
 
-//    debug::render_noise_module("complexplanet_images/23_0_continentsWithBadlands_bm.png",
-//                               &continentsWithBadlands_bm,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/23_0_continentsWithBadlands_bm.png",
+    //                               &continentsWithBadlands_bm,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // 2: [Continents-and-badlands module]:  This addition module adds the
     // scaled-badlands-terrain group to the base-continent-elevation
     // subgroup.
     let continentsWithBadlands_ad = Add::new(&baseContinentElev, scaledBadlandsTerrain);
 
-//    debug::render_noise_module("complexplanet_images/23_1_continentsWithBadlands_ad.png",
-//                               &continentsWithBadlands_ad,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/23_1_continentsWithBadlands_ad.png",
+    //                               &continentsWithBadlands_ad,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // 3: [Select-badlands-positions module]: This selector module places
     // badlands at random spots on the continents based on the BasicMulti noise
@@ -1630,11 +1626,11 @@ fn main() {
         .set_bounds(1.0 - BADLANDS_AMOUNT, 1001.0 - BADLANDS_AMOUNT)
         .set_edge_falloff(0.25);
 
-//    debug::render_noise_module("complexplanet_images/23_2_continentsWithBadlands_se.png",
-//                               &continentsWithBadlands_se,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/23_2_continentsWithBadlands_se.png",
+    //                               &continentsWithBadlands_se,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // 4: [Apply-badlands module]: This maximum-value module causes the badlands
     // to "poke out" from the rest of the terrain. It does this by ensuring
@@ -1648,11 +1644,11 @@ fn main() {
     //    apply-badlands module.
     let continentsWithBadlands = Cache::new(continentsWithBadlands_ma);
 
-//    debug::render_noise_module("complexplanet_images/23_3_continentsWithBadlands.png",
-//                               &continentsWithBadlands,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/23_3_continentsWithBadlands.png",
+    //                               &continentsWithBadlands,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // /////////////////////////////////////////////////////////////////////////
     // Module subgroup: continents with rivers (4 noise modules)
@@ -1672,11 +1668,11 @@ fn main() {
         .set_scale(RIVER_DEPTH / 2.0)
         .set_bias(-RIVER_DEPTH / 2.0);
 
-//    debug::render_noise_module("complexplanet_images/24_0_continentsWithRivers_sb.png",
-//                               &continentsWithRivers_sb,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/24_0_continentsWithRivers_sb.png",
+    //                               &continentsWithRivers_sb,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // 2: [Add-rivers-to-continents module]: This addition module adds the
     // rivers to the continents-with-badlands subgroup. Because the scaled-
@@ -1684,11 +1680,11 @@ fn main() {
     // carves the rivers out of the terrain.
     let continentsWithRivers_ad = Add::new(&continentsWithBadlands, continentsWithRivers_sb);
 
-//    debug::render_noise_module("complexplanet_images/24_1_continentsWithRivers_ad.png",
-//                               &continentsWithRivers_ad,
-//                               1024,
-//                               1024,
-//                               1000);
+    //    debug::render_noise_module("complexplanet_images/24_1_continentsWithRivers_ad.png",
+    //                               &continentsWithRivers_ad,
+    //                               1024,
+    //                               1024,
+    //                               1000);
 
     // 3: [Blended-rivers-to-continents module]: This selector module outputs
     // deep rivers near sea level and shallower rivers in higher terrain.  It

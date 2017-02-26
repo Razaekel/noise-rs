@@ -17,9 +17,9 @@
 extern crate image;
 extern crate num_traits;
 
+use self::num_traits::{Float, NumCast};
 use noise;
 use noise::NoiseModule;
-use self::num_traits::{Float, NumCast};
 use std::path::Path;
 
 fn cast<T: NumCast, R: NumCast>(val: T) -> R {
@@ -100,6 +100,6 @@ pub fn render_noise_module<M>(filename: &str, module: M, width: u32, height: u32
                                image::Gray(8));
 
     println!("\nFinished generating {}", filename);
-//    println!("\nMaxValue: {}", max_value);
-//    println!("\nMinValue: {}", min_value);
+    println!("\nMaxValue: {}", max_value);
+    println!("\nMinValue: {}", min_value);
 }

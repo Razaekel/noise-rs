@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::Float;
 use math;
 use math::{Point2, Point3, Point4};
 use modules::NoiseModule;
+use num_traits::Float;
 
 /// Default Checkerboard size
 pub const DEFAULT_CHECKERBOARD_SIZE: usize = 0;
@@ -90,9 +90,5 @@ fn calculate_checkerboard<T: Float>(point: &[T], size: usize) -> T {
         .map(|&a| fast_floor(a))
         .fold(0, |a, b| (a & size) ^ (b & size));
 
-    if result > 0 {
-        -T::one()
-    } else {
-        T::one()
-    }
+    if result > 0 { -T::one() } else { T::one() }
 }

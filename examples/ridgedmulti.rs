@@ -16,12 +16,14 @@
 
 extern crate noise;
 
-use noise::modules::{RidgedMulti, MultiFractal};
+use noise::{RidgedMulti, MultiFractal};
 
 mod debug;
 
 fn main() {
-    debug::render_noise_module("ridgedmulti.png", &RidgedMulti::new()
-        .set_octaves(2), 1024,
-                               1024, 100);
+    debug::render_noise_module("ridgedmulti.png",
+                               &RidgedMulti::new().set_octaves(2),
+                               1024,
+                               1024,
+                               100);
 }

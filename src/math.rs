@@ -218,8 +218,8 @@ pub fn cast4<T, U>(x: Point4<T>) -> Point4<U>
 }
 
 pub mod interp {
-    use num_traits::Float;
     use math;
+    use num_traits::Float;
 
     /// Performs linear interploation between two values.
     pub fn linear<T: Float>(a: T, b: T, x: T) -> T {

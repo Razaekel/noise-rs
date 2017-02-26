@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::Float;
 
 use {PermutationTable, gradient, math};
+use num_traits::Float;
 
 /// 2-dimensional perlin noise
-#[deprecated(since="0.4.0", note="please use `noisemodule::Fbm` instead")]
+#[deprecated(since="0.4.0", note="please use `noise::modules::Fbm` instead")]
 pub fn perlin2<T: Float>(perm_table: &PermutationTable, point: &math::Point2<T>) -> T {
     #[inline(always)]
     fn surflet<T: Float>(perm_table: &PermutationTable,
@@ -56,7 +56,7 @@ pub fn perlin2<T: Float>(perm_table: &PermutationTable, point: &math::Point2<T>)
 }
 
 /// 3-dimensional perlin noise
-#[deprecated(since="0.4.0", note="please use `noisemodule::Fbm` instead")]
+#[deprecated(since="0.4.0", note="please use `noise::modules::Fbm` instead")]
 pub fn perlin3<T: Float>(perm_table: &PermutationTable, point: &math::Point3<T>) -> T {
     #[inline(always)]
     fn surflet<T: Float>(perm_table: &PermutationTable,
@@ -107,7 +107,7 @@ pub fn perlin3<T: Float>(perm_table: &PermutationTable, point: &math::Point3<T>)
 }
 
 /// 4-dimensional perlin noise
-#[deprecated(since="0.4.0", note="please use `noisemodule::Fbm` instead")]
+#[deprecated(since="0.4.0", note="please use `noise::modules::Fbm` instead")]
 pub fn perlin4<T: Float>(perm_table: &PermutationTable, point: &math::Point4<T>) -> T {
     #[inline(always)]
     fn surflet<T: Float>(perm_table: &PermutationTable,
@@ -178,6 +178,6 @@ pub fn perlin4<T: Float>(perm_table: &PermutationTable, point: &math::Point4<T>)
                         [far_distance[0], far_distance[1], far_distance[2], far_distance[3]]);
 
     // Multiply by arbitrary value to scale to -1..1
-    (f0000 + f1000 + f0100 + f1100 + f0010 + f1010 + f0110 + f1110 + f0001 + f1001 +
-     f0101 + f1101 + f0011 + f1011 + f0111 + f1111) * math::cast(4.424369240215691)
+    (f0000 + f1000 + f0100 + f1100 + f0010 + f1010 + f0110 + f1110 + f0001 +
+     f1001 + f0101 + f1101 + f0011 + f1011 + f0111 + f1111) * math::cast(4.424369240215691)
 }

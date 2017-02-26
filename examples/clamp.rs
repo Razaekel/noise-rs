@@ -14,7 +14,7 @@
 
 extern crate noise;
 
-use noise::modules::{Clamp, Perlin};
+use noise::{Clamp, Perlin};
 
 mod debug;
 

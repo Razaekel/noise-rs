@@ -14,7 +14,7 @@
 
 extern crate noise;
 
-use noise::modules::{Cylinders, RotatePoint};
+use noise::{Cylinders, RotatePoint};
 
 mod debug;
 

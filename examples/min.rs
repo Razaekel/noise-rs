@@ -14,7 +14,7 @@
 
 extern crate noise;
 
-use noise::modules::{Min, Cylinders, Perlin};
+use noise::{Min, Cylinders, Perlin};
 
 mod debug;
 

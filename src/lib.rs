@@ -17,11 +17,10 @@
 //! # Example
 //!
 //! ```rust
-//! use noise::{Brownian3, PermutationTable};
+//! use noise::{NoiseModule, Perlin};
 //!
-//! let perm_table = PermutationTable::new(12);
-//! let noise = Brownian3::new(noise::perlin3, 4).wavelength(32.0);
-//! let val = noise.apply(&perm_table, &[42.0, 37.0, 2.0]);
+//! let perlin = Perlin::new();
+//! let val = perlin.get([42.4, 37.7, 2.8]);
 //! ```
 
 #![deny(missing_copy_implementations)]
@@ -29,23 +28,23 @@
 extern crate num_traits;
 extern crate rand;
 
-pub use permutationtable::PermutationTable;
-pub use math::{Point2, Point3, Point4};
-pub use perlin::{perlin2, perlin3, perlin4};
-pub use value::{value2, value3, value4};
-pub use open_simplex::{open_simplex2, open_simplex3, open_simplex4};
 pub use brownian::{Brownian2, Brownian3, Brownian4};
-
-pub use cell::{range_sqr_euclidian2, range_sqr_euclidian3, range_sqr_euclidian4};
-pub use cell::{cell2_seed_point, cell3_seed_point, cell4_seed_point};
-pub use cell::{cell2_range, cell3_range, cell4_range};
-pub use cell::{cell2_range_inv, cell3_range_inv, cell4_range_inv};
-pub use cell::{cell2_value, cell3_value, cell4_value};
 pub use cell::{cell2_manhattan, cell3_manhattan, cell4_manhattan};
 pub use cell::{cell2_manhattan_inv, cell3_manhattan_inv, cell4_manhattan_inv};
 pub use cell::{cell2_manhattan_value, cell3_manhattan_value, cell4_manhattan_value};
+pub use cell::{cell2_range, cell3_range, cell4_range};
+pub use cell::{cell2_range_inv, cell3_range_inv, cell4_range_inv};
+pub use cell::{cell2_seed_point, cell3_seed_point, cell4_seed_point};
+pub use cell::{cell2_value, cell3_value, cell4_value};
 
-pub use modules::NoiseModule;
+pub use cell::{range_sqr_euclidian2, range_sqr_euclidian3, range_sqr_euclidian4};
+pub use math::{Point2, Point3, Point4};
+
+pub use modules::*;
+pub use open_simplex::{open_simplex2, open_simplex3, open_simplex4};
+pub use perlin::{perlin2, perlin3, perlin4};
+pub use permutationtable::PermutationTable;
+pub use value::{value2, value3, value4};
 
 mod gradient;
 mod math;
@@ -56,8 +55,7 @@ mod perlin;
 mod value;
 mod open_simplex;
 mod cell;
-
-pub mod modules;
+mod modules;
 
 /// A trait alias for a 2-dimensional noise function.
 ///

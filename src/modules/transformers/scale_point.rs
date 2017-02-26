@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::Float;
 use math::{Point2, Point3, Point4};
 use modules::NoiseModule;
+use num_traits::Float;
 
 /// Noise Module that scales the coordinates of the input value before
 /// returning the output value from the source module.

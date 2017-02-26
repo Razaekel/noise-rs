@@ -14,7 +14,7 @@
 
 extern crate noise;
 
-use noise::modules::{Checkerboard, Cache};
+use noise::{Checkerboard, Cache};
 
 mod debug;
 

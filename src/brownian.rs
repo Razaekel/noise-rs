@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::Float;
+use {GenFn2, GenFn3, GenFn4};
 
 use {PermutationTable, math};
-use {GenFn2, GenFn3, GenFn4};
 use {Point2, Point3, Point4};
+use num_traits::Float;
 
 /// A callable struct for applying 2-dimensional [fractional Brownian motion]
 /// (http://en.wikipedia.org/wiki/Fractional_Brownian_motion).
@@ -44,6 +44,7 @@ use {Point2, Point3, Point4};
 /// # }
 /// ```
 #[derive(Copy, Clone)]
+#[deprecated(since="0.3.0", note="please use `Fbm::new()` instead")]
 pub struct Brownian2<T, F: GenFn2<T>> {
     /// The underlying noise function to call.
     pub function: F,
@@ -83,6 +84,7 @@ pub struct Brownian2<T, F: GenFn2<T>> {
 /// # }
 /// ```
 #[derive(Copy, Clone)]
+#[deprecated(since="0.3.0", note="please use `Fbm::new()` instead")]
 pub struct Brownian3<T, F: GenFn3<T>> {
     /// The underlying noise function to call.
     pub function: F,
@@ -122,6 +124,7 @@ pub struct Brownian3<T, F: GenFn3<T>> {
 /// # }
 /// ```
 #[derive(Copy, Clone)]
+#[deprecated(since="0.3.0", note="please use `Fbm::new()` instead")]
 pub struct Brownian4<T, F: GenFn4<T>> {
     /// The underlying noise function to call on each octave.
     pub function: F,

@@ -14,7 +14,7 @@
 
 extern crate noise;
 
-use noise::modules::{Checkerboard, ScalePoint};
+use noise::{Checkerboard, ScalePoint};
 
 mod debug;
 

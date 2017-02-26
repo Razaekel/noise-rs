@@ -16,7 +16,7 @@
 
 extern crate noise;
 
-use noise::modules::HybridMulti;
+use noise::HybridMulti;
 
 mod debug;
 

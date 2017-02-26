@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::Float;
 use math::interp;
 use modules::NoiseModule;
+use num_traits::Float;
 
 /// Noise module that maps the output value from the source module onto a
 /// terrace-forming curve.

@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::Float;
 use math;
 use math::{Point2, Point3, Point4};
-use std::f64::consts::PI;
 use modules::NoiseModule;
+use num_traits::Float;
+use std::f64::consts::PI;
 
 /// Noise Module that rotates the input value around the origin before
 /// returning the output value from the source module.

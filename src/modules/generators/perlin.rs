@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::Float;
 use {PermutationTable, gradient, math};
 use math::{Point2, Point3, Point4};
-use modules::NoiseModule;
+use modules::{NoiseModule, Seedable};
+use num_traits::Float;
 
 /// Default Seed for the Perlin noise module.
 pub const DEFAULT_PERLIN_SEED: usize = 0;
@@ -36,8 +36,11 @@ impl Perlin {
             perm_table: PermutationTable::new(DEFAULT_PERLIN_SEED as u32),
         }
     }
+}
 
-    pub fn set_seed(self, seed: usize) -> Perlin {
+impl Seedable for Perlin {
+    /// Sets the seed value for Perlin noise
+    fn set_seed(self, seed: usize) -> Perlin {
         // If the new seed is the same as the current seed, just return self.
         if self.seed == seed {
             return self;
@@ -225,8 +228,8 @@ impl<T: Float> NoiseModule<Point4<T>> for Perlin {
                             [far_distance[0], far_distance[1], far_distance[2], far_distance[3]]);
 
         // Multiply by arbitrary value to scale to -1..1
-        (f0000 + f1000 + f0100 + f1100 + f0010 + f1010 + f0110 + f1110 + f0001 +
-         f1001 + f0101 + f1101 + f0011 + f1011 + f0111 + f1111) *
+        (f0000 + f1000 + f0100 + f1100 + f0010 + f1010 + f0110 + f1110 +
+         f0001 + f1001 + f0101 + f1101 + f0011 + f1011 + f0111 + f1111) *
         math::cast(4.424369240215691)
     }
 }

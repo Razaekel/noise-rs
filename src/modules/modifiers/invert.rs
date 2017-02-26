@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::Float;
 use modules::NoiseModule;
+use num_traits::Float;
 
 /// Noise module that inverts the output value from the source module.
 pub struct Invert<Source> {
     /// Outputs a value.
-    source: Source,
+    pub source: Source,
 }
 
 impl<Source> Invert<Source> {

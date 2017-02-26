@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+pub use self::cache::*;
 pub use self::combiners::*;
 pub use self::generators::*;
 pub use self::modifiers::*;
 pub use self::selectors::*;
-pub use self::cache::*;
 pub use self::transformers::*;
 
 mod combiners;
@@ -54,7 +54,7 @@ impl<'a, T, M: NoiseModule<T>> NoiseModule<T> for &'a M {
     }
 }
 
-/// Trait for Seedable modules
+/// Trait for modules that require a seed before generating their values
 pub trait Seedable {
     fn set_seed(self, seed: usize) -> Self;
 }

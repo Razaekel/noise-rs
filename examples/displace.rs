@@ -14,7 +14,7 @@
 
 extern crate noise;
 
-use noise::modules::{Checkerboard, Constant, Cylinders, Displace, Perlin};
+use noise::{Checkerboard, Constant, Cylinders, Displace, Perlin};
 
 mod debug;
 

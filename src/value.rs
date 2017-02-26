@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use num_traits::Float;
-use math::interp;
 use {PermutationTable, math};
+use math::interp;
+use num_traits::Float;
 
 /// 2-dimensional value noise
 #[cfg_attr(rustfmt, rustfmt_skip)]
