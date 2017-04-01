@@ -21,7 +21,7 @@ use num_traits::Float;
 ///
 /// To add control points to the curve, use the add_control_point method.
 ///
-/// An application must add a minumum of two control points to the curve. If
+/// An application must add a minimum of two control points to the curve. If
 /// there are less than two control points, the get() method panics. The
 /// control points can have any value, although no two control points can
 /// have the same value. There is no limit to the number of control points
@@ -126,6 +126,7 @@ impl<Source, T, U> NoiseModule<T> for Terrace<Source, U>
         let mut input0 = self.control_points[index0];
         let mut input1 = self.control_points[index1];
         let mut alpha = (source_value - input0) / (input1 - input0);
+
         if self.invert_terraces {
             alpha = U::one() - alpha;
             let temp = input0;

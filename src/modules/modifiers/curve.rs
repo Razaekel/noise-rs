@@ -20,10 +20,10 @@ use num_traits::Float;
 ///
 /// To add control points to the curve, use the add_control_point method.
 ///
-/// Since the curve is a cubic spline, an application must have a minumum of
+/// Since the curve is a cubic spline, an application must have a minimum of
 /// four control points to the curve. If there is less than four control
 /// points, the get() method panics. Each control point can have any input
-/// and output value, although no two control points can have the same input
+/// and output value, although no two control points can have the same input.
 pub struct Curve<Source, T> {
     /// Outputs a value.
     pub source: Source,

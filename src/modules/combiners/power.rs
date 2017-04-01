@@ -9,7 +9,7 @@
 use modules::NoiseModule;
 use num_traits::Float;
 
-/// Noise module that raises the output vaule from the first source module
+/// Noise module that raises the output value from the first source module
 /// to the power of the output value of the second source module.
 pub struct Power<Source1, Source2> {
     /// Outputs a value.

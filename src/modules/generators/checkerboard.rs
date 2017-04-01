@@ -16,9 +16,9 @@ pub const DEFAULT_CHECKERBOARD_SIZE: usize = 0;
 
 /// Noise module that outputs a checkerboard pattern.
 ///
-/// This noise module can take one input, size, and outputs 2<sup>size</sup>-sized blocks
-/// of alternating values. The values of these blocks alternate between -1.0
-/// and 1.0.
+/// This noise module can take one input, size, and outputs 2<sup>size</sup>-sized
+/// blocks of alternating values. The values of these blocks alternate between
+/// -1.0 and 1.0.
 ///
 /// This noise module is not very useful by itself, but it can be used for
 /// debugging purposes.
@@ -53,8 +53,8 @@ fn fast_floor<T: Float>(x: T) -> usize {
     }
 }
 
-// These impl's should be made generic over Point, but there is no higher Point type.
-// Keep the code the same anyway.
+// These impl's should be made generic over Point, but there is no higher Point
+// type. Keep the code the same anyway.
 impl<T: Float> NoiseModule<Point2<T>> for Checkerboard {
     type Output = T;
 

@@ -12,7 +12,7 @@ use num_traits::Float;
 /// Noise module that outputs a constant value.
 ///
 /// This module takes a input, value, and returns that input for all points,
-/// producing a contant-valued field.
+/// producing a constant-valued field.
 ///
 /// This module is not very useful by itself, but can be used as a source
 /// module for other noise modules.
