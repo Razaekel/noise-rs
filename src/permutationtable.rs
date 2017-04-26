@@ -28,7 +28,7 @@ const TABLE_SIZE: usize = 256;
 /// Table creation is expensive, so in most circumstances you'll only want to
 /// create one of these per generator.
 #[derive(Copy)]
-#[deprecated(since="0.3.0", note="will be made private by 1.0")]
+#[deprecated(since="0.3.0", note="will be made private by 1.0; noise generator structs (e.g. Perlin) now store permutation table internally, so if you were storing PermutationTable for performance reasons, store the noise generator object instead")]
 pub struct PermutationTable {
     values: [u8; TABLE_SIZE],
 }
