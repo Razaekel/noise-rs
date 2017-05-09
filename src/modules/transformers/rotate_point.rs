@@ -162,7 +162,7 @@ impl<Source, T> NoiseModule<Point4<T>> for RotatePoint<Source, T>
 
     fn get(&self, _point: Point4<T>) -> Self::Output {
         // 4d rotations are hard.
-        panic!("4d not implemented!");
+        unimplemented!();
     }
 }
 
