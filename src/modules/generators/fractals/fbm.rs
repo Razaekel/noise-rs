@@ -154,7 +154,9 @@ impl<T: Float> NoiseModule<Point2<T>> for Fbm<T> {
             point = math::mul2(point, self.lacunarity);
         }
 
-        result
+        // Scale and shift the result into the [-1,1] range
+        let scale = T::from(2.0).unwrap() - self.persistence.powi(self.octaves as i32 - 1);
+        result / math::cast(scale)
     }
 }
 
@@ -181,7 +183,9 @@ impl<T: Float> NoiseModule<Point3<T>> for Fbm<T> {
             point = math::mul3(point, self.lacunarity);
         }
 
-        result
+        // Scale and shift the result into the [-1,1] range
+        let scale = T::from(2.0).unwrap() - self.persistence.powi(self.octaves as i32 - 1);
+        result / math::cast(scale)
     }
 }
 
@@ -208,6 +212,8 @@ impl<T: Float> NoiseModule<Point4<T>> for Fbm<T> {
             point = math::mul4(point, self.lacunarity);
         }
 
-        result
+        // Scale and shift the result into the [-1,1] range
+        let scale = T::from(2.0).unwrap() - self.persistence.powi(self.octaves as i32 - 1);
+        result / math::cast(scale)
     }
 }
