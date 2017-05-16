@@ -16,39 +16,11 @@
 
 extern crate noise;
 
-use noise::{open_simplex2, open_simplex3, open_simplex4, PermutationTable, Point2};
+use noise::{OpenSimplex, Seedable};
 
 mod debug;
 
 fn main() {
-    debug::render_png("open_simplex2.png",
-                      &PermutationTable::new(0),
-                      1024,
-                      1024,
-                      scaled_open_simplex2);
-    debug::render_png("open_simplex3.png",
-                      &PermutationTable::new(0),
-                      1024,
-                      1024,
-                      scaled_open_simplex3);
-    debug::render_png("open_simplex4.png",
-                      &PermutationTable::new(0),
-                      1024,
-                      1024,
-                      scaled_open_simplex4);
-    println!("\nGenerated open_simplex2.png, open_simplex3.png and open_simplex4.png");
-}
-
-fn scaled_open_simplex2(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
-    open_simplex2(perm_table, &[point[0] / 16.0, point[1] / 16.0])
-}
-
-fn scaled_open_simplex3(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
-    open_simplex3(perm_table,
-                  &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0])
-}
-
-fn scaled_open_simplex4(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
-    open_simplex4(perm_table,
-                  &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0, point[1] / 32.0])
+    debug::render_noise_module("open_simplex.png", OpenSimplex::new(), 1024, 1024, 50);
+    debug::render_noise_module("open_simplex_1.png", OpenSimplex::new().set_seed(1), 1024, 1024, 50);
 }
