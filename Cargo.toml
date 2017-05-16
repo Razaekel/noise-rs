@@ -17,7 +17,7 @@ rand = "0.3"
 num-traits = "0.1"
 
 [dev-dependencies]
-image = "0.12"
+image = "0.13"
 
 [[bench]]
 name = "benches"
