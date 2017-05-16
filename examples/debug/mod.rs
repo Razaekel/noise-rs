@@ -65,7 +65,7 @@ pub fn render_png<T, F>(filename: &str,
 
 #[allow(dead_code)]
 pub fn render_noise_module<M>(filename: &str, module: M, width: u32, height: u32, zoom: u32)
-    where M: NoiseModule<[f64; 3], Output = f64>,
+    where M: NoiseModule<[f64; 2], Output = f64>,
 {
     let mut pixels = Vec::with_capacity((width * height) as usize);
 
@@ -76,8 +76,8 @@ pub fn render_noise_module<M>(filename: &str, module: M, width: u32, height: u32
     for y in 0..height {
         for x in 0..width {
             let value: f64 = cast(module.get([((x as f64 - (width as f64 / 2.0)) / zoom as f64),
-                                              ((y as f64 - (height as f64 / 2.0)) / zoom as f64),
-                                              0.0]));
+                                              ((y as f64 - (height as f64 / 2.0)) / zoom as f64)
+                                              ]));
             pixels.push(cast(clamp(value * 0.5 + 0.5, 0.0, 1.0) * 255.0));
 
             print!("\rProcessing {} of {}",
