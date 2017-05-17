@@ -44,6 +44,7 @@ mod math;
 mod permutationtable;
 
 mod brownian;
+mod open_simplex;
 mod perlin;
 mod value;
 mod cell;
