@@ -28,6 +28,7 @@ const NORM_CONSTANT_4D: f32 = 1.0 / 6.8699090070956625;
 /// 2-dimensional [OpenSimplex Noise](http://uniblock.tumblr.com/post/97868843242/noise)
 ///
 /// This is a slower but higher quality form of gradient noise than `noise::perlin2`.
+#[deprecated(since="0.4.2", note="Please use `noise::modules::OpenSimplex` instead")]
 pub fn open_simplex2<T: Float>(perm_table: &PermutationTable, point: &::Point2<T>) -> T {
     fn gradient<T: Float>(perm_table: &PermutationTable,
                           xs_floor: T,
@@ -115,6 +116,7 @@ pub fn open_simplex2<T: Float>(perm_table: &PermutationTable, point: &::Point2<T
 /// 3-dimensional [OpenSimplex Noise](http://uniblock.tumblr.com/post/97868843242/noise)
 ///
 /// This is a slower but higher quality form of gradient noise than `noise::perlin3`.
+#[deprecated(since="0.4.2", note="Please use `noise::modules::OpenSimplex` instead")]
 pub fn open_simplex3<T: Float>(perm_table: &PermutationTable, point: &::Point3<T>) -> T {
     fn gradient<T: Float>(perm_table: &PermutationTable,
                           xs_floor: T,
@@ -275,6 +277,7 @@ pub fn open_simplex3<T: Float>(perm_table: &PermutationTable, point: &::Point3<T
 ///
 /// This is a slower but higher quality form of gradient noise than
 /// `noise::perlin4`.
+#[deprecated(since="0.4.2", note="Please use `noise::modules::OpenSimplex` instead")]
 pub fn open_simplex4<T: Float>(perm_table: &PermutationTable, point: &math::Point4<T>) -> T {
     fn gradient<T: Float>(perm_table: &PermutationTable,
                           vertex: &math::Point4<T>,
