@@ -12,7 +12,7 @@ use modules::{MultiFractal, NoiseModule, Perlin, Seedable};
 use num_traits::Float;
 
 /// Default noise seed for the BasicMulti noise module.
-pub const DEFAULT_BASICMULTI_SEED: usize = 0;
+pub const DEFAULT_BASICMULTI_SEED: u32 = 0;
 /// Default number of octaves for the BasicMulti noise module.
 pub const DEFAULT_BASICMULTI_OCTAVES: usize = 6;
 /// Default frequency for the BasicMulti noise module.
@@ -36,9 +36,6 @@ pub const BASICMULTI_MAX_OCTAVES: usize = 32;
 ///
 #[derive(Clone, Debug)]
 pub struct BasicMulti<T> {
-    /// Seed.
-    pub seed: usize,
-
     /// Total number of frequency octaves to generate the noise with.
     ///
     /// The number of octaves control the _amount of detail_ in the noise
@@ -67,6 +64,7 @@ pub struct BasicMulti<T> {
     /// persistence produces "rougher" noise.
     pub persistence: T,
 
+    seed: u32,
     sources: Vec<Perlin>,
 }
 
@@ -113,7 +111,7 @@ impl<T> MultiFractal<T> for BasicMulti<T> {
 }
 
 impl<T> Seedable for BasicMulti<T> {
-    fn set_seed(self, seed: usize) -> BasicMulti<T> {
+    fn set_seed(self, seed: u32) -> BasicMulti<T> {
         if self.seed == seed {
             return self;
         }
@@ -122,6 +120,10 @@ impl<T> Seedable for BasicMulti<T> {
             sources: super::build_sources(seed, self.octaves),
             ..self
         }
+    }
+
+    fn seed(&self) -> u32 {
+        self.seed
     }
 }
 

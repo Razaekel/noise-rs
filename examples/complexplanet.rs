@@ -77,7 +77,7 @@ mod debug;
 #[allow(non_snake_case)]
 fn main() {
     /// Planet seed. Change this to generate a different planet.
-    const CURRENT_SEED: usize = 0;
+    const CURRENT_SEED: u32 = 0;
 
     /// Minimum elevation on the planet, in meters. This value is approximate.
     const MIN_ELEV: f64 = -8192.0;

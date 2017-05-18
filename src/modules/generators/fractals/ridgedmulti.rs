@@ -12,7 +12,7 @@ use modules::{MultiFractal, NoiseModule, Perlin, Seedable};
 use num_traits::Float;
 
 /// Default noise seed for the RidgedMulti noise module.
-pub const DEFAULT_RIDGED_SEED: usize = 0;
+pub const DEFAULT_RIDGED_SEED: u32 = 0;
 /// Default number of octaves for the RidgedMulti noise module.
 pub const DEFAULT_RIDGED_OCTAVE_COUNT: usize = 6;
 /// Default frequency for the RidgedMulti noise module.
@@ -44,9 +44,6 @@ pub const RIDGED_MAX_OCTAVES: usize = 32;
 /// terrain or marble-like textures.
 #[derive(Clone, Debug)]
 pub struct RidgedMulti<T> {
-    /// Seed.
-    pub seed: usize,
-
     /// Total number of frequency octaves to generate the noise with.
     ///
     /// The number of octaves control the _amount of detail_ in the noise
@@ -81,6 +78,7 @@ pub struct RidgedMulti<T> {
     /// half the height of the previous.
     pub attenuation: T,
 
+    seed: u32,
     sources: Vec<Perlin>,
 }
 
@@ -132,7 +130,7 @@ impl<T> MultiFractal<T> for RidgedMulti<T> {
 }
 
 impl<T> Seedable for RidgedMulti<T> {
-    fn set_seed(self, seed: usize) -> RidgedMulti<T> {
+    fn set_seed(self, seed: u32) -> RidgedMulti<T> {
         if self.seed == seed {
             return self;
         }
@@ -141,6 +139,10 @@ impl<T> Seedable for RidgedMulti<T> {
             sources: super::build_sources(seed, self.octaves),
             ..self
         }
+    }
+
+    fn seed(&self) -> u32 {
+        self.seed
     }
 }
 

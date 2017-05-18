@@ -12,7 +12,7 @@ use modules::{NoiseModule, Seedable};
 use num_traits::Float;
 
 /// Default noise seed for the Worley noise module.
-pub const DEFAULT_WORLEY_SEED: usize = 0;
+pub const DEFAULT_WORLEY_SEED: u32 = 0;
 /// Default RangeFunction for the Worley noise module.
 pub const DEFAULT_WORLEY_RANGEFUNCTION: RangeFunction = RangeFunction::Euclidean;
 /// Default frequency for the Worley noise module.
@@ -23,11 +23,6 @@ pub const DEFAULT_WORLEY_DISPLACEMENT: f32 = 1.0;
 /// Noise module that outputs Worley noise.
 #[derive(Clone, Copy, Debug)]
 pub struct Worley<T> {
-    perm_table: PermutationTable,
-
-    /// Seed.
-    pub seed: usize,
-
     /// Specifies the range function to use when calculating the boundaries of
     /// the cell.
     pub range_function: RangeFunction,
@@ -46,6 +41,9 @@ pub struct Worley<T> {
     /// random values to assign to each cell. The range of random values is +/-
     /// the displacement value.
     pub displacement: T,
+
+    seed: u32,
+    perm_table: PermutationTable,
 }
 
 impl<T> Worley<T>
@@ -53,7 +51,7 @@ impl<T> Worley<T>
 {
     pub fn new() -> Worley<T> {
         Worley {
-            perm_table: PermutationTable::new(DEFAULT_WORLEY_SEED as u32),
+            perm_table: PermutationTable::new(DEFAULT_WORLEY_SEED),
             seed: DEFAULT_WORLEY_SEED,
             range_function: DEFAULT_WORLEY_RANGEFUNCTION,
             enable_range: false,
@@ -85,12 +83,16 @@ impl<T> Worley<T>
 
 impl<T> Seedable for Worley<T> {
     /// Sets the seed value used by the Worley cells.
-    fn set_seed(self, seed: usize) -> Worley<T> {
+    fn set_seed(self, seed: u32) -> Worley<T> {
         Worley {
-            perm_table: PermutationTable::new(seed as u32),
+            perm_table: PermutationTable::new(seed),
             seed: seed,
             ..self
         }
+    }
+
+    fn seed(&self) -> u32 {
+        self.seed
     }
 }
 

@@ -50,5 +50,9 @@ impl<'a, T, M: NoiseModule<T>> NoiseModule<T> for &'a M {
 
 /// Trait for modules that require a seed before generating their values
 pub trait Seedable {
-    fn set_seed(self, seed: usize) -> Self;
+    /// Set the seed for the module implementing the `Seedable` trait
+    fn set_seed(self, seed: u32) -> Self;
+
+    /// Getter to retrieve the seed from the module
+    fn seed(&self) -> u32;
 }

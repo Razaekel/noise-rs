@@ -12,7 +12,7 @@ use modules::{Fbm, MultiFractal, NoiseModule, Seedable};
 use num_traits::Float;
 
 /// Default seed for the Turbulence noise module.
-pub const DEFAULT_TURBULENCE_SEED: usize = 0;
+pub const DEFAULT_TURBULENCE_SEED: u32 = 0;
 /// Default frequency for the Turbulence noise module.
 pub const DEFAULT_TURBULENCE_FREQUENCY: f32 = 1.0;
 /// Default power for the turbulence noise module.
@@ -32,9 +32,6 @@ pub struct Turbulence<Source, T> {
     /// Source Module that outputs a value.
     pub source: Source,
 
-    /// Seed value for the Turbulence module.
-    pub seed: usize,
-
     /// Frequency value for the Turbulence module.
     pub frequency: T,
 
@@ -45,6 +42,7 @@ pub struct Turbulence<Source, T> {
     /// Affects the roughness of the turbulence. Higher values are rougher.
     pub roughness: usize,
 
+    seed: u32,
     x_distort_module: Fbm<T>,
     y_distort_module: Fbm<T>,
     z_distort_module: Fbm<T>,
@@ -108,7 +106,7 @@ impl<Source, T> Turbulence<Source, T>
 }
 
 impl<Source, T> Seedable for Turbulence<Source, T> {
-    fn set_seed(self, seed: usize) -> Turbulence<Source, T> {
+    fn set_seed(self, seed: u32) -> Turbulence<Source, T> {
         Turbulence {
             seed: seed,
             x_distort_module: self.x_distort_module.set_seed(seed),
@@ -117,6 +115,10 @@ impl<Source, T> Seedable for Turbulence<Source, T> {
             u_distort_module: self.u_distort_module.set_seed(seed + 3),
             ..self
         }
+    }
+
+    fn seed(&self) -> u32 {
+        self.seed
     }
 }
 

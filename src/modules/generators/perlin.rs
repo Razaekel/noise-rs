@@ -12,14 +12,12 @@ use modules::{NoiseModule, Seedable};
 use num_traits::Float;
 
 /// Default Seed for the Perlin noise module.
-pub const DEFAULT_PERLIN_SEED: usize = 0;
+pub const DEFAULT_PERLIN_SEED: u32 = 0;
 
 /// Noise module that outputs 2/3/4-dimensional Perlin noise.
 #[derive(Clone, Copy, Debug)]
 pub struct Perlin {
-    /// Seed value for Perlin
-    pub seed: usize,
-
+    seed: u32,
     perm_table: PermutationTable,
 }
 
@@ -27,14 +25,14 @@ impl Perlin {
     pub fn new() -> Perlin {
         Perlin {
             seed: DEFAULT_PERLIN_SEED,
-            perm_table: PermutationTable::new(DEFAULT_PERLIN_SEED as u32),
+            perm_table: PermutationTable::new(DEFAULT_PERLIN_SEED),
         }
     }
 }
 
 impl Seedable for Perlin {
     /// Sets the seed value for Perlin noise
-    fn set_seed(self, seed: usize) -> Perlin {
+    fn set_seed(self, seed: u32) -> Perlin {
         // If the new seed is the same as the current seed, just return self.
         if self.seed == seed {
             return self;
@@ -42,8 +40,12 @@ impl Seedable for Perlin {
         // Otherwise, regenerate the permutation table based on the new seed.
         Perlin {
             seed: seed,
-            perm_table: PermutationTable::new(seed as u32),
+            perm_table: PermutationTable::new(seed),
         }
+    }
+
+    fn seed(&self) -> u32 {
+        self.seed
     }
 }
 

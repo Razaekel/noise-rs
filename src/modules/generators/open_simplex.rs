@@ -27,12 +27,12 @@ const NORM_CONSTANT_2D: f32 = 1.0 / 14.0;
 const NORM_CONSTANT_3D: f32 = 1.0 / 14.0;
 const NORM_CONSTANT_4D: f32 = 1.0 / 6.8699090070956625;
 
-pub const DEFAULT_OPENSIMPLEX_SEED: usize = 0;
+pub const DEFAULT_OPENSIMPLEX_SEED: u32 = 0;
 
 /// Noise module that outputs 2/3/4-dimensional Open Simplex noise.
 #[derive(Clone, Copy, Debug)]
 pub struct OpenSimplex {
-    seed: usize,
+    seed: u32,
     perm_table: PermutationTable,
 }
 
@@ -40,14 +40,14 @@ impl OpenSimplex {
     pub fn new() -> OpenSimplex {
         OpenSimplex {
             seed: DEFAULT_OPENSIMPLEX_SEED,
-            perm_table: PermutationTable::new(DEFAULT_OPENSIMPLEX_SEED as u32),
+            perm_table: PermutationTable::new(DEFAULT_OPENSIMPLEX_SEED),
         }
     }
 }
 
 impl Seedable for OpenSimplex {
     /// Sets the seed value for Open Simplex noise
-    fn set_seed(self, seed: usize) -> OpenSimplex {
+    fn set_seed(self, seed: u32) -> OpenSimplex {
         // If the new seed is the same as the current seed, just return self.
         if self.seed == seed {
             return self;
@@ -55,8 +55,12 @@ impl Seedable for OpenSimplex {
         // Otherwise, regenerate the permutation table based on the new seed.
         OpenSimplex {
             seed: seed,
-            perm_table: PermutationTable::new(seed as u32),
+            perm_table: PermutationTable::new(seed),
         }
+    }
+
+    fn seed(&self) -> u32 {
+        self.seed
     }
 }
 
