@@ -51,5 +51,5 @@ fn main() {
         .set_power(1.0 / 8.0)
         .set_roughness(6);
 
-    debug::render_noise_module("texturegranite.png", final_granite, 1024, 1024, 500);
+    debug::render_noise_module3("texturegranite.png", final_granite, 1024, 1024, 500);
 }

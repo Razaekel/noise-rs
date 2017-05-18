@@ -21,5 +21,5 @@ mod debug;
 fn main() {
     let cboard = Checkerboard::new();
 
-    debug::render_noise_module("cache.png", Cache::new(cboard), 1024, 1024, 100);
+    debug::render_noise_module3("cache.png", Cache::new(cboard), 1024, 1024, 100);
 }
