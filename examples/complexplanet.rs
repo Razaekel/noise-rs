@@ -191,7 +191,7 @@ fn main() {
     // noise module has a high number of octaves so that detail is visible at
     // high zoom levels.
     let baseContinentDef_fb0 = Fbm::new()
-        .set_seed(CURRENT_SEED + 0)
+        .set_seed(CURRENT_SEED)
         .set_frequency(CONTINENT_FREQUENCY)
         .set_persistence(0.5)
         .set_lacunarity(CONTINENT_LACUNARITY)

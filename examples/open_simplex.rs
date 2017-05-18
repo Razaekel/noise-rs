@@ -21,6 +21,6 @@ use noise::{OpenSimplex, Seedable};
 mod debug;
 
 fn main() {
-    debug::render_noise_module("open_simplex.png", OpenSimplex::new(), 1024, 1024, 50);
-    debug::render_noise_module("open_simplex_1.png", OpenSimplex::new().set_seed(1), 1024, 1024, 50);
+    debug::render_noise_module("open_simplex.png", &OpenSimplex::new(), 1024, 1024, 50);
+    debug::render_noise_module("open_simplex_1.png", &OpenSimplex::new().set_seed(1), 1024, 1024, 50);
 }

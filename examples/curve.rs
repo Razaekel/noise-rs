@@ -29,5 +29,5 @@ fn main() {
         .add_control_point(0.75, 1.0)
         .add_control_point(2.0, 1.25);
 
-    debug::render_noise_module("curve.png", curve, 1024, 1024, 100);
+    debug::render_noise_module("curve.png", &curve, 1024, 1024, 100);
 }
