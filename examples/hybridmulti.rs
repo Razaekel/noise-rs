@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! An example of using the HybridMulti noise module
+//! An example of using the `HybridMulti` noise module
 
 extern crate noise;
 
