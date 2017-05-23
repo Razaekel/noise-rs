@@ -15,8 +15,8 @@ use std::ops::Add;
 /// Default Seed for the Perlin noise module.
 pub const DEFAULT_SUPER_SIMPLEX_SEED: u32 = 0;
 
-const STRETCH_CONSTANT_2D: f64 = -0.211324865405187; // (1 / sqrt(2 + 1) - 1) / 2;
-const SQUISH_CONSTANT_2D: f64 = 0.366025403784439; // (sqrt(2 + 1) - 1) / 2;
+const TO_REAL_CONSTANT_2D: f64 = -0.211324865405187; // (1 / sqrt(2 + 1) - 1) / 2;
+const TO_SIMPLEX_CONSTANT_2D: f64 = 0.366025403784439; // (sqrt(2 + 1) - 1) / 2;
 const STRETCH_CONSTANT_3D: f64 = -1.0 / 6.0; // (1 / sqrt(3 + 1) - 1) / 3;
 const SQUISH_CONSTANT_3D: f64 = 1.0 / 3.0; // (sqrt(3 + 1) - 1) / 3;
 const STRETCH_CONSTANT_4D: f64 = -0.138196601125011; // (sqrt(4 + 1) - 1) / 4;
@@ -25,6 +25,21 @@ const SQUISH_CONSTANT_4D: f64 = 0.309016994374947; // (sqrt(4 + 1) - 1) / 4;
 const NORM_CONSTANT_2D: f64 = 18.518518518518519;
 const NORM_CONSTANT_3D: f64 = 14.0;
 const NORM_CONSTANT_4D: f64 = 6.8699090070956625;
+
+// Points taken into account for 2D:
+//              (-1,  0)
+//                 |    \
+//                 |      \
+//                 |        \
+// ( 0, -1) --- ( 0,  0) --- ( 1,  0)
+//         \       |    \       |    \
+//           \     |      \     |      \
+//             \   |        \   |        \
+//              ( 0,  1) --- ( 1,  1) --- ( 2,  1)
+//                      \       |
+//                        \     |
+//                          \   |
+//                           ( 1,  2)
 
 const LATTICE_LOOKUP_2D: [([i8; 2], [f64; 2]); 4 * 8] =
     [([0, 0], [0f64, 0f64]),
@@ -128,39 +143,40 @@ impl<T: Float> NoiseModule<Point2<T>> for SuperSimplex {
         let one: T = math::cast(1.0);
         let two: T = math::cast(2.0);
         let two_thirds: T = math::cast(2.0 / 3.0);
-        let stretch_constant: T = math::cast(STRETCH_CONSTANT_2D);
-        let squish_constant: T = math::cast(SQUISH_CONSTANT_2D);
+        let to_real_constant: T = math::cast(TO_REAL_CONSTANT_2D);
+        let to_simplex_constant: T = math::cast(TO_SIMPLEX_CONSTANT_2D);
 
         let mut value = zero;
 
-        //Get points for A2* lattice
-        let squish_offset = math::fold2(point, Add::add) * squish_constant;
-        let squished_point = math::map2(point, |v| v + squish_offset);
+        // Transform point from real space to simplex space
+        let to_simplex_offset = math::fold2(point, Add::add) * to_simplex_constant;
+        let simplex_point = math::map2(point, |v| v + to_simplex_offset);
 
-        //Get base points and offsets
-        let squished_floor = math::map2(squished_point, Float::floor);
-        let rel_coords = math::sub2(squished_point, squished_floor);
+        // Get base point of simplex and barycentric coordinates in simplex space
+        let simplex_base_point = math::map2(simplex_point, Float::floor);
+        let simplex_rel_coords = math::sub2(simplex_point, simplex_base_point);
 
-        //Index to point list
-        let region_sum = math::cast::<_, T>(math::cast::<_, usize>(math::fold2(rel_coords, Add::add)));
+        // Create index to lookup table from barycentric coordinates
+        let region_sum = math::cast::<_, T>(math::cast::<_, usize>(math::fold2(simplex_rel_coords, Add::add)));
         let index = (math::cast::<_, usize>(region_sum) << 2) |
-        math::cast::<_, usize>(rel_coords[0] - rel_coords[1] / two + one - region_sum / two) << 3 |
-        math::cast::<_, usize>(rel_coords[1] - rel_coords[0] / two + one - region_sum / two) << 4;
+        math::cast::<_, usize>(simplex_rel_coords[0] - simplex_rel_coords[1] / two + one - region_sum / two) << 3 |
+        math::cast::<_, usize>(simplex_rel_coords[1] - simplex_rel_coords[0] / two + one - region_sum / two) << 4;
 
-        let stretch_offset = math::fold2(rel_coords, Add::add) * stretch_constant;
-        let stretched_rel_coords = math::map2(rel_coords, |v| v + stretch_offset);
+        // Transform barycentric coordinates to real space
+        let to_real_offset = math::fold2(simplex_rel_coords, Add::add) * to_real_constant;
+        let real_rel_coords = math::map2(simplex_rel_coords, |v| v + to_real_offset);
 
         for i in 0..4 {
             let lattice_lookup = LATTICE_LOOKUP_2D[index + i];
 
-            let dpos = math::add2(stretched_rel_coords, math::cast2(lattice_lookup.1));
-            let attn = one - math::dot2(dpos, dpos);
+            let dpos = math::add2(real_rel_coords, math::cast2(lattice_lookup.1));
+            let attn = two_thirds - math::dot2(dpos, dpos);
             if attn <= zero {
                 continue;
             }
 
-            let lattice_point = math::cast2::<_, isize>(math::add2(squished_floor, math::cast2(lattice_lookup.0)));
-            let gradient = math::mul2(gradient::get2::<T>(self.perm_table.get2::<isize>(lattice_point)), math::cast(1.0));
+            let lattice_point = math::cast2::<_, isize>(math::add2(simplex_base_point, math::cast2(lattice_lookup.0)));
+            let gradient = math::mul2(gradient::get2::<T>(self.perm_table.get2::<isize>(lattice_point)), math::cast(NORM_CONSTANT_2D));
             value = value + math::pow4(attn) * math::dot2(gradient, dpos);
         }
 
