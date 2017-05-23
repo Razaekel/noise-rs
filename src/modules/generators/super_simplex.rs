@@ -166,9 +166,7 @@ impl<T: Float> NoiseModule<Point2<T>> for SuperSimplex {
         let to_real_offset = math::fold2(simplex_rel_coords, Add::add) * to_real_constant;
         let real_rel_coords = math::map2(simplex_rel_coords, |v| v + to_real_offset);
 
-        for i in 0..4 {
-            let lattice_lookup = LATTICE_LOOKUP_2D[index + i];
-
+        for lattice_lookup in &LATTICE_LOOKUP_2D[index..index + 4] {
             let dpos = math::add2(real_rel_coords, math::cast2(lattice_lookup.1));
             let attn = two_thirds - math::dot2(dpos, dpos);
             if attn <= zero {
