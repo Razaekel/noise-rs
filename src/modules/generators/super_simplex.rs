@@ -15,12 +15,12 @@ use std::ops::Add;
 /// Default Seed for the Perlin noise module.
 pub const DEFAULT_SUPER_SIMPLEX_SEED: u32 = 0;
 
-const TO_REAL_CONSTANT_2D: f64 = -0.211324865405187; // (1 / sqrt(2 + 1) - 1) / 2;
-const TO_SIMPLEX_CONSTANT_2D: f64 = 0.366025403784439; // (sqrt(2 + 1) - 1) / 2;
-const STRETCH_CONSTANT_3D: f64 = -1.0 / 6.0; // (1 / sqrt(3 + 1) - 1) / 3;
-const SQUISH_CONSTANT_3D: f64 = 1.0 / 3.0; // (sqrt(3 + 1) - 1) / 3;
-const STRETCH_CONSTANT_4D: f64 = -0.138196601125011; // (sqrt(4 + 1) - 1) / 4;
-const SQUISH_CONSTANT_4D: f64 = 0.309016994374947; // (sqrt(4 + 1) - 1) / 4;
+const TO_REAL_CONSTANT_2D: f64 = -0.211324865405187; // (1 / sqrt(2 + 1) - 1) / 2
+const TO_SIMPLEX_CONSTANT_2D: f64 = 0.366025403784439; // (sqrt(2 + 1) - 1) / 2
+const STRETCH_CONSTANT_3D: f64 = -1.0 / 6.0; // (1 / sqrt(3 + 1) - 1) / 3
+const SQUISH_CONSTANT_3D: f64 = 1.0 / 3.0; // (sqrt(3 + 1) - 1) / 3
+const STRETCH_CONSTANT_4D: f64 = -0.138196601125011; // (sqrt(4 + 1) - 1) / 4
+const SQUISH_CONSTANT_4D: f64 = 0.309016994374947; // (sqrt(4 + 1) - 1) / 4
 
 const NORM_CONSTANT_2D: f64 = 18.518518518518519;
 const NORM_CONSTANT_3D: f64 = 14.0;
@@ -124,8 +124,8 @@ impl Seedable for SuperSimplex {
         }
         // Otherwise, regenerate the permutation table based on the new seed.
         SuperSimplex {
-            seed: seed,
             perm_table: PermutationTable::new(seed),
+            .. self
         }
     }
 
@@ -141,10 +141,12 @@ impl<T: Float> NoiseModule<Point2<T>> for SuperSimplex {
     fn get(&self, point: Point2<T>) -> T {
         let zero: T = math::cast(0.0);
         let one: T = math::cast(1.0);
+        let one_half: T = math::cast(0.5);
         let two: T = math::cast(2.0);
         let two_thirds: T = math::cast(2.0 / 3.0);
         let to_real_constant: T = math::cast(TO_REAL_CONSTANT_2D);
         let to_simplex_constant: T = math::cast(TO_SIMPLEX_CONSTANT_2D);
+        let norm: T = math::cast(NORM_CONSTANT_2D);
 
         let mut value = zero;
 
@@ -154,13 +156,14 @@ impl<T: Float> NoiseModule<Point2<T>> for SuperSimplex {
 
         // Get base point of simplex and barycentric coordinates in simplex space
         let simplex_base_point = math::map2(simplex_point, Float::floor);
+        let simplex_base_point_i = math::cast2::<_, isize>(simplex_base_point);
         let simplex_rel_coords = math::sub2(simplex_point, simplex_base_point);
 
         // Create index to lookup table from barycentric coordinates
-        let region_sum = math::cast::<_, T>(math::cast::<_, usize>(math::fold2(simplex_rel_coords, Add::add)));
-        let index = (math::cast::<_, usize>(region_sum) << 2) |
-        math::cast::<_, usize>(simplex_rel_coords[0] - simplex_rel_coords[1] / two + one - region_sum / two) << 3 |
-        math::cast::<_, usize>(simplex_rel_coords[1] - simplex_rel_coords[0] / two + one - region_sum / two) << 4;
+        let region_sum = math::fold2(simplex_rel_coords, Add::add).floor();
+        let index = ((region_sum >= one) as usize) << 2 |
+        ((simplex_rel_coords[0] - simplex_rel_coords[1] * one_half + one - region_sum * one_half >= one) as usize) << 3 |
+        ((simplex_rel_coords[1] - simplex_rel_coords[0] * one_half + one - region_sum * one_half >= one) as usize) << 4;
 
         // Transform barycentric coordinates to real space
         let to_real_offset = math::fold2(simplex_rel_coords, Add::add) * to_real_constant;
@@ -173,8 +176,8 @@ impl<T: Float> NoiseModule<Point2<T>> for SuperSimplex {
                 continue;
             }
 
-            let lattice_point = math::cast2::<_, isize>(math::add2(simplex_base_point, math::cast2(lattice_lookup.0)));
-            let gradient = math::mul2(gradient::get2::<T>(self.perm_table.get2::<isize>(lattice_point)), math::cast(NORM_CONSTANT_2D));
+            let lattice_point = math::add2(simplex_base_point_i, math::cast2(lattice_lookup.0));
+            let gradient = math::mul2(gradient::get2(self.perm_table.get2(lattice_point)), norm);
             value = value + math::pow4(attn) * math::dot2(gradient, dpos);
         }
 
