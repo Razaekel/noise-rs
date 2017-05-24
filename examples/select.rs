@@ -19,10 +19,10 @@ use noise::*;
 mod debug;
 
 fn main() {
-    let checkerboard = Checkerboard::new();
-    let cylinders = Cylinders::new();
-    let perlin = Perlin::new();
-    let constant = Constant::new(0.5);
+    let checkerboard = &Checkerboard::new();
+    let cylinders = &Cylinders::new();
+    let perlin = &Perlin::new();
+    let constant = &Constant::new(0.5);
     let select1 = Select::new(perlin, cylinders, checkerboard)
         .set_bounds(0.0, 1.0)
         .set_edge_falloff(0.5);

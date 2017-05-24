@@ -20,7 +20,7 @@ mod debug;
 
 fn main() {
     let perlin = Perlin::new();
-    let curve = Curve::new(perlin)
+    let curve = Curve::new(&perlin)
         .add_control_point(-2.0, -2.0)
         .add_control_point(-1.0, -1.25)
         .add_control_point(0.0, -0.75)

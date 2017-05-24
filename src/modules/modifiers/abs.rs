@@ -11,21 +11,19 @@ use num_traits::Float;
 
 /// Noise module that outputs the absolute value of the output value from the
 /// source module.
-pub struct Abs<Source> {
+pub struct Abs<'a, T: 'a, U: 'a> {
     /// Outputs a value.
-    pub source: Source,
+    pub source: &'a NoiseModule<T, U>,
 }
 
-impl<Source> Abs<Source> {
-    pub fn new(source: Source) -> Abs<Source> {
+impl<'a, T, U> Abs<'a, T, U> {
+    pub fn new(source: &'a NoiseModule<T, U>) -> Abs<'a, T, U> {
         Abs { source: source }
     }
 }
 
-impl<Source, T, U> NoiseModule<T, U> for Abs<Source>
-    where Source: NoiseModule<T, U>,
-          T: Copy,
-          U: Float,
+impl<'a, T, U> NoiseModule<T, U> for Abs<'a, T, U>
+    where U: Float,
 {
     fn get(&self, point: T) -> U {
         (self.source.get(point)).abs()

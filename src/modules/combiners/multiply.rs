@@ -11,16 +11,16 @@ use num_traits::Float;
 
 /// Noise module that outputs the product of the two output values from two source
 /// modules.
-pub struct Multiply<Source1, Source2> {
+pub struct Multiply<'a, T: 'a, U: 'a> {
     /// Outputs a value.
-    pub source1: Source1,
+    pub source1: &'a NoiseModule<T, U>,
 
     /// Outputs a value.
-    pub source2: Source2,
+    pub source2: &'a NoiseModule<T, U>,
 }
 
-impl<Source1, Source2> Multiply<Source1, Source2> {
-    pub fn new(source1: Source1, source2: Source2) -> Multiply<Source1, Source2> {
+impl<'a, T, U> Multiply<'a, T, U> {
+    pub fn new(source1: &'a NoiseModule<T, U>, source2: &'a NoiseModule<T, U>) -> Multiply<'a, T, U> {
         Multiply {
             source1: source1,
             source2: source2,
@@ -28,10 +28,8 @@ impl<Source1, Source2> Multiply<Source1, Source2> {
     }
 }
 
-impl<Source1, Source2, T, U> NoiseModule<T, U> for Multiply<Source1, Source2>
-    where Source1: NoiseModule<T, U>,
-          Source2: NoiseModule<T, U>,
-          T: Copy,
+impl<'a, T, U> NoiseModule<T, U> for Multiply<'a, T, U>
+    where T: Copy,
           U: Float,
 {
     fn get(&self, point: T) -> U {

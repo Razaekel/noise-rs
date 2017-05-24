@@ -20,7 +20,7 @@ mod debug;
 
 fn main() {
     let perlin = Perlin::new();
-    let terrace = Terrace::new(perlin)
+    let terrace = Terrace::new(&perlin)
         .add_control_point(-1.0)
         .add_control_point(-0.5)
         .add_control_point(0.1)
@@ -28,7 +28,7 @@ fn main() {
 
     debug::render_noise_module("terrace.png", &terrace, 1024, 1024, 100);
 
-    let terrace_inverted = Terrace::new(perlin)
+    let terrace_inverted = Terrace::new(&perlin)
         .add_control_point(-1.0)
         .add_control_point(-0.5)
         .add_control_point(0.1)

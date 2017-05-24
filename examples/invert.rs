@@ -20,7 +20,7 @@ mod debug;
 
 fn main() {
     let perlin = Perlin::new();
-    let abs = Abs::new(perlin);
+    let abs = Abs::new(&perlin);
 
-    debug::render_noise_module("invert.png", &Invert::new(abs), 1024, 1024, 100);
+    debug::render_noise_module("invert.png", &Invert::new(&abs), 1024, 1024, 100);
 }
