@@ -22,14 +22,12 @@ impl<Source> Abs<Source> {
     }
 }
 
-impl<Source, T, U> NoiseModule<T> for Abs<Source>
-    where Source: NoiseModule<T, Output = U>,
+impl<Source, T, U> NoiseModule<T, U> for Abs<Source>
+    where Source: NoiseModule<T, U>,
           T: Copy,
           U: Float,
 {
-    type Output = U;
-
-    fn get(&self, point: T) -> Self::Output {
+    fn get(&self, point: T) -> U {
         (self.source.get(point)).abs()
     }
 }

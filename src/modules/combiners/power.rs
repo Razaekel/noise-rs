@@ -28,15 +28,13 @@ impl<Source1, Source2> Power<Source1, Source2> {
     }
 }
 
-impl<Source1, Source2, T, U> NoiseModule<T> for Power<Source1, Source2>
-    where Source1: NoiseModule<T, Output = U>,
-          Source2: NoiseModule<T, Output = U>,
+impl<Source1, Source2, T, U> NoiseModule<T, U> for Power<Source1, Source2>
+    where Source1: NoiseModule<T, U>,
+          Source2: NoiseModule<T, U>,
           T: Copy,
           U: Float,
 {
-    type Output = U;
-
-    fn get(&self, point: T) -> Self::Output {
+    fn get(&self, point: T) -> U {
         (self.source1.get(point)).powf(self.source2.get(point))
     }
 }

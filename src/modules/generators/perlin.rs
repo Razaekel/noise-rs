@@ -50,9 +50,7 @@ impl Seedable for Perlin {
 }
 
 /// 2-dimensional perlin noise
-impl<T: Float> NoiseModule<Point2<T>> for Perlin {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point2<T>, T> for Perlin {
     fn get(&self, point: Point2<T>) -> T {
         #[inline(always)]
         fn surflet<T: Float>(perm_table: &PermutationTable,
@@ -92,9 +90,7 @@ impl<T: Float> NoiseModule<Point2<T>> for Perlin {
 }
 
 /// 3-dimensional perlin noise
-impl<T: Float> NoiseModule<Point3<T>> for Perlin {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point3<T>, T> for Perlin {
     fn get(&self, point: Point3<T>) -> T {
         #[inline(always)]
         fn surflet<T: Float>(perm_table: &PermutationTable,
@@ -146,9 +142,7 @@ impl<T: Float> NoiseModule<Point3<T>> for Perlin {
 }
 
 /// 4-dimensional perlin noise
-impl<T: Float> NoiseModule<Point4<T>> for Perlin {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point4<T>, T> for Perlin {
     fn get(&self, point: Point4<T>) -> T {
         #[inline(always)]
         fn surflet<T: Float>(perm_table: &PermutationTable,

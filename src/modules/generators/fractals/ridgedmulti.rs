@@ -147,9 +147,7 @@ impl<T> Seedable for RidgedMulti<T> {
 }
 
 /// 2-dimensional RidgedMulti noise
-impl<T: Float> NoiseModule<Point2<T>> for RidgedMulti<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point2<T>, T> for RidgedMulti<T> {
     fn get(&self, mut point: Point2<T>) -> T {
         let mut result = T::zero();
         let mut weight = T::one();
@@ -199,9 +197,7 @@ impl<T: Float> NoiseModule<Point2<T>> for RidgedMulti<T> {
 }
 
 /// 3-dimensional RidgedMulti noise
-impl<T: Float> NoiseModule<Point3<T>> for RidgedMulti<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point3<T>, T> for RidgedMulti<T> {
     fn get(&self, mut point: Point3<T>) -> T {
         let mut result = T::zero();
         let mut weight = T::one();
@@ -251,9 +247,7 @@ impl<T: Float> NoiseModule<Point3<T>> for RidgedMulti<T> {
 }
 
 /// 4-dimensional RidgedMulti noise
-impl<T: Float> NoiseModule<Point4<T>> for RidgedMulti<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point4<T>, T> for RidgedMulti<T> {
     fn get(&self, mut point: Point4<T>) -> T {
         let mut result = T::zero();
         let mut weight = T::one();

@@ -96,13 +96,11 @@ impl<Source, T> RotatePoint<Source, T>
     }
 }
 
-impl<Source, T> NoiseModule<Point2<T>> for RotatePoint<Source, T>
-    where Source: NoiseModule<Point2<T>, Output = T>,
+impl<Source, T> NoiseModule<Point2<T>, T> for RotatePoint<Source, T>
+    where Source: NoiseModule<Point2<T>, T>,
           T: Float,
 {
-    type Output = T;
-
-    fn get(&self, point: Point2<T>) -> Self::Output {
+    fn get(&self, point: Point2<T>) -> T {
         // In two dimensions, the plane is _xy_, and we rotate around the
         // z-axis.
         let x = point[0];
@@ -118,13 +116,11 @@ impl<Source, T> NoiseModule<Point2<T>> for RotatePoint<Source, T>
     }
 }
 
-impl<Source, T> NoiseModule<Point3<T>> for RotatePoint<Source, T>
-    where Source: NoiseModule<Point3<T>, Output = T>,
+impl<Source, T> NoiseModule<Point3<T>, T> for RotatePoint<Source, T>
+    where Source: NoiseModule<Point3<T>, T>,
           T: Float,
 {
-    type Output = T;
-
-    fn get(&self, point: Point3<T>) -> Self::Output {
+    fn get(&self, point: Point3<T>) -> T {
         // In three dimensions, we could rotate around any of the x, y, or z
         // axes. Need a more complicated function to handle this case.
         let x_cos = deg_to_rad(self.x_angle).cos();
@@ -154,13 +150,11 @@ impl<Source, T> NoiseModule<Point3<T>> for RotatePoint<Source, T>
     }
 }
 
-impl<Source, T> NoiseModule<Point4<T>> for RotatePoint<Source, T>
-    where Source: NoiseModule<Point4<T>, Output = T>,
+impl<Source, T> NoiseModule<Point4<T>, T> for RotatePoint<Source, T>
+    where Source: NoiseModule<Point4<T>, T>,
           T: Float,
 {
-    type Output = T;
-
-    fn get(&self, _point: Point4<T>) -> Self::Output {
+    fn get(&self, _point: Point4<T>) -> T {
         // 4d rotations are hard.
         unimplemented!();
     }

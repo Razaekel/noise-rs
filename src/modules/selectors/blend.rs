@@ -43,16 +43,14 @@ impl<Source1, Source2, Control> Blend<Source1, Source2, Control> {
     }
 }
 
-impl<Source1, Source2, Control, T, U> NoiseModule<T> for Blend<Source1, Source2, Control>
-    where Source1: NoiseModule<T, Output = U>,
-          Source2: NoiseModule<T, Output = U>,
-          Control: NoiseModule<T, Output = U>,
+impl<Source1, Source2, Control, T, U> NoiseModule<T, U> for Blend<Source1, Source2, Control>
+    where Source1: NoiseModule<T, U>,
+          Source2: NoiseModule<T, U>,
+          Control: NoiseModule<T, U>,
           T: Copy,
           U: Float,
 {
-    type Output = U;
-
-    fn get(&self, point: T) -> Self::Output {
+    fn get(&self, point: T) -> U {
         let lower = self.source1.get(point);
         let upper = self.source2.get(point);
         let control = self.control.get(point);

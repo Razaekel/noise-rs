@@ -50,14 +50,12 @@ impl<Source, T> Clamp<Source, T>
     }
 }
 
-impl<Source, T, U> NoiseModule<T> for Clamp<Source, U>
-    where Source: NoiseModule<T, Output = U>,
+impl<Source, T, U> NoiseModule<T, U> for Clamp<Source, U>
+    where Source: NoiseModule<T, U>,
           T: Copy,
           U: Float,
 {
-    type Output = U;
-
-    fn get(&self, point: T) -> Self::Output {
+    fn get(&self, point: T) -> U {
         let value = self.source.get(point);
 
         match () {

@@ -70,14 +70,12 @@ impl<Source, T> Curve<Source, T>
     }
 }
 
-impl<Source, T, U> NoiseModule<T> for Curve<Source, U>
-    where Source: NoiseModule<T, Output = U>,
+impl<Source, T, U> NoiseModule<T, U> for Curve<Source, U>
+    where Source: NoiseModule<T, U>,
           T: Copy,
           U: Float,
 {
-    type Output = U;
-
-    fn get(&self, point: T) -> Self::Output {
+    fn get(&self, point: T) -> U {
         // confirm that there's at least 4 control points in the vector.
         assert!(self.control_points.len() >= 4);
 

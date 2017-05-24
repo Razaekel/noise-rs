@@ -66,16 +66,14 @@ impl<Source1, Source2, Control, T> Select<Source1, Source2, Control, T>
     }
 }
 
-impl<Source1, Source2, Control, T, U> NoiseModule<T> for Select<Source1, Source2, Control, U>
-    where Source1: NoiseModule<T, Output = U>,
-          Source2: NoiseModule<T, Output = U>,
-          Control: NoiseModule<T, Output = U>,
+impl<Source1, Source2, Control, T, U> NoiseModule<T, U> for Select<Source1, Source2, Control, U>
+    where Source1: NoiseModule<T, U>,
+          Source2: NoiseModule<T, U>,
+          Control: NoiseModule<T, U>,
           T: Copy,
           U: Float,
 {
-    type Output = U;
-
-    fn get(&self, point: T) -> Self::Output {
+    fn get(&self, point: T) -> U {
         let control_value = self.control.get(point);
 
         if self.edge_falloff > U::zero() {

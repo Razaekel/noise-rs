@@ -47,14 +47,12 @@ impl<Source, T> ScaleBias<Source, T>
     }
 }
 
-impl<Source, T, U> NoiseModule<T> for ScaleBias<Source, U>
-    where Source: NoiseModule<T, Output = U>,
+impl<Source, T, U> NoiseModule<T, U> for ScaleBias<Source, U>
+    where Source: NoiseModule<T, U>,
           T: Copy,
           U: Float,
 {
-    type Output = U;
-
-    fn get(&self, point: T) -> Self::Output {
+    fn get(&self, point: T) -> U {
         (self.source.get(point)).mul_add(self.scale, self.bias)
     }
 }

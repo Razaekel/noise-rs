@@ -183,9 +183,7 @@ fn range_quadratic<T: Float>(p1: &[T], p2: &[T]) -> T {
     result
 }
 
-impl<T: Float> NoiseModule<Point2<T>> for Worley<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point2<T>, T> for Worley<T> {
     fn get(&self, point: Point2<T>) -> T {
         #[inline(always)]
         fn get_point<T: Float>(perm_table: &PermutationTable, whole: Point2<i64>) -> Point2<T> {
@@ -271,9 +269,7 @@ fn get_vec2<T: Float>(index: usize) -> Point2<T> {
     }
 }
 
-impl<T: Float> NoiseModule<Point3<T>> for Worley<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point3<T>, T> for Worley<T> {
     fn get(&self, point: Point3<T>) -> T {
         #[inline(always)]
         fn get_point<T: Float>(perm_table: &PermutationTable,
@@ -387,9 +383,7 @@ fn get_vec3<T: Float>(index: usize) -> Point3<T> {
     }
 }
 
-impl<T: Float> NoiseModule<Point4<T>> for Worley<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point4<T>, T> for Worley<T> {
     fn get(&self, point: Point4<T>) -> T {
         #[inline(always)]
         fn get_point<T: Float>(perm_table: &PermutationTable, whole: Point4<i64>) -> Point4<T> {
