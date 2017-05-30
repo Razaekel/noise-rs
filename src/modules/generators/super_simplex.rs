@@ -12,17 +12,17 @@ use modules::{NoiseModule, Seedable};
 use num_traits::Float;
 use std::ops::Add;
 
-/// Default Seed for the Perlin noise module.
+/// Default Seed for the Super Simplex noise module.
 pub const DEFAULT_SUPER_SIMPLEX_SEED: u32 = 0;
 
 const TO_REAL_CONSTANT_2D: f64 = -0.211324865405187; // (1 / sqrt(2 + 1) - 1) / 2
 const TO_SIMPLEX_CONSTANT_2D: f64 = 0.366025403784439; // (sqrt(2 + 1) - 1) / 2
-const STRETCH_CONSTANT_3D: f64 = -1.0 / 6.0; // (1 / sqrt(3 + 1) - 1) / 3
-const SQUISH_CONSTANT_3D: f64 = 1.0 / 3.0; // (sqrt(3 + 1) - 1) / 3
-const STRETCH_CONSTANT_4D: f64 = -0.138196601125011; // (sqrt(4 + 1) - 1) / 4
-const SQUISH_CONSTANT_4D: f64 = 0.309016994374947; // (sqrt(4 + 1) - 1) / 4
+//const STRETCH_CONSTANT_3D: f64 = -1.0 / 6.0; // (1 / sqrt(3 + 1) - 1) / 3
+//const SQUISH_CONSTANT_3D: f64 = 1.0 / 3.0; // (sqrt(3 + 1) - 1) / 3
+//const STRETCH_CONSTANT_4D: f64 = -0.138196601125011; // (sqrt(4 + 1) - 1) / 4
+//const SQUISH_CONSTANT_4D: f64 = 0.309016994374947; // (sqrt(4 + 1) - 1) / 4
 
-const NORM_CONSTANT_2D: f64 = 18.518518518518519;
+const NORM_CONSTANT_2D: f64 = 1.0 / 0.05428295288661623; // Determined using the Mathematica code listed in the super_simplex example and find_maximum_super_simplex.nb
 const NORM_CONSTANT_3D: f64 = 14.0;
 const NORM_CONSTANT_4D: f64 = 6.8699090070956625;
 
@@ -106,6 +106,16 @@ pub struct SuperSimplex {
     perm_table: PermutationTable,
 }
 
+#[derive(Clone, Copy, Debug, Default)]
+struct SuperSimplexOutput {
+    value: f64,
+    dx: f64,
+    dy: f64,
+    dxx: f64,
+    dyy: f64,
+    dxy: f64,
+}
+
 impl SuperSimplex {
     pub fn new() -> SuperSimplex {
         SuperSimplex {
@@ -177,11 +187,11 @@ impl<T: Float> NoiseModule<Point2<T>> for SuperSimplex {
             }
 
             let lattice_point = math::add2(simplex_base_point_i, math::cast2(lattice_lookup.0));
-            let gradient = math::mul2(gradient::get2(self.perm_table.get2(lattice_point)), norm);
+            let gradient = gradient::get2(self.perm_table.get2(lattice_point));
             value = value + math::pow4(attn) * math::dot2(gradient, dpos);
         }
 
-        value
+        value * norm
     }
 }
 

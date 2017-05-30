@@ -61,11 +61,45 @@ fn main() {
 	    lookup_3d[i * 4 + 3] = [i4, j4, k4];
     }
 
-     print!("lookup_3d = [");
+    print!("lookup_3d = [");
     for x in lookup_3d.iter() {
         print!("[{}, {}, {}],", x[0], x[1], x[2]);
     }
     println!("\x08]");
+
+    // Calculation of maximum value:
+    // x => real_rel_coords[0], y => real_rel_coords[1]
+    // a-h, components of gradient vectors for 4 closest points
+    // One contribution: (a*x + b*y) * (2/3 - x^2 - y^2)^4
+    // Limit per contribution: 0 <= x^2 + y^2 < 2/3
+    // skew = ((1 / sqrt(2 + 1) - 1) / 2)
+    // (a*x + b*y) * (2/3 - x^2 - y^2)^4 + (c*(x - 1 - 2 * skew) + d*(y - 1 - 2 * skew)) * (2/3 - (x - 1 - 2 * skew)^2 - (y - 1 - 2 * skew)^2)^4 + (e*(x - skew) + f*(y - 1 - skew)) * (2/3 - (x - skew)^2 - (y - 1 - skew)^2)^4 + (g*(x - 1 - skew) + h*(y - skew)) * (2/3 - (x - 1 - skew)^2 - (y - skew)^2)^4
+    // 0 <= x^2 + y^2 < 2/3 && 0 <= (x - 1 - 2 * skew)^2 + (y - 1 - 2 * skew)^2 < 2/3 && 0 <= (x - skew)^2 + (y - 1 - skew)^2 < 2/3 && 0 <= (x - 1 - skew)^2 + (y - skew)^2 < 2/3
+    // a^2 + b^2 == 1 && c^2 + d^2 == 1 && e^2 + f^2 == 1 && g^2 + h^2 == 1
+
+    // Mathematica code for finding maximum of 2D Super Simplex noise:
+    // Clear["Global`*"];
+    // skew = (1/Sqrt[2 + 1] - 1)/2
+    // eq[a_, b_, x_, y_] = (a*x + b*y)*(2/3 - x^2 - y^2)^4
+    // eq5[x_, y_] = eq[0, 1, x, y] + eq[-1, 0, x - 1 - 2*skew, y - 1 - 2*skew] + eq[1/Sqrt[2], -1/Sqrt[2], x - skew, y - 1 - skew]
+    // F[{x_, y_}] = eq5[x, y];
+    // Fx[x_, y_] = D[eq5[x, y], x];
+    // Fy[x_, y_] = D[eq5[x, y], y];
+    // Fxx[x_, y_] = D[D[eq5[x, y], x], x];
+    // Fyy[x_, y_] = D[D[eq5[x, y], y], y];
+    // Fxy[x_, y_] = D[D[eq5[x, y], x], y];
+    // X0 = {1/3 + skew, 2/3 + skew};
+    // P0 = N[X0];
+    // gradF[{x_, y_}] = {Fx[x, y], Fy[x, y]};
+    // H[{x_, y_}] = {{Fxx[x, y], Fxy[x, y]}, {Fxy[x, y], Fyy[x, y]}};
+    // Print["f[", PaddedForm[P0, {13, 12}], "]=",
+    //       PaddedForm[F[P0], {13, 12}]]
+    //     For[i = 1, i <= 10, i++, P0 = P0 - gradF[P0].Inverse[H[P0]];
+    //         Print["f[", PaddedForm[P0, {21, 20}], "]=",
+    //               PaddedForm[F[P0], {21, 20}]]]
+    //     P0;
+    // {xout, yout} = P0;
+    // eq5[xout, yout]
 
     debug::render_noise_module("super_simplex.png", SuperSimplex::new(), 1024, 1024, 50);
     debug::render_noise_module("super_simplex_seeded.png", SuperSimplex::new().set_seed(1), 1024, 1024, 50);
