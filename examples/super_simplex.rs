@@ -77,6 +77,8 @@ fn main() {
     // 0 <= x^2 + y^2 < 2/3 && 0 <= (x - 1 - 2 * skew)^2 + (y - 1 - 2 * skew)^2 < 2/3 && 0 <= (x - skew)^2 + (y - 1 - skew)^2 < 2/3 && 0 <= (x - 1 - skew)^2 + (y - skew)^2 < 2/3
     // a^2 + b^2 == 1 && c^2 + d^2 == 1 && e^2 + f^2 == 1 && g^2 + h^2 == 1
 
+    // Note: Maximum value is dependent on gradients. In the example below the gradients were [0,1] at [0,0], [-1,0] at [1,1], and [1/sqrt(2),-1/sqrt(2)] at [0,1] (on the simplex grid)
+    // The maximum possible value is achieved when the dot product of the delta position to the gradient is 1.0. As such, the gradients used below were picked because they produced the maximum possible dot product when sampled at the centroid of the simplex.
     // Mathematica code for finding maximum of 2D Super Simplex noise:
     // Clear["Global`*"];
     // skew = (1/Sqrt[2 + 1] - 1)/2

@@ -7,7 +7,7 @@
 // except according to those terms.
 
 use {PermutationTable, gradient, math};
-use math::{Point2, Point3, Point4};
+use math::{Point2, Point3};
 use modules::{NoiseModule, Seedable};
 use num_traits::Float;
 use std::ops::Add;
@@ -17,14 +17,11 @@ pub const DEFAULT_SUPER_SIMPLEX_SEED: u32 = 0;
 
 const TO_REAL_CONSTANT_2D: f64 = -0.211324865405187; // (1 / sqrt(2 + 1) - 1) / 2
 const TO_SIMPLEX_CONSTANT_2D: f64 = 0.366025403784439; // (sqrt(2 + 1) - 1) / 2
-//const STRETCH_CONSTANT_3D: f64 = -1.0 / 6.0; // (1 / sqrt(3 + 1) - 1) / 3
-//const SQUISH_CONSTANT_3D: f64 = 1.0 / 3.0; // (sqrt(3 + 1) - 1) / 3
-//const STRETCH_CONSTANT_4D: f64 = -0.138196601125011; // (sqrt(4 + 1) - 1) / 4
-//const SQUISH_CONSTANT_4D: f64 = 0.309016994374947; // (sqrt(4 + 1) - 1) / 4
+const TO_SIMPLEX_CONSTANT_3D: f64 = 2.0 / 3.0;
 
-const NORM_CONSTANT_2D: f64 = 1.0 / 0.05428295288661623; // Determined using the Mathematica code listed in the super_simplex example and find_maximum_super_simplex.nb
-const NORM_CONSTANT_3D: f64 = 14.0;
-const NORM_CONSTANT_4D: f64 = 6.8699090070956625;
+// Determined using the Mathematica code listed in the super_simplex example and find_maximum_super_simplex.nb
+const NORM_CONSTANT_2D: f64 = 1.0 / 0.05428295288661623;
+const NORM_CONSTANT_3D: f64 = 1.0;
 
 // Points taken into account for 2D:
 //              (-1,  0)
@@ -99,21 +96,11 @@ const LATTICE_LOOKUP_3D: [[i8; 3]; 4 * 16] =
      [0, 0, 0],[0, 1, 1],[1, 0, 1],[1, 1, 0],
      [1, 1, 1],[0, 1, 1],[1, 0, 1],[1, 1, 0]];
 
-/// Noise module that outputs 2/3/4-dimensional Super Simplex noise.
+/// Noise module that outputs 2/3-dimensional Super Simplex noise.
 #[derive(Clone, Copy, Debug)]
 pub struct SuperSimplex {
     seed: u32,
     perm_table: PermutationTable,
-}
-
-#[derive(Clone, Copy, Debug, Default)]
-struct SuperSimplexOutput {
-    value: f64,
-    dx: f64,
-    dy: f64,
-    dxx: f64,
-    dyy: f64,
-    dxy: f64,
 }
 
 impl SuperSimplex {
@@ -195,141 +182,70 @@ impl<T: Float> NoiseModule<Point2<T>> for SuperSimplex {
     }
 }
 
-/*/// 3-dimensional perlin noise
-impl<T: Float> NoiseModule<Point3<T>> for Perlin {
+/// 3-dimensional Super Simplex noise
+impl<T: Float> NoiseModule<Point3<T>> for SuperSimplex {
     type Output = T;
 
     fn get(&self, point: Point3<T>) -> T {
-        #[inline(always)]
-        fn surflet<T: Float>(perm_table: &PermutationTable,
-                             corner: math::Point3<isize>,
-                             distance: math::Vector3<T>)
-                             -> T {
-            let attn = T::one() - math::dot3(distance, distance);
-            if attn > T::zero() {
-                math::pow4(attn) * math::dot3(distance, gradient::get3(perm_table.get3(corner)))
-            } else {
-                T::zero()
+        let zero: T = math::cast(0.0);
+        let one: T = math::cast(1.0);
+        let one_p_five: T = math::cast(1.5);
+        let one_half: T = math::cast(0.5);
+        let two: T = math::cast(2.0);
+        let three_fourths: T = math::cast(0.75);
+        let overlapping_offset: T = math::cast(512.5);
+        let to_simplex_constant: T = math::cast(TO_SIMPLEX_CONSTANT_3D);
+        let norm: T = math::cast(NORM_CONSTANT_3D);
+
+        let mut value = zero;
+
+        // Transform point from real space to simplex space
+        let to_simplex_offset = math::fold3(point, Add::add) * to_simplex_constant;
+        let simplex_point = math::map3(point, |v| to_simplex_offset - v);
+        let second_simplex_point = math::map3(simplex_point, |v| v + overlapping_offset);
+
+        // Get base point of simplex and barycentric coordinates in simplex space
+        let simplex_base_point = math::map3(simplex_point, Float::floor);
+        let simplex_base_point_i = math::cast3::<_, isize>(simplex_base_point);
+        let simplex_rel_coords = math::sub3(simplex_point, simplex_base_point);
+        let second_simplex_base_point = math::map3(second_simplex_point, Float::floor);
+        let second_simplex_base_point_i = math::cast3::<_, isize>(second_simplex_base_point);
+        let second_simplex_rel_coords = math::sub3(second_simplex_point, second_simplex_base_point);
+
+        // Create indices to lookup table from barycentric coordinates
+        let index = ((simplex_rel_coords[0] + simplex_rel_coords[1] + simplex_rel_coords[2] >= one_p_five) as usize) << 2 |
+        ((-simplex_rel_coords[0] + simplex_rel_coords[1] + simplex_rel_coords[2] >= one_half) as usize) << 3 |
+        ((simplex_rel_coords[0] - simplex_rel_coords[1] + simplex_rel_coords[2] >= one_half) as usize) << 4 |
+        ((simplex_rel_coords[0] + simplex_rel_coords[1] - simplex_rel_coords[2] >= one_half) as usize) << 5;
+        let second_index = ((second_simplex_rel_coords[0] + second_simplex_rel_coords[1] + second_simplex_rel_coords[2] >= one_p_five) as usize) << 2 |
+        ((-second_simplex_rel_coords[0] + second_simplex_rel_coords[1] + second_simplex_rel_coords[2] >= one_half) as usize) << 3 |
+        ((second_simplex_rel_coords[0] - second_simplex_rel_coords[1] + second_simplex_rel_coords[2] >= one_half) as usize) << 4 |
+        ((second_simplex_rel_coords[0] + second_simplex_rel_coords[1] - second_simplex_rel_coords[2] >= one_half) as usize) << 5;
+
+        for &lattice_lookup in &LATTICE_LOOKUP_3D[index..index + 4] {
+            let dpos = math::sub3(simplex_rel_coords, math::cast3(lattice_lookup));
+            let attn = three_fourths - math::dot3(dpos, dpos);
+            if attn <= zero {
+                continue;
             }
+
+            let lattice_point = math::add3(simplex_base_point_i, math::cast3(lattice_lookup));
+            let gradient = gradient::get3(self.perm_table.get3(lattice_point));
+            value = value + math::pow4(attn) * math::dot3(gradient, dpos);
         }
 
-        let floored = math::map3(point, T::floor);
-        let near_corner = math::map3(floored, math::cast);
-        let far_corner = math::add3(near_corner, math::one3());
-        let near_distance = math::sub3(point, floored);
-        let far_distance = math::sub3(near_distance, math::one3());
+        for &lattice_lookup in &LATTICE_LOOKUP_3D[second_index..second_index + 4] {
+            let dpos = math::sub3(second_simplex_rel_coords, math::cast3(lattice_lookup));
+            let attn = three_fourths - math::dot3(dpos, dpos);
+            if attn <= zero {
+                continue;
+            }
 
-        let f000 = surflet(&self.perm_table,
-                           [near_corner[0], near_corner[1], near_corner[2]],
-                           [near_distance[0], near_distance[1], near_distance[2]]);
-        let f100 = surflet(&self.perm_table,
-                           [far_corner[0], near_corner[1], near_corner[2]],
-                           [far_distance[0], near_distance[1], near_distance[2]]);
-        let f010 = surflet(&self.perm_table,
-                           [near_corner[0], far_corner[1], near_corner[2]],
-                           [near_distance[0], far_distance[1], near_distance[2]]);
-        let f110 = surflet(&self.perm_table,
-                           [far_corner[0], far_corner[1], near_corner[2]],
-                           [far_distance[0], far_distance[1], near_distance[2]]);
-        let f001 = surflet(&self.perm_table,
-                           [near_corner[0], near_corner[1], far_corner[2]],
-                           [near_distance[0], near_distance[1], far_distance[2]]);
-        let f101 = surflet(&self.perm_table,
-                           [far_corner[0], near_corner[1], far_corner[2]],
-                           [far_distance[0], near_distance[1], far_distance[2]]);
-        let f011 = surflet(&self.perm_table,
-                           [near_corner[0], far_corner[1], far_corner[2]],
-                           [near_distance[0], far_distance[1], far_distance[2]]);
-        let f111 = surflet(&self.perm_table,
-                           [far_corner[0], far_corner[1], far_corner[2]],
-                           [far_distance[0], far_distance[1], far_distance[2]]);
+            let lattice_point = math::add3(second_simplex_base_point_i, math::cast3(lattice_lookup));
+            let gradient = gradient::get3(self.perm_table.get3(lattice_point));
+            value = value + math::pow4(attn) * math::dot3(gradient, dpos);
+        }
 
-        // Multiply by arbitrary value to scale to -1..1
-        (f000 + f100 + f010 + f110 + f001 + f101 + f011 + f111) * math::cast(3.8898553255531074)
+        value * norm
     }
 }
-
-/// 4-dimensional perlin noise
-impl<T: Float> NoiseModule<Point4<T>> for Perlin {
-    type Output = T;
-
-    fn get(&self, point: Point4<T>) -> T {
-        #[inline(always)]
-        fn surflet<T: Float>(perm_table: &PermutationTable,
-                             corner: math::Point4<isize>,
-                             distance: math::Vector4<T>)
-                             -> T {
-            let attn = T::one() - math::dot4(distance, distance);
-            if attn > T::zero() {
-                math::pow4(attn) * math::dot4(distance, gradient::get4(perm_table.get4(corner)))
-            } else {
-                T::zero()
-            }
-        }
-
-        let floored = math::map4(point, T::floor);
-        let near_corner = math::map4(floored, math::cast);
-        let far_corner = math::add4(near_corner, math::one4());
-        let near_distance = math::sub4(point, floored);
-        let far_distance = math::sub4(near_distance, math::one4());
-
-        let f0000 =
-            surflet(&self.perm_table,
-                    [near_corner[0], near_corner[1], near_corner[2], near_corner[3]],
-                    [near_distance[0], near_distance[1], near_distance[2], near_distance[3]]);
-        let f1000 =
-            surflet(&self.perm_table,
-                    [far_corner[0], near_corner[1], near_corner[2], near_corner[3]],
-                    [far_distance[0], near_distance[1], near_distance[2], near_distance[3]]);
-        let f0100 =
-            surflet(&self.perm_table,
-                    [near_corner[0], far_corner[1], near_corner[2], near_corner[3]],
-                    [near_distance[0], far_distance[1], near_distance[2], near_distance[3]]);
-        let f1100 = surflet(&self.perm_table,
-                            [far_corner[0], far_corner[1], near_corner[2], near_corner[3]],
-                            [far_distance[0], far_distance[1], near_distance[2], near_distance[3]]);
-        let f0010 =
-            surflet(&self.perm_table,
-                    [near_corner[0], near_corner[1], far_corner[2], near_corner[3]],
-                    [near_distance[0], near_distance[1], far_distance[2], near_distance[3]]);
-        let f1010 = surflet(&self.perm_table,
-                            [far_corner[0], near_corner[1], far_corner[2], near_corner[3]],
-                            [far_distance[0], near_distance[1], far_distance[2], near_distance[3]]);
-        let f0110 = surflet(&self.perm_table,
-                            [near_corner[0], far_corner[1], far_corner[2], near_corner[3]],
-                            [near_distance[0], far_distance[1], far_distance[2], near_distance[3]]);
-        let f1110 = surflet(&self.perm_table,
-                            [far_corner[0], far_corner[1], far_corner[2], near_corner[3]],
-                            [far_distance[0], far_distance[1], far_distance[2], near_distance[3]]);
-        let f0001 =
-            surflet(&self.perm_table,
-                    [near_corner[0], near_corner[1], near_corner[2], far_corner[3]],
-                    [near_distance[0], near_distance[1], near_distance[2], far_distance[3]]);
-        let f1001 = surflet(&self.perm_table,
-                            [far_corner[0], near_corner[1], near_corner[2], far_corner[3]],
-                            [far_distance[0], near_distance[1], near_distance[2], far_distance[3]]);
-        let f0101 = surflet(&self.perm_table,
-                            [near_corner[0], far_corner[1], near_corner[2], far_corner[3]],
-                            [near_distance[0], far_distance[1], near_distance[2], far_distance[3]]);
-        let f1101 = surflet(&self.perm_table,
-                            [far_corner[0], far_corner[1], near_corner[2], far_corner[3]],
-                            [far_distance[0], far_distance[1], near_distance[2], far_distance[3]]);
-        let f0011 = surflet(&self.perm_table,
-                            [near_corner[0], near_corner[1], far_corner[2], far_corner[3]],
-                            [near_distance[0], near_distance[1], far_distance[2], far_distance[3]]);
-        let f1011 = surflet(&self.perm_table,
-                            [far_corner[0], near_corner[1], far_corner[2], far_corner[3]],
-                            [far_distance[0], near_distance[1], far_distance[2], far_distance[3]]);
-        let f0111 = surflet(&self.perm_table,
-                            [near_corner[0], far_corner[1], far_corner[2], far_corner[3]],
-                            [near_distance[0], far_distance[1], far_distance[2], far_distance[3]]);
-        let f1111 = surflet(&self.perm_table,
-                            [far_corner[0], far_corner[1], far_corner[2], far_corner[3]],
-                            [far_distance[0], far_distance[1], far_distance[2], far_distance[3]]);
-
-        // Multiply by arbitrary value to scale to -1..1
-        (f0000 + f1000 + f0100 + f1100 + f0010 + f1010 + f0110 + f1110 +
-         f0001 + f1001 + f0101 + f1101 + f0011 + f1011 + f0111 + f1111) *
-        math::cast(4.424369240215691)
-    }
-}*/
