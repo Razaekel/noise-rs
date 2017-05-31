@@ -7,7 +7,7 @@
 // except according to those terms.
 
 
-use {PermutationTable, gradient, math};
+use {PermutationTable, math};
 use math::{interp, Point2, Point3, Point4};
 use modules::{NoiseModule, Seedable};
 use num_traits::Float;

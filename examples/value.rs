@@ -16,7 +16,7 @@
 
 extern crate noise;
 
-use noise::{Value, Seedable, Point2};
+use noise::{Value, Seedable};
 
 mod debug;
 
