@@ -16,38 +16,11 @@
 
 extern crate noise;
 
-use noise::{value2, value3, value4, PermutationTable, Point2};
+use noise::{Value, Seedable, Point2};
 
 mod debug;
 
 fn main() {
-    debug::render_png("value2.png",
-                      &PermutationTable::new(0),
-                      1024,
-                      1024,
-                      scaled_value2);
-    debug::render_png("value3.png",
-                      &PermutationTable::new(0),
-                      1024,
-                      1024,
-                      scaled_value3);
-    debug::render_png("value4.png",
-                      &PermutationTable::new(0),
-                      1024,
-                      1024,
-                      scaled_value4);
-}
-
-fn scaled_value2(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
-    value2(perm_table, &[point[0] / 16.0, point[1] / 16.0])
-}
-
-fn scaled_value3(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
-    value3(perm_table,
-           &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0])
-}
-
-fn scaled_value4(perm_table: &PermutationTable, point: &Point2<f64>) -> f64 {
-    value4(perm_table,
-           &[point[0] / 16.0, point[1] / 16.0, point[0] / 32.0, point[1] / 32.0])
+    debug::render_noise_module("value3.png", &Value::new(), 1024, 1024, 50);
+    debug::render_noise_module("value3_seeded.png", &Value::new().set_seed(1), 1024, 1024, 50);
 }
