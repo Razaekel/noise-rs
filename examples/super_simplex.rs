@@ -103,6 +103,52 @@ fn main() {
     // {xout, yout} = P0;
     // eq5[xout, yout]
 
+    // The computation for the maximum in 3D is shown below.
+    // As it turns out, the maximum is at [1/4,1/4,1/4], so iteration is unnecessary in this case.
+    // The most likely cause for this is that the gradient vectors lined up much better in 3D than they did in 2D, and so the "center" of one of the simplices also turned out to be the maxima.
+    // All gradient vectors were chosen pointing towards the center of the simplex cube.
+    // Clear["Global`*"];
+    // skew3d = 2/3;
+    // norm = 1/Sqrt[2];
+    // norm2 = 1/Sqrt[3];
+    // eq3d[a_, b_, c_, x_, y_,
+    //    z_] = (a*x + b*y + c*z)*(3/4 - x^2 - y^2 - z^2)^4;
+    // (*first lattice: [0,0,0], [1,0,0], [0,1,0], [0,0,1]*)
+    // (*second lattice: [1,1,1], [0,1,1], [1,0,1], [1,1,0]*)
+    // eq3dsp[x_, y_, z_] =
+    //   eq3d[norm2, norm2, norm2, x, y, z] +
+    //    eq3d[-norm2, norm2, norm2, x - 1, y, z] +
+    //    eq3d[norm2, -norm2, norm2, x, y - 1, z] +
+    //    eq3d[norm2, norm2, -norm2, x, y, z - 1] +
+    //    eq3d[-norm2, -norm2, -norm2, x + 1/2 - 1, y + 1/2 - 1, z + 1/2 - 1] +
+    //    eq3d[norm2, -norm2, -norm2, x + 1/2, y + 1/2 - 1, z + 1/2 - 1] +
+    //    eq3d[-norm2, norm2, -norm2, x + 1/2 - 1, y + 1/2, z + 1/2 - 1] +
+    //    eq3d[-norm2, -norm2, norm2, x + 1/2 - 1, y + 1/2 - 1, z + 1/2];
+    // F[{x_, y_, z_}] = eq3dsp[x, y, z];
+    // Fx[x_, y_, z_] = D[eq3dsp[x, y, z], x];
+    // Fy[x_, y_, z_] = D[eq3dsp[x, y, z], y];
+    // Fz[x_, y_, z_] = D[eq3dsp[x, y, z], z];
+    // Fxx[x_, y_, z_] = D[D[eq3dsp[x, y, z], x], x];
+    // Fyy[x_, y_, z_] = D[D[eq3dsp[x, y, z], y], y];
+    // Fzz[x_, y_, z_] = D[D[eq3dsp[x, y, z], z], z];
+    // Fxy[x_, y_, z_] = D[D[eq3dsp[x, y, z], x], y];
+    // Fxz[x_, y_, z_] = D[D[eq3dsp[x, y, z], x], z];
+    // Fyz[x_, y_, z_] = D[D[eq3dsp[x, y, z], y], z];
+    // X0 = {1/4, 1/4, 1/4};
+    // P0 = N[X0];
+    // gradF[{x_, y_, z_}] = {Fx[x, y, z], Fy[x, y, z], Fz[x, y, z]};
+    // H[{x_, y_, z_}] = {{Fxx[x, y, z], Fxy[x, y, z],
+    //     Fxz[x, y, z]}, {Fxy[x, y, z], Fyy[x, y, z],
+    //     Fyz[x, y, z]}, {Fxz[x, y, z], Fyz[x, y, z], Fzz[x, y, z]}};
+    // Print["f[", PaddedForm[P0, {13, 12}], "]=",
+    //  PaddedForm[F[P0], {13, 12}]]
+    // For[i = 1, i <= 10, i++, P0 = P0 - gradF[P0].Inverse[H[P0]];
+    //  Print["f[", PaddedForm[P0, {21, 20}], "]=",
+    //   PaddedForm[F[P0], {21, 20}]]]
+    // P0;
+    // {xout, yout, zout} = P0;
+    // eq3dsp[xout, yout, zout]
+
     debug::render_noise_module("super_simplex.png", SuperSimplex::new(), 1024, 1024, 50);
     debug::render_noise_module("super_simplex_seeded.png", SuperSimplex::new().set_seed(1), 1024, 1024, 50);
 }
