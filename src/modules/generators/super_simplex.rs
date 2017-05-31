@@ -132,9 +132,7 @@ impl Seedable for SuperSimplex {
 }
 
 /// 2-dimensional Super Simplex noise
-impl<T: Float> NoiseModule<Point2<T>> for SuperSimplex {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point2<T>, T> for SuperSimplex {
     fn get(&self, point: Point2<T>) -> T {
         let zero: T = math::cast(0.0);
         let one: T = math::cast(1.0);
@@ -183,9 +181,7 @@ impl<T: Float> NoiseModule<Point2<T>> for SuperSimplex {
 }
 
 /// 3-dimensional Super Simplex noise
-impl<T: Float> NoiseModule<Point3<T>> for SuperSimplex {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point3<T>, T> for SuperSimplex {
     fn get(&self, point: Point3<T>) -> T {
         let zero: T = math::cast(0.0);
         let one: T = math::cast(1.0);
