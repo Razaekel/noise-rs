@@ -149,6 +149,6 @@ fn main() {
     // {xout, yout, zout} = P0;
     // eq3dsp[xout, yout, zout]
 
-    debug::render_noise_module("super_simplex.png", SuperSimplex::new(), 1024, 1024, 50);
-    debug::render_noise_module("super_simplex_seeded.png", SuperSimplex::new().set_seed(1), 1024, 1024, 50);
+    debug::render_noise_module("super_simplex.png", &SuperSimplex::new(), 1024, 1024, 50);
+    debug::render_noise_module("super_simplex_seeded.png", &SuperSimplex::new().set_seed(1), 1024, 1024, 50);
 }
