@@ -17,11 +17,11 @@ pub const DEFAULT_SUPER_SIMPLEX_SEED: u32 = 0;
 
 const TO_REAL_CONSTANT_2D: f64 = -0.211324865405187; // (1 / sqrt(2 + 1) - 1) / 2
 const TO_SIMPLEX_CONSTANT_2D: f64 = 0.366025403784439; // (sqrt(2 + 1) - 1) / 2
-const TO_SIMPLEX_CONSTANT_3D: f64 = 2.0 / 3.0;
+const TO_SIMPLEX_CONSTANT_3D: f64 = -2.0 / 3.0;
 
 // Determined using the Mathematica code listed in the super_simplex example and find_maximum_super_simplex.nb
 const NORM_CONSTANT_2D: f64 = 1.0 / 0.05428295288661623;
-const NORM_CONSTANT_3D: f64 = 1.0;
+const NORM_CONSTANT_3D: f64 = 1.0 / 0.0867664001655369;
 
 // Points taken into account for 2D:
 //              (-1,  0)
@@ -201,7 +201,7 @@ impl<T: Float> NoiseModule<Point3<T>> for SuperSimplex {
 
         // Transform point from real space to simplex space
         let to_simplex_offset = math::fold3(point, Add::add) * to_simplex_constant;
-        let simplex_point = math::map3(point, |v| to_simplex_offset - v);
+        let simplex_point = math::map3(point, |v| -(v + to_simplex_offset));
         let second_simplex_point = math::map3(simplex_point, |v| v + overlapping_offset);
 
         // Get base point of simplex and barycentric coordinates in simplex space
@@ -222,6 +222,7 @@ impl<T: Float> NoiseModule<Point3<T>> for SuperSimplex {
         ((second_simplex_rel_coords[0] - second_simplex_rel_coords[1] + second_simplex_rel_coords[2] >= one_half) as usize) << 4 |
         ((second_simplex_rel_coords[0] + second_simplex_rel_coords[1] - second_simplex_rel_coords[2] >= one_half) as usize) << 5;
 
+        // Sum contributions from first lattice
         for &lattice_lookup in &LATTICE_LOOKUP_3D[index..index + 4] {
             let dpos = math::sub3(simplex_rel_coords, math::cast3(lattice_lookup));
             let attn = three_fourths - math::dot3(dpos, dpos);
@@ -234,6 +235,7 @@ impl<T: Float> NoiseModule<Point3<T>> for SuperSimplex {
             value = value + math::pow4(attn) * math::dot3(gradient, dpos);
         }
 
+        // Sum contributions from second lattice
         for &lattice_lookup in &LATTICE_LOOKUP_3D[second_index..second_index + 4] {
             let dpos = math::sub3(second_simplex_rel_coords, math::cast3(lattice_lookup));
             let attn = three_fourths - math::dot3(dpos, dpos);
