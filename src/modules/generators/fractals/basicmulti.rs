@@ -128,9 +128,7 @@ impl<T> Seedable for BasicMulti<T> {
 }
 
 /// 2-dimensional BasicMulti noise
-impl<T: Float> NoiseModule<Point2<T>> for BasicMulti<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point2<T>, T> for BasicMulti<T> {
     fn get(&self, mut point: Point2<T>) -> T {
         // First unscaled octave of function; later octaves are scaled.
         point = math::mul2(point, self.frequency);
@@ -160,9 +158,7 @@ impl<T: Float> NoiseModule<Point2<T>> for BasicMulti<T> {
 }
 
 /// 3-dimensional BasicMulti noise
-impl<T: Float> NoiseModule<Point3<T>> for BasicMulti<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point3<T>, T> for BasicMulti<T> {
     fn get(&self, mut point: Point3<T>) -> T {
         // First unscaled octave of function; later octaves are scaled.
         point = math::mul3(point, self.frequency);
@@ -192,9 +188,7 @@ impl<T: Float> NoiseModule<Point3<T>> for BasicMulti<T> {
 }
 
 /// 4-dimensional BasicMulti noise
-impl<T: Float> NoiseModule<Point4<T>> for BasicMulti<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point4<T>, T> for BasicMulti<T> {
     fn get(&self, mut point: Point4<T>) -> T {
         // First unscaled octave of function; later octaves are scaled.
         point = math::mul4(point, self.frequency);

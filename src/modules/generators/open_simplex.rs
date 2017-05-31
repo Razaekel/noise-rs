@@ -67,9 +67,7 @@ impl Seedable for OpenSimplex {
 /// 2-dimensional [OpenSimplex Noise](http://uniblock.tumblr.com/post/97868843242/noise)
 ///
 /// This is a slower but higher quality form of gradient noise than Perlin 2D.
-impl<T: Float> NoiseModule<Point2<T>> for OpenSimplex {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point2<T>, T> for OpenSimplex {
     fn get(&self, point: Point2<T>) -> T {
         #[inline(always)]
         fn gradient<T: Float>(perm_table: &PermutationTable,
@@ -160,9 +158,7 @@ impl<T: Float> NoiseModule<Point2<T>> for OpenSimplex {
 /// 3-dimensional [OpenSimplex Noise](http://uniblock.tumblr.com/post/97868843242/noise)
 ///
 /// This is a slower but higher quality form of gradient noise than Perlin 3D.
-impl<T: Float> NoiseModule<Point3<T>> for OpenSimplex {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point3<T>, T> for OpenSimplex {
     fn get(&self, point: Point3<T>) -> T {
         #[inline(always)]
         fn gradient<T: Float>(perm_table: &PermutationTable,
@@ -307,9 +303,7 @@ impl<T: Float> NoiseModule<Point3<T>> for OpenSimplex {
 /// 4-dimensional [OpenSimplex Noise](http://uniblock.tumblr.com/post/97868843242/noise)
 ///
 /// This is a slower but higher quality form of gradient noise than Perlin 4D.
-impl<T: Float> NoiseModule<Point4<T>> for OpenSimplex {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point4<T>, T> for OpenSimplex {
     fn get(&self, point: Point4<T>) -> T {
         #[inline(always)]
         fn gradient<T: Float>(perm_table: &PermutationTable,

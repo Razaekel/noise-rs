@@ -134,9 +134,7 @@ impl<T> Seedable for Fbm<T> {
 }
 
 /// 2-dimensional Fbm noise
-impl<T: Float> NoiseModule<Point2<T>> for Fbm<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point2<T>, T> for Fbm<T> {
     fn get(&self, mut point: Point2<T>) -> T {
         let mut result = T::zero();
 
@@ -163,9 +161,7 @@ impl<T: Float> NoiseModule<Point2<T>> for Fbm<T> {
 }
 
 /// 3-dimensional Fbm noise
-impl<T: Float> NoiseModule<Point3<T>> for Fbm<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point3<T>, T> for Fbm<T> {
     fn get(&self, mut point: Point3<T>) -> T {
         let mut result = T::zero();
 
@@ -192,9 +188,7 @@ impl<T: Float> NoiseModule<Point3<T>> for Fbm<T> {
 }
 
 /// 4-dimensional Fbm noise
-impl<T: Float> NoiseModule<Point4<T>> for Fbm<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point4<T>, T> for Fbm<T> {
     fn get(&self, mut point: Point4<T>) -> T {
         let mut result = T::zero();
 

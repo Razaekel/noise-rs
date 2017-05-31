@@ -28,407 +28,407 @@ use noise::{cell2_value, cell3_value, cell4_value};
 use noise::{open_simplex2, open_simplex3, open_simplex4};
 use noise::{perlin2, perlin3, perlin4};
 use noise::{value2, value3, value4};
-use noise::Seed;
+use noise::PermutationTable;
 use test::{Bencher, black_box};
 
 #[bench]
 fn bench_perlin2(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| perlin2(black_box(&seed), black_box(&[42.0f64, 37.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| perlin2(black_box(&perm_table), black_box(&[42.0f64, 37.0])));
 }
 
 #[bench]
 fn bench_perlin3(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| perlin3(black_box(&seed), black_box(&[42.0f64, 37.0, 26.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| perlin3(black_box(&perm_table), black_box(&[42.0f64, 37.0, 26.0])));
 }
 
 #[bench]
 fn bench_perlin4(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| perlin4(black_box(&seed), black_box(&[42.0f64, 37.0, 26.0, 128.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| perlin4(black_box(&perm_table), black_box(&[42.0f64, 37.0, 26.0, 128.0])));
 }
 
 #[bench]
 fn bench_open_simplex2(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| open_simplex2(black_box(&seed), black_box(&[42.0f64, 37.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| open_simplex2(black_box(&perm_table), black_box(&[42.0f64, 37.0])));
 }
 
 #[bench]
 fn bench_open_simplex3(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| open_simplex3(black_box(&seed), black_box(&[42.0f64, 37.0, 26.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| open_simplex3(black_box(&perm_table), black_box(&[42.0f64, 37.0, 26.0])));
 }
 
 #[bench]
 fn bench_open_simplex4(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| open_simplex4(black_box(&seed), black_box(&[42.0f64, 37.0, 26.0, 128.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| open_simplex4(black_box(&perm_table), black_box(&[42.0f64, 37.0, 26.0, 128.0])));
 }
 
 #[bench]
 fn bench_value2(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| value2(black_box(&seed), black_box(&[42.0f64, 37.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| value2(black_box(&perm_table), black_box(&[42.0f64, 37.0])));
 }
 
 #[bench]
 fn bench_value3(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| value3(black_box(&seed), black_box(&[42.0f64, 37.0, 26.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| value3(black_box(&perm_table), black_box(&[42.0f64, 37.0, 26.0])));
 }
 
 #[bench]
 fn bench_value4(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| value4(black_box(&seed), black_box(&[42.0f64, 37.0, 26.0, 128.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| value4(black_box(&perm_table), black_box(&[42.0f64, 37.0, 26.0, 128.0])));
 }
 
 #[bench]
 fn bench_cell2_range(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| cell2_range(black_box(&seed), black_box(&[42.0f64, 37.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| cell2_range(black_box(&perm_table), black_box(&[42.0f64, 37.0])));
 }
 
 #[bench]
 fn bench_cell3_range(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| cell3_range(black_box(&seed), black_box(&[42.0f64, 37.0, 26.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| cell3_range(black_box(&perm_table), black_box(&[42.0f64, 37.0, 26.0])));
 }
 
 #[bench]
 fn bench_cell4_range(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| cell4_range(black_box(&seed), black_box(&[42.0f64, 37.0, 26.0, 128.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| cell4_range(black_box(&perm_table), black_box(&[42.0f64, 37.0, 26.0, 128.0])));
 }
 
 #[bench]
 fn bench_cell2_range_inv(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| cell2_range_inv(black_box(&seed), black_box(&[42.0f64, 37.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| cell2_range_inv(black_box(&perm_table), black_box(&[42.0f64, 37.0])));
 }
 
 #[bench]
 fn bench_cell3_range_inv(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| cell3_range_inv(black_box(&seed), black_box(&[42.0f64, 37.0, 26.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| cell3_range_inv(black_box(&perm_table), black_box(&[42.0f64, 37.0, 26.0])));
 }
 
 #[bench]
 fn bench_cell4_range_inv(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| cell4_range_inv(black_box(&seed), black_box(&[42.0f64, 37.0, 26.0, 128.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| cell4_range_inv(black_box(&perm_table), black_box(&[42.0f64, 37.0, 26.0, 128.0])));
 }
 
 #[bench]
 fn bench_cell2_value(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| cell2_value(black_box(&seed), black_box(&[42.0f64, 37.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| cell2_value(black_box(&perm_table), black_box(&[42.0f64, 37.0])));
 }
 
 #[bench]
 fn bench_cell3_value(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| cell3_value(black_box(&seed), black_box(&[42.0f64, 37.0, 26.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| cell3_value(black_box(&perm_table), black_box(&[42.0f64, 37.0, 26.0])));
 }
 
 #[bench]
 fn bench_cell4_value(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| cell4_value(black_box(&seed), black_box(&[42.0f64, 37.0, 26.0, 128.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| cell4_value(black_box(&perm_table), black_box(&[42.0f64, 37.0, 26.0, 128.0])));
 }
 
 #[bench]
 fn bench_cell2_manhattan(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| cell2_manhattan(black_box(&seed), black_box(&[42.0f64, 37.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| cell2_manhattan(black_box(&perm_table), black_box(&[42.0f64, 37.0])));
 }
 
 #[bench]
 fn bench_cell3_manhattan(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| cell3_manhattan(black_box(&seed), black_box(&[42.0f64, 37.0, 26.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| cell3_manhattan(black_box(&perm_table), black_box(&[42.0f64, 37.0, 26.0])));
 }
 
 #[bench]
 fn bench_cell4_manhattan(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| cell4_manhattan(black_box(&seed), black_box(&[42.0f64, 37.0, 26.0, 128.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| cell4_manhattan(black_box(&perm_table), black_box(&[42.0f64, 37.0, 26.0, 128.0])));
 }
 
 #[bench]
 fn bench_cell2_manhattan_inv(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| cell2_manhattan_inv(black_box(&seed), black_box(&[42.0f64, 37.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| cell2_manhattan_inv(black_box(&perm_table), black_box(&[42.0f64, 37.0])));
 }
 
 #[bench]
 fn bench_cell3_manhattan_inv(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| cell3_manhattan_inv(black_box(&seed), black_box(&[42.0f64, 37.0, 26.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| cell3_manhattan_inv(black_box(&perm_table), black_box(&[42.0f64, 37.0, 26.0])));
 }
 
 #[bench]
 fn bench_cell4_manhattan_inv(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| cell4_manhattan_inv(black_box(&seed), black_box(&[42.0f64, 37.0, 26.0, 128.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| cell4_manhattan_inv(black_box(&perm_table), black_box(&[42.0f64, 37.0, 26.0, 128.0])));
 }
 
 #[bench]
 fn bench_cell2_manhattan_value(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| cell2_manhattan_value(black_box(&seed), black_box(&[42.0f64, 37.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| cell2_manhattan_value(black_box(&perm_table), black_box(&[42.0f64, 37.0])));
 }
 
 #[bench]
 fn bench_cell3_manhattan_value(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| cell3_manhattan_value(black_box(&seed), black_box(&[42.0f64, 37.0, 26.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| cell3_manhattan_value(black_box(&perm_table), black_box(&[42.0f64, 37.0, 26.0])));
 }
 
 #[bench]
 fn bench_cell4_manhattan_value(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
-    bencher.iter(|| cell4_manhattan_value(black_box(&seed), black_box(&[42.0f64, 37.0, 26.0, 128.0])));
+    let perm_table = PermutationTable::new(0);
+    bencher.iter(|| cell4_manhattan_value(black_box(&perm_table), black_box(&[42.0f64, 37.0, 26.0, 128.0])));
 }
 
 #[bench]
 fn bench_perlin2_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(perlin2(black_box(&seed), &[x as f64, y as f64]));
+            black_box(perlin2(black_box(&perm_table), &[x as f64, y as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_perlin3_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(perlin3(black_box(&seed), &[x as f64, y as f64, x as f64]));
+            black_box(perlin3(black_box(&perm_table), &[x as f64, y as f64, x as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_perlin4_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(perlin4(black_box(&seed), &[x as f64, y as f64, x as f64, y as f64]));
+            black_box(perlin4(black_box(&perm_table), &[x as f64, y as f64, x as f64, y as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_open_simplex2_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(open_simplex2(black_box(&seed), &[x as f64, y as f64]));
+            black_box(open_simplex2(black_box(&perm_table), &[x as f64, y as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_open_simplex3_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(open_simplex3(black_box(&seed), &[x as f64, y as f64, x as f64]));
+            black_box(open_simplex3(black_box(&perm_table), &[x as f64, y as f64, x as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_open_simplex4_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(open_simplex4(black_box(&seed), &[x as f64, y as f64, x as f64, y as f64]));
+            black_box(open_simplex4(black_box(&perm_table), &[x as f64, y as f64, x as f64, y as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_value2_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(value2(black_box(&seed), &[x as f64, y as f64]));
+            black_box(value2(black_box(&perm_table), &[x as f64, y as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_value3_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(value3(black_box(&seed), &[x as f64, y as f64, x as f64]));
+            black_box(value3(black_box(&perm_table), &[x as f64, y as f64, x as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_value4_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(value4(black_box(&seed), &[x as f64, y as f64, x as f64, y as f64]));
+            black_box(value4(black_box(&perm_table), &[x as f64, y as f64, x as f64, y as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_cell2_range_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(cell2_range(black_box(&seed), &[x as f64, y as f64]));
+            black_box(cell2_range(black_box(&perm_table), &[x as f64, y as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_cell3_range_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(cell3_range(black_box(&seed), &[x as f64, y as f64, x as f64]));
+            black_box(cell3_range(black_box(&perm_table), &[x as f64, y as f64, x as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_cell4_range_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(cell4_range(black_box(&seed), &[x as f64, y as f64, x as f64, y as f64]));
+            black_box(cell4_range(black_box(&perm_table), &[x as f64, y as f64, x as f64, y as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_cell2_range_inv_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(cell2_range_inv(black_box(&seed), &[x as f64, y as f64]));
+            black_box(cell2_range_inv(black_box(&perm_table), &[x as f64, y as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_cell3_range_inv_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(cell3_range_inv(black_box(&seed), &[x as f64, y as f64, x as f64]));
+            black_box(cell3_range_inv(black_box(&perm_table), &[x as f64, y as f64, x as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_cell4_range_inv_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(cell4_range_inv(black_box(&seed), &[x as f64, y as f64, x as f64, y as f64]));
+            black_box(cell4_range_inv(black_box(&perm_table), &[x as f64, y as f64, x as f64, y as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_cell2_value_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(cell2_value(black_box(&seed), &[x as f64, y as f64]));
+            black_box(cell2_value(black_box(&perm_table), &[x as f64, y as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_cell3_value_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(cell3_value(black_box(&seed), &[x as f64, y as f64, x as f64]));
+            black_box(cell3_value(black_box(&perm_table), &[x as f64, y as f64, x as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_cell4_value_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(cell4_value(black_box(&seed), &[x as f64, y as f64, x as f64, y as f64]));
+            black_box(cell4_value(black_box(&perm_table), &[x as f64, y as f64, x as f64, y as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_cell2_manhattan_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(cell2_manhattan(black_box(&seed), &[x as f64, y as f64]));
+            black_box(cell2_manhattan(black_box(&perm_table), &[x as f64, y as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_cell3_manhattan_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(cell3_manhattan(black_box(&seed), &[x as f64, y as f64, x as f64]));
+            black_box(cell3_manhattan(black_box(&perm_table), &[x as f64, y as f64, x as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_cell4_manhattan_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(cell4_manhattan(black_box(&seed), &[x as f64, y as f64, x as f64, y as f64]));
+            black_box(cell4_manhattan(black_box(&perm_table), &[x as f64, y as f64, x as f64, y as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_cell2_manhattan_inv_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(cell2_manhattan_inv(black_box(&seed), &[x as f64, y as f64]));
+            black_box(cell2_manhattan_inv(black_box(&perm_table), &[x as f64, y as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_cell3_manhattan_inv_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(cell3_manhattan_inv(black_box(&seed), &[x as f64, y as f64, x as f64]));
+            black_box(cell3_manhattan_inv(black_box(&perm_table), &[x as f64, y as f64, x as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_cell4_manhattan_inv_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(cell4_manhattan_inv(black_box(&seed),
+            black_box(cell4_manhattan_inv(black_box(&perm_table),
                                           &[x as f64, y as f64, x as f64, y as f64]));
         }
     });
@@ -436,30 +436,30 @@ fn bench_cell4_manhattan_inv_64x64(bencher: &mut Bencher) {
 
 #[bench]
 fn bench_cell2_manhattan_value_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(cell2_manhattan_value(black_box(&seed), &[x as f64, y as f64]));
+            black_box(cell2_manhattan_value(black_box(&perm_table), &[x as f64, y as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_cell3_manhattan_value_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(cell3_manhattan_value(black_box(&seed), &[x as f64, y as f64, x as f64]));
+            black_box(cell3_manhattan_value(black_box(&perm_table), &[x as f64, y as f64, x as f64]));
         }
     });
 }
 
 #[bench]
 fn bench_cell4_manhattan_value_64x64(bencher: &mut Bencher) {
-    let seed = Seed::new(0);
+    let perm_table = PermutationTable::new(0);
     bencher.iter(|| for y in 0..64 {
         for x in 0..64 {
-            black_box(cell4_manhattan_value(black_box(&seed),
+            black_box(cell4_manhattan_value(black_box(&perm_table),
                                             &[x as f64, y as f64, x as f64, y as f64]));
         }
     });

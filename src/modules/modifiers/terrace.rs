@@ -33,22 +33,22 @@ use num_traits::Float;
 ///
 /// This noise module is often used to generate terrain features such as the
 /// stereotypical desert canyon.
-pub struct Terrace<Source, T> {
+pub struct Terrace<'a, T: 'a, U: 'a> {
     /// Outputs a value.
-    pub source: Source,
+    pub source: &'a NoiseModule<T, U>,
 
     /// Determines if the terrace-forming curve between all control points is
     /// inverted.
     pub invert_terraces: bool,
 
     /// Vec that stores the control points.
-    control_points: Vec<T>,
+    control_points: Vec<U>,
 }
 
-impl<Source, T> Terrace<Source, T>
-    where T: Float,
+impl<'a, T, U> Terrace<'a, T, U>
+    where U: Float,
 {
-    pub fn new(source: Source) -> Terrace<Source, T> {
+    pub fn new(source: &'a NoiseModule<T, U>) -> Terrace<'a, T, U> {
         Terrace {
             source: source,
             invert_terraces: false,
@@ -63,7 +63,7 @@ impl<Source, T> Terrace<Source, T>
     /// At the control points, its slope resets to zero.
     ///
     /// It does not matter which order these points are added in.
-    pub fn add_control_point(mut self, control_point: T) -> Terrace<Source, T> {
+    pub fn add_control_point(mut self, control_point: U) -> Terrace<'a, T, U> {
         // check to see if the vector already contains the input point.
         if !self.control_points.iter().any(|&x| x == control_point) {
             // it doesn't, so find the correct position to insert the new
@@ -83,19 +83,15 @@ impl<Source, T> Terrace<Source, T>
 
     /// Enables or disables the inversion of the terrain-forming curve between
     /// the control points.
-    pub fn invert_terraces(self, invert_terraces: bool) -> Terrace<Source, T> {
+    pub fn invert_terraces(self, invert_terraces: bool) -> Terrace<'a, T, U> {
         Terrace { invert_terraces: invert_terraces, ..self }
     }
 }
 
-impl<Source, T, U> NoiseModule<T> for Terrace<Source, U>
-    where Source: NoiseModule<T, Output = U>,
-          T: Copy,
-          U: Float,
+impl<'a, T, U> NoiseModule<T, U> for Terrace<'a, T, U>
+    where U: Float,
 {
-    type Output = U;
-
-    fn get(&self, point: T) -> Self::Output {
+    fn get(&self, point: T) -> U {
         // confirm that there's at least 2 control points in the vector.
         assert!(self.control_points.len() >= 2);
 

@@ -55,26 +55,20 @@ fn fast_floor<T: Float>(x: T) -> usize {
 
 // These impl's should be made generic over Point, but there is no higher Point
 // type. Keep the code the same anyway.
-impl<T: Float> NoiseModule<Point2<T>> for Checkerboard {
-    type Output = T;
-
-    fn get(&self, point: Point2<T>) -> Self::Output {
+impl<T: Float> NoiseModule<Point2<T>, T> for Checkerboard {
+    fn get(&self, point: Point2<T>) -> T {
         calculate_checkerboard(&point, self.size)
     }
 }
 
-impl<T: Float> NoiseModule<Point3<T>> for Checkerboard {
-    type Output = T;
-
-    fn get(&self, point: Point3<T>) -> Self::Output {
+impl<T: Float> NoiseModule<Point3<T>, T> for Checkerboard {
+    fn get(&self, point: Point3<T>) -> T {
         calculate_checkerboard(&point, self.size)
     }
 }
 
-impl<T: Float> NoiseModule<Point4<T>> for Checkerboard {
-    type Output = T;
-
-    fn get(&self, point: Point4<T>) -> Self::Output {
+impl<T: Float> NoiseModule<Point4<T>, T> for Checkerboard {
+    fn get(&self, point: Point4<T>) -> T {
         calculate_checkerboard(&point, self.size)
     }
 }

@@ -123,9 +123,7 @@ impl<T> Seedable for Billow<T> {
 }
 
 /// 2-dimensional Billow noise
-impl<T: Float> NoiseModule<Point2<T>> for Billow<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point2<T>, T> for Billow<T> {
     fn get(&self, mut point: Point2<T>) -> T {
         let mut result = T::zero();
 
@@ -155,9 +153,7 @@ impl<T: Float> NoiseModule<Point2<T>> for Billow<T> {
 }
 
 /// 3-dimensional Billow noise
-impl<T: Float> NoiseModule<Point3<T>> for Billow<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point3<T>, T> for Billow<T> {
     fn get(&self, mut point: Point3<T>) -> T {
         let mut result = T::zero();
 
@@ -187,9 +183,7 @@ impl<T: Float> NoiseModule<Point3<T>> for Billow<T> {
 }
 
 /// 4-dimensional Billow noise
-impl<T: Float> NoiseModule<Point4<T>> for Billow<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point4<T>, T> for Billow<T> {
     fn get(&self, mut point: Point4<T>) -> T {
         let mut result = T::zero();
 

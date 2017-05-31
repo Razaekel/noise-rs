@@ -24,12 +24,12 @@ use num_traits::Float;
 /// four control points to the curve. If there is less than four control
 /// points, the get() method panics. Each control point can have any input
 /// and output value, although no two control points can have the same input.
-pub struct Curve<Source, T> {
+pub struct Curve<'a, T: 'a, U: 'a> {
     /// Outputs a value.
-    pub source: Source,
+    pub source: &'a NoiseModule<T, U>,
 
     /// Vec that stores the control points.
-    control_points: Vec<ControlPoint<T>>,
+    control_points: Vec<ControlPoint<U>>,
 }
 
 struct ControlPoint<T> {
@@ -37,17 +37,17 @@ struct ControlPoint<T> {
     output: T,
 }
 
-impl<Source, T> Curve<Source, T>
-    where T: Float,
+impl<'a, T, U> Curve<'a, T, U>
+    where U: Float,
 {
-    pub fn new(source: Source) -> Curve<Source, T> {
+    pub fn new(source: &'a NoiseModule<T, U>) -> Curve<'a, T, U> {
         Curve {
             source: source,
             control_points: Vec::with_capacity(4),
         }
     }
 
-    pub fn add_control_point(mut self, input_value: T, output_value: T) -> Curve<Source, T> {
+    pub fn add_control_point(mut self, input_value: U, output_value: U) -> Curve<'a, T, U> {
         // check to see if the vector already contains the input point.
         if !self.control_points.iter().any(|x| x.input == input_value) {
             // it doesn't, so find the correct position to insert the new
@@ -70,14 +70,10 @@ impl<Source, T> Curve<Source, T>
     }
 }
 
-impl<Source, T, U> NoiseModule<T> for Curve<Source, U>
-    where Source: NoiseModule<T, Output = U>,
-          T: Copy,
-          U: Float,
+impl<'a, T, U> NoiseModule<T, U> for Curve<'a, T, U>
+    where U: Float,
 {
-    type Output = U;
-
-    fn get(&self, point: T) -> Self::Output {
+    fn get(&self, point: T) -> U {
         // confirm that there's at least 4 control points in the vector.
         assert!(self.control_points.len() >= 4);
 

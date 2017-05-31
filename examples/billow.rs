@@ -21,5 +21,5 @@ use noise::Billow;
 mod debug;
 
 fn main() {
-    debug::render_noise_module("billow.png", Billow::new(), 1024, 1024, 400);
+    debug::render_noise_module("billow.png", &Billow::new(), 1024, 1024, 400);
 }

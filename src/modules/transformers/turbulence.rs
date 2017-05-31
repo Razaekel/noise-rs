@@ -122,13 +122,11 @@ impl<Source, T> Seedable for Turbulence<Source, T> {
     }
 }
 
-impl<Source, T> NoiseModule<Point2<T>> for Turbulence<Source, T>
-    where Source: NoiseModule<Point2<T>, Output = T>,
+impl<Source, T> NoiseModule<Point2<T>, T> for Turbulence<Source, T>
+    where Source: NoiseModule<Point2<T>, T>,
           T: Float,
 {
-    type Output = T;
-
-    fn get(&self, point: Point2<T>) -> Self::Output {
+    fn get(&self, point: Point2<T>) -> T {
         // First, create offsets based on the input values to keep the sampled
         // points from being near a integer boundary. This is a result of
         // using perlin noise, which returns zero at integer boundaries.
@@ -145,13 +143,11 @@ impl<Source, T> NoiseModule<Point2<T>> for Turbulence<Source, T>
     }
 }
 
-impl<Source, T> NoiseModule<Point3<T>> for Turbulence<Source, T>
-    where Source: NoiseModule<Point3<T>, Output = T>,
+impl<Source, T> NoiseModule<Point3<T>, T> for Turbulence<Source, T>
+    where Source: NoiseModule<Point3<T>, T>,
           T: Float,
 {
-    type Output = T;
-
-    fn get(&self, point: Point3<T>) -> Self::Output {
+    fn get(&self, point: Point3<T>) -> T {
         // First, create offsets based on the input values to keep the sampled
         // points from being near a integer boundary. This is a result of
         // using perlin noise, which returns zero at integer boundaries.
@@ -175,13 +171,11 @@ impl<Source, T> NoiseModule<Point3<T>> for Turbulence<Source, T>
     }
 }
 
-impl<Source, T> NoiseModule<Point4<T>> for Turbulence<Source, T>
-    where Source: NoiseModule<Point4<T>, Output = T>,
+impl<Source, T> NoiseModule<Point4<T>, T> for Turbulence<Source, T>
+    where Source: NoiseModule<Point4<T>, T>,
           T: Float,
 {
-    type Output = T;
-
-    fn get(&self, point: Point4<T>) -> Self::Output {
+    fn get(&self, point: Point4<T>) -> T {
         // First, create offsets based on the input values to keep the sampled
         // points from being near a integer boundary. This is a result of
         // using perlin noise, which returns zero at integer boundaries.

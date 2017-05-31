@@ -55,16 +55,14 @@ impl<Source, XDisplace, YDisplace, ZDisplace, UDisplace> Displace<Source,
 }
 
 #[cfg_attr(rustfmt, rustfmt_skip)]
-impl<Source, XDisplace, YDisplace, ZDisplace, UDisplace, T> NoiseModule<Point2<T>>
+impl<Source, XDisplace, YDisplace, ZDisplace, UDisplace, T> NoiseModule<Point2<T>, T>
     for Displace<Source, XDisplace, YDisplace, ZDisplace, UDisplace>
-    where Source: NoiseModule<Point2<T>, Output = T>,
-          XDisplace: NoiseModule<Point2<T>, Output = T>,
-          YDisplace: NoiseModule<Point2<T>, Output = T>,
+    where Source: NoiseModule<Point2<T>, T>,
+          XDisplace: NoiseModule<Point2<T>, T>,
+          YDisplace: NoiseModule<Point2<T>, T>,
           T: Float,
 {
-    type Output = T;
-
-    fn get(&self, point: Point2<T>) -> Self::Output {
+    fn get(&self, point: Point2<T>) -> T {
         // Get the output values from the displacement modules and add them to
         // the corresponding coordinate in the input value. Since this is a 2d
         // module, we only need the x_displace and y_displace modules.
@@ -78,17 +76,15 @@ impl<Source, XDisplace, YDisplace, ZDisplace, UDisplace, T> NoiseModule<Point2<T
 }
 
 #[cfg_attr(rustfmt, rustfmt_skip)]
-impl<Source, XDisplace, YDisplace, ZDisplace, UDisplace, T> NoiseModule<Point3<T>>
+impl<Source, XDisplace, YDisplace, ZDisplace, UDisplace, T> NoiseModule<Point3<T>, T>
     for Displace<Source, XDisplace, YDisplace, ZDisplace, UDisplace>
-    where Source: NoiseModule<Point3<T>, Output = T>,
-          XDisplace: NoiseModule<Point3<T>, Output = T>,
-          YDisplace: NoiseModule<Point3<T>, Output = T>,
-          ZDisplace: NoiseModule<Point3<T>, Output = T>,
+    where Source: NoiseModule<Point3<T>, T>,
+          XDisplace: NoiseModule<Point3<T>, T>,
+          YDisplace: NoiseModule<Point3<T>, T>,
+          ZDisplace: NoiseModule<Point3<T>, T>,
           T: Float,
 {
-    type Output = T;
-
-    fn get(&self, point: Point3<T>) -> Self::Output {
+    fn get(&self, point: Point3<T>) -> T {
         // Get the output values from the displacement modules and add them to
         // the corresponding coordinate in the input value. Since this is a 3d
         // module, we only need the x_displace, y_displace, and z_displace
@@ -104,18 +100,16 @@ impl<Source, XDisplace, YDisplace, ZDisplace, UDisplace, T> NoiseModule<Point3<T
 }
 
 #[cfg_attr(rustfmt, rustfmt_skip)]
-impl<Source, XDisplace, YDisplace, ZDisplace, UDisplace, T> NoiseModule<Point4<T>>
+impl<Source, XDisplace, YDisplace, ZDisplace, UDisplace, T> NoiseModule<Point4<T>, T>
     for Displace<Source, XDisplace, YDisplace, ZDisplace, UDisplace>
-    where Source: NoiseModule<Point4<T>, Output = T>,
-          XDisplace: NoiseModule<Point4<T>, Output = T>,
-          YDisplace: NoiseModule<Point4<T>, Output = T>,
-          ZDisplace: NoiseModule<Point4<T>, Output = T>,
-          UDisplace: NoiseModule<Point4<T>, Output = T>,
+    where Source: NoiseModule<Point4<T>, T>,
+          XDisplace: NoiseModule<Point4<T>, T>,
+          YDisplace: NoiseModule<Point4<T>, T>,
+          ZDisplace: NoiseModule<Point4<T>, T>,
+          UDisplace: NoiseModule<Point4<T>, T>,
           T: Float,
 {
-    type Output = T;
-
-    fn get(&self, point: Point4<T>) -> Self::Output {
+    fn get(&self, point: Point4<T>) -> T {
         // Get the output values from the displacement modules and add them to
         // the corresponding coordinate in the input value. Since this is a 4d
         // module, we need all of the displace modules. Panic if there is no z-

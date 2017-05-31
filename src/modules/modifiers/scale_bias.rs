@@ -14,47 +14,43 @@ use num_traits::Float;
 ///
 /// The module retrieves the output value from the source module, multiplies
 /// it with the scaling factor, adds the bias to it, then outputs the value.
-pub struct ScaleBias<Source, T> {
+pub struct ScaleBias<'a, T: 'a, U: 'a> {
     /// Outputs a value.
-    pub source: Source,
+    pub source: &'a NoiseModule<T, U>,
 
     /// Scaling factor to apply to the output value from the source module.
     /// The default value is 1.0.
-    pub scale: T,
+    pub scale: U,
 
     /// Bias to apply to the scaled output value from the source module.
     /// The default value is 0.0.
-    pub bias: T,
+    pub bias: U,
 }
 
-impl<Source, T> ScaleBias<Source, T>
-    where T: Float,
+impl<'a, T, U> ScaleBias<'a, T, U>
+    where U: Float,
 {
-    pub fn new(source: Source) -> ScaleBias<Source, T> {
+    pub fn new(source: &'a NoiseModule<T, U>) -> ScaleBias<'a, T, U> {
         ScaleBias {
             source: source,
-            scale: T::one(),
-            bias: T::zero(),
+            scale: U::one(),
+            bias: U::zero(),
         }
     }
 
-    pub fn set_scale(self, scale: T) -> ScaleBias<Source, T> {
+    pub fn set_scale(self, scale: U) -> ScaleBias<'a, T, U> {
         ScaleBias { scale: scale, ..self }
     }
 
-    pub fn set_bias(self, bias: T) -> ScaleBias<Source, T> {
+    pub fn set_bias(self, bias: U) -> ScaleBias<'a, T, U> {
         ScaleBias { bias: bias, ..self }
     }
 }
 
-impl<Source, T, U> NoiseModule<T> for ScaleBias<Source, U>
-    where Source: NoiseModule<T, Output = U>,
-          T: Copy,
-          U: Float,
+impl<'a, T, U> NoiseModule<T, U> for ScaleBias<'a, T, U>
+    where U: Float,
 {
-    type Output = U;
-
-    fn get(&self, point: T) -> Self::Output {
+    fn get(&self, point: T) -> U {
         (self.source.get(point)).mul_add(self.scale, self.bias)
     }
 }

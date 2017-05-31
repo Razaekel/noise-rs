@@ -12,48 +12,47 @@ use num_traits::Float;
 
 /// Noise module that outputs the value selected from one of two source
 /// modules chosen by the output value from a control module.
-#[derive(Clone, Copy, Debug)]
-pub struct Select<Source1, Source2, Control, T> {
+pub struct Select<'a, T: 'a, U: 'a> {
     /// Outputs a value.
-    pub source1: Source1,
+    pub source1: &'a NoiseModule<T, U>,
 
     /// Outputs a value.
-    pub source2: Source2,
+    pub source2: &'a NoiseModule<T, U>,
 
     /// Determines the value to select. If the output value from
     /// the control module is within a range of values know as the _selection
     /// range_, this noise module outputs the value from `source2`.
     /// Otherwise, this noise module outputs the value from `source1`.
-    pub control: Control,
+    pub control: &'a NoiseModule<T, U>,
 
     /// Lower bound of the selection range. Default is 0.0.
-    pub lower_bound: T,
+    pub lower_bound: U,
 
     /// Upper bound of the selection range. Default is 1.0.
-    pub upper_bound: T,
+    pub upper_bound: U,
 
     /// Edge-falloff value. Default is 0.0.
-    pub edge_falloff: T,
+    pub edge_falloff: U,
 }
 
-impl<Source1, Source2, Control, T> Select<Source1, Source2, Control, T>
-    where T: Float,
+impl<'a, T, U> Select<'a, T, U>
+    where U: Float,
 {
-    pub fn new(source1: Source1,
-               source2: Source2,
-               control: Control)
-               -> Select<Source1, Source2, Control, T> {
+    pub fn new(source1: &'a NoiseModule<T, U>,
+               source2: &'a NoiseModule<T, U>,
+               control: &'a NoiseModule<T, U>)
+               -> Select<'a, T, U> {
         Select {
             source1: source1,
             source2: source2,
             control: control,
-            lower_bound: T::zero(),
-            upper_bound: T::one(),
-            edge_falloff: T::zero(),
+            lower_bound: U::zero(),
+            upper_bound: U::one(),
+            edge_falloff: U::zero(),
         }
     }
 
-    pub fn set_bounds(self, lower: T, upper: T) -> Select<Source1, Source2, Control, T> {
+    pub fn set_bounds(self, lower: U, upper: U) -> Select<'a, T, U> {
         Select {
             lower_bound: lower,
             upper_bound: upper,
@@ -61,21 +60,16 @@ impl<Source1, Source2, Control, T> Select<Source1, Source2, Control, T>
         }
     }
 
-    pub fn set_edge_falloff(self, falloff: T) -> Select<Source1, Source2, Control, T> {
+    pub fn set_edge_falloff(self, falloff: U) -> Select<'a, T, U> {
         Select { edge_falloff: falloff, ..self }
     }
 }
 
-impl<Source1, Source2, Control, T, U> NoiseModule<T> for Select<Source1, Source2, Control, U>
-    where Source1: NoiseModule<T, Output = U>,
-          Source2: NoiseModule<T, Output = U>,
-          Control: NoiseModule<T, Output = U>,
-          T: Copy,
+impl<'a, T, U> NoiseModule<T, U> for Select<'a, T, U>
+    where T: Copy,
           U: Float,
 {
-    type Output = U;
-
-    fn get(&self, point: T) -> Self::Output {
+    fn get(&self, point: T) -> U {
         let control_value = self.control.get(point);
 
         if self.edge_falloff > U::zero() {

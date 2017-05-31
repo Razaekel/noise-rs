@@ -35,26 +35,20 @@ impl<T: Float> Cylinders<T> {
     }
 }
 
-impl<T: Float> NoiseModule<Point2<T>> for Cylinders<T> {
-    type Output = T;
-
-    fn get(&self, point: Point2<T>) -> Self::Output {
+impl<T: Float> NoiseModule<Point2<T>, T> for Cylinders<T> {
+    fn get(&self, point: Point2<T>) -> T {
         calculate_cylinders(&point, self.frequency)
     }
 }
 
-impl<T: Float> NoiseModule<Point3<T>> for Cylinders<T> {
-    type Output = T;
-
-    fn get(&self, point: Point3<T>) -> Self::Output {
+impl<T: Float> NoiseModule<Point3<T>, T> for Cylinders<T> {
+    fn get(&self, point: Point3<T>) -> T {
         calculate_cylinders(&point, self.frequency)
     }
 }
 
-impl<T: Float> NoiseModule<Point4<T>> for Cylinders<T> {
-    type Output = T;
-
-    fn get(&self, point: Point4<T>) -> Self::Output {
+impl<T: Float> NoiseModule<Point4<T>, T> for Cylinders<T> {
+    fn get(&self, point: Point4<T>) -> T {
         calculate_cylinders(&point, self.frequency)
     }
 }

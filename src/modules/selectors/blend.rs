@@ -15,26 +15,25 @@ use num_traits::Float;
 ///
 /// This noise module uses linear interpolation to perform the blending
 /// operation.
-#[derive(Clone, Debug)]
-pub struct Blend<Source1, Source2, Control> {
+pub struct Blend<'a, T: 'a, U: 'a> {
     /// Outputs one of the values to blend.
-    pub source1: Source1,
+    pub source1: &'a NoiseModule<T, U>,
 
     /// Outputs one of the values to blend.
-    pub source2: Source2,
+    pub source2: &'a NoiseModule<T, U>,
 
     /// Determines the weight of the blending operation. Negative values weight
     /// the blend towards the output value from the `source1` module. Positive
     /// values weight the blend towards the output value from the `source2`
     /// module.
-    pub control: Control,
+    pub control: &'a NoiseModule<T, U>,
 }
 
-impl<Source1, Source2, Control> Blend<Source1, Source2, Control> {
-    pub fn new(source1: Source1,
-               source2: Source2,
-               control: Control)
-               -> Blend<Source1, Source2, Control> {
+impl<'a, T, U> Blend<'a, T, U> {
+    pub fn new(source1: &'a NoiseModule<T, U>,
+               source2: &'a NoiseModule<T, U>,
+               control: &'a NoiseModule<T, U>)
+               -> Blend<'a, T, U> {
         Blend {
             source1: source1,
             source2: source2,
@@ -43,16 +42,11 @@ impl<Source1, Source2, Control> Blend<Source1, Source2, Control> {
     }
 }
 
-impl<Source1, Source2, Control, T, U> NoiseModule<T> for Blend<Source1, Source2, Control>
-    where Source1: NoiseModule<T, Output = U>,
-          Source2: NoiseModule<T, Output = U>,
-          Control: NoiseModule<T, Output = U>,
-          T: Copy,
+impl<'a, T, U> NoiseModule<T, U> for Blend<'a, T, U>
+    where T: Copy,
           U: Float,
 {
-    type Output = U;
-
-    fn get(&self, point: T) -> Self::Output {
+    fn get(&self, point: T) -> U {
         let lower = self.source1.get(point);
         let upper = self.source2.get(point);
         let control = self.control.get(point);

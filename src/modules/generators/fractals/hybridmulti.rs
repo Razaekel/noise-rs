@@ -121,9 +121,7 @@ impl<T> Seedable for HybridMulti<T> {
 }
 
 /// 2-dimensional HybridMulti noise
-impl<T: Float> NoiseModule<Point2<T>> for HybridMulti<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point2<T>, T> for HybridMulti<T> {
     fn get(&self, mut point: Point2<T>) -> T {
         // First unscaled octave of function; later octaves are scaled.
         point = math::mul2(point, self.frequency);
@@ -159,9 +157,7 @@ impl<T: Float> NoiseModule<Point2<T>> for HybridMulti<T> {
 }
 
 /// 3-dimensional HybridMulti noise
-impl<T: Float> NoiseModule<Point3<T>> for HybridMulti<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point3<T>, T> for HybridMulti<T> {
     fn get(&self, mut point: Point3<T>) -> T {
         // First unscaled octave of function; later octaves are scaled.
         point = math::mul3(point, self.frequency);
@@ -197,9 +193,7 @@ impl<T: Float> NoiseModule<Point3<T>> for HybridMulti<T> {
 }
 
 /// 4-dimensional HybridMulti noise
-impl<T: Float> NoiseModule<Point4<T>> for HybridMulti<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point4<T>, T> for HybridMulti<T> {
     fn get(&self, mut point: Point4<T>) -> T {
         // First unscaled octave of function; later octaves are scaled.
         point = math::mul4(point, self.frequency);

@@ -17,38 +17,34 @@ use num_traits::Float;
 /// this noise module first normalizes the output value (the range becomes 0.0
 /// to 1.0), maps that value onto an exponential curve, then rescales that
 /// value back to the original range.
-pub struct Exponent<Source, T> {
+pub struct Exponent<'a, T: 'a, U: 'a> {
     /// Outputs a value.
-    pub source: Source,
+    pub source: &'a NoiseModule<T, U>,
 
     /// Exponent to apply to the output value from the source module. Default
     /// is 1.0.
-    pub exponent: T,
+    pub exponent: U,
 }
 
-impl<Source, T> Exponent<Source, T>
-    where T: Float,
+impl<'a, T, U> Exponent<'a, T, U>
+    where U: Float,
 {
-    pub fn new(source: Source) -> Exponent<Source, T> {
+    pub fn new(source: &'a NoiseModule<T, U>) -> Exponent<'a, T, U> {
         Exponent {
             source: source,
-            exponent: T::one(),
+            exponent: U::one(),
         }
     }
 
-    pub fn set_exponent(self, exponent: T) -> Exponent<Source, T> {
+    pub fn set_exponent(self, exponent: U) -> Exponent<'a, T, U> {
         Exponent { exponent: exponent, ..self }
     }
 }
 
-impl<Source, T, U> NoiseModule<T> for Exponent<Source, U>
-    where Source: NoiseModule<T, Output = U>,
-          T: Copy,
-          U: Float,
+impl<'a, T, U> NoiseModule<T, U> for Exponent<'a, T, U>
+    where U: Float,
 {
-    type Output = U;
-
-    fn get(&self, point: T) -> Self::Output {
+    fn get(&self, point: T) -> U {
         let mut value = self.source.get(point);
         value = (value + U::one()) / math::cast(2.0);
         value = value.abs();

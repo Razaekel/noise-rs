@@ -35,12 +35,12 @@ fn main() {
     let scaled_base_wood_grain = ScalePoint::new(wood_grain_noise).set_y_scale(0.25);
 
     // Scale the wood-grain values so that they can be added to the base wood texture.
-    let wood_grain = ScaleBias::new(scaled_base_wood_grain)
+    let wood_grain = ScaleBias::new(&scaled_base_wood_grain)
         .set_scale(0.25)
         .set_bias(0.125);
 
     // Add the wood grain texture to the base wood texture.
-    let combined_wood = Add::new(base_wood, wood_grain);
+    let combined_wood = Add::new(&base_wood, &wood_grain);
 
     // Slightly perturb the wood to create a more realistic texture.
     let perturbed_wood = Turbulence::new(combined_wood)
@@ -62,5 +62,5 @@ fn main() {
         .set_power(1.0 / 64.0)
         .set_roughness(4);
 
-    debug::render_noise_module("texturewood.png", final_wood, 1024, 1024, 100);
+    debug::render_noise_module("texturewood.png", &final_wood, 1024, 1024, 100);
 }
