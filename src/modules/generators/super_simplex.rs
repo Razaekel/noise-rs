@@ -121,8 +121,8 @@ impl Seedable for SuperSimplex {
         }
         // Otherwise, regenerate the permutation table based on the new seed.
         SuperSimplex {
+            seed: seed,
             perm_table: PermutationTable::new(seed),
-            .. self
         }
     }
 
