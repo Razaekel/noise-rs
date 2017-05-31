@@ -21,5 +21,5 @@ mod debug;
 fn main() {
     let perlin = Perlin::new();
 
-    debug::render_noise_module3("abs.png", Abs::new(perlin), 1024, 1024, 100);
+    debug::render_noise_module3("abs.png", &Abs::new(&perlin), 1024, 1024, 100);
 }

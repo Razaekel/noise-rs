@@ -33,22 +33,22 @@ mod transformers;
 /// * Mathematically changing the output value from another noise module
 ///     in various ways.
 /// * Combining the output values from two noise modules in various ways.
-pub trait NoiseModule<T> {
-    type Output;
-
-    fn get(&self, point: T) -> Self::Output;
+pub trait NoiseModule<T, U> {
+    fn get(&self, point: T) -> U;
 }
 
-impl<'a, T, M: NoiseModule<T>> NoiseModule<T> for &'a M {
-    type Output = M::Output;
-
+impl<'a, T, U, M: NoiseModule<T, U>> NoiseModule<T, U> for &'a M {
     #[inline]
-    fn get(&self, point: T) -> M::Output {
+    fn get(&self, point: T) -> U {
         M::get(*self, point)
     }
 }
 
 /// Trait for modules that require a seed before generating their values
 pub trait Seedable {
-    fn set_seed(self, seed: usize) -> Self;
+    /// Set the seed for the module implementing the `Seedable` trait
+    fn set_seed(self, seed: u32) -> Self;
+
+    /// Getter to retrieve the seed from the module
+    fn seed(&self) -> u32;
 }

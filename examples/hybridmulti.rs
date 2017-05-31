@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! An example of using the HybridMulti noise module
+//! An example of using the `HybridMulti` noise module
 
 extern crate noise;
 
@@ -21,5 +21,5 @@ use noise::HybridMulti;
 mod debug;
 
 fn main() {
-    debug::render_noise_module3("hybridmulti.png", HybridMulti::new(), 1024, 1024, 200);
+    debug::render_noise_module3("hybridmulti.png", &HybridMulti::new(), 1024, 1024, 200);
 }

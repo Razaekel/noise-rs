@@ -31,10 +31,10 @@ pub trait MultiFractal<T> {
     fn set_persistence(self, persistence: T) -> Self;
 }
 
-fn build_sources(seed: usize, octaves: usize) -> Vec<Perlin> {
+fn build_sources(seed: u32, octaves: usize) -> Vec<Perlin> {
     let mut sources = Vec::with_capacity(octaves);
     for x in 0..octaves {
-        sources.push(Perlin::new().set_seed(seed + x));
+        sources.push(Perlin::new().set_seed(seed + x as u32));
     }
     sources
 }

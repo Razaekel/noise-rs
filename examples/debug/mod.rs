@@ -64,8 +64,8 @@ pub fn render_png<T, F>(filename: &str,
 }
 
 #[allow(dead_code)]
-pub fn render_noise_module2<M>(filename: &str, module: M, width: u32, height: u32, zoom: u32)
-    where M: NoiseModule<[f64; 2], Output = f64>,
+pub fn render_noise_module2<M>(filename: &str, module: &M, width: u32, height: u32, zoom: u32)
+    where M: NoiseModule<[f64; 2], f64>,
 {
     let mut pixels = Vec::with_capacity((width * height) as usize);
 
@@ -105,8 +105,8 @@ pub fn render_noise_module2<M>(filename: &str, module: M, width: u32, height: u3
 }
 
 #[allow(dead_code)]
-pub fn render_noise_module3<M>(filename: &str, module: M, width: u32, height: u32, zoom: u32)
-    where M: NoiseModule<[f64; 3], Output = f64>,
+pub fn render_noise_module3<M>(filename: &str, module: &M, width: u32, height: u32, zoom: u32)
+    where M: NoiseModule<[f64; 3], f64>,
 {
     let mut pixels = Vec::with_capacity((width * height) as usize);
 
@@ -146,8 +146,8 @@ pub fn render_noise_module3<M>(filename: &str, module: M, width: u32, height: u3
 }
 
 #[allow(dead_code)]
-pub fn render_noise_module4<M>(filename: &str, module: M, width: u32, height: u32, zoom: u32)
-    where M: NoiseModule<[f64; 4], Output = f64>,
+pub fn render_noise_module4<M>(filename: &str, module: &M, width: u32, height: u32, zoom: u32)
+    where M: NoiseModule<[f64; 4], f64>,
 {
     let mut pixels = Vec::with_capacity((width * height) as usize);
 

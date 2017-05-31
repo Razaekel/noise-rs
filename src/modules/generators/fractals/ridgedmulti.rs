@@ -12,7 +12,7 @@ use modules::{MultiFractal, NoiseModule, Perlin, Seedable};
 use num_traits::Float;
 
 /// Default noise seed for the RidgedMulti noise module.
-pub const DEFAULT_RIDGED_SEED: usize = 0;
+pub const DEFAULT_RIDGED_SEED: u32 = 0;
 /// Default number of octaves for the RidgedMulti noise module.
 pub const DEFAULT_RIDGED_OCTAVE_COUNT: usize = 6;
 /// Default frequency for the RidgedMulti noise module.
@@ -44,9 +44,6 @@ pub const RIDGED_MAX_OCTAVES: usize = 32;
 /// terrain or marble-like textures.
 #[derive(Clone, Debug)]
 pub struct RidgedMulti<T> {
-    /// Seed.
-    pub seed: usize,
-
     /// Total number of frequency octaves to generate the noise with.
     ///
     /// The number of octaves control the _amount of detail_ in the noise
@@ -81,6 +78,7 @@ pub struct RidgedMulti<T> {
     /// half the height of the previous.
     pub attenuation: T,
 
+    seed: u32,
     sources: Vec<Perlin>,
 }
 
@@ -132,7 +130,7 @@ impl<T> MultiFractal<T> for RidgedMulti<T> {
 }
 
 impl<T> Seedable for RidgedMulti<T> {
-    fn set_seed(self, seed: usize) -> RidgedMulti<T> {
+    fn set_seed(self, seed: u32) -> RidgedMulti<T> {
         if self.seed == seed {
             return self;
         }
@@ -142,12 +140,14 @@ impl<T> Seedable for RidgedMulti<T> {
             ..self
         }
     }
+
+    fn seed(&self) -> u32 {
+        self.seed
+    }
 }
 
 /// 2-dimensional RidgedMulti noise
-impl<T: Float> NoiseModule<Point2<T>> for RidgedMulti<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point2<T>, T> for RidgedMulti<T> {
     fn get(&self, mut point: Point2<T>) -> T {
         let mut result = T::zero();
         let mut weight = T::one();
@@ -197,9 +197,7 @@ impl<T: Float> NoiseModule<Point2<T>> for RidgedMulti<T> {
 }
 
 /// 3-dimensional RidgedMulti noise
-impl<T: Float> NoiseModule<Point3<T>> for RidgedMulti<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point3<T>, T> for RidgedMulti<T> {
     fn get(&self, mut point: Point3<T>) -> T {
         let mut result = T::zero();
         let mut weight = T::one();
@@ -249,9 +247,7 @@ impl<T: Float> NoiseModule<Point3<T>> for RidgedMulti<T> {
 }
 
 /// 4-dimensional RidgedMulti noise
-impl<T: Float> NoiseModule<Point4<T>> for RidgedMulti<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point4<T>, T> for RidgedMulti<T> {
     fn get(&self, mut point: Point4<T>) -> T {
         let mut result = T::zero();
         let mut weight = T::one();

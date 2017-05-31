@@ -12,7 +12,7 @@ use modules::{MultiFractal, NoiseModule, Perlin, Seedable};
 use num_traits::Float;
 
 /// Default noise seed for the fBm noise module.
-pub const DEFAULT_FBM_SEED: usize = 0;
+pub const DEFAULT_FBM_SEED: u32 = 0;
 /// Default number of octaves for the fBm noise module.
 pub const DEFAULT_FBM_OCTAVE_COUNT: usize = 6;
 /// Default frequency for the fBm noise module.
@@ -42,9 +42,6 @@ pub const FBM_MAX_OCTAVES: usize = 32;
 /// fBm is commonly referred to as Perlin noise.
 #[derive(Clone, Debug)]
 pub struct Fbm<T> {
-    /// Seed.
-    pub seed: usize,
-
     /// Total number of frequency octaves to generate the noise with.
     ///
     /// The number of octaves control the _amount of detail_ in the noise
@@ -73,6 +70,7 @@ pub struct Fbm<T> {
     /// persistence produces "rougher" noise.
     pub persistence: T,
 
+    seed: u32,
     sources: Vec<Perlin>,
 }
 
@@ -119,7 +117,7 @@ impl<T> MultiFractal<T> for Fbm<T> {
 }
 
 impl<T> Seedable for Fbm<T> {
-    fn set_seed(self, seed: usize) -> Fbm<T> {
+    fn set_seed(self, seed: u32) -> Fbm<T> {
         if self.seed == seed {
             return self;
         }
@@ -129,12 +127,14 @@ impl<T> Seedable for Fbm<T> {
             ..self
         }
     }
+
+    fn seed(&self) -> u32 {
+        self.seed
+    }
 }
 
 /// 2-dimensional Fbm noise
-impl<T: Float> NoiseModule<Point2<T>> for Fbm<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point2<T>, T> for Fbm<T> {
     fn get(&self, mut point: Point2<T>) -> T {
         let mut result = T::zero();
 
@@ -161,9 +161,7 @@ impl<T: Float> NoiseModule<Point2<T>> for Fbm<T> {
 }
 
 /// 3-dimensional Fbm noise
-impl<T: Float> NoiseModule<Point3<T>> for Fbm<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point3<T>, T> for Fbm<T> {
     fn get(&self, mut point: Point3<T>) -> T {
         let mut result = T::zero();
 
@@ -190,9 +188,7 @@ impl<T: Float> NoiseModule<Point3<T>> for Fbm<T> {
 }
 
 /// 4-dimensional Fbm noise
-impl<T: Float> NoiseModule<Point4<T>> for Fbm<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point4<T>, T> for Fbm<T> {
     fn get(&self, mut point: Point4<T>) -> T {
         let mut result = T::zero();
 

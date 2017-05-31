@@ -21,48 +21,48 @@ use noise::{RangeFunction, Worley};
 mod debug;
 
 fn main() {
-    debug::render_noise_module3("worley-linear.png", Worley::new(), 1024, 1024, 50);
+    debug::render_noise_module3("worley-linear.png", &Worley::new(), 1024, 1024, 50);
     debug::render_noise_module3("worley-linear-range.png",
-                               Worley::new().enable_range(true),
+                               &Worley::new().enable_range(true),
                                1024,
                                1024,
                                50);
     debug::render_noise_module3("worley-linear-squared.png",
-                               Worley::new().set_range_function(RangeFunction::EuclideanSquared),
+                               &Worley::new().set_range_function(RangeFunction::EuclideanSquared),
                                1024,
                                1024,
                                50);
     debug::render_noise_module3("worley-manhattan.png",
-                               Worley::new().set_range_function(RangeFunction::Manhattan),
+                               &Worley::new().set_range_function(RangeFunction::Manhattan),
                                1024,
                                1024,
                                50);
     debug::render_noise_module3("worley-manhattan-range.png",
-                               Worley::new()
+                               &Worley::new()
                                    .enable_range(true)
                                    .set_range_function(RangeFunction::Manhattan),
                                1024,
                                1024,
                                50);
     debug::render_noise_module3("worley-chebyshev.png",
-                               Worley::new().set_range_function(RangeFunction::Chebyshev),
+                               &Worley::new().set_range_function(RangeFunction::Chebyshev),
                                1024,
                                1024,
                                50);
     debug::render_noise_module3("worley-chebyshev-range.png",
-                               Worley::new()
+                               &Worley::new()
                                    .enable_range(true)
                                    .set_range_function(RangeFunction::Chebyshev),
                                1024,
                                1024,
                                50);
     debug::render_noise_module3("worley-quadratic.png",
-                               Worley::new().set_range_function(RangeFunction::Quadratic),
+                               &Worley::new().set_range_function(RangeFunction::Quadratic),
                                1024,
                                1024,
                                50);
     debug::render_noise_module3("worley-quadratic-range.png",
-                               Worley::new()
+                               &Worley::new()
                                    .enable_range(true)
                                    .set_range_function(RangeFunction::Quadratic),
                                1024,

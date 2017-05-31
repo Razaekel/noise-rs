@@ -12,7 +12,7 @@ use modules::{Fbm, MultiFractal, NoiseModule, Seedable};
 use num_traits::Float;
 
 /// Default seed for the Turbulence noise module.
-pub const DEFAULT_TURBULENCE_SEED: usize = 0;
+pub const DEFAULT_TURBULENCE_SEED: u32 = 0;
 /// Default frequency for the Turbulence noise module.
 pub const DEFAULT_TURBULENCE_FREQUENCY: f32 = 1.0;
 /// Default power for the turbulence noise module.
@@ -32,9 +32,6 @@ pub struct Turbulence<Source, T> {
     /// Source Module that outputs a value.
     pub source: Source,
 
-    /// Seed value for the Turbulence module.
-    pub seed: usize,
-
     /// Frequency value for the Turbulence module.
     pub frequency: T,
 
@@ -45,6 +42,7 @@ pub struct Turbulence<Source, T> {
     /// Affects the roughness of the turbulence. Higher values are rougher.
     pub roughness: usize,
 
+    seed: u32,
     x_distort_module: Fbm<T>,
     y_distort_module: Fbm<T>,
     z_distort_module: Fbm<T>,
@@ -108,7 +106,7 @@ impl<Source, T> Turbulence<Source, T>
 }
 
 impl<Source, T> Seedable for Turbulence<Source, T> {
-    fn set_seed(self, seed: usize) -> Turbulence<Source, T> {
+    fn set_seed(self, seed: u32) -> Turbulence<Source, T> {
         Turbulence {
             seed: seed,
             x_distort_module: self.x_distort_module.set_seed(seed),
@@ -118,15 +116,17 @@ impl<Source, T> Seedable for Turbulence<Source, T> {
             ..self
         }
     }
+
+    fn seed(&self) -> u32 {
+        self.seed
+    }
 }
 
-impl<Source, T> NoiseModule<Point2<T>> for Turbulence<Source, T>
-    where Source: NoiseModule<Point2<T>, Output = T>,
+impl<Source, T> NoiseModule<Point2<T>, T> for Turbulence<Source, T>
+    where Source: NoiseModule<Point2<T>, T>,
           T: Float,
 {
-    type Output = T;
-
-    fn get(&self, point: Point2<T>) -> Self::Output {
+    fn get(&self, point: Point2<T>) -> T {
         // First, create offsets based on the input values to keep the sampled
         // points from being near a integer boundary. This is a result of
         // using perlin noise, which returns zero at integer boundaries.
@@ -143,13 +143,11 @@ impl<Source, T> NoiseModule<Point2<T>> for Turbulence<Source, T>
     }
 }
 
-impl<Source, T> NoiseModule<Point3<T>> for Turbulence<Source, T>
-    where Source: NoiseModule<Point3<T>, Output = T>,
+impl<Source, T> NoiseModule<Point3<T>, T> for Turbulence<Source, T>
+    where Source: NoiseModule<Point3<T>, T>,
           T: Float,
 {
-    type Output = T;
-
-    fn get(&self, point: Point3<T>) -> Self::Output {
+    fn get(&self, point: Point3<T>) -> T {
         // First, create offsets based on the input values to keep the sampled
         // points from being near a integer boundary. This is a result of
         // using perlin noise, which returns zero at integer boundaries.
@@ -173,13 +171,11 @@ impl<Source, T> NoiseModule<Point3<T>> for Turbulence<Source, T>
     }
 }
 
-impl<Source, T> NoiseModule<Point4<T>> for Turbulence<Source, T>
-    where Source: NoiseModule<Point4<T>, Output = T>,
+impl<Source, T> NoiseModule<Point4<T>, T> for Turbulence<Source, T>
+    where Source: NoiseModule<Point4<T>, T>,
           T: Float,
 {
-    type Output = T;
-
-    fn get(&self, point: Point4<T>) -> Self::Output {
+    fn get(&self, point: Point4<T>) -> T {
         // First, create offsets based on the input values to keep the sampled
         // points from being near a integer boundary. This is a result of
         // using perlin noise, which returns zero at integer boundaries.

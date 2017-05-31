@@ -48,13 +48,11 @@ impl<Source, T> Cache<Source, T>
     }
 }
 
-impl<Source, T> NoiseModule<Point2<T>> for Cache<Source, T>
-    where Source: NoiseModule<Point2<T>, Output = T>,
+impl<Source, T> NoiseModule<Point2<T>, T> for Cache<Source, T>
+    where Source: NoiseModule<Point2<T>, T>,
           T: Float,
 {
-    type Output = T;
-
-    fn get(&self, point: Point2<T>) -> Self::Output {
+    fn get(&self, point: Point2<T>) -> T {
         match self.value.get() {
             Some(value) if *self.point.borrow() == point => value,
             Some(_) | None => {
@@ -71,13 +69,11 @@ impl<Source, T> NoiseModule<Point2<T>> for Cache<Source, T>
     }
 }
 
-impl<Source, T> NoiseModule<Point3<T>> for Cache<Source, T>
-    where Source: NoiseModule<Point3<T>, Output = T>,
+impl<Source, T> NoiseModule<Point3<T>, T> for Cache<Source, T>
+    where Source: NoiseModule<Point3<T>, T>,
           T: Float,
 {
-    type Output = T;
-
-    fn get(&self, point: Point3<T>) -> Self::Output {
+    fn get(&self, point: Point3<T>) -> T {
         match self.value.get() {
             Some(value) if *self.point.borrow() == point => value,
             Some(_) | None => {
@@ -94,13 +90,11 @@ impl<Source, T> NoiseModule<Point3<T>> for Cache<Source, T>
     }
 }
 
-impl<Source, T> NoiseModule<Point4<T>> for Cache<Source, T>
-    where Source: NoiseModule<Point4<T>, Output = T>,
+impl<Source, T> NoiseModule<Point4<T>, T> for Cache<Source, T>
+    where Source: NoiseModule<Point4<T>, T>,
           T: Float,
 {
-    type Output = T;
-
-    fn get(&self, point: Point4<T>) -> Self::Output {
+    fn get(&self, point: Point4<T>) -> T {
         match self.value.get() {
             Some(value) if *self.point.borrow() == point => value,
             Some(_) | None => {

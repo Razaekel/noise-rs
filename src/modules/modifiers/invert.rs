@@ -10,25 +10,21 @@ use modules::NoiseModule;
 use num_traits::Float;
 
 /// Noise module that inverts the output value from the source module.
-pub struct Invert<Source> {
+pub struct Invert<'a, T: 'a, U: 'a> {
     /// Outputs a value.
-    pub source: Source,
+    pub source: &'a NoiseModule<T, U>,
 }
 
-impl<Source> Invert<Source> {
-    pub fn new(source: Source) -> Invert<Source> {
+impl<'a, T, U> Invert<'a, T, U> {
+    pub fn new(source: &'a NoiseModule<T, U>) -> Invert<'a, T, U> {
         Invert { source: source }
     }
 }
 
-impl<Source, T, U> NoiseModule<T> for Invert<Source>
-    where Source: NoiseModule<T, Output = U>,
-          T: Copy,
-          U: Float,
+impl<'a, T, U> NoiseModule<T, U> for Invert<'a, T, U>
+    where U: Float,
 {
-    type Output = U;
-
-    fn get(&self, point: T) -> Self::Output {
+    fn get(&self, point: T) -> U {
         -self.source.get(point)
     }
 }

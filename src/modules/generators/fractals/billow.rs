@@ -12,7 +12,7 @@ use modules::{MultiFractal, NoiseModule, Perlin, Seedable};
 use num_traits::Float;
 
 /// Default noise seed for the Billow noise module.
-pub const DEFAULT_BILLOW_SEED: usize = 0;
+pub const DEFAULT_BILLOW_SEED: u32 = 0;
 /// Default number of octaves for the Billow noise module.
 pub const DEFAULT_BILLOW_OCTAVE_COUNT: usize = 6;
 /// Default frequency for the Billow noise module.
@@ -33,9 +33,6 @@ pub const BILLOW_MAX_OCTAVES: usize = 32;
 /// documentation for fBm for more information.
 #[derive(Clone, Debug)]
 pub struct Billow<T> {
-    /// Seed.
-    pub seed: usize,
-
     /// Total number of frequency octaves to generate the noise with.
     ///
     /// The number of octaves control the _amount of detail_ in the noise
@@ -64,6 +61,7 @@ pub struct Billow<T> {
     /// persistence produces "rougher" noise.
     pub persistence: T,
 
+    seed: u32,
     sources: Vec<Perlin>,
 }
 
@@ -108,7 +106,7 @@ impl<T> MultiFractal<T> for Billow<T> {
 }
 
 impl<T> Seedable for Billow<T> {
-    fn set_seed(self, seed: usize) -> Billow<T> {
+    fn set_seed(self, seed: u32) -> Billow<T> {
         if self.seed == seed {
             return self;
         }
@@ -118,12 +116,14 @@ impl<T> Seedable for Billow<T> {
             ..self
         }
     }
+
+    fn seed(&self) -> u32 {
+        self.seed
+    }
 }
 
 /// 2-dimensional Billow noise
-impl<T: Float> NoiseModule<Point2<T>> for Billow<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point2<T>, T> for Billow<T> {
     fn get(&self, mut point: Point2<T>) -> T {
         let mut result = T::zero();
 
@@ -153,9 +153,7 @@ impl<T: Float> NoiseModule<Point2<T>> for Billow<T> {
 }
 
 /// 3-dimensional Billow noise
-impl<T: Float> NoiseModule<Point3<T>> for Billow<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point3<T>, T> for Billow<T> {
     fn get(&self, mut point: Point3<T>) -> T {
         let mut result = T::zero();
 
@@ -185,9 +183,7 @@ impl<T: Float> NoiseModule<Point3<T>> for Billow<T> {
 }
 
 /// 4-dimensional Billow noise
-impl<T: Float> NoiseModule<Point4<T>> for Billow<T> {
-    type Output = T;
-
+impl<T: Float> NoiseModule<Point4<T>, T> for Billow<T> {
     fn get(&self, mut point: Point4<T>) -> T {
         let mut result = T::zero();
 

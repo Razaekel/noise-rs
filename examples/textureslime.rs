@@ -35,7 +35,7 @@ fn main() {
         .set_octaves(1);
 
     // Scale and lower the small slime bubble values.
-    let small_slime = ScaleBias::new(small_slime_base)
+    let small_slime = ScaleBias::new(&small_slime_base)
         .set_scale(0.5)
         .set_bias(-0.5);
 
@@ -53,7 +53,7 @@ fn main() {
     // values, otherwise choose the large slime bubble texture. The edge
     // falloff is non-zero so that there is a smooth transition between the
     // two textures.
-    let slime_chooser = Select::new(large_slime, small_slime, slime_map)
+    let slime_chooser = Select::new(&large_slime, &small_slime, &slime_map)
         .set_bounds(-0.375, 0.375)
         .set_edge_falloff(0.5);
 
@@ -64,5 +64,5 @@ fn main() {
         .set_power(1.0 / 32.0)
         .set_roughness(2);
 
-    debug::render_noise_module3("textureslime.png", final_slime, 1024, 1024, 500);
+    debug::render_noise_module3("textureslime.png", &final_slime, 1024, 1024, 500);
 }

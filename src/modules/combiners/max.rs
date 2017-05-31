@@ -11,16 +11,16 @@ use num_traits::Float;
 
 /// Noise module that outputs the larger of the two output values from two source
 /// modules.
-pub struct Max<Source1, Source2> {
+pub struct Max<'a, T: 'a, U: 'a> {
     /// Outputs a value.
-    pub source1: Source1,
+    pub source1: &'a NoiseModule<T, U>,
 
     /// Outputs a value.
-    pub source2: Source2,
+    pub source2: &'a NoiseModule<T, U>,
 }
 
-impl<Source1, Source2> Max<Source1, Source2> {
-    pub fn new(source1: Source1, source2: Source2) -> Max<Source1, Source2> {
+impl<'a, T, U> Max<'a, T, U> {
+    pub fn new(source1: &'a NoiseModule<T, U>, source2: &'a NoiseModule<T, U>) -> Max<'a, T, U> {
         Max {
             source1: source1,
             source2: source2,
@@ -28,15 +28,11 @@ impl<Source1, Source2> Max<Source1, Source2> {
     }
 }
 
-impl<Source1, Source2, T, U> NoiseModule<T> for Max<Source1, Source2>
-    where Source1: NoiseModule<T, Output = U>,
-          Source2: NoiseModule<T, Output = U>,
-          T: Copy,
+impl<'a, T, U> NoiseModule<T, U> for Max<'a, T, U>
+    where T: Copy,
           U: Float,
 {
-    type Output = U;
-
-    fn get(&self, point: T) -> Self::Output {
+    fn get(&self, point: T) -> U {
         (self.source1.get(point)).max(self.source2.get(point))
     }
 }

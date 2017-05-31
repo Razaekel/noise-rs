@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! An example of using the BasicMulti noise module
+//! An example of using the `BasicMulti` noise module
 
 extern crate noise;
 
@@ -21,5 +21,5 @@ use noise::BasicMulti;
 mod debug;
 
 fn main() {
-    debug::render_noise_module3("basicmulti.png", BasicMulti::new(), 1024, 1024, 100);
+    debug::render_noise_module3("basicmulti.png", &BasicMulti::new(), 1024, 1024, 100);
 }
