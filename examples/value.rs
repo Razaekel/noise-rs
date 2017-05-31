@@ -14,6 +14,8 @@
 
 //! An example of using value noise
 
+#![allow(deprecated)]
+
 extern crate noise;
 
 use noise::{value2, value3, value4, PermutationTable, Point2};

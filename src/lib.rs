@@ -18,6 +18,7 @@
 //! ```
 
 #![deny(missing_copy_implementations)]
+#![allow(deprecated)]
 
 extern crate num_traits;
 extern crate rand;

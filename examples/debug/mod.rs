@@ -14,6 +14,8 @@
 
 //! Useful things for debugging noise functions.
 
+#![allow(deprecated)]
+
 extern crate image;
 extern crate num_traits;
 
