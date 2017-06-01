@@ -11,6 +11,7 @@ use math::interp;
 use num_traits::Float;
 
 /// 2-dimensional value noise
+#[deprecated(since="0.4.2", note="Please use `noise::modules::Value` instead")]
 #[cfg_attr(rustfmt, rustfmt_skip)]
 pub fn value2<T: Float>(perm_table: &PermutationTable, point: &math::Point2<T>) -> T {
     #[inline(always)]
@@ -36,6 +37,7 @@ pub fn value2<T: Float>(perm_table: &PermutationTable, point: &math::Point2<T>) 
 }
 
 /// 3-dimensional value noise
+#[deprecated(since="0.4.2", note="Please use `noise::modules::Value` instead")]
 #[cfg_attr(rustfmt, rustfmt_skip)]
 pub fn value3<T: Float>(perm_table: &PermutationTable, point: &math::Point3<T>) -> T {
     #[inline(always)]
@@ -69,6 +71,7 @@ pub fn value3<T: Float>(perm_table: &PermutationTable, point: &math::Point3<T>) 
 }
 
 /// 4-dimensional value noise
+#[deprecated(since="0.4.2", note="Please use `noise::modules::Value` instead")]
 #[cfg_attr(rustfmt, rustfmt_skip)]
 pub fn value4<T: Float>(perm_table: &PermutationTable, point: &math::Point4<T>) -> T {
     #[inline(always)]
