@@ -14,6 +14,8 @@
 
 //! An example of using value noise
 
+#![allow(deprecated)]
+
 extern crate noise;
 
 use noise::{Value, Seedable};

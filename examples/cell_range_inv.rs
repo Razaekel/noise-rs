@@ -14,6 +14,8 @@
 
 //! An example of using cell range noise
 
+#![allow(deprecated)]
+
 extern crate noise;
 
 use noise::{cell2_range_inv, cell3_range_inv, cell4_range_inv, PermutationTable, Point2};

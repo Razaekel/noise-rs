@@ -79,11 +79,11 @@ fn main() {
     /// Planet seed. Change this to generate a different planet.
     const CURRENT_SEED: u32 = 0;
 
-    /// Minimum elevation on the planet, in meters. This value is approximate.
-    const MIN_ELEV: f64 = -8192.0;
+    // Minimum elevation on the planet, in meters. This value is approximate.
+    //const MIN_ELEV: f64 = -8192.0;
 
-    /// Maximum elevation on the planet, in meters. This value is approximate.
-    const MAX_ELEV: f64 = 8192.0;
+    // Maximum elevation on the planet, in meters. This value is approximate.
+    //const MAX_ELEV: f64 = 8192.0;
 
     /// Frequency of the planet's continents. Higher frequency produces
     /// smaller, more numerous continents. This value is measured in radians.
