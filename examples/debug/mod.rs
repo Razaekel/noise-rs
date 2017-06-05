@@ -64,7 +64,48 @@ pub fn render_png<T, F>(filename: &str,
 }
 
 #[allow(dead_code)]
-pub fn render_noise_module<M>(filename: &str, module: &M, width: u32, height: u32, zoom: u32)
+pub fn render_noise_module2<M>(filename: &str, module: &M, width: u32, height: u32, zoom: u32)
+    where M: NoiseModule<[f64; 2], f64>,
+{
+    let mut pixels = Vec::with_capacity((width * height) as usize);
+
+    println!("\nGenerating {} points for {}", width * height, filename);
+    let mut min_value = Float::max_value();
+    let mut max_value = Float::min_value();
+
+    for y in 0..height {
+        for x in 0..width {
+            let value: f64 = cast(module.get([((x as f64 - (width as f64 / 2.0)) / zoom as f64),
+                                              ((y as f64 - (height as f64 / 2.0)) / zoom as f64)
+                                              ]));
+            pixels.push(cast(clamp(value * 0.5 + 0.5, 0.0, 1.0) * 255.0));
+
+            print!("\rProcessing {} of {}",
+                   (y * width) + height,
+                   width * height);
+
+            if value > max_value {
+                max_value = value
+            };
+            if value < min_value {
+                min_value = value
+            };
+        }
+    }
+
+    let _ = image::save_buffer(&Path::new(filename),
+                               &*pixels,
+                               width,
+                               height,
+                               image::Gray(8));
+
+    println!("\nFinished generating {}", filename);
+    println!("\nMaxValue: {}", max_value);
+    println!("\nMinValue: {}", min_value);
+}
+
+#[allow(dead_code)]
+pub fn render_noise_module3<M>(filename: &str, module: &M, width: u32, height: u32, zoom: u32)
     where M: NoiseModule<[f64; 3], f64>,
 {
     let mut pixels = Vec::with_capacity((width * height) as usize);
@@ -78,6 +119,47 @@ pub fn render_noise_module<M>(filename: &str, module: &M, width: u32, height: u3
             let value: f64 = cast(module.get([((x as f64 - (width as f64 / 2.0)) / zoom as f64),
                                               ((y as f64 - (height as f64 / 2.0)) / zoom as f64),
                                               0.0]));
+            pixels.push(cast(clamp(value * 0.5 + 0.5, 0.0, 1.0) * 255.0));
+
+            print!("\rProcessing {} of {}",
+                   (y * width) + height,
+                   width * height);
+
+            if value > max_value {
+                max_value = value
+            };
+            if value < min_value {
+                min_value = value
+            };
+        }
+    }
+
+    let _ = image::save_buffer(&Path::new(filename),
+                               &*pixels,
+                               width,
+                               height,
+                               image::Gray(8));
+
+    println!("\nFinished generating {}", filename);
+    println!("\nMaxValue: {}", max_value);
+    println!("\nMinValue: {}", min_value);
+}
+
+#[allow(dead_code)]
+pub fn render_noise_module4<M>(filename: &str, module: &M, width: u32, height: u32, zoom: u32)
+    where M: NoiseModule<[f64; 4], f64>,
+{
+    let mut pixels = Vec::with_capacity((width * height) as usize);
+
+    println!("\nGenerating {} points for {}", width * height, filename);
+    let mut min_value = Float::max_value();
+    let mut max_value = Float::min_value();
+
+    for y in 0..height {
+        for x in 0..width {
+            let value: f64 = cast(module.get([((x as f64 - (width as f64 / 2.0)) / zoom as f64),
+                                              ((y as f64 - (height as f64 / 2.0)) / zoom as f64),
+                                              0.0, 0.0]));
             pixels.push(cast(clamp(value * 0.5 + 0.5, 0.0, 1.0) * 255.0));
 
             print!("\rProcessing {} of {}",

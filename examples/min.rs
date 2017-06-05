@@ -22,5 +22,5 @@ fn main() {
     let cyl = Cylinders::new();
     let perlin = Perlin::new();
 
-    debug::render_noise_module("min.png", &Min::new(&cyl, &perlin), 1024, 1024, 100);
+    debug::render_noise_module3("min.png", &Min::new(&cyl, &perlin), 1024, 1024, 100);
 }

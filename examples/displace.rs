@@ -25,5 +25,5 @@ fn main() {
     let perlin = Perlin::new();
     let displace = Displace::new(cylinders, cboard, perlin, constant, constant);
 
-    debug::render_noise_module("displace.png", &displace, 1024, 1024, 50);
+    debug::render_noise_module3("displace.png", &displace, 1024, 1024, 50);
 }

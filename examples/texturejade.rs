@@ -63,5 +63,5 @@ fn main() {
         .set_power(1.0 / 16.0)
         .set_roughness(2);
 
-    debug::render_noise_module("texturejade.png", &final_jade, 1024, 1024, 500);
+    debug::render_noise_module3("texturejade.png", &final_jade, 1024, 1024, 500);
 }

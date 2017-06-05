@@ -21,5 +21,5 @@ mod debug;
 fn main() {
     let perlin = Perlin::new();
 
-    debug::render_noise_module("turbulence.png", &Turbulence::new(perlin), 1024, 1024, 50);
+    debug::render_noise_module3("turbulence.png", &Turbulence::new(perlin), 1024, 1024, 50);
 }

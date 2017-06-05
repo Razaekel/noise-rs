@@ -1714,28 +1714,28 @@ fn main() {
     //    continent-with-rivers subgroup.
     let unscaledFinalPlanet = Cache::new(continentsWithRivers);
 
-    debug::render_noise_module("complexplanet_images/30_0_unscaledFinalPlanet\
+    debug::render_noise_module3("complexplanet_images/30_0_unscaledFinalPlanet\
     .png",
                                &unscaledFinalPlanet,
                                1024,
                                1024,
                                100);
 
-    debug::render_noise_module("complexplanet_images/30_1_unscaledFinalPlanet\
+    debug::render_noise_module3("complexplanet_images/30_1_unscaledFinalPlanet\
     .png",
                                &unscaledFinalPlanet,
                                2048,
                                2048,
                                1000);
 
-    debug::render_noise_module("complexplanet_images/30_2_unscaledFinalPlanet\
+    debug::render_noise_module3("complexplanet_images/30_2_unscaledFinalPlanet\
     .png",
                                &unscaledFinalPlanet,
                                2048,
                                2048,
                                10000);
 
-    debug::render_noise_module("complexplanet_images/30_3_unscaledFinalPlanet\
+    debug::render_noise_module3("complexplanet_images/30_3_unscaledFinalPlanet\
     .png",
                                &unscaledFinalPlanet,
                                4096,

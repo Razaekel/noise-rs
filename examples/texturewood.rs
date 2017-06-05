@@ -62,5 +62,5 @@ fn main() {
         .set_power(1.0 / 64.0)
         .set_roughness(4);
 
-    debug::render_noise_module("texturewood.png", &final_wood, 1024, 1024, 100);
+    debug::render_noise_module3("texturewood.png", &final_wood, 1024, 1024, 100);
 }
