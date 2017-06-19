@@ -16,7 +16,7 @@
 
 extern crate noise;
 
-use noise::{Curve, OpenSimplex, Seedable, NoiseModule};
+use noise::{Curve, OpenSimplex, Seedable};
 
 mod debug;
 

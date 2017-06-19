@@ -6,10 +6,11 @@
 // project carrying such notice may not be copied, modified, or distributed
 // except according to those terms.
 
-use {PermutationTable, gradient, math};
+use {gradient, math};
 use math::{Point2, Point3};
 use modules::{NoiseModule, Seedable};
 use num_traits::Float;
+use permutationtable::PermutationTable;
 use std::ops::Add;
 
 /// Default Seed for the Super Simplex noise module.
@@ -137,7 +138,6 @@ impl<T: Float> NoiseModule<Point2<T>, T> for SuperSimplex {
         let zero: T = math::cast(0.0);
         let one: T = math::cast(1.0);
         let one_half: T = math::cast(0.5);
-        let two: T = math::cast(2.0);
         let two_thirds: T = math::cast(2.0 / 3.0);
         let to_real_constant: T = math::cast(TO_REAL_CONSTANT_2D);
         let to_simplex_constant: T = math::cast(TO_SIMPLEX_CONSTANT_2D);
@@ -184,10 +184,8 @@ impl<T: Float> NoiseModule<Point2<T>, T> for SuperSimplex {
 impl<T: Float> NoiseModule<Point3<T>, T> for SuperSimplex {
     fn get(&self, point: Point3<T>) -> T {
         let zero: T = math::cast(0.0);
-        let one: T = math::cast(1.0);
         let one_p_five: T = math::cast(1.5);
         let one_half: T = math::cast(0.5);
-        let two: T = math::cast(2.0);
         let three_fourths: T = math::cast(0.75);
         let overlapping_offset: T = math::cast(512.5);
         let to_simplex_constant: T = math::cast(TO_SIMPLEX_CONSTANT_3D);

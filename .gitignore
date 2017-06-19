@@ -1,5 +1,7 @@
 /doc/
 /target/
+/.idea/
+*.iml
 Cargo.lock
 *.png
 .DS_Store
