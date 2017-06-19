@@ -486,8 +486,9 @@ fn main() {
     // uses the scaled-river-valley module as the control module, causing the
     // low-flat module to appear in the lower areas and causing the scaled-
     // mountain-ridge module to appear in the higher areas.
-    let mountainBaseDef_bl =
-        Blend::new(&mountainBaseDef_co, &mountainBaseDef_sb0, &mountainBaseDef_sb1);
+    let mountainBaseDef_bl = Blend::new(&mountainBaseDef_co,
+                                        &mountainBaseDef_sb0,
+                                        &mountainBaseDef_sb1);
 
     // 7: [Coarse-turbulence module]: This turbulence module warps the output
     // value from the mountain-and-valleys module, adding some coarse detail to
@@ -1122,7 +1123,8 @@ fn main() {
     // number of low values. This means there will be a few peaks with much
     // higher elevations than the majority of the peaks, making the terrain
     // features more varied.
-    let scaledMountainousTerrain_ex = Exponent::new(&scaledMountainousTerrain_fb).set_exponent(1.25);
+    let scaledMountainousTerrain_ex = Exponent::new(&scaledMountainousTerrain_fb)
+        .set_exponent(1.25);
 
     // 4: [Scaled-peak-modulation module]: This scale/bias module modifies the
     // range of the output value from the peak-modulation module so that it can
@@ -1709,31 +1711,31 @@ fn main() {
     let unscaledFinalPlanet = Cache::new(continentsWithRivers);
 
     debug::render_noise_module3("complexplanet_images/30_0_unscaledFinalPlanet\
-    .png",
-                               &unscaledFinalPlanet,
-                               1024,
-                               1024,
-                               100);
+                                 .png",
+                                &unscaledFinalPlanet,
+                                1024,
+                                1024,
+                                100);
 
     debug::render_noise_module3("complexplanet_images/30_1_unscaledFinalPlanet\
-    .png",
-                               &unscaledFinalPlanet,
-                               2048,
-                               2048,
-                               1000);
+                                 .png",
+                                &unscaledFinalPlanet,
+                                2048,
+                                2048,
+                                1000);
 
     debug::render_noise_module3("complexplanet_images/30_2_unscaledFinalPlanet\
-    .png",
-                               &unscaledFinalPlanet,
-                               2048,
-                               2048,
-                               10000);
+                                 .png",
+                                &unscaledFinalPlanet,
+                                2048,
+                                2048,
+                                10000);
 
     debug::render_noise_module3("complexplanet_images/30_3_unscaledFinalPlanet\
-    .png",
-                               &unscaledFinalPlanet,
-                               4096,
-                               4096,
-                               100000);
+                                 .png",
+                                &unscaledFinalPlanet,
+                                4096,
+                                4096,
+                                100000);
 
 }

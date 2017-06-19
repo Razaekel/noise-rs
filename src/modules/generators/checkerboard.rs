@@ -41,7 +41,10 @@ impl Checkerboard {
     }
 
     pub fn set_size(self, size: usize) -> Checkerboard {
-        Checkerboard { size: 1 << size, ..self }
+        Checkerboard {
+            size: 1 << size,
+            ..self
+        }
     }
 }
 
@@ -74,7 +77,8 @@ impl<T: Float> NoiseModule<Point4<T>, T> for Checkerboard {
 }
 
 fn calculate_checkerboard<T: Float>(point: &[T], size: usize) -> T {
-    let result = point.iter()
+    let result = point
+        .iter()
         .map(|&a| fast_floor(a))
         .fold(0, |a, b| (a & size) ^ (b & size));
 

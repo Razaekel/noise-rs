@@ -29,8 +29,9 @@ impl<'a, T, U> Add<'a, T, U> {
 }
 
 impl<'a, T, U> NoiseModule<T, U> for Add<'a, T, U>
-    where T: Copy, 
-          U: Float,
+where
+    T: Copy,
+    U: Float,
 {
     fn get(&self, point: T) -> U {
         self.source1.get(point) + self.source2.get(point)

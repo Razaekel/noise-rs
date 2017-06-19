@@ -36,12 +36,14 @@ pub struct Select<'a, T: 'a, U: 'a> {
 }
 
 impl<'a, T, U> Select<'a, T, U>
-    where U: Float,
+where
+    U: Float,
 {
-    pub fn new(source1: &'a NoiseModule<T, U>,
-               source2: &'a NoiseModule<T, U>,
-               control: &'a NoiseModule<T, U>)
-               -> Select<'a, T, U> {
+    pub fn new(
+        source1: &'a NoiseModule<T, U>,
+        source2: &'a NoiseModule<T, U>,
+        control: &'a NoiseModule<T, U>,
+    ) -> Select<'a, T, U> {
         Select {
             source1: source1,
             source2: source2,
@@ -61,13 +63,17 @@ impl<'a, T, U> Select<'a, T, U>
     }
 
     pub fn set_edge_falloff(self, falloff: U) -> Select<'a, T, U> {
-        Select { edge_falloff: falloff, ..self }
+        Select {
+            edge_falloff: falloff,
+            ..self
+        }
     }
 }
 
 impl<'a, T, U> NoiseModule<T, U> for Select<'a, T, U>
-    where T: Copy,
-          U: Float,
+where
+    T: Copy,
+    U: Float,
 {
     fn get(&self, point: T) -> U {
         let control_value = self.control.get(point);
@@ -81,7 +87,7 @@ impl<'a, T, U> NoiseModule<T, U> for Select<'a, T, U>
                     let lower_curve: U = self.lower_bound - self.edge_falloff;
                     let upper_curve: U = self.lower_bound + self.edge_falloff;
                     let alpha = interp::s_curve3((control_value - lower_curve) /
-                                                 (upper_curve - lower_curve));
+                                                     (upper_curve - lower_curve));
 
                     interp::linear(self.source1.get(point), self.source2.get(point), alpha)
                 },
@@ -92,7 +98,7 @@ impl<'a, T, U> NoiseModule<T, U> for Select<'a, T, U>
                     let lower_curve: U = self.upper_bound - self.edge_falloff;
                     let upper_curve: U = self.upper_bound + self.edge_falloff;
                     let alpha = interp::s_curve3((control_value - lower_curve) /
-                                                 (upper_curve - lower_curve));
+                                                     (upper_curve - lower_curve));
 
                     interp::linear(self.source2.get(point), self.source1.get(point), alpha)
                 },

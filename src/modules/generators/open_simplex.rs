@@ -71,10 +71,11 @@ impl Seedable for OpenSimplex {
 impl<T: Float> NoiseModule<Point2<T>, T> for OpenSimplex {
     fn get(&self, point: Point2<T>) -> T {
         #[inline(always)]
-        fn gradient<T: Float>(perm_table: &PermutationTable,
-                              vertex: math::Point2<T>,
-                              pos: math::Point2<T>)
-                              -> T {
+        fn gradient<T: Float>(
+            perm_table: &PermutationTable,
+            vertex: math::Point2<T>,
+            pos: math::Point2<T>,
+        ) -> T {
             let zero = T::zero();
             let attn = math::cast::<_, T>(2.0_f64) - math::dot2(pos, pos);
             if attn > zero {
@@ -162,10 +163,11 @@ impl<T: Float> NoiseModule<Point2<T>, T> for OpenSimplex {
 impl<T: Float> NoiseModule<Point3<T>, T> for OpenSimplex {
     fn get(&self, point: Point3<T>) -> T {
         #[inline(always)]
-        fn gradient<T: Float>(perm_table: &PermutationTable,
-                              vertex: math::Point3<T>,
-                              pos: math::Point3<T>)
-                              -> T {
+        fn gradient<T: Float>(
+            perm_table: &PermutationTable,
+            vertex: math::Point3<T>,
+            pos: math::Point3<T>,
+        ) -> T {
             let zero = T::zero();
             let attn = math::cast::<_, T>(2.0_f64) - math::dot3(pos, pos);
             if attn > zero {
@@ -307,10 +309,11 @@ impl<T: Float> NoiseModule<Point3<T>, T> for OpenSimplex {
 impl<T: Float> NoiseModule<Point4<T>, T> for OpenSimplex {
     fn get(&self, point: Point4<T>) -> T {
         #[inline(always)]
-        fn gradient<T: Float>(perm_table: &PermutationTable,
-                              vertex: math::Point4<T>,
-                              pos: math::Point4<T>)
-                              -> T {
+        fn gradient<T: Float>(
+            perm_table: &PermutationTable,
+            vertex: math::Point4<T>,
+            pos: math::Point4<T>,
+        ) -> T {
             let zero = T::zero();
             let attn = math::cast::<_, T>(2.0_f64) - math::dot4(pos, pos);
             if attn > zero {
@@ -365,11 +368,15 @@ impl<T: Float> NoiseModule<Point4<T>, T> for OpenSimplex {
             let pos1;
             {
                 let vertex = math::add4(stretched_floor, [one, zero, zero, zero]);
-                pos1 = math::sub4(pos0,
-                                  [one + squish_constant,
-                                   squish_constant,
-                                   squish_constant,
-                                   squish_constant]);
+                pos1 = math::sub4(
+                    pos0,
+                    [
+                        one + squish_constant,
+                        squish_constant,
+                        squish_constant,
+                        squish_constant,
+                    ],
+                );
                 value = value + gradient(&self.perm_table, vertex, pos1);
             }
 
@@ -404,11 +411,15 @@ impl<T: Float> NoiseModule<Point4<T>, T> for OpenSimplex {
             let pos4;
             {
                 let vertex = math::add4(stretched_floor, [one, one, one, zero]);
-                pos4 = math::sub4(pos0,
-                                  [one + squish_constant_3,
-                                   one + squish_constant_3,
-                                   one + squish_constant_3,
-                                   squish_constant_3]);
+                pos4 = math::sub4(
+                    pos0,
+                    [
+                        one + squish_constant_3,
+                        one + squish_constant_3,
+                        one + squish_constant_3,
+                        squish_constant_3,
+                    ],
+                );
                 value = value + gradient(&self.perm_table, vertex, pos4);
             }
 
@@ -452,11 +463,15 @@ impl<T: Float> NoiseModule<Point4<T>, T> for OpenSimplex {
             let pos1;
             {
                 let vertex = math::add4(stretched_floor, [one, zero, zero, zero]);
-                pos1 = math::sub4(pos0,
-                                  [one + squish_constant,
-                                   squish_constant,
-                                   squish_constant,
-                                   squish_constant]);
+                pos1 = math::sub4(
+                    pos0,
+                    [
+                        one + squish_constant,
+                        squish_constant,
+                        squish_constant,
+                        squish_constant,
+                    ],
+                );
                 value = value + gradient(&self.perm_table, vertex, pos1);
             }
 
@@ -488,10 +503,12 @@ impl<T: Float> NoiseModule<Point4<T>, T> for OpenSimplex {
             let pos5;
             {
                 let vertex = math::add4(stretched_floor, [one, one, zero, zero]);
-                pos5 = [pos1[0] - squish_constant,
-                        pos2[1] - squish_constant,
-                        pos1[2] - squish_constant,
-                        pos1[3] - squish_constant];
+                pos5 = [
+                    pos1[0] - squish_constant,
+                    pos2[1] - squish_constant,
+                    pos1[2] - squish_constant,
+                    pos1[3] - squish_constant,
+                ];
                 value = value + gradient(&self.perm_table, vertex, pos5);
             }
 
@@ -542,11 +559,15 @@ impl<T: Float> NoiseModule<Point4<T>, T> for OpenSimplex {
             let pos4;
             {
                 let vertex = math::add4(stretched_floor, [one, one, one, zero]);
-                pos4 = math::sub4(pos0,
-                                  [one + squish_constant_3,
-                                   one + squish_constant_3,
-                                   one + squish_constant_3,
-                                   squish_constant_3]);
+                pos4 = math::sub4(
+                    pos0,
+                    [
+                        one + squish_constant_3,
+                        one + squish_constant_3,
+                        one + squish_constant_3,
+                        squish_constant_3,
+                    ],
+                );
                 value = value + gradient(&self.perm_table, vertex, pos4);
             }
 
@@ -578,10 +599,12 @@ impl<T: Float> NoiseModule<Point4<T>, T> for OpenSimplex {
             let pos5;
             {
                 let vertex = math::add4(stretched_floor, [one, one, zero, zero]);
-                pos5 = [pos4[0] + squish_constant,
-                        pos4[1] + squish_constant,
-                        pos3[2] + squish_constant,
-                        pos4[3] + squish_constant];
+                pos5 = [
+                    pos4[0] + squish_constant,
+                    pos4[1] + squish_constant,
+                    pos3[2] + squish_constant,
+                    pos4[3] + squish_constant,
+                ];
                 value = value + gradient(&self.perm_table, vertex, pos5);
             }
 

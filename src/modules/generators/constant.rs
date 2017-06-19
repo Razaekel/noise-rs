@@ -29,8 +29,9 @@ impl<T: Float> Constant<T> {
 }
 
 impl<T, U> NoiseModule<T, U> for Constant<U>
-    where T: Copy,
-          U: Float,
+where
+    T: Copy,
+    U: Float,
 {
     fn get(&self, _point: T) -> U {
         self.value

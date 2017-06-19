@@ -38,7 +38,8 @@ struct ControlPoint<T> {
 }
 
 impl<'a, T, U> Curve<'a, T, U>
-    where U: Float,
+where
+    U: Float,
 {
     pub fn new(source: &'a NoiseModule<T, U>) -> Curve<'a, T, U> {
         Curve {
@@ -71,7 +72,8 @@ impl<'a, T, U> Curve<'a, T, U>
 }
 
 impl<'a, T, U> NoiseModule<T, U> for Curve<'a, T, U>
-    where U: Float,
+where
+    U: Float,
 {
     fn get(&self, point: T) -> U {
         // confirm that there's at least 4 control points in the vector.

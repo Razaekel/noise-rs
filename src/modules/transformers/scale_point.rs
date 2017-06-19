@@ -37,7 +37,8 @@ pub struct ScalePoint<Source, T> {
 }
 
 impl<Source, T> ScalePoint<Source, T>
-    where T: Float,
+where
+    T: Float,
 {
     pub fn new(source: Source) -> ScalePoint<Source, T> {
         ScalePoint {
@@ -52,25 +53,37 @@ impl<Source, T> ScalePoint<Source, T>
     /// Sets the scaling factor to apply to the _x_ coordinate of the input
     /// value.
     pub fn set_x_scale(self, x_scale: T) -> ScalePoint<Source, T> {
-        ScalePoint { x_scale: x_scale, ..self }
+        ScalePoint {
+            x_scale: x_scale,
+            ..self
+        }
     }
 
     /// Sets the scaling factor to apply to the _x_ coordinate of the input
     /// value.
     pub fn set_y_scale(self, y_scale: T) -> ScalePoint<Source, T> {
-        ScalePoint { y_scale: y_scale, ..self }
+        ScalePoint {
+            y_scale: y_scale,
+            ..self
+        }
     }
 
     /// Sets the scaling factor to apply to the _x_ coordinate of the input
     /// value.
     pub fn set_z_scale(self, z_scale: T) -> ScalePoint<Source, T> {
-        ScalePoint { z_scale: z_scale, ..self }
+        ScalePoint {
+            z_scale: z_scale,
+            ..self
+        }
     }
 
     /// Sets the scaling factor to apply to the _x_ coordinate of the input
     /// value.
     pub fn set_u_scale(self, u_scale: T) -> ScalePoint<Source, T> {
-        ScalePoint { u_scale: u_scale, ..self }
+        ScalePoint {
+            u_scale: u_scale,
+            ..self
+        }
     }
 
     /// Sets the scaling factor to apply to all coordinates of the input value.
@@ -86,12 +99,13 @@ impl<Source, T> ScalePoint<Source, T>
 
     /// Sets the individual scaling factors to apply to each coordinate of the
     /// input value.
-    pub fn set_all_scales(self,
-                          x_scale: T,
-                          y_scale: T,
-                          z_scale: T,
-                          u_scale: T)
-                          -> ScalePoint<Source, T> {
+    pub fn set_all_scales(
+        self,
+        x_scale: T,
+        y_scale: T,
+        z_scale: T,
+        u_scale: T,
+    ) -> ScalePoint<Source, T> {
         ScalePoint {
             x_scale: x_scale,
             y_scale: y_scale,
@@ -103,32 +117,46 @@ impl<Source, T> ScalePoint<Source, T>
 }
 
 impl<Source, T> NoiseModule<Point2<T>, T> for ScalePoint<Source, T>
-    where Source: NoiseModule<Point2<T>, T>,
-          T: Float,
+where
+    Source: NoiseModule<Point2<T>, T>,
+    T: Float,
 {
     fn get(&self, point: Point2<T>) -> T {
-        self.source.get([point[0] * self.x_scale, point[1] * self.y_scale])
+        self.source
+            .get([point[0] * self.x_scale, point[1] * self.y_scale])
     }
 }
 
 impl<Source, T> NoiseModule<Point3<T>, T> for ScalePoint<Source, T>
-    where Source: NoiseModule<Point3<T>, T>,
-          T: Float,
+where
+    Source: NoiseModule<Point3<T>, T>,
+    T: Float,
 {
     fn get(&self, point: Point3<T>) -> T {
 
-        self.source.get([point[0] * self.x_scale, point[1] * self.y_scale, point[2] * self.z_scale])
+        self.source.get(
+            [
+                point[0] * self.x_scale,
+                point[1] * self.y_scale,
+                point[2] * self.z_scale,
+            ],
+        )
     }
 }
 
 impl<Source, T> NoiseModule<Point4<T>, T> for ScalePoint<Source, T>
-    where Source: NoiseModule<Point4<T>, T>,
-          T: Float,
+where
+    Source: NoiseModule<Point4<T>, T>,
+    T: Float,
 {
     fn get(&self, point: Point4<T>) -> T {
-        self.source.get([point[0] * self.x_scale,
-                         point[1] * self.y_scale,
-                         point[2] * self.z_scale,
-                         point[3] * self.u_scale])
+        self.source.get(
+            [
+                point[0] * self.x_scale,
+                point[1] * self.y_scale,
+                point[2] * self.z_scale,
+                point[3] * self.u_scale,
+            ],
+        )
     }
 }

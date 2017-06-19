@@ -96,7 +96,10 @@ impl<T: Float> RidgedMulti<T> {
     }
 
     pub fn set_attenuation(self, attenuation: T) -> RidgedMulti<T> {
-        RidgedMulti { attenuation: attenuation, ..self }
+        RidgedMulti {
+            attenuation: attenuation,
+            ..self
+        }
     }
 }
 
@@ -117,15 +120,24 @@ impl<T> MultiFractal<T> for RidgedMulti<T> {
     }
 
     fn set_frequency(self, frequency: T) -> RidgedMulti<T> {
-        RidgedMulti { frequency: frequency, ..self }
+        RidgedMulti {
+            frequency: frequency,
+            ..self
+        }
     }
 
     fn set_lacunarity(self, lacunarity: T) -> RidgedMulti<T> {
-        RidgedMulti { lacunarity: lacunarity, ..self }
+        RidgedMulti {
+            lacunarity: lacunarity,
+            ..self
+        }
     }
 
     fn set_persistence(self, persistence: T) -> RidgedMulti<T> {
-        RidgedMulti { persistence: persistence, ..self }
+        RidgedMulti {
+            persistence: persistence,
+            ..self
+        }
     }
 }
 

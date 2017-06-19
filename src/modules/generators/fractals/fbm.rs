@@ -104,15 +104,24 @@ impl<T> MultiFractal<T> for Fbm<T> {
     }
 
     fn set_frequency(self, frequency: T) -> Fbm<T> {
-        Fbm { frequency: frequency, ..self }
+        Fbm {
+            frequency: frequency,
+            ..self
+        }
     }
 
     fn set_lacunarity(self, lacunarity: T) -> Fbm<T> {
-        Fbm { lacunarity: lacunarity, ..self }
+        Fbm {
+            lacunarity: lacunarity,
+            ..self
+        }
     }
 
     fn set_persistence(self, persistence: T) -> Fbm<T> {
-        Fbm { persistence: persistence, ..self }
+        Fbm {
+            persistence: persistence,
+            ..self
+        }
     }
 }
 

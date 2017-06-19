@@ -37,7 +37,8 @@ pub struct TranslatePoint<Source, T> {
 }
 
 impl<Source, T> TranslatePoint<Source, T>
-    where T: Float,
+where
+    T: Float,
 {
     pub fn new(source: Source) -> TranslatePoint<Source, T> {
         TranslatePoint {
@@ -52,25 +53,37 @@ impl<Source, T> TranslatePoint<Source, T>
     /// Sets the scaling factor to apply to the _x_ coordinate of the input
     /// value.
     pub fn set_x_translation(self, x_translation: T) -> TranslatePoint<Source, T> {
-        TranslatePoint { x_translation: x_translation, ..self }
+        TranslatePoint {
+            x_translation: x_translation,
+            ..self
+        }
     }
 
     /// Sets the scaling factor to apply to the _x_ coordinate of the input
     /// value.
     pub fn set_y_translation(self, y_translation: T) -> TranslatePoint<Source, T> {
-        TranslatePoint { y_translation: y_translation, ..self }
+        TranslatePoint {
+            y_translation: y_translation,
+            ..self
+        }
     }
 
     /// Sets the scaling factor to apply to the _x_ coordinate of the input
     /// value.
     pub fn set_z_translation(self, z_translation: T) -> TranslatePoint<Source, T> {
-        TranslatePoint { z_translation: z_translation, ..self }
+        TranslatePoint {
+            z_translation: z_translation,
+            ..self
+        }
     }
 
     /// Sets the scaling factor to apply to the _x_ coordinate of the input
     /// value.
     pub fn set_u_translation(self, u_translation: T) -> TranslatePoint<Source, T> {
-        TranslatePoint { u_translation: u_translation, ..self }
+        TranslatePoint {
+            u_translation: u_translation,
+            ..self
+        }
     }
 
     /// Sets the translation amount to apply to all coordinates of the input value.
@@ -86,12 +99,13 @@ impl<Source, T> TranslatePoint<Source, T>
 
     /// Sets the individual translation amounts to apply to each coordinate of
     /// the input value.
-    pub fn set_all_translations(self,
-                                x_translation: T,
-                                y_translation: T,
-                                z_translation: T,
-                                u_translation: T)
-                                -> TranslatePoint<Source, T> {
+    pub fn set_all_translations(
+        self,
+        x_translation: T,
+        y_translation: T,
+        z_translation: T,
+        u_translation: T,
+    ) -> TranslatePoint<Source, T> {
         TranslatePoint {
             x_translation: x_translation,
             y_translation: y_translation,
@@ -103,34 +117,46 @@ impl<Source, T> TranslatePoint<Source, T>
 }
 
 impl<Source, T> NoiseModule<Point2<T>, T> for TranslatePoint<Source, T>
-    where Source: NoiseModule<Point2<T>, T>,
-          T: Float,
+where
+    Source: NoiseModule<Point2<T>, T>,
+    T: Float,
 {
     fn get(&self, point: Point2<T>) -> T {
-        self.source.get([point[0] + self.x_translation, point[1] + self.y_translation])
+        self.source
+            .get([point[0] + self.x_translation, point[1] + self.y_translation])
     }
 }
 
 impl<Source, T> NoiseModule<Point3<T>, T> for TranslatePoint<Source, T>
-    where Source: NoiseModule<Point3<T>, T>,
-          T: Float,
+where
+    Source: NoiseModule<Point3<T>, T>,
+    T: Float,
 {
     fn get(&self, point: Point3<T>) -> T {
 
-        self.source.get([point[0] + self.x_translation,
-                         point[1] + self.y_translation,
-                         point[2] + self.z_translation])
+        self.source.get(
+            [
+                point[0] + self.x_translation,
+                point[1] + self.y_translation,
+                point[2] + self.z_translation,
+            ],
+        )
     }
 }
 
 impl<Source, T> NoiseModule<Point4<T>, T> for TranslatePoint<Source, T>
-    where Source: NoiseModule<Point4<T>, T>,
-          T: Float,
+where
+    Source: NoiseModule<Point4<T>, T>,
+    T: Float,
 {
     fn get(&self, point: Point4<T>) -> T {
-        self.source.get([point[0] + self.x_translation,
-                         point[1] + self.y_translation,
-                         point[2] + self.z_translation,
-                         point[3] + self.u_translation])
+        self.source.get(
+            [
+                point[0] + self.x_translation,
+                point[1] + self.y_translation,
+                point[2] + self.z_translation,
+                point[3] + self.u_translation,
+            ],
+        )
     }
 }

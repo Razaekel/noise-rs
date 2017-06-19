@@ -48,7 +48,8 @@ pub struct Worley<T> {
 }
 
 impl<T> Worley<T>
-    where T: Float,
+where
+    T: Float,
 {
     pub fn new() -> Worley<T> {
         Worley {
@@ -63,22 +64,34 @@ impl<T> Worley<T>
 
     /// Sets the range function used by the Worley cells.
     pub fn set_range_function(self, range_function: RangeFunction) -> Worley<T> {
-        Worley { range_function: range_function, ..self }
+        Worley {
+            range_function: range_function,
+            ..self
+        }
     }
 
     /// Enables or disables applying the distance from the nearest seed point
     /// to the output value.
     pub fn enable_range(self, enable_range: bool) -> Worley<T> {
-        Worley { enable_range: enable_range, ..self }
+        Worley {
+            enable_range: enable_range,
+            ..self
+        }
     }
 
     /// Sets the frequency of the seed points.
     pub fn set_frequency(self, frequency: T) -> Worley<T> {
-        Worley { frequency: frequency, ..self }
+        Worley {
+            frequency: frequency,
+            ..self
+        }
     }
 
     pub fn set_displacement(self, displacement: T) -> Worley<T> {
-        Worley { displacement: displacement, ..self }
+        Worley {
+            displacement: displacement,
+            ..self
+        }
     }
 }
 
@@ -167,10 +180,7 @@ fn range_chebyshev<T: Float>(p1: &[T], p2: &[T]) -> T {
 }
 
 fn range_quadratic<T: Float>(p1: &[T], p2: &[T]) -> T {
-    let temp: Vec<T> = p1.iter()
-        .zip(p2.iter())
-        .map(|(a, b)| *a - *b)
-        .collect();
+    let temp: Vec<T> = p1.iter().zip(p2.iter()).map(|(a, b)| *a - *b).collect();
 
     let length = temp.len();
     let mut result = T::zero();
@@ -243,7 +253,7 @@ impl<T: Float> NoiseModule<Point2<T>, T> for Worley<T> {
             value = range;
         } else {
             value = self.displacement * math::cast::<_, T>(self.perm_table.get2(seed_cell)) *
-                    math::cast(1.0 / 255.0);
+                math::cast(1.0 / 255.0);
         }
 
         value * math::cast(2.0) - T::one()
@@ -273,9 +283,7 @@ fn get_vec2<T: Float>(index: usize) -> Point2<T> {
 impl<T: Float> NoiseModule<Point3<T>, T> for Worley<T> {
     fn get(&self, point: Point3<T>) -> T {
         #[inline(always)]
-        fn get_point<T: Float>(perm_table: &PermutationTable,
-                               whole: math::Point3<i64>)
-                               -> Point3<T> {
+        fn get_point<T: Float>(perm_table: &PermutationTable, whole: Point3<i64>) -> Point3<T> {
             math::add3(get_vec3(perm_table.get3(whole)), math::cast3::<_, T>(whole))
         }
 
@@ -291,10 +299,16 @@ impl<T: Float> NoiseModule<Point3<T>, T> for Worley<T> {
         let y_half = frac[1] > half;
         let z_half = frac[2] > half;
 
-        let near =
-            [whole[0] + (x_half as i64), whole[1] + (y_half as i64), whole[2] + (z_half as i64)];
-        let far =
-            [whole[0] + (!x_half as i64), whole[1] + (!y_half as i64), whole[2] + (!z_half as i64)];
+        let near = [
+            whole[0] + (x_half as i64),
+            whole[1] + (y_half as i64),
+            whole[2] + (z_half as i64),
+        ];
+        let far = [
+            whole[0] + (!x_half as i64),
+            whole[1] + (!y_half as i64),
+            whole[2] + (!z_half as i64),
+        ];
 
         let mut seed_cell = near;
         let seed_point = get_point(&self.perm_table, near);
@@ -347,7 +361,7 @@ impl<T: Float> NoiseModule<Point3<T>, T> for Worley<T> {
             value = range;
         } else {
             value = self.displacement * math::cast::<_, T>(self.perm_table.get3(seed_cell)) *
-                    math::cast(1.0 / 255.0);
+                math::cast(1.0 / 255.0);
         }
 
         value * math::cast(2.0) - T::one()
@@ -404,14 +418,18 @@ impl<T: Float> NoiseModule<Point4<T>, T> for Worley<T> {
         let z_half = frac[2] > half;
         let w_half = frac[3] > half;
 
-        let near = [whole[0] + (x_half as i64),
-                    whole[1] + (y_half as i64),
-                    whole[2] + (z_half as i64),
-                    whole[3] + (w_half as i64)];
-        let far = [whole[0] + (!x_half as i64),
-                   whole[1] + (!y_half as i64),
-                   whole[2] + (!z_half as i64),
-                   whole[3] + (!w_half as i64)];
+        let near = [
+            whole[0] + (x_half as i64),
+            whole[1] + (y_half as i64),
+            whole[2] + (z_half as i64),
+            whole[3] + (w_half as i64),
+        ];
+        let far = [
+            whole[0] + (!x_half as i64),
+            whole[1] + (!y_half as i64),
+            whole[2] + (!z_half as i64),
+            whole[3] + (!w_half as i64),
+        ];
 
         let mut seed_cell = near;
         let seed_point = get_point(&self.perm_table, near);

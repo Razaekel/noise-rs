@@ -46,8 +46,9 @@ pub type Vector4<T> = [T; 4];
 
 #[inline]
 pub fn map2<T, U, F>(a: Vector2<T>, f: F) -> Vector2<U>
-    where T: Copy,
-          F: Fn(T) -> U,
+where
+    T: Copy,
+    F: Fn(T) -> U,
 {
     let (ax, ay) = (a[0], a[1]);
     [f(ax), f(ay)]
@@ -55,8 +56,9 @@ pub fn map2<T, U, F>(a: Vector2<T>, f: F) -> Vector2<U>
 
 #[inline]
 pub fn map3<T, U, F>(a: Vector3<T>, f: F) -> Vector3<U>
-    where T: Copy,
-          F: Fn(T) -> U,
+where
+    T: Copy,
+    F: Fn(T) -> U,
 {
     let (ax, ay, az) = (a[0], a[1], a[2]);
     [f(ax), f(ay), f(az)]
@@ -64,8 +66,9 @@ pub fn map3<T, U, F>(a: Vector3<T>, f: F) -> Vector3<U>
 
 #[inline]
 pub fn map4<T, U, F>(a: Vector4<T>, f: F) -> Vector4<U>
-    where T: Copy,
-          F: Fn(T) -> U,
+where
+    T: Copy,
+    F: Fn(T) -> U,
 {
     let (ax, ay, az, aw) = (a[0], a[1], a[2], a[3]);
     [f(ax), f(ay), f(az), f(aw)]
@@ -73,9 +76,10 @@ pub fn map4<T, U, F>(a: Vector4<T>, f: F) -> Vector4<U>
 
 #[inline]
 pub fn zip_with2<T, U, V, F>(a: Vector2<T>, b: Vector2<U>, f: F) -> Vector2<V>
-    where T: Copy,
-          U: Copy,
-          F: Fn(T, U) -> V,
+where
+    T: Copy,
+    U: Copy,
+    F: Fn(T, U) -> V,
 {
     let (ax, ay) = (a[0], a[1]);
     let (bx, by) = (b[0], b[1]);
@@ -84,9 +88,10 @@ pub fn zip_with2<T, U, V, F>(a: Vector2<T>, b: Vector2<U>, f: F) -> Vector2<V>
 
 #[inline]
 pub fn zip_with3<T, U, V, F>(a: Vector3<T>, b: Vector3<U>, f: F) -> Vector3<V>
-    where T: Copy,
-          U: Copy,
-          F: Fn(T, U) -> V,
+where
+    T: Copy,
+    U: Copy,
+    F: Fn(T, U) -> V,
 {
     let (ax, ay, az) = (a[0], a[1], a[2]);
     let (bx, by, bz) = (b[0], b[1], b[2]);
@@ -95,9 +100,10 @@ pub fn zip_with3<T, U, V, F>(a: Vector3<T>, b: Vector3<U>, f: F) -> Vector3<V>
 
 #[inline]
 pub fn zip_with4<T, U, V, F>(a: Vector4<T>, b: Vector4<U>, f: F) -> Vector4<V>
-    where T: Copy,
-          U: Copy,
-          F: Fn(T, U) -> V,
+where
+    T: Copy,
+    U: Copy,
+    F: Fn(T, U) -> V,
 {
     let (ax, ay, az, aw) = (a[0], a[1], a[2], a[3]);
     let (bx, by, bz, bw) = (b[0], b[1], b[2], b[3]);
@@ -106,8 +112,9 @@ pub fn zip_with4<T, U, V, F>(a: Vector4<T>, b: Vector4<U>, f: F) -> Vector4<V>
 
 #[inline]
 pub fn fold2<T, F>(a: Vector2<T>, f: F) -> T
-    where T: Copy,
-          F: Fn(T, T) -> T,
+where
+    T: Copy,
+    F: Fn(T, T) -> T,
 {
     let (ax, ay) = (a[0], a[1]);
     f(ax, ay)
@@ -115,8 +122,9 @@ pub fn fold2<T, F>(a: Vector2<T>, f: F) -> T
 
 #[inline]
 pub fn fold3<T, F>(a: Vector3<T>, f: F) -> T
-    where T: Copy,
-          F: Fn(T, T) -> T,
+where
+    T: Copy,
+    F: Fn(T, T) -> T,
 {
     let (ax, ay, az) = (a[0], a[1], a[2]);
     f(f(ax, ay), az)
@@ -124,8 +132,9 @@ pub fn fold3<T, F>(a: Vector3<T>, f: F) -> T
 
 #[inline]
 pub fn fold4<T, F>(a: Vector4<T>, f: F) -> T
-    where T: Copy,
-          F: Fn(T, T) -> T,
+where
+    T: Copy,
+    F: Fn(T, T) -> T,
 {
     let (ax, ay, az, aw) = (a[0], a[1], a[2], a[3]);
     f(f(f(ax, ay), az), aw)
@@ -133,63 +142,72 @@ pub fn fold4<T, F>(a: Vector4<T>, f: F) -> T
 
 #[inline]
 pub fn add2<T>(a: Point2<T>, b: Vector2<T>) -> Point2<T>
-    where T: Copy + Add<T, Output = T>,
+where
+    T: Copy + Add<T, Output = T>,
 {
     zip_with2(a, b, Add::add)
 }
 
 #[inline]
 pub fn add3<T>(a: Point3<T>, b: Vector3<T>) -> Point3<T>
-    where T: Copy + Add<T, Output = T>,
+where
+    T: Copy + Add<T, Output = T>,
 {
     zip_with3(a, b, Add::add)
 }
 
 #[inline]
 pub fn add4<T>(a: Point4<T>, b: Vector4<T>) -> Point4<T>
-    where T: Copy + Add<T, Output = T>,
+where
+    T: Copy + Add<T, Output = T>,
 {
     zip_with4(a, b, Add::add)
 }
 
 #[inline]
 pub fn sub2<T>(a: Point2<T>, b: Point2<T>) -> Vector2<T>
-    where T: Copy + Sub<T, Output = T>,
+where
+    T: Copy + Sub<T, Output = T>,
 {
     zip_with2(a, b, Sub::sub)
 }
 
 #[inline]
 pub fn sub3<T>(a: Point3<T>, b: Point3<T>) -> Vector3<T>
-    where T: Copy + Sub<T, Output = T>,
+where
+    T: Copy + Sub<T, Output = T>,
 {
     zip_with3(a, b, Sub::sub)
 }
 
 #[inline]
 pub fn sub4<T>(a: Point4<T>, b: Point4<T>) -> Vector4<T>
-    where T: Copy + Sub<T, Output = T>,
+where
+    T: Copy + Sub<T, Output = T>,
 {
     zip_with4(a, b, Sub::sub)
 }
 
 #[inline]
 pub fn mul2<T>(a: Vector2<T>, b: T) -> Vector2<T>
-    where T: Copy + Mul<T, Output = T>,
+where
+    T: Copy + Mul<T, Output = T>,
 {
     zip_with2(a, const2(b), Mul::mul)
 }
 
 #[inline]
 pub fn mul3<T>(a: Vector3<T>, b: T) -> Vector3<T>
-    where T: Copy + Mul<T, Output = T>,
+where
+    T: Copy + Mul<T, Output = T>,
 {
     zip_with3(a, const3(b), Mul::mul)
 }
 
 #[inline]
 pub fn mul4<T>(a: Vector4<T>, b: T) -> Vector4<T>
-    where T: Copy + Mul<T, Output = T>,
+where
+    T: Copy + Mul<T, Output = T>,
 {
     zip_with4(a, const4(b), Mul::mul)
 }
@@ -241,24 +259,27 @@ pub fn one4<T: Copy + NumCast>() -> Vector4<T> {
 
 #[inline]
 pub fn cast2<T, U>(x: Point2<T>) -> Point2<U>
-    where T: NumCast + Copy,
-          U: NumCast + Copy,
+where
+    T: NumCast + Copy,
+    U: NumCast + Copy,
 {
     map2(x, cast)
 }
 
 #[inline]
 pub fn cast3<T, U>(x: Point3<T>) -> Point3<U>
-    where T: NumCast + Copy,
-          U: NumCast + Copy,
+where
+    T: NumCast + Copy,
+    U: NumCast + Copy,
 {
     map3(x, cast)
 }
 
 #[inline]
 pub fn cast4<T, U>(x: Point4<T>) -> Point4<U>
-    where T: NumCast + Copy,
-          U: NumCast + Copy,
+where
+    T: NumCast + Copy,
+    U: NumCast + Copy,
 {
     map4(x, cast)
 }

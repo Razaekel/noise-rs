@@ -14,7 +14,7 @@
 
 extern crate noise;
 
-use noise::{ScaleBias, Perlin};
+use noise::{Perlin, ScaleBias};
 
 mod debug;
 

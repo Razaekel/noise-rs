@@ -38,7 +38,7 @@ const NORM_CONSTANT_3D: f64 = 1.0 / 0.0867664001655369;
 //                        \     |
 //                          \   |
 //                           ( 1,  2)
-
+#[cfg_attr(rustfmt, rustfmt_skip)]
 const LATTICE_LOOKUP_2D: [([i8; 2], [f64; 2]); 4 * 8] =
     [([0, 0], [0f64, 0f64]),
      ([1, 1], [-0.577350269189626f64, -0.577350269189626f64]),
@@ -79,6 +79,7 @@ const LATTICE_LOOKUP_2D: [([i8; 2], [f64; 2]); 4 * 8] =
      ([1, 1], [-0.577350269189626f64, -0.577350269189626f64]),
      ([2, 1], [-1.366025403784439f64, -0.36602540378443904f64]),
      ([1, 2], [-0.36602540378443904f64, -1.366025403784439f64])];
+#[cfg_attr(rustfmt, rustfmt_skip)]
 const LATTICE_LOOKUP_3D: [[i8; 3]; 4 * 16] =
     [[0, 0, 0],[1, 0, 0],[0, 1, 0],[0, 0, 1],
      [1, 1, 1],[1, 0, 0],[0, 1, 0],[0, 0, 1],
@@ -157,8 +158,10 @@ impl<T: Float> NoiseModule<Point2<T>, T> for SuperSimplex {
         // Create index to lookup table from barycentric coordinates
         let region_sum = math::fold2(simplex_rel_coords, Add::add).floor();
         let index = ((region_sum >= one) as usize) << 2 |
-        ((simplex_rel_coords[0] - simplex_rel_coords[1] * one_half + one - region_sum * one_half >= one) as usize) << 3 |
-        ((simplex_rel_coords[1] - simplex_rel_coords[0] * one_half + one - region_sum * one_half >= one) as usize) << 4;
+            ((simplex_rel_coords[0] - simplex_rel_coords[1] * one_half + one -
+                  region_sum * one_half >= one) as usize) << 3 |
+            ((simplex_rel_coords[1] - simplex_rel_coords[0] * one_half + one -
+                  region_sum * one_half >= one) as usize) << 4;
 
         // Transform barycentric coordinates to real space
         let to_real_offset = math::fold2(simplex_rel_coords, Add::add) * to_real_constant;
@@ -207,14 +210,23 @@ impl<T: Float> NoiseModule<Point3<T>, T> for SuperSimplex {
         let second_simplex_rel_coords = math::sub3(second_simplex_point, second_simplex_base_point);
 
         // Create indices to lookup table from barycentric coordinates
-        let index = ((simplex_rel_coords[0] + simplex_rel_coords[1] + simplex_rel_coords[2] >= one_p_five) as usize) << 2 |
-        ((-simplex_rel_coords[0] + simplex_rel_coords[1] + simplex_rel_coords[2] >= one_half) as usize) << 3 |
-        ((simplex_rel_coords[0] - simplex_rel_coords[1] + simplex_rel_coords[2] >= one_half) as usize) << 4 |
-        ((simplex_rel_coords[0] + simplex_rel_coords[1] - simplex_rel_coords[2] >= one_half) as usize) << 5;
-        let second_index = ((second_simplex_rel_coords[0] + second_simplex_rel_coords[1] + second_simplex_rel_coords[2] >= one_p_five) as usize) << 2 |
-        ((-second_simplex_rel_coords[0] + second_simplex_rel_coords[1] + second_simplex_rel_coords[2] >= one_half) as usize) << 3 |
-        ((second_simplex_rel_coords[0] - second_simplex_rel_coords[1] + second_simplex_rel_coords[2] >= one_half) as usize) << 4 |
-        ((second_simplex_rel_coords[0] + second_simplex_rel_coords[1] - second_simplex_rel_coords[2] >= one_half) as usize) << 5;
+        let index = ((simplex_rel_coords[0] + simplex_rel_coords[1] +
+                          simplex_rel_coords[2] >= one_p_five) as usize) << 2 |
+            ((-simplex_rel_coords[0] + simplex_rel_coords[1] + simplex_rel_coords[2] >=
+                  one_half) as usize) << 3 |
+            ((simplex_rel_coords[0] - simplex_rel_coords[1] + simplex_rel_coords[2] >=
+                  one_half) as usize) << 4 |
+            ((simplex_rel_coords[0] + simplex_rel_coords[1] - simplex_rel_coords[2] >=
+                  one_half) as usize) << 5;
+        let second_index = ((second_simplex_rel_coords[0] + second_simplex_rel_coords[1] +
+                                 second_simplex_rel_coords[2] >=
+                                 one_p_five) as usize) << 2 |
+            ((-second_simplex_rel_coords[0] + second_simplex_rel_coords[1] +
+                  second_simplex_rel_coords[2] >= one_half) as usize) << 3 |
+            ((second_simplex_rel_coords[0] - second_simplex_rel_coords[1] +
+                  second_simplex_rel_coords[2] >= one_half) as usize) << 4 |
+            ((second_simplex_rel_coords[0] + second_simplex_rel_coords[1] -
+                  second_simplex_rel_coords[2] >= one_half) as usize) << 5;
 
         // Sum contributions from first lattice
         for &lattice_lookup in &LATTICE_LOOKUP_3D[index..index + 4] {
@@ -237,7 +249,8 @@ impl<T: Float> NoiseModule<Point3<T>, T> for SuperSimplex {
                 continue;
             }
 
-            let lattice_point = math::add3(second_simplex_base_point_i, math::cast3(lattice_lookup));
+            let lattice_point = math::add3(second_simplex_base_point_i,
+                                           math::cast3(lattice_lookup));
             let gradient = gradient::get3(self.perm_table.get3(lattice_point));
             value = value + math::pow4(attn) * math::dot3(gradient, dpos);
         }

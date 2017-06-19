@@ -27,7 +27,8 @@ pub struct Exponent<'a, T: 'a, U: 'a> {
 }
 
 impl<'a, T, U> Exponent<'a, T, U>
-    where U: Float,
+where
+    U: Float,
 {
     pub fn new(source: &'a NoiseModule<T, U>) -> Exponent<'a, T, U> {
         Exponent {
@@ -37,12 +38,16 @@ impl<'a, T, U> Exponent<'a, T, U>
     }
 
     pub fn set_exponent(self, exponent: U) -> Exponent<'a, T, U> {
-        Exponent { exponent: exponent, ..self }
+        Exponent {
+            exponent: exponent,
+            ..self
+        }
     }
 }
 
 impl<'a, T, U> NoiseModule<T, U> for Exponent<'a, T, U>
-    where U: Float,
+where
+    U: Float,
 {
     fn get(&self, point: T) -> U {
         let mut value = self.source.get(point);

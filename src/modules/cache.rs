@@ -26,7 +26,8 @@ use std::cell::{Cell, RefCell};
 /// noise module in which it is included.
 #[derive(Clone, Debug)]
 pub struct Cache<Source, T>
-    where T: Float,
+where
+    T: Float,
 {
     /// Outputs the value to be cached.
     pub source: Source,
@@ -37,7 +38,8 @@ pub struct Cache<Source, T>
 }
 
 impl<Source, T> Cache<Source, T>
-    where T: Float,
+where
+    T: Float,
 {
     pub fn new(source: Source) -> Cache<Source, T> {
         Cache {
@@ -49,8 +51,9 @@ impl<Source, T> Cache<Source, T>
 }
 
 impl<Source, T> NoiseModule<Point2<T>, T> for Cache<Source, T>
-    where Source: NoiseModule<Point2<T>, T>,
-          T: Float,
+where
+    Source: NoiseModule<Point2<T>, T>,
+    T: Float,
 {
     fn get(&self, point: Point2<T>) -> T {
         match self.value.get() {
@@ -70,8 +73,9 @@ impl<Source, T> NoiseModule<Point2<T>, T> for Cache<Source, T>
 }
 
 impl<Source, T> NoiseModule<Point3<T>, T> for Cache<Source, T>
-    where Source: NoiseModule<Point3<T>, T>,
-          T: Float,
+where
+    Source: NoiseModule<Point3<T>, T>,
+    T: Float,
 {
     fn get(&self, point: Point3<T>) -> T {
         match self.value.get() {
@@ -91,8 +95,9 @@ impl<Source, T> NoiseModule<Point3<T>, T> for Cache<Source, T>
 }
 
 impl<Source, T> NoiseModule<Point4<T>, T> for Cache<Source, T>
-    where Source: NoiseModule<Point4<T>, T>,
-          T: Float,
+where
+    Source: NoiseModule<Point4<T>, T>,
+    T: Float,
 {
     fn get(&self, point: Point4<T>) -> T {
         match self.value.get() {

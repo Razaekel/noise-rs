@@ -33,17 +33,15 @@ pub struct Displace<Source, XDisplace, YDisplace, ZDisplace, UDisplace> {
     pub u_displace: UDisplace,
 }
 
-impl<Source, XDisplace, YDisplace, ZDisplace, UDisplace> Displace<Source,
-                                                                  XDisplace,
-                                                                  YDisplace,
-                                                                  ZDisplace,
-                                                                  UDisplace> {
-    pub fn new(source: Source,
-               x_displace: XDisplace,
-               y_displace: YDisplace,
-               z_displace: ZDisplace,
-               u_displace: UDisplace)
-               -> Displace<Source, XDisplace, YDisplace, ZDisplace, UDisplace> {
+impl<Source, XDisplace, YDisplace, ZDisplace, UDisplace>
+    Displace<Source, XDisplace, YDisplace, ZDisplace, UDisplace> {
+    pub fn new(
+        source: Source,
+        x_displace: XDisplace,
+        y_displace: YDisplace,
+        z_displace: ZDisplace,
+        u_displace: UDisplace,
+    ) -> Displace<Source, XDisplace, YDisplace, ZDisplace, UDisplace> {
         Displace {
             source: source,
             x_displace: x_displace,

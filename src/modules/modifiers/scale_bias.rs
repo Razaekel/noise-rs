@@ -28,7 +28,8 @@ pub struct ScaleBias<'a, T: 'a, U: 'a> {
 }
 
 impl<'a, T, U> ScaleBias<'a, T, U>
-    where U: Float,
+where
+    U: Float,
 {
     pub fn new(source: &'a NoiseModule<T, U>) -> ScaleBias<'a, T, U> {
         ScaleBias {
@@ -39,7 +40,10 @@ impl<'a, T, U> ScaleBias<'a, T, U>
     }
 
     pub fn set_scale(self, scale: U) -> ScaleBias<'a, T, U> {
-        ScaleBias { scale: scale, ..self }
+        ScaleBias {
+            scale: scale,
+            ..self
+        }
     }
 
     pub fn set_bias(self, bias: U) -> ScaleBias<'a, T, U> {
@@ -48,7 +52,8 @@ impl<'a, T, U> ScaleBias<'a, T, U>
 }
 
 impl<'a, T, U> NoiseModule<T, U> for ScaleBias<'a, T, U>
-    where U: Float,
+where
+    U: Float,
 {
     fn get(&self, point: T) -> U {
         (self.source.get(point)).mul_add(self.scale, self.bias)

@@ -5,6 +5,7 @@
 // or http://opensource.org/licenses/MIT>, at your option. All files in the
 // project carrying such notice may not be copied, modified, or distributed
 // except according to those terms.
+
 use math;
 use math::{Point2, Point3, Point4};
 use modules::{MultiFractal, NoiseModule, Perlin, Seedable};
@@ -91,15 +92,24 @@ impl<T> MultiFractal<T> for HybridMulti<T> {
     }
 
     fn set_frequency(self, frequency: T) -> HybridMulti<T> {
-        HybridMulti { frequency: frequency, ..self }
+        HybridMulti {
+            frequency: frequency,
+            ..self
+        }
     }
 
     fn set_lacunarity(self, lacunarity: T) -> HybridMulti<T> {
-        HybridMulti { lacunarity: lacunarity, ..self }
+        HybridMulti {
+            lacunarity: lacunarity,
+            ..self
+        }
     }
 
     fn set_persistence(self, persistence: T) -> HybridMulti<T> {
-        HybridMulti { persistence: persistence, ..self }
+        HybridMulti {
+            persistence: persistence,
+            ..self
+        }
     }
 }
 
