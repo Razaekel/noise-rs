@@ -98,15 +98,24 @@ impl<T> MultiFractal<T> for BasicMulti<T> {
     }
 
     fn set_frequency(self, frequency: T) -> BasicMulti<T> {
-        BasicMulti { frequency: frequency, ..self }
+        BasicMulti {
+            frequency: frequency,
+            ..self
+        }
     }
 
     fn set_lacunarity(self, lacunarity: T) -> BasicMulti<T> {
-        BasicMulti { lacunarity: lacunarity, ..self }
+        BasicMulti {
+            lacunarity: lacunarity,
+            ..self
+        }
     }
 
     fn set_persistence(self, persistence: T) -> BasicMulti<T> {
-        BasicMulti { persistence: persistence, ..self }
+        BasicMulti {
+            persistence: persistence,
+            ..self
+        }
     }
 }
 

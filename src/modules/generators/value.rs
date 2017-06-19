@@ -8,7 +8,7 @@
 
 
 use math;
-use math::{interp, Point2, Point3, Point4};
+use math::{Point2, Point3, Point4, interp};
 use modules::{NoiseModule, Seedable};
 use num_traits::Float;
 use permutationtable::PermutationTable;
@@ -90,14 +90,22 @@ impl<T: Float> NoiseModule<Point3<T>, T> for Value {
         let far_corner = math::add3(near_corner, math::one3());
         let weight = math::map3(math::sub3(point, floored), interp::s_curve5);
 
-        let f000: T = get(&self.perm_table, [near_corner[0], near_corner[1], near_corner[2]]);
-        let f100: T = get(&self.perm_table, [far_corner[0], near_corner[1], near_corner[2]]);
-        let f010: T = get(&self.perm_table, [near_corner[0], far_corner[1], near_corner[2]]);
-        let f110: T = get(&self.perm_table, [far_corner[0], far_corner[1], near_corner[2]]);
-        let f001: T = get(&self.perm_table, [near_corner[0], near_corner[1], far_corner[2]]);
-        let f101: T = get(&self.perm_table, [far_corner[0], near_corner[1], far_corner[2]]);
-        let f011: T = get(&self.perm_table, [near_corner[0], far_corner[1], far_corner[2]]);
-        let f111: T = get(&self.perm_table, [far_corner[0], far_corner[1], far_corner[2]]);
+        let f000: T = get(&self.perm_table,
+                          [near_corner[0], near_corner[1], near_corner[2]]);
+        let f100: T = get(&self.perm_table,
+                          [far_corner[0], near_corner[1], near_corner[2]]);
+        let f010: T = get(&self.perm_table,
+                          [near_corner[0], far_corner[1], near_corner[2]]);
+        let f110: T = get(&self.perm_table,
+                          [far_corner[0], far_corner[1], near_corner[2]]);
+        let f001: T = get(&self.perm_table,
+                          [near_corner[0], near_corner[1], far_corner[2]]);
+        let f101: T = get(&self.perm_table,
+                          [far_corner[0], near_corner[1], far_corner[2]]);
+        let f011: T = get(&self.perm_table,
+                          [near_corner[0], far_corner[1], far_corner[2]]);
+        let f111: T = get(&self.perm_table,
+                          [far_corner[0], far_corner[1], far_corner[2]]);
 
         let d00 = interp::linear(f000, f100, weight[0]);
         let d01 = interp::linear(f001, f101, weight[0]);

@@ -20,7 +20,10 @@ pub struct Multiply<'a, T: 'a, U: 'a> {
 }
 
 impl<'a, T, U> Multiply<'a, T, U> {
-    pub fn new(source1: &'a NoiseModule<T, U>, source2: &'a NoiseModule<T, U>) -> Multiply<'a, T, U> {
+    pub fn new(
+        source1: &'a NoiseModule<T, U>,
+        source2: &'a NoiseModule<T, U>,
+    ) -> Multiply<'a, T, U> {
         Multiply {
             source1: source1,
             source2: source2,
@@ -29,8 +32,9 @@ impl<'a, T, U> Multiply<'a, T, U> {
 }
 
 impl<'a, T, U> NoiseModule<T, U> for Multiply<'a, T, U>
-    where T: Copy,
-          U: Float,
+where
+    T: Copy,
+    U: Float,
 {
     fn get(&self, point: T) -> U {
         self.source1.get(point) * self.source2.get(point)

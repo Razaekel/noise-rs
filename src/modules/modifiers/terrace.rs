@@ -46,7 +46,8 @@ pub struct Terrace<'a, T: 'a, U: 'a> {
 }
 
 impl<'a, T, U> Terrace<'a, T, U>
-    where U: Float,
+where
+    U: Float,
 {
     pub fn new(source: &'a NoiseModule<T, U>) -> Terrace<'a, T, U> {
         Terrace {
@@ -84,12 +85,16 @@ impl<'a, T, U> Terrace<'a, T, U>
     /// Enables or disables the inversion of the terrain-forming curve between
     /// the control points.
     pub fn invert_terraces(self, invert_terraces: bool) -> Terrace<'a, T, U> {
-        Terrace { invert_terraces: invert_terraces, ..self }
+        Terrace {
+            invert_terraces: invert_terraces,
+            ..self
+        }
     }
 }
 
 impl<'a, T, U> NoiseModule<T, U> for Terrace<'a, T, U>
-    where U: Float,
+where
+    U: Float,
 {
     fn get(&self, point: T) -> U {
         // confirm that there's at least 2 control points in the vector.

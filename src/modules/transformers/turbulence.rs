@@ -50,7 +50,8 @@ pub struct Turbulence<Source, T> {
 }
 
 impl<Source, T> Turbulence<Source, T>
-    where T: Float,
+where
+    T: Float,
 {
     pub fn new(source: Source) -> Turbulence<Source, T> {
         Turbulence {
@@ -90,7 +91,10 @@ impl<Source, T> Turbulence<Source, T>
     }
 
     pub fn set_power(self, power: T) -> Turbulence<Source, T> {
-        Turbulence { power: power, ..self }
+        Turbulence {
+            power: power,
+            ..self
+        }
     }
 
     pub fn set_roughness(self, roughness: usize) -> Turbulence<Source, T> {
@@ -123,8 +127,9 @@ impl<Source, T> Seedable for Turbulence<Source, T> {
 }
 
 impl<Source, T> NoiseModule<Point2<T>, T> for Turbulence<Source, T>
-    where Source: NoiseModule<Point2<T>, T>,
-          T: Float,
+where
+    Source: NoiseModule<Point2<T>, T>,
+    T: Float,
 {
     fn get(&self, point: Point2<T>) -> T {
         // First, create offsets based on the input values to keep the sampled
@@ -144,8 +149,9 @@ impl<Source, T> NoiseModule<Point2<T>, T> for Turbulence<Source, T>
 }
 
 impl<Source, T> NoiseModule<Point3<T>, T> for Turbulence<Source, T>
-    where Source: NoiseModule<Point3<T>, T>,
-          T: Float,
+where
+    Source: NoiseModule<Point3<T>, T>,
+    T: Float,
 {
     fn get(&self, point: Point3<T>) -> T {
         // First, create offsets based on the input values to keep the sampled
@@ -172,8 +178,9 @@ impl<Source, T> NoiseModule<Point3<T>, T> for Turbulence<Source, T>
 }
 
 impl<Source, T> NoiseModule<Point4<T>, T> for Turbulence<Source, T>
-    where Source: NoiseModule<Point4<T>, T>,
-          T: Float,
+where
+    Source: NoiseModule<Point4<T>, T>,
+    T: Float,
 {
     fn get(&self, point: Point4<T>) -> T {
         // First, create offsets based on the input values to keep the sampled
@@ -204,6 +211,7 @@ impl<Source, T> NoiseModule<Point4<T>, T> for Turbulence<Source, T>
         let z_distort = point[2] + (self.z_distort_module.get([x2, y2, z2, u2]) * self.power);
         let u_distort = point[3] + (self.u_distort_module.get([x3, y3, z3, u3]) * self.power);
 
-        self.source.get([x_distort, y_distort, z_distort, u_distort])
+        self.source
+            .get([x_distort, y_distort, z_distort, u_distort])
     }
 }

@@ -42,7 +42,8 @@ pub struct RotatePoint<Source, T> {
 }
 
 impl<Source, T> RotatePoint<Source, T>
-    where T: Float,
+where
+    T: Float,
 {
     pub fn new(source: Source) -> RotatePoint<Source, T> {
         RotatePoint {
@@ -57,35 +58,48 @@ impl<Source, T> RotatePoint<Source, T>
     /// Sets the rotation angle around the _x_ axis to apply to the input
     /// value.
     pub fn set_x_angle(self, x_angle: T) -> RotatePoint<Source, T> {
-        RotatePoint { x_angle: x_angle, ..self }
+        RotatePoint {
+            x_angle: x_angle,
+            ..self
+        }
     }
 
     /// Sets the rotation angle around the _y_ axis to apply to the input
     /// value.
     pub fn set_y_angle(self, y_angle: T) -> RotatePoint<Source, T> {
-        RotatePoint { y_angle: y_angle, ..self }
+        RotatePoint {
+            y_angle: y_angle,
+            ..self
+        }
     }
 
     /// Sets the rotation angle around the _z_ axis to apply to the input
     /// value.
     pub fn set_z_angle(self, z_angle: T) -> RotatePoint<Source, T> {
-        RotatePoint { z_angle: z_angle, ..self }
+        RotatePoint {
+            z_angle: z_angle,
+            ..self
+        }
     }
 
     /// Sets the rotation angle around the _u_ axis to apply to the input
     /// value.
     pub fn set_u_angle(self, u_angle: T) -> RotatePoint<Source, T> {
-        RotatePoint { u_angle: u_angle, ..self }
+        RotatePoint {
+            u_angle: u_angle,
+            ..self
+        }
     }
 
     /// Sets the rotation angles around all of the axes to apply to the input
     /// value.
-    pub fn set_angles(self,
-                      x_angle: T,
-                      y_angle: T,
-                      z_angle: T,
-                      u_angle: T)
-                      -> RotatePoint<Source, T> {
+    pub fn set_angles(
+        self,
+        x_angle: T,
+        y_angle: T,
+        z_angle: T,
+        u_angle: T,
+    ) -> RotatePoint<Source, T> {
         RotatePoint {
             x_angle: x_angle,
             y_angle: y_angle,
@@ -97,8 +111,9 @@ impl<Source, T> RotatePoint<Source, T>
 }
 
 impl<Source, T> NoiseModule<Point2<T>, T> for RotatePoint<Source, T>
-    where Source: NoiseModule<Point2<T>, T>,
-          T: Float,
+where
+    Source: NoiseModule<Point2<T>, T>,
+    T: Float,
 {
     fn get(&self, point: Point2<T>) -> T {
         // In two dimensions, the plane is _xy_, and we rotate around the
@@ -117,8 +132,9 @@ impl<Source, T> NoiseModule<Point2<T>, T> for RotatePoint<Source, T>
 }
 
 impl<Source, T> NoiseModule<Point3<T>, T> for RotatePoint<Source, T>
-    where Source: NoiseModule<Point3<T>, T>,
-          T: Float,
+where
+    Source: NoiseModule<Point3<T>, T>,
+    T: Float,
 {
     fn get(&self, point: Point3<T>) -> T {
         // In three dimensions, we could rotate around any of the x, y, or z
@@ -151,8 +167,9 @@ impl<Source, T> NoiseModule<Point3<T>, T> for RotatePoint<Source, T>
 }
 
 impl<Source, T> NoiseModule<Point4<T>, T> for RotatePoint<Source, T>
-    where Source: NoiseModule<Point4<T>, T>,
-          T: Float,
+where
+    Source: NoiseModule<Point4<T>, T>,
+    T: Float,
 {
     fn get(&self, _point: Point4<T>) -> T {
         // 4d rotations are hard.

@@ -29,8 +29,9 @@ impl<'a, T, U> Max<'a, T, U> {
 }
 
 impl<'a, T, U> NoiseModule<T, U> for Max<'a, T, U>
-    where T: Copy,
-          U: Float,
+where
+    T: Copy,
+    U: Float,
 {
     fn get(&self, point: T) -> U {
         (self.source1.get(point)).max(self.source2.get(point))

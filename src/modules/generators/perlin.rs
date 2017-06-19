@@ -54,10 +54,11 @@ impl Seedable for Perlin {
 impl<T: Float> NoiseModule<Point2<T>, T> for Perlin {
     fn get(&self, point: Point2<T>) -> T {
         #[inline(always)]
-        fn surflet<T: Float>(perm_table: &PermutationTable,
-                             corner: math::Point2<isize>,
-                             distance: math::Vector2<T>)
-                             -> T {
+        fn surflet<T: Float>(
+            perm_table: &PermutationTable,
+            corner: math::Point2<isize>,
+            distance: math::Vector2<T>,
+        ) -> T {
             let attn = T::one() - math::dot2(distance, distance);
             if attn > T::zero() {
                 math::pow4(attn) * math::dot2(distance, gradient::get2(perm_table.get2(corner)))
@@ -94,10 +95,11 @@ impl<T: Float> NoiseModule<Point2<T>, T> for Perlin {
 impl<T: Float> NoiseModule<Point3<T>, T> for Perlin {
     fn get(&self, point: Point3<T>) -> T {
         #[inline(always)]
-        fn surflet<T: Float>(perm_table: &PermutationTable,
-                             corner: math::Point3<isize>,
-                             distance: math::Vector3<T>)
-                             -> T {
+        fn surflet<T: Float>(
+            perm_table: &PermutationTable,
+            corner: math::Point3<isize>,
+            distance: math::Vector3<T>,
+        ) -> T {
             let attn = T::one() - math::dot3(distance, distance);
             if attn > T::zero() {
                 math::pow4(attn) * math::dot3(distance, gradient::get3(perm_table.get3(corner)))
@@ -146,10 +148,11 @@ impl<T: Float> NoiseModule<Point3<T>, T> for Perlin {
 impl<T: Float> NoiseModule<Point4<T>, T> for Perlin {
     fn get(&self, point: Point4<T>) -> T {
         #[inline(always)]
-        fn surflet<T: Float>(perm_table: &PermutationTable,
-                             corner: math::Point4<isize>,
-                             distance: math::Vector4<T>)
-                             -> T {
+        fn surflet<T: Float>(
+            perm_table: &PermutationTable,
+            corner: math::Point4<isize>,
+            distance: math::Vector4<T>,
+        ) -> T {
             let attn = T::one() - math::dot4(distance, distance);
             if attn > T::zero() {
                 math::pow4(attn) * math::dot4(distance, gradient::get4(perm_table.get4(corner)))
@@ -164,63 +167,195 @@ impl<T: Float> NoiseModule<Point4<T>, T> for Perlin {
         let near_distance = math::sub4(point, floored);
         let far_distance = math::sub4(near_distance, math::one4());
 
-        let f0000 =
-            surflet(&self.perm_table,
-                    [near_corner[0], near_corner[1], near_corner[2], near_corner[3]],
-                    [near_distance[0], near_distance[1], near_distance[2], near_distance[3]]);
-        let f1000 =
-            surflet(&self.perm_table,
-                    [far_corner[0], near_corner[1], near_corner[2], near_corner[3]],
-                    [far_distance[0], near_distance[1], near_distance[2], near_distance[3]]);
-        let f0100 =
-            surflet(&self.perm_table,
-                    [near_corner[0], far_corner[1], near_corner[2], near_corner[3]],
-                    [near_distance[0], far_distance[1], near_distance[2], near_distance[3]]);
-        let f1100 = surflet(&self.perm_table,
-                            [far_corner[0], far_corner[1], near_corner[2], near_corner[3]],
-                            [far_distance[0], far_distance[1], near_distance[2], near_distance[3]]);
-        let f0010 =
-            surflet(&self.perm_table,
-                    [near_corner[0], near_corner[1], far_corner[2], near_corner[3]],
-                    [near_distance[0], near_distance[1], far_distance[2], near_distance[3]]);
-        let f1010 = surflet(&self.perm_table,
-                            [far_corner[0], near_corner[1], far_corner[2], near_corner[3]],
-                            [far_distance[0], near_distance[1], far_distance[2], near_distance[3]]);
-        let f0110 = surflet(&self.perm_table,
-                            [near_corner[0], far_corner[1], far_corner[2], near_corner[3]],
-                            [near_distance[0], far_distance[1], far_distance[2], near_distance[3]]);
-        let f1110 = surflet(&self.perm_table,
-                            [far_corner[0], far_corner[1], far_corner[2], near_corner[3]],
-                            [far_distance[0], far_distance[1], far_distance[2], near_distance[3]]);
-        let f0001 =
-            surflet(&self.perm_table,
-                    [near_corner[0], near_corner[1], near_corner[2], far_corner[3]],
-                    [near_distance[0], near_distance[1], near_distance[2], far_distance[3]]);
-        let f1001 = surflet(&self.perm_table,
-                            [far_corner[0], near_corner[1], near_corner[2], far_corner[3]],
-                            [far_distance[0], near_distance[1], near_distance[2], far_distance[3]]);
-        let f0101 = surflet(&self.perm_table,
-                            [near_corner[0], far_corner[1], near_corner[2], far_corner[3]],
-                            [near_distance[0], far_distance[1], near_distance[2], far_distance[3]]);
-        let f1101 = surflet(&self.perm_table,
-                            [far_corner[0], far_corner[1], near_corner[2], far_corner[3]],
-                            [far_distance[0], far_distance[1], near_distance[2], far_distance[3]]);
-        let f0011 = surflet(&self.perm_table,
-                            [near_corner[0], near_corner[1], far_corner[2], far_corner[3]],
-                            [near_distance[0], near_distance[1], far_distance[2], far_distance[3]]);
-        let f1011 = surflet(&self.perm_table,
-                            [far_corner[0], near_corner[1], far_corner[2], far_corner[3]],
-                            [far_distance[0], near_distance[1], far_distance[2], far_distance[3]]);
-        let f0111 = surflet(&self.perm_table,
-                            [near_corner[0], far_corner[1], far_corner[2], far_corner[3]],
-                            [near_distance[0], far_distance[1], far_distance[2], far_distance[3]]);
-        let f1111 = surflet(&self.perm_table,
-                            [far_corner[0], far_corner[1], far_corner[2], far_corner[3]],
-                            [far_distance[0], far_distance[1], far_distance[2], far_distance[3]]);
+        let f0000 = surflet(
+            &self.perm_table,
+            [
+                near_corner[0],
+                near_corner[1],
+                near_corner[2],
+                near_corner[3],
+            ],
+            [
+                near_distance[0],
+                near_distance[1],
+                near_distance[2],
+                near_distance[3],
+            ],
+        );
+        let f1000 = surflet(
+            &self.perm_table,
+            [
+                far_corner[0],
+                near_corner[1],
+                near_corner[2],
+                near_corner[3],
+            ],
+            [
+                far_distance[0],
+                near_distance[1],
+                near_distance[2],
+                near_distance[3],
+            ],
+        );
+        let f0100 = surflet(
+            &self.perm_table,
+            [
+                near_corner[0],
+                far_corner[1],
+                near_corner[2],
+                near_corner[3],
+            ],
+            [
+                near_distance[0],
+                far_distance[1],
+                near_distance[2],
+                near_distance[3],
+            ],
+        );
+        let f1100 = surflet(
+            &self.perm_table,
+            [far_corner[0], far_corner[1], near_corner[2], near_corner[3]],
+            [
+                far_distance[0],
+                far_distance[1],
+                near_distance[2],
+                near_distance[3],
+            ],
+        );
+        let f0010 = surflet(
+            &self.perm_table,
+            [
+                near_corner[0],
+                near_corner[1],
+                far_corner[2],
+                near_corner[3],
+            ],
+            [
+                near_distance[0],
+                near_distance[1],
+                far_distance[2],
+                near_distance[3],
+            ],
+        );
+        let f1010 = surflet(
+            &self.perm_table,
+            [far_corner[0], near_corner[1], far_corner[2], near_corner[3]],
+            [
+                far_distance[0],
+                near_distance[1],
+                far_distance[2],
+                near_distance[3],
+            ],
+        );
+        let f0110 = surflet(
+            &self.perm_table,
+            [near_corner[0], far_corner[1], far_corner[2], near_corner[3]],
+            [
+                near_distance[0],
+                far_distance[1],
+                far_distance[2],
+                near_distance[3],
+            ],
+        );
+        let f1110 = surflet(
+            &self.perm_table,
+            [far_corner[0], far_corner[1], far_corner[2], near_corner[3]],
+            [
+                far_distance[0],
+                far_distance[1],
+                far_distance[2],
+                near_distance[3],
+            ],
+        );
+        let f0001 = surflet(
+            &self.perm_table,
+            [
+                near_corner[0],
+                near_corner[1],
+                near_corner[2],
+                far_corner[3],
+            ],
+            [
+                near_distance[0],
+                near_distance[1],
+                near_distance[2],
+                far_distance[3],
+            ],
+        );
+        let f1001 = surflet(
+            &self.perm_table,
+            [far_corner[0], near_corner[1], near_corner[2], far_corner[3]],
+            [
+                far_distance[0],
+                near_distance[1],
+                near_distance[2],
+                far_distance[3],
+            ],
+        );
+        let f0101 = surflet(
+            &self.perm_table,
+            [near_corner[0], far_corner[1], near_corner[2], far_corner[3]],
+            [
+                near_distance[0],
+                far_distance[1],
+                near_distance[2],
+                far_distance[3],
+            ],
+        );
+        let f1101 = surflet(
+            &self.perm_table,
+            [far_corner[0], far_corner[1], near_corner[2], far_corner[3]],
+            [
+                far_distance[0],
+                far_distance[1],
+                near_distance[2],
+                far_distance[3],
+            ],
+        );
+        let f0011 = surflet(
+            &self.perm_table,
+            [near_corner[0], near_corner[1], far_corner[2], far_corner[3]],
+            [
+                near_distance[0],
+                near_distance[1],
+                far_distance[2],
+                far_distance[3],
+            ],
+        );
+        let f1011 = surflet(
+            &self.perm_table,
+            [far_corner[0], near_corner[1], far_corner[2], far_corner[3]],
+            [
+                far_distance[0],
+                near_distance[1],
+                far_distance[2],
+                far_distance[3],
+            ],
+        );
+        let f0111 = surflet(
+            &self.perm_table,
+            [near_corner[0], far_corner[1], far_corner[2], far_corner[3]],
+            [
+                near_distance[0],
+                far_distance[1],
+                far_distance[2],
+                far_distance[3],
+            ],
+        );
+        let f1111 = surflet(
+            &self.perm_table,
+            [far_corner[0], far_corner[1], far_corner[2], far_corner[3]],
+            [
+                far_distance[0],
+                far_distance[1],
+                far_distance[2],
+                far_distance[3],
+            ],
+        );
 
         // Multiply by arbitrary value to scale to -1..1
         (f0000 + f1000 + f0100 + f1100 + f0010 + f1010 + f0110 + f1110 +
-         f0001 + f1001 + f0101 + f1101 + f0011 + f1011 + f0111 + f1111) *
-        math::cast(4.424369240215691)
+             f0001 + f1001 + f0101 + f1101 + f0011 + f1011 + f0111 + f1111) *
+            math::cast(4.424369240215691)
     }
 }

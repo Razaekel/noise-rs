@@ -22,7 +22,8 @@ impl<'a, T, U> Invert<'a, T, U> {
 }
 
 impl<'a, T, U> NoiseModule<T, U> for Invert<'a, T, U>
-    where U: Float,
+where
+    U: Float,
 {
     fn get(&self, point: T) -> U {
         -self.source.get(point)

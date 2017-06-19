@@ -23,7 +23,8 @@ impl<'a, T, U> Abs<'a, T, U> {
 }
 
 impl<'a, T, U> NoiseModule<T, U> for Abs<'a, T, U>
-    where U: Float,
+where
+    U: Float,
 {
     fn get(&self, point: T) -> U {
         (self.source.get(point)).abs()

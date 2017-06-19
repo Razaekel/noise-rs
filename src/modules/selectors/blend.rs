@@ -30,10 +30,11 @@ pub struct Blend<'a, T: 'a, U: 'a> {
 }
 
 impl<'a, T, U> Blend<'a, T, U> {
-    pub fn new(source1: &'a NoiseModule<T, U>,
-               source2: &'a NoiseModule<T, U>,
-               control: &'a NoiseModule<T, U>)
-               -> Blend<'a, T, U> {
+    pub fn new(
+        source1: &'a NoiseModule<T, U>,
+        source2: &'a NoiseModule<T, U>,
+        control: &'a NoiseModule<T, U>,
+    ) -> Blend<'a, T, U> {
         Blend {
             source1: source1,
             source2: source2,
@@ -43,8 +44,9 @@ impl<'a, T, U> Blend<'a, T, U> {
 }
 
 impl<'a, T, U> NoiseModule<T, U> for Blend<'a, T, U>
-    where T: Copy,
-          U: Float,
+where
+    T: Copy,
+    U: Float,
 {
     fn get(&self, point: T) -> U {
         let lower = self.source1.get(point);

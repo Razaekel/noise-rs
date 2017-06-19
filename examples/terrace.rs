@@ -14,7 +14,7 @@
 
 extern crate noise;
 
-use noise::{Terrace, Perlin};
+use noise::{Perlin, Terrace};
 
 mod debug;
 

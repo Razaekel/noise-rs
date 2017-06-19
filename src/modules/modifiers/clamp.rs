@@ -23,7 +23,8 @@ pub struct Clamp<'a, T: 'a, U: 'a> {
 }
 
 impl<'a, T, U> Clamp<'a, T, U>
-    where U: Float,
+where
+    U: Float,
 {
     pub fn new(source: &'a NoiseModule<T, U>) -> Clamp<'a, T, U> {
         Clamp {
@@ -34,11 +35,17 @@ impl<'a, T, U> Clamp<'a, T, U>
     }
 
     pub fn set_lower_bound(self, lower_bound: U) -> Clamp<'a, T, U> {
-        Clamp { lower_bound: lower_bound, ..self }
+        Clamp {
+            lower_bound: lower_bound,
+            ..self
+        }
     }
 
     pub fn set_upper_bound(self, upper_bound: U) -> Clamp<'a, T, U> {
-        Clamp { upper_bound: upper_bound, ..self }
+        Clamp {
+            upper_bound: upper_bound,
+            ..self
+        }
     }
 
     pub fn set_bounds(self, lower_bound: U, upper_bound: U) -> Clamp<'a, T, U> {
@@ -51,7 +58,8 @@ impl<'a, T, U> Clamp<'a, T, U>
 }
 
 impl<'a, T, U> NoiseModule<T, U> for Clamp<'a, T, U>
-    where U: Float,
+where
+    U: Float,
 {
     fn get(&self, point: T) -> U {
         let value = self.source.get(point);

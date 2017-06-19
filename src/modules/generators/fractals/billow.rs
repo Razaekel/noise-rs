@@ -93,15 +93,24 @@ impl<T> MultiFractal<T> for Billow<T> {
     }
 
     fn set_frequency(self, frequency: T) -> Billow<T> {
-        Billow { frequency: frequency, ..self }
+        Billow {
+            frequency: frequency,
+            ..self
+        }
     }
 
     fn set_lacunarity(self, lacunarity: T) -> Billow<T> {
-        Billow { lacunarity: lacunarity, ..self }
+        Billow {
+            lacunarity: lacunarity,
+            ..self
+        }
     }
 
     fn set_persistence(self, persistence: T) -> Billow<T> {
-        Billow { persistence: persistence, ..self }
+        Billow {
+            persistence: persistence,
+            ..self
+        }
     }
 }
 
