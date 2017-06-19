@@ -32,27 +32,6 @@ name = "open_simplex"
 name = "super_simplex"
 
 [[example]]
-name = "brownian"
-
-[[example]]
-name = "cell_range"
-
-[[example]]
-name = "cell_range_inv"
-
-[[example]]
-name = "cell_value"
-
-[[example]]
-name = "cell_manhattan"
-
-[[example]]
-name = "cell_manhattan_inv"
-
-[[example]]
-name = "cell_manhattan_value"
-
-[[example]]
 name = "value"
 
 [[example]]

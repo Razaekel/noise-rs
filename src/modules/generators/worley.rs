@@ -6,10 +6,11 @@
 // project carrying such notice may not be copied, modified, or distributed
 // except according to those terms.
 
-use {PermutationTable, math};
+use math;
 use math::{Point2, Point3, Point4};
 use modules::{NoiseModule, Seedable};
 use num_traits::Float;
+use permutationtable::PermutationTable;
 
 /// Default noise seed for the Worley noise module.
 pub const DEFAULT_WORLEY_SEED: u32 = 0;

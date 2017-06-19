@@ -18,7 +18,6 @@ extern crate image;
 extern crate num_traits;
 
 use self::num_traits::{Float, NumCast};
-use noise;
 use noise::NoiseModule;
 use std::path::Path;
 
@@ -32,35 +31,6 @@ fn clamp<F: Float>(val: F, min: F, max: F) -> F {
         _ if val > max => max,
         _ => val,
     }
-}
-
-#[allow(dead_code)]
-pub fn render_png<T, F>(filename: &str,
-                        perm_table: &noise::PermutationTable,
-                        width: u32,
-                        height: u32,
-                        func: F)
-    where T: Float + NumCast,
-          F: noise::GenFn2<T>,
-{
-    let mut pixels = Vec::with_capacity((width * height) as usize);
-
-    for y in 0..height {
-        for x in 0..width {
-            let value: f64 = cast(func(perm_table,
-                                       &[cast::<_, T>(x) - cast::<_, T>(width / 2),
-                                         cast::<_, T>(y) - cast::<_, T>(height / 2)]));
-            pixels.push(cast(clamp(value * 0.5 + 0.5, 0.0, 1.0) * 255.0));
-        }
-    }
-
-    let _ = image::save_buffer(&Path::new(filename),
-                               &*pixels,
-                               width,
-                               height,
-                               image::Gray(8));
-
-    println!("\nGenerated {}", filename);
 }
 
 #[allow(dead_code)]

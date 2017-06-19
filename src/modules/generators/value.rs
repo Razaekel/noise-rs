@@ -7,10 +7,11 @@
 // except according to those terms.
 
 
-use {PermutationTable, math};
+use math;
 use math::{interp, Point2, Point3, Point4};
 use modules::{NoiseModule, Seedable};
 use num_traits::Float;
+use permutationtable::PermutationTable;
 
 /// Default Seed for the Value noise module.
 pub const DEFAULT_VALUE_SEED: u32 = 0;

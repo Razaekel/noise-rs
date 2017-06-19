@@ -21,39 +21,12 @@ const TABLE_SIZE: usize = 256;
 /// Table creation is expensive, so in most circumstances you'll only want to
 /// create one of these per generator.
 #[derive(Copy)]
-#[deprecated(since="0.3.0", note="will be made private by 1.0; noise generator structs (e.g. Perlin) now store permutation table internally, so if you were storing PermutationTable for performance reasons, store the noise generator object instead")]
 pub struct PermutationTable {
     values: [u8; TABLE_SIZE],
 }
 
 impl Rand for PermutationTable {
     /// Generates a PermutationTable using a random seed.
-    ///
-    /// # Examples
-    ///
-    /// ```rust
-    /// extern crate noise;
-    /// extern crate rand;
-    ///
-    /// use noise::PermutationTable;
-    ///
-    /// # fn main() {
-    /// let perm_table = rand::random::<PermutationTable>();
-    /// # }
-    /// ```
-    ///
-    /// ```rust
-    /// extern crate noise;
-    /// extern crate rand;
-    ///
-    /// use noise::PermutationTable;
-    /// use rand::{SeedableRng, Rng, XorShiftRng};
-    ///
-    /// # fn main() {
-    /// let mut rng: XorShiftRng = SeedableRng::from_seed([1, 2, 3, 4]);
-    /// let perm_table = rng.gen::<PermutationTable>();
-    /// # }
-    /// ```
     fn rand<R: Rng>(rng: &mut R) -> PermutationTable {
         let mut seq: Vec<u8> = (0..TABLE_SIZE).map(|x| x as u8).collect();
         rng.shuffle(&mut *seq);
@@ -75,14 +48,6 @@ impl PermutationTable {
     ///
     /// Internally this uses a `XorShiftRng`, but we don't really need to worry
     /// about cryptographic security when working with procedural noise.
-    ///
-    /// # Example
-    ///
-    /// ```rust
-    /// use noise::PermutationTable;
-    ///
-    /// let perm_table = PermutationTable::new(12);
-    /// ```
     pub fn new(seed: u32) -> PermutationTable {
         let mut rng: XorShiftRng = SeedableRng::from_seed([1, seed, seed, seed]);
         rng.gen()
@@ -127,17 +92,18 @@ impl fmt::Debug for PermutationTable {
 
 #[cfg(test)]
 mod tests {
-    use super::PermutationTable;
-    use perlin::perlin3;
+    use ::{NoiseModule, Perlin, Seedable};
     use rand::random;
 
     #[test]
     fn test_random_seed() {
-        let _ = perlin3::<f32>(&random(), &[1.0, 2.0, 3.0]);
+        let perlin = Perlin::new().set_seed(random());
+        let _ = perlin.get([1.0, 2.0, 3.0]);
     }
 
     #[test]
     fn test_negative_params() {
-        let _ = perlin3::<f32>(&PermutationTable::new(0), &[-1.0, 2.0, 3.0]);
+        let perlin = Perlin::new();
+        let _ = perlin.get([-1.0, 2.0, 3.0]);
     }
 }
