@@ -18,7 +18,7 @@ use num_traits::Float;
 /// points_; each control point has an _input value_ that maps to an _output
 /// value_.
 ///
-/// To add control points to the curve, use the add_control_point method.
+/// To add control points to the curve, use the `add_control_point` method.
 ///
 /// Since the curve is a cubic spline, an application must have a minimum of
 /// four control points to the curve. If there is less than four control
@@ -56,7 +56,7 @@ where
             let insertion_point = self.control_points
                 .iter()
                 .position(|x| x.input >= input_value)
-                .unwrap_or(self.control_points.len());
+                .unwrap_or_else(|| self.control_points.len());
 
             // add the new control point at the correct position.
             self.control_points.insert(insertion_point,
@@ -87,7 +87,7 @@ where
         let index_pos = self.control_points
             .iter()
             .position(|x| x.input >= source_value)
-            .unwrap_or(self.control_points.len());
+            .unwrap_or_else(|| self.control_points.len());
 
         // Find the four nearest control points so that we can perform cubic
         // interpolation.

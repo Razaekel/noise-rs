@@ -87,6 +87,12 @@ impl<T: Float> Fbm<T> {
     }
 }
 
+impl<T: Float> Default for Fbm<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T> MultiFractal<T> for Fbm<T> {
     fn set_octaves(self, mut octaves: usize) -> Fbm<T> {
         if self.octaves == octaves {

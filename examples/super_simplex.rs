@@ -58,7 +58,7 @@ fn main() {
                 j2 = 0;
             }
         }
-        lookup_2d[i * 4 + 0] = ([0, 0], [0.0, 0.0]);
+        lookup_2d[i * 4] = ([0, 0], [0.0, 0.0]);
         let skew_factor = -1.0 - 2.0 * skew_constant;
         lookup_2d[i * 4 + 1] = ([1, 1], [skew_factor, skew_factor]);
         let skew_factor = (i1 as f64 + j1 as f64) * skew_constant;
@@ -115,7 +115,7 @@ fn main() {
             i4 = 0;
             j4 = 0;
         }
-        lookup_3d[i * 4 + 0] = [i1, j1, k1];
+        lookup_3d[i * 4] = [i1, j1, k1];
         lookup_3d[i * 4 + 1] = [i2, j2, k2];
         lookup_3d[i * 4 + 2] = [i3, j3, k3];
         lookup_3d[i * 4 + 3] = [i4, j4, k4];

@@ -12,13 +12,13 @@ use modules::{NoiseModule, Seedable};
 use num_traits::Float;
 use permutationtable::PermutationTable;
 
-/// Default noise seed for the Worley noise module.
+/// Default noise seed for the `Worley` noise module.
 pub const DEFAULT_WORLEY_SEED: u32 = 0;
-/// Default RangeFunction for the Worley noise module.
+/// Default `RangeFunction` for the `Worley` noise module.
 pub const DEFAULT_WORLEY_RANGEFUNCTION: RangeFunction = RangeFunction::Euclidean;
-/// Default frequency for the Worley noise module.
+/// Default frequency for the `Worley` noise module.
 pub const DEFAULT_WORLEY_FREQUENCY: f32 = 1.0;
-/// Default displacement for the Worley noise module.
+/// Default displacement for the `Worley` noise module.
 pub const DEFAULT_WORLEY_DISPLACEMENT: f32 = 1.0;
 
 /// Noise module that outputs Worley noise.
@@ -92,6 +92,12 @@ where
             displacement: displacement,
             ..self
         }
+    }
+}
+
+impl<T: Float> Default for Worley<T> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -185,9 +191,9 @@ fn range_quadratic<T: Float>(p1: &[T], p2: &[T]) -> T {
     let length = temp.len();
     let mut result = T::zero();
 
-    for i in 0..length {
-        for j in 0..length {
-            result = result + (temp[i] * temp[j]);
+    for i in temp.iter().take(length) {
+        for j in temp.iter().take(length) {
+            result = result + (*i * *j);
         }
     }
 
@@ -247,14 +253,12 @@ impl<T: Float> NoiseModule<Point2<T>, T> for Worley<T> {
             test_point![far[0], far[1]];
         }
 
-        let value;
-
-        if self.enable_range {
-            value = range;
+        let value = if self.enable_range {
+            range
         } else {
-            value = self.displacement * math::cast::<_, T>(self.perm_table.get2(seed_cell)) *
-                math::cast(1.0 / 255.0);
-        }
+            self.displacement * math::cast::<_, T>(self.perm_table.get2(seed_cell)) *
+                math::cast(1.0 / 255.0)
+        };
 
         value * math::cast(2.0) - T::one()
     }
@@ -355,14 +359,12 @@ impl<T: Float> NoiseModule<Point3<T>, T> for Worley<T> {
             test_point![far[0], far[1], far[2]];
         }
 
-        let value;
-
-        if self.enable_range {
-            value = range;
+        let value = if self.enable_range {
+            range
         } else {
-            value = self.displacement * math::cast::<_, T>(self.perm_table.get3(seed_cell)) *
-                math::cast(1.0 / 255.0);
-        }
+            self.displacement * math::cast::<_, T>(self.perm_table.get3(seed_cell)) *
+                math::cast(1.0 / 255.0)
+        };
 
         value * math::cast(2.0) - T::one()
     }
@@ -502,14 +504,12 @@ impl<T: Float> NoiseModule<Point4<T>, T> for Worley<T> {
             test_point![far[0], far[1], far[2], far[3]];
         }
 
-        let value;
-
-        if self.enable_range {
-            value = range;
+        let value = if self.enable_range {
+            range
         } else {
-            value = self.displacement * math::cast::<_, T>(self.perm_table.get4(seed_cell)) *
-                math::cast(1.0 / 255.0);
-        }
+            self.displacement * math::cast::<_, T>(self.perm_table.get4(seed_cell)) *
+                math::cast(1.0 / 255.0)
+        };
 
         value * math::cast(2.0) - T::one()
     }

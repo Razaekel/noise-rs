@@ -22,7 +22,7 @@ pub const DEFAULT_CHECKERBOARD_SIZE: usize = 0;
 ///
 /// This noise module is not very useful by itself, but it can be used for
 /// debugging purposes.
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Default)]
 pub struct Checkerboard {
     /// Controls the size of the block in 2^(size).
     pub size: usize,

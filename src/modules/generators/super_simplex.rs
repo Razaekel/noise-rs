@@ -13,7 +13,7 @@ use num_traits::Float;
 use permutationtable::PermutationTable;
 use std::ops::Add;
 
-/// Default Seed for the Super Simplex noise module.
+/// Default Seed for the `SuperSimplex` noise module.
 pub const DEFAULT_SUPER_SIMPLEX_SEED: u32 = 0;
 
 const TO_REAL_CONSTANT_2D: f64 = -0.211324865405187; // (1 / sqrt(2 + 1) - 1) / 2
@@ -111,6 +111,12 @@ impl SuperSimplex {
             seed: DEFAULT_SUPER_SIMPLEX_SEED,
             perm_table: PermutationTable::new(DEFAULT_SUPER_SIMPLEX_SEED),
         }
+    }
+}
+
+impl Default for SuperSimplex {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

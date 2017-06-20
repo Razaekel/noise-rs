@@ -32,6 +32,12 @@ impl Value {
     }
 }
 
+impl Default for Value {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Seedable for Value {
     /// Sets the seed value for Value noise
     fn set_seed(self, seed: u32) -> Value {

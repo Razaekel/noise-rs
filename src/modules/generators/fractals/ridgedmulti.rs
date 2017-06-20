@@ -11,19 +11,19 @@ use math::{Point2, Point3, Point4};
 use modules::{MultiFractal, NoiseModule, Perlin, Seedable};
 use num_traits::Float;
 
-/// Default noise seed for the RidgedMulti noise module.
+/// Default noise seed for the `RidgedMulti` noise module.
 pub const DEFAULT_RIDGED_SEED: u32 = 0;
-/// Default number of octaves for the RidgedMulti noise module.
+/// Default number of octaves for the `RidgedMulti` noise module.
 pub const DEFAULT_RIDGED_OCTAVE_COUNT: usize = 6;
-/// Default frequency for the RidgedMulti noise module.
+/// Default frequency for the `RidgedMulti` noise module.
 pub const DEFAULT_RIDGED_FREQUENCY: f32 = 1.0;
-/// Default lacunarity for the RidgedMulti noise module.
+/// Default lacunarity for the `RidgedMulti` noise module.
 pub const DEFAULT_RIDGED_LACUNARITY: f32 = 2.0;
-/// Default persistence for the RidgedMulti noise module.
+/// Default persistence for the `RidgedMulti` noise module.
 pub const DEFAULT_RIDGED_PERSISTENCE: f32 = 1.0;
-/// Default attenuation for the RidgedMulti noise module.
+/// Default attenuation for the `RidgedMulti` noise module.
 pub const DEFAULT_RIDGED_ATTENUATION: f32 = 2.0;
-/// Maximum number of octaves for the RidgedMulti noise module.
+/// Maximum number of octaves for the `RidgedMulti` noise module.
 pub const RIDGED_MAX_OCTAVES: usize = 32;
 
 /// Noise module that outputs ridged-multifractal noise.
@@ -103,6 +103,12 @@ impl<T: Float> RidgedMulti<T> {
     }
 }
 
+impl<T: Float> Default for RidgedMulti<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T> MultiFractal<T> for RidgedMulti<T> {
     fn set_octaves(self, mut octaves: usize) -> RidgedMulti<T> {
         if self.octaves == octaves {
@@ -158,7 +164,7 @@ impl<T> Seedable for RidgedMulti<T> {
     }
 }
 
-/// 2-dimensional RidgedMulti noise
+/// 2-dimensional `RidgedMulti` noise
 impl<T: Float> NoiseModule<Point2<T>, T> for RidgedMulti<T> {
     fn get(&self, mut point: Point2<T>) -> T {
         let mut result = T::zero();
@@ -208,7 +214,7 @@ impl<T: Float> NoiseModule<Point2<T>, T> for RidgedMulti<T> {
     }
 }
 
-/// 3-dimensional RidgedMulti noise
+/// 3-dimensional `RidgedMulti` noise
 impl<T: Float> NoiseModule<Point3<T>, T> for RidgedMulti<T> {
     fn get(&self, mut point: Point3<T>) -> T {
         let mut result = T::zero();
@@ -258,7 +264,7 @@ impl<T: Float> NoiseModule<Point3<T>, T> for RidgedMulti<T> {
     }
 }
 
-/// 4-dimensional RidgedMulti noise
+/// 4-dimensional `RidgedMulti` noise
 impl<T: Float> NoiseModule<Point4<T>, T> for RidgedMulti<T> {
     fn get(&self, mut point: Point4<T>) -> T {
         let mut result = T::zero();

@@ -9,6 +9,7 @@
 use math::interp;
 use modules::NoiseModule;
 use num_traits::Float;
+use std;
 
 /// Noise module that maps the output value from the source module onto a
 /// terrace-forming curve.
@@ -19,7 +20,7 @@ use num_traits::Float;
 /// which resets the slope to zero at that point, producing a "terracing"
 /// effect.
 ///
-/// To add control points to the curve, use the add_control_point method.
+/// To add control points to the curve, use the `add_control_point` method.
 ///
 /// An application must add a minimum of two control points to the curve. If
 /// there are less than two control points, the get() method panics. The
@@ -72,7 +73,7 @@ where
             let insertion_point = self.control_points
                 .iter()
                 .position(|&x| x >= control_point)
-                .unwrap_or(self.control_points.len());
+                .unwrap_or_else(|| self.control_points.len());
 
             // add the new control point at the correct position.
             self.control_points.insert(insertion_point, control_point);
@@ -108,7 +109,7 @@ where
         let index_pos = self.control_points
             .iter()
             .position(|&x| x >= source_value)
-            .unwrap_or(self.control_points.len());
+            .unwrap_or_else(|| self.control_points.len());
 
         // Find the two nearest control points so that we can map their values
         // onto a quadratic curve.
@@ -130,9 +131,7 @@ where
 
         if self.invert_terraces {
             alpha = U::one() - alpha;
-            let temp = input0;
-            input0 = input1;
-            input1 = temp;
+            std::mem::swap(&mut input0, &mut input1);
         }
 
         // Squaring the alpha produces the terrace effect.

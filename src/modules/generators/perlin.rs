@@ -31,6 +31,12 @@ impl Perlin {
     }
 }
 
+impl Default for Perlin {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Seedable for Perlin {
     /// Sets the seed value for Perlin noise
     fn set_seed(self, seed: u32) -> Perlin {

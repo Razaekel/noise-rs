@@ -78,6 +78,12 @@ impl<T: Float> Billow<T> {
     }
 }
 
+impl<T: Float> Default for Billow<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T> MultiFractal<T> for Billow<T> {
     fn set_octaves(self, mut octaves: usize) -> Billow<T> {
         if self.octaves == octaves {
