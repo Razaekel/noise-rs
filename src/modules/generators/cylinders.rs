@@ -35,6 +35,12 @@ impl<T: Float> Cylinders<T> {
     }
 }
 
+impl<T: Float> Default for Cylinders<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T: Float> NoiseModule<Point2<T>, T> for Cylinders<T> {
     fn get(&self, point: Point2<T>) -> T {
         calculate_cylinders(&point, self.frequency)

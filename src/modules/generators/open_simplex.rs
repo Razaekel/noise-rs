@@ -7,7 +7,7 @@
 // except according to those terms.
 
 //! Note that this is NOT Ken Perlin's simplex noise, as that is patent encumbered.
-//! Instead, these functions use the OpenSimplex algorithm, as detailed here:
+//! Instead, these functions use the `OpenSimplex` algorithm, as detailed here:
 //! http://uniblock.tumblr.com/post/97868843242/noise
 
 use {gradient, math};
@@ -46,6 +46,12 @@ impl OpenSimplex {
     }
 }
 
+impl Default for OpenSimplex {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Seedable for OpenSimplex {
     /// Sets the seed value for Open Simplex noise
     fn set_seed(self, seed: u32) -> OpenSimplex {
@@ -65,7 +71,7 @@ impl Seedable for OpenSimplex {
     }
 }
 
-/// 2-dimensional [OpenSimplex Noise](http://uniblock.tumblr.com/post/97868843242/noise)
+/// 2-dimensional [`OpenSimplex` Noise](http://uniblock.tumblr.com/post/97868843242/noise)
 ///
 /// This is a slower but higher quality form of gradient noise than Perlin 2D.
 impl<T: Float> NoiseModule<Point2<T>, T> for OpenSimplex {
@@ -157,7 +163,7 @@ impl<T: Float> NoiseModule<Point2<T>, T> for OpenSimplex {
     }
 }
 
-/// 3-dimensional [OpenSimplex Noise](http://uniblock.tumblr.com/post/97868843242/noise)
+/// 3-dimensional [`OpenSimplex` Noise](http://uniblock.tumblr.com/post/97868843242/noise)
 ///
 /// This is a slower but higher quality form of gradient noise than Perlin 3D.
 impl<T: Float> NoiseModule<Point3<T>, T> for OpenSimplex {
@@ -303,7 +309,7 @@ impl<T: Float> NoiseModule<Point3<T>, T> for OpenSimplex {
     }
 }
 
-/// 4-dimensional [OpenSimplex Noise](http://uniblock.tumblr.com/post/97868843242/noise)
+/// 4-dimensional [`OpenSimplex` Noise](http://uniblock.tumblr.com/post/97868843242/noise)
 ///
 /// This is a slower but higher quality form of gradient noise than Perlin 4D.
 impl<T: Float> NoiseModule<Point4<T>, T> for OpenSimplex {

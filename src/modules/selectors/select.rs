@@ -104,12 +104,10 @@ where
                 },
                 _ => self.source1.get(point),
             }
+        } else if control_value < self.lower_bound || control_value > self.upper_bound {
+            self.source1.get(point)
         } else {
-            if control_value < self.lower_bound || control_value > self.upper_bound {
-                self.source1.get(point)
-            } else {
-                self.source2.get(point)
-            }
+            self.source2.get(point)
         }
     }
 }

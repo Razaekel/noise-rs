@@ -11,17 +11,17 @@ use math::{Point2, Point3, Point4};
 use modules::{MultiFractal, NoiseModule, Perlin, Seedable};
 use num_traits::Float;
 
-/// Default noise seed for the BasicMulti noise module.
+/// Default noise seed for the `BasicMulti` noise module.
 pub const DEFAULT_BASICMULTI_SEED: u32 = 0;
-/// Default number of octaves for the BasicMulti noise module.
+/// Default number of octaves for the `BasicMulti` noise module.
 pub const DEFAULT_BASICMULTI_OCTAVES: usize = 6;
-/// Default frequency for the BasicMulti noise module.
+/// Default frequency for the `BasicMulti` noise module.
 pub const DEFAULT_BASICMULTI_FREQUENCY: f32 = 2.0;
-/// Default lacunarity for the BasicMulti noise module.
+/// Default lacunarity for the `BasicMulti` noise module.
 pub const DEFAULT_BASICMULTI_LACUNARITY: f32 = 2.0;
-/// Default persistence for the BasicMulti noise module.
+/// Default persistence for the `BasicMulti` noise module.
 pub const DEFAULT_BASICMULTI_PERSISTENCE: f32 = 0.5;
-/// Maximum number of octaves for the BasicMulti noise module.
+/// Maximum number of octaves for the `BasicMulti` noise module.
 pub const BASICMULTI_MAX_OCTAVES: usize = 32;
 
 /// Noise module that outputs heterogenous Multifractal noise.
@@ -81,6 +81,12 @@ impl<T: Float> BasicMulti<T> {
     }
 }
 
+impl<T: Float> Default for BasicMulti<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T> MultiFractal<T> for BasicMulti<T> {
     fn set_octaves(self, mut octaves: usize) -> BasicMulti<T> {
         if self.octaves == octaves {
@@ -136,7 +142,7 @@ impl<T> Seedable for BasicMulti<T> {
     }
 }
 
-/// 2-dimensional BasicMulti noise
+/// 2-dimensional `BasicMulti` noise
 impl<T: Float> NoiseModule<Point2<T>, T> for BasicMulti<T> {
     fn get(&self, mut point: Point2<T>) -> T {
         // First unscaled octave of function; later octaves are scaled.
@@ -166,7 +172,7 @@ impl<T: Float> NoiseModule<Point2<T>, T> for BasicMulti<T> {
     }
 }
 
-/// 3-dimensional BasicMulti noise
+/// 3-dimensional `BasicMulti` noise
 impl<T: Float> NoiseModule<Point3<T>, T> for BasicMulti<T> {
     fn get(&self, mut point: Point3<T>) -> T {
         // First unscaled octave of function; later octaves are scaled.
@@ -196,7 +202,7 @@ impl<T: Float> NoiseModule<Point3<T>, T> for BasicMulti<T> {
     }
 }
 
-/// 4-dimensional BasicMulti noise
+/// 4-dimensional `BasicMulti` noise
 impl<T: Float> NoiseModule<Point4<T>, T> for BasicMulti<T> {
     fn get(&self, mut point: Point4<T>) -> T {
         // First unscaled octave of function; later octaves are scaled.

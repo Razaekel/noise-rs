@@ -20,7 +20,7 @@ mod ridgedmulti;
 
 use modules::{Perlin, Seedable};
 
-/// Trait for MultiFractal modules
+/// Trait for `MultiFractal` modules
 pub trait MultiFractal<T> {
     fn set_octaves(self, octaves: usize) -> Self;
 
