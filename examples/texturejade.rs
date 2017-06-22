@@ -19,7 +19,7 @@ use noise::*;
 mod debug;
 
 fn main() {
-    // Primary jade texture. The ridges from the ridged-multifractal module
+    // Primary jade texture. The ridges from the ridged-multifractal function
     // produces the veins.
     let primary_jade = RidgedMulti::new()
         .set_seed(0)

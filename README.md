@@ -7,7 +7,7 @@ A procedural noise generation library for Rust.
 [Documentation](https://docs.rs/noise/)
 
 ```rust
-use noise::modules::Fbm;
+use noise::noise_fns::Fbm;
 
 let fbm = Fbm::new();
 
@@ -59,12 +59,12 @@ space into cells based on proximity to a random set of seed points.
 
 - `Worley::new()`
 
-#### Noise Modules
+#### Noise Functions
 
-These are the actual noise modules, which just take a coordinate using `get()` and return
+These are the actual noise functionss, which just take a coordinate using `get()` and return
 a value. They can be chained together when declared, creating very complex noise results.
 
-See the individual module pages for their descriptions, and the examples for their usage.
+See the individual function pages for their descriptions, and the examples for their usage.
 
 ## License
 

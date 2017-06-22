@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! An example of using the `BasicMulti` noise module
+//! An example of using the `BasicMulti` noise function
 
 extern crate noise;
 
