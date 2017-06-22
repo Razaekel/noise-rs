@@ -32,9 +32,7 @@ A very fast and reasonable quality gradient noise:
 
 A slower but higher quality form of gradient noise:
 
-- `open_simplex2`
-- `open_simplex3`
-- `open_simplex4`
+- `OpenSimplex::new()`
 
 ### Value Noise (To be deprecated)
 
@@ -45,9 +43,7 @@ than gradient noise. Benchmarks show it's about 1.2–1.3× faster than Perlin n
 Cell neighbours are blended using a weighted S-curve linear interpolation
 method. This removes any discontinuities across grid edges.
 
-- `value2`
-- `value3`
-- `value4`
+- `Value::new()`
 
 ### Fractional Brownian Motion
 
