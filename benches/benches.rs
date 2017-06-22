@@ -11,7 +11,7 @@
 extern crate noise;
 extern crate test;
 
-use noise::{NoiseModule, OpenSimplex, Perlin, SuperSimplex, Value, Worley};
+use noise::{NoiseFn, OpenSimplex, Perlin, SuperSimplex, Value, Worley};
 use test::{Bencher, black_box};
 
 #[bench]

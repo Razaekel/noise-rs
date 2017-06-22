@@ -11,7 +11,7 @@
 //! # Example
 //!
 //! ```rust
-//! use noise::{NoiseModule, Perlin};
+//! use noise::{NoiseFn, Perlin};
 //!
 //! let perlin = Perlin::new();
 //! let val = perlin.get([42.4, 37.7, 2.8]);
@@ -24,9 +24,9 @@ extern crate num_traits;
 extern crate rand;
 
 pub use math::{Point2, Point3, Point4};
-pub use modules::*;
+pub use noise_fns::*;
 
 mod gradient;
 mod math;
-mod modules;
+mod noise_fns;
 mod permutationtable;

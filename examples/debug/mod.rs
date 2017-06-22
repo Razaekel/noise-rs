@@ -18,7 +18,7 @@ extern crate image;
 extern crate num_traits;
 
 use self::num_traits::{Float, NumCast};
-use noise::NoiseModule;
+use noise::NoiseFn;
 use std::path::Path;
 
 fn cast<T: NumCast, R: NumCast>(val: T) -> R {
@@ -36,7 +36,7 @@ fn clamp<F: Float>(val: F, min: F, max: F) -> F {
 #[allow(dead_code)]
 pub fn render_noise_module2<M>(filename: &str, module: &M, width: u32, height: u32, zoom: u32)
 where
-    M: NoiseModule<[f64; 2], f64>,
+    M: NoiseFn<[f64; 2], f64>,
 {
     let mut pixels = Vec::with_capacity((width * height) as usize);
 
@@ -81,7 +81,7 @@ where
 #[allow(dead_code)]
 pub fn render_noise_module3<M>(filename: &str, module: &M, width: u32, height: u32, zoom: u32)
 where
-    M: NoiseModule<[f64; 3], f64>,
+    M: NoiseFn<[f64; 3], f64>,
 {
     let mut pixels = Vec::with_capacity((width * height) as usize);
 
@@ -127,7 +127,7 @@ where
 #[allow(dead_code)]
 pub fn render_noise_module4<M>(filename: &str, module: &M, width: u32, height: u32, zoom: u32)
 where
-    M: NoiseModule<[f64; 4], f64>,
+    M: NoiseFn<[f64; 4], f64>,
 {
     let mut pixels = Vec::with_capacity((width * height) as usize);
 
