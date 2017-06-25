@@ -7,20 +7,19 @@
 // except according to those terms.
 
 use noise_fns::NoiseFn;
-use num_traits::Float;
 
 /// Noise function that raises the output value from the first source function
 /// to the power of the output value of the second source function.
-pub struct Power<'a, T: 'a, U: 'a> {
+pub struct Power<'a, T: 'a> {
     /// Outputs a value.
-    pub source1: &'a NoiseFn<T, U>,
+    pub source1: &'a NoiseFn<T>,
 
     /// Outputs a value.
-    pub source2: &'a NoiseFn<T, U>,
+    pub source2: &'a NoiseFn<T>,
 }
 
-impl<'a, T, U> Power<'a, T, U> {
-    pub fn new(source1: &'a NoiseFn<T, U>, source2: &'a NoiseFn<T, U>) -> Power<'a, T, U> {
+impl<'a, T> Power<'a, T> {
+    pub fn new(source1: &'a NoiseFn<T>, source2: &'a NoiseFn<T>) -> Power<'a, T> {
         Power {
             source1: source1,
             source2: source2,
@@ -28,12 +27,11 @@ impl<'a, T, U> Power<'a, T, U> {
     }
 }
 
-impl<'a, T, U> NoiseFn<T, U> for Power<'a, T, U>
+impl<'a, T> NoiseFn<T> for Power<'a, T>
 where
     T: Copy,
-    U: Float,
 {
-    fn get(&self, point: T) -> U {
+    fn get(&self, point: T) -> f64 {
         (self.source1.get(point)).powf(self.source2.get(point))
     }
 }

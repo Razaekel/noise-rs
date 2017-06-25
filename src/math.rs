@@ -9,20 +9,13 @@
 //! An ultra-light private math library to make our short lives easier as we
 //! implement super-complex noise stuff.
 
-use num_traits::{self, Float, NumCast};
 use std::ops::{Add, Mul, Sub};
 
 /// Cast a numeric type without having to unwrap - we don't expect any overflow
 /// errors...
 #[inline]
-pub fn cast<T: NumCast, U: NumCast>(x: T) -> U {
-    num_traits::cast(x).unwrap()
-}
-
-/// Raises the number to the power of `4`
-#[inline]
-pub fn pow4<T: Float>(x: T) -> T {
-    x * x * x * x
+pub fn cast<T, U: From<T>>(x: T) -> U {
+    From::from(x)
 }
 
 /// A 2-dimensional point. This is a fixed sized array, so should be compatible
@@ -43,6 +36,20 @@ pub type Vector2<T> = [T; 2];
 pub type Vector3<T> = [T; 3];
 /// A 4-dimensional vector, for internal use.
 pub type Vector4<T> = [T; 4];
+
+#[inline]
+pub fn clamp<T: PartialOrd>(input: T, min: T, max: T) -> T {
+    assert!(max >= min);
+
+    let mut x = input;
+    if x < min {
+        x = min;
+    }
+    if x > max {
+        x = max;
+    }
+    x
+}
 
 #[inline]
 pub fn map2<T, U, F>(a: Vector2<T>, f: F) -> Vector2<U>
@@ -213,17 +220,17 @@ where
 }
 
 #[inline]
-pub fn dot2<T: Float>(a: Vector2<T>, b: Vector2<T>) -> T {
+pub fn dot2(a: Vector2<f64>, b: Vector2<f64>) -> f64 {
     fold2(zip_with2(a, b, Mul::mul), Add::add)
 }
 
 #[inline]
-pub fn dot3<T: Float>(a: Vector3<T>, b: Vector3<T>) -> T {
+pub fn dot3(a: Vector3<f64>, b: Vector3<f64>) -> f64 {
     fold3(zip_with3(a, b, Mul::mul), Add::add)
 }
 
 #[inline]
-pub fn dot4<T: Float>(a: Vector4<T>, b: Vector4<T>) -> T {
+pub fn dot4(a: Vector4<f64>, b: Vector4<f64>) -> f64 {
     fold4(zip_with4(a, b, Mul::mul), Add::add)
 }
 
@@ -243,25 +250,25 @@ pub fn const4<T: Copy>(x: T) -> Vector4<T> {
 }
 
 #[inline]
-pub fn one2<T: Copy + NumCast>() -> Vector2<T> {
+pub fn one2<T: Copy + From<i8>>() -> Vector2<T> {
     cast2(const2(1))
 }
 
 #[inline]
-pub fn one3<T: Copy + NumCast>() -> Vector3<T> {
+pub fn one3<T: Copy + From<i8>>() -> Vector3<T> {
     cast3(const3(1))
 }
 
 #[inline]
-pub fn one4<T: Copy + NumCast>() -> Vector4<T> {
+pub fn one4<T: Copy + From<i8>>() -> Vector4<T> {
     cast4(const4(1))
 }
 
 #[inline]
 pub fn cast2<T, U>(x: Point2<T>) -> Point2<U>
 where
-    T: NumCast + Copy,
-    U: NumCast + Copy,
+    T: Copy,
+    U: Copy + From<T>,
 {
     map2(x, cast)
 }
@@ -269,8 +276,8 @@ where
 #[inline]
 pub fn cast3<T, U>(x: Point3<T>) -> Point3<U>
 where
-    T: NumCast + Copy,
-    U: NumCast + Copy,
+    T: Copy,
+    U: Copy + From<T>,
 {
     map3(x, cast)
 }
@@ -278,19 +285,53 @@ where
 #[inline]
 pub fn cast4<T, U>(x: Point4<T>) -> Point4<U>
 where
-    T: NumCast + Copy,
-    U: NumCast + Copy,
+    T: Copy,
+    U: Copy + From<T>,
 {
     map4(x, cast)
 }
 
-pub mod interp {
-    use math;
-    use num_traits::Float;
+// f64 doesn't implement From<isize>
+#[inline]
+pub fn to_f642(x: Point2<isize>) -> Point2<f64> {
+    [x[0] as f64, x[1] as f64]
+}
 
+#[inline]
+pub fn to_f643(x: Point3<isize>) -> Point3<f64> {
+    [x[0] as f64, x[1] as f64, x[2] as f64]
+}
+
+#[inline]
+pub fn to_f644(x: Point4<isize>) -> Point4<f64> {
+    [x[0] as f64, x[1] as f64, x[2] as f64, x[3] as f64]
+}
+
+// isize doesn't implement From<f64>
+#[inline]
+pub fn to_isize2(x: Point2<f64>) -> Point2<isize> {
+    [x[0] as isize, x[1] as isize]
+}
+
+#[inline]
+pub fn to_isize3(x: Point3<f64>) -> Point3<isize> {
+    [x[0] as isize, x[1] as isize, x[2] as isize]
+}
+
+#[inline]
+pub fn to_isize4(x: Point4<f64>) -> Point4<isize> {
+    [
+        x[0] as isize,
+        x[1] as isize,
+        x[2] as isize,
+        x[3] as isize,
+    ]
+}
+
+pub mod interp {
     /// Performs linear interploation between two values.
     #[inline]
-    pub fn linear<T: Float>(a: T, b: T, x: T) -> T {
+    pub fn linear(a: f64, b: f64, x: f64) -> f64 {
         x.mul_add((b - a), a)
     }
 
@@ -307,7 +348,7 @@ pub mod interp {
     /// 0.0, this function returns _n1_. If the alpha value is 1.0, this
     /// function returns _n2_.
     #[inline]
-    pub fn cubic<T: Float>(n0: T, n1: T, n2: T, n3: T, x: T) -> T {
+    pub fn cubic(n0: f64, n1: f64, n2: f64, n3: f64, x: f64) -> f64 {
         let p = (n3 - n2) - (n0 - n1);
         let q = (n0 - n1) - p;
         let r = n2 - n0;
@@ -317,13 +358,13 @@ pub mod interp {
 
     /// Maps a value onto a cubic S-curve.
     #[inline]
-    pub fn s_curve3<T: Float>(x: T) -> T {
-        x * x * (math::cast::<_, T>(3.0) - (x * math::cast(2.0)))
+    pub fn s_curve3(x: f64) -> f64 {
+        x * x * (3.0 - (x * 2.0))
     }
 
     /// Maps a value onto a quintic S-curve.
     #[inline]
-    pub fn s_curve5<T: Float>(x: T) -> T {
-        x * x * x * (x * (x * math::cast(6.0) - math::cast(15.0) + math::cast(10.0)))
+    pub fn s_curve5(x: f64) -> f64 {
+        x * x * x * (x * (x * 6.0 - 15.0 + 10.0))
     }
 }

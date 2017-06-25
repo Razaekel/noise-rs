@@ -6,49 +6,46 @@
 // project carrying such notice may not be copied, modified, or distributed
 // except according to those terms.
 
+use math;
 use noise_fns::NoiseFn;
-use num_traits::Float;
 
 /// Noise function that clamps the output value from the source function to a
 /// range of values.
-pub struct Clamp<'a, T: 'a, U: 'a> {
+pub struct Clamp<'a, T: 'a> {
     /// Outputs a value.
-    pub source: &'a NoiseFn<T, U>,
+    pub source: &'a NoiseFn<T>,
 
     /// Lower bound of the clamping range. Default is -1.0.
-    pub lower_bound: U,
+    pub lower_bound: f64,
 
     /// Upper bound of the clamping range. Default is 1.0.
-    pub upper_bound: U,
+    pub upper_bound: f64,
 }
 
-impl<'a, T, U> Clamp<'a, T, U>
-where
-    U: Float,
-{
-    pub fn new(source: &'a NoiseFn<T, U>) -> Clamp<'a, T, U> {
+impl<'a, T> Clamp<'a, T> {
+    pub fn new(source: &'a NoiseFn<T>) -> Clamp<'a, T> {
         Clamp {
             source: source,
-            lower_bound: -U::one(),
-            upper_bound: U::one(),
+            lower_bound: -1.0,
+            upper_bound: 1.0,
         }
     }
 
-    pub fn set_lower_bound(self, lower_bound: U) -> Clamp<'a, T, U> {
+    pub fn set_lower_bound(self, lower_bound: f64) -> Clamp<'a, T> {
         Clamp {
             lower_bound: lower_bound,
             ..self
         }
     }
 
-    pub fn set_upper_bound(self, upper_bound: U) -> Clamp<'a, T, U> {
+    pub fn set_upper_bound(self, upper_bound: f64) -> Clamp<'a, T> {
         Clamp {
             upper_bound: upper_bound,
             ..self
         }
     }
 
-    pub fn set_bounds(self, lower_bound: U, upper_bound: U) -> Clamp<'a, T, U> {
+    pub fn set_bounds(self, lower_bound: f64, upper_bound: f64) -> Clamp<'a, T> {
         Clamp {
             lower_bound: lower_bound,
             upper_bound: upper_bound,
@@ -57,17 +54,10 @@ where
     }
 }
 
-impl<'a, T, U> NoiseFn<T, U> for Clamp<'a, T, U>
-where
-    U: Float,
-{
-    fn get(&self, point: T) -> U {
+impl<'a, T> NoiseFn<T> for Clamp<'a, T> {
+    fn get(&self, point: T) -> f64 {
         let value = self.source.get(point);
 
-        match () {
-            _ if value < self.lower_bound => self.lower_bound,
-            _ if value > self.upper_bound => self.upper_bound,
-            _ => value,
-        }
+        math::clamp(value, self.lower_bound, self.upper_bound)
     }
 }

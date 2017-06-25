@@ -15,44 +15,45 @@
 //! Useful things for debugging noise functions.
 
 extern crate image;
-extern crate num_traits;
 
-use self::num_traits::{Float, NumCast};
 use noise::NoiseFn;
+use std;
 use std::path::Path;
 
-fn cast<T: NumCast, R: NumCast>(val: T) -> R {
-    num_traits::cast(val).unwrap()
-}
+#[inline]
+pub fn clamp<T: PartialOrd>(input: T, min: T, max: T) -> T {
+    assert!(max >= min);
 
-fn clamp<F: Float>(val: F, min: F, max: F) -> F {
-    match () {
-        _ if val < min => min,
-        _ if val > max => max,
-        _ => val,
+    let mut x = input;
+    if x < min {
+        x = min;
     }
+    if x > max {
+        x = max;
+    }
+    x
 }
 
 #[allow(dead_code)]
 pub fn render_noise_module2<M>(filename: &str, module: &M, width: u32, height: u32, zoom: u32)
 where
-    M: NoiseFn<[f64; 2], f64>,
+    M: NoiseFn<[f64; 2]>,
 {
     let mut pixels = Vec::with_capacity((width * height) as usize);
 
     println!("\nGenerating {} points for {}", width * height, filename);
-    let mut min_value = Float::max_value();
-    let mut max_value = Float::min_value();
+    let mut min_value = std::f64::MAX;
+    let mut max_value = std::f64::MIN;
 
     for y in 0..height {
         for x in 0..width {
-            let value: f64 = cast(module.get(
+            let value = module.get(
                 [
                     ((x as f64 - (width as f64 / 2.0)) / zoom as f64),
                     ((y as f64 - (height as f64 / 2.0)) / zoom as f64),
                 ],
-            ));
-            pixels.push(cast(clamp(value * 0.5 + 0.5, 0.0, 1.0) * 255.0));
+            );
+            pixels.push((clamp(value * 0.5 + 0.5, 0.0, 1.0) * 255.0) as u8);
 
             print!("\rProcessing {} of {}",
                    (y * width) + height,
@@ -81,24 +82,24 @@ where
 #[allow(dead_code)]
 pub fn render_noise_module3<M>(filename: &str, module: &M, width: u32, height: u32, zoom: u32)
 where
-    M: NoiseFn<[f64; 3], f64>,
+    M: NoiseFn<[f64; 3]>,
 {
     let mut pixels = Vec::with_capacity((width * height) as usize);
 
     println!("\nGenerating {} points for {}", width * height, filename);
-    let mut min_value = Float::max_value();
-    let mut max_value = Float::min_value();
+    let mut min_value = std::f64::MAX;
+    let mut max_value = std::f64::MIN;
 
     for y in 0..height {
         for x in 0..width {
-            let value: f64 = cast(module.get(
+            let value = module.get(
                 [
                     ((x as f64 - (width as f64 / 2.0)) / zoom as f64),
                     ((y as f64 - (height as f64 / 2.0)) / zoom as f64),
                     0.0,
                 ],
-            ));
-            pixels.push(cast(clamp(value * 0.5 + 0.5, 0.0, 1.0) * 255.0));
+            );
+            pixels.push((clamp(value * 0.5 + 0.5, 0.0, 1.0) * 255.0) as u8);
 
             print!("\rProcessing {} of {}",
                    (y * width) + height,
@@ -127,25 +128,25 @@ where
 #[allow(dead_code)]
 pub fn render_noise_module4<M>(filename: &str, module: &M, width: u32, height: u32, zoom: u32)
 where
-    M: NoiseFn<[f64; 4], f64>,
+    M: NoiseFn<[f64; 4]>,
 {
     let mut pixels = Vec::with_capacity((width * height) as usize);
 
     println!("\nGenerating {} points for {}", width * height, filename);
-    let mut min_value = Float::max_value();
-    let mut max_value = Float::min_value();
+    let mut min_value = std::f64::MAX;
+    let mut max_value = std::f64::MIN;
 
     for y in 0..height {
         for x in 0..width {
-            let value: f64 = cast(module.get(
+            let value = module.get(
                 [
                     ((x as f64 - (width as f64 / 2.0)) / zoom as f64),
                     ((y as f64 - (height as f64 / 2.0)) / zoom as f64),
                     0.0,
                     0.0,
                 ],
-            ));
-            pixels.push(cast(clamp(value * 0.5 + 0.5, 0.0, 1.0) * 255.0));
+            );
+            pixels.push((clamp(value * 0.5 + 0.5, 0.0, 1.0) * 255.0) as u8);
 
             print!("\rProcessing {} of {}",
                    (y * width) + height,

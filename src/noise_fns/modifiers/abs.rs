@@ -7,26 +7,22 @@
 // except according to those terms.
 
 use noise_fns::NoiseFn;
-use num_traits::Float;
 
 /// Noise function that outputs the absolute value of the output value from the
 /// source function.
-pub struct Abs<'a, T: 'a, U: 'a> {
+pub struct Abs<'a, T: 'a> {
     /// Outputs a value.
-    pub source: &'a NoiseFn<T, U>,
+    pub source: &'a NoiseFn<T>,
 }
 
-impl<'a, T, U> Abs<'a, T, U> {
-    pub fn new(source: &'a NoiseFn<T, U>) -> Abs<'a, T, U> {
+impl<'a, T> Abs<'a, T> {
+    pub fn new(source: &'a NoiseFn<T>) -> Abs<'a, T> {
         Abs { source: source }
     }
 }
 
-impl<'a, T, U> NoiseFn<T, U> for Abs<'a, T, U>
-where
-    U: Float,
-{
-    fn get(&self, point: T) -> U {
+impl<'a, T> NoiseFn<T> for Abs<'a, T> {
+    fn get(&self, point: T) -> f64 {
         (self.source.get(point)).abs()
     }
 }

@@ -9,21 +9,21 @@
 use math;
 use math::{Point2, Point3, Point4};
 use noise_fns::{NoiseFn, Seedable};
-use num_traits::Float;
 use permutationtable::PermutationTable;
+use std;
 
 /// Default noise seed for the `Worley` noise function.
 pub const DEFAULT_WORLEY_SEED: u32 = 0;
 /// Default `RangeFunction` for the `Worley` noise function.
 pub const DEFAULT_WORLEY_RANGEFUNCTION: RangeFunction = RangeFunction::Euclidean;
 /// Default frequency for the `Worley` noise function.
-pub const DEFAULT_WORLEY_FREQUENCY: f32 = 1.0;
+pub const DEFAULT_WORLEY_FREQUENCY: f64 = 1.0;
 /// Default displacement for the `Worley` noise function.
-pub const DEFAULT_WORLEY_DISPLACEMENT: f32 = 1.0;
+pub const DEFAULT_WORLEY_DISPLACEMENT: f64 = 1.0;
 
 /// Noise function that outputs Worley noise.
 #[derive(Clone, Copy, Debug)]
-pub struct Worley<T> {
+pub struct Worley {
     /// Specifies the range function to use when calculating the boundaries of
     /// the cell.
     pub range_function: RangeFunction,
@@ -33,7 +33,7 @@ pub struct Worley<T> {
     pub enable_range: bool,
 
     /// Frequency of the seed points.
-    pub frequency: T,
+    pub frequency: f64,
 
     /// Scale of the random displacement to apply to each cell.
     ///
@@ -41,29 +41,26 @@ pub struct Worley<T> {
     /// a value noise function. The `displacement` _value_ controls the range
     /// random values to assign to each cell. The range of random values is +/-
     /// the displacement value.
-    pub displacement: T,
+    pub displacement: f64,
 
     seed: u32,
     perm_table: PermutationTable,
 }
 
-impl<T> Worley<T>
-where
-    T: Float,
-{
-    pub fn new() -> Worley<T> {
+impl Worley {
+    pub fn new() -> Worley {
         Worley {
             perm_table: PermutationTable::new(DEFAULT_WORLEY_SEED),
             seed: DEFAULT_WORLEY_SEED,
             range_function: DEFAULT_WORLEY_RANGEFUNCTION,
             enable_range: false,
-            frequency: math::cast(DEFAULT_WORLEY_FREQUENCY),
-            displacement: math::cast(DEFAULT_WORLEY_DISPLACEMENT),
+            frequency: DEFAULT_WORLEY_FREQUENCY,
+            displacement: DEFAULT_WORLEY_DISPLACEMENT,
         }
     }
 
     /// Sets the range function used by the Worley cells.
-    pub fn set_range_function(self, range_function: RangeFunction) -> Worley<T> {
+    pub fn set_range_function(self, range_function: RangeFunction) -> Worley {
         Worley {
             range_function: range_function,
             ..self
@@ -72,7 +69,7 @@ where
 
     /// Enables or disables applying the distance from the nearest seed point
     /// to the output value.
-    pub fn enable_range(self, enable_range: bool) -> Worley<T> {
+    pub fn enable_range(self, enable_range: bool) -> Worley {
         Worley {
             enable_range: enable_range,
             ..self
@@ -80,14 +77,14 @@ where
     }
 
     /// Sets the frequency of the seed points.
-    pub fn set_frequency(self, frequency: T) -> Worley<T> {
+    pub fn set_frequency(self, frequency: f64) -> Worley {
         Worley {
             frequency: frequency,
             ..self
         }
     }
 
-    pub fn set_displacement(self, displacement: T) -> Worley<T> {
+    pub fn set_displacement(self, displacement: f64) -> Worley {
         Worley {
             displacement: displacement,
             ..self
@@ -95,15 +92,21 @@ where
     }
 }
 
-impl<T: Float> Default for Worley<T> {
+impl Default for Worley {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> Seedable for Worley<T> {
+impl Seedable for Worley {
     /// Sets the seed value used by the Worley cells.
-    fn set_seed(self, seed: u32) -> Worley<T> {
+    fn set_seed(self, seed: u32) -> Worley {
+        // If the new seed is the same as the current seed, just return self.
+        if self.seed == seed {
+            return self;
+        }
+
+        // Otherwise, regenerate the permutation table based on the new seed.
         Worley {
             perm_table: PermutationTable::new(seed),
             seed: seed,
@@ -142,7 +145,7 @@ pub enum RangeFunction {
     Quadratic,
 }
 
-fn calculate_range<T: Float>(range_function: RangeFunction, p1: &[T], p2: &[T]) -> T {
+fn calculate_range(range_function: RangeFunction, p1: &[f64], p2: &[f64]) -> f64 {
     match range_function {
         RangeFunction::Euclidean => range_euclidean(p1, p2),
         RangeFunction::EuclideanSquared => range_euclidean_squared(p1, p2),
@@ -152,81 +155,84 @@ fn calculate_range<T: Float>(range_function: RangeFunction, p1: &[T], p2: &[T]) 
     }
 }
 
-fn range_euclidean<T: Float>(p1: &[T], p2: &[T]) -> T {
+fn range_euclidean(p1: &[f64], p2: &[f64]) -> f64 {
     p1.iter()
         .zip(p2.iter())
         .map(|(a, b)| *a - *b)
         .map(|a| a * a)
-        .fold(T::zero(), |acc, x| acc + x)
+        .fold(0.0, |acc, x| acc + x)
         .sqrt()
 }
 
-fn range_euclidean_squared<T: Float>(p1: &[T], p2: &[T]) -> T {
+fn range_euclidean_squared(p1: &[f64], p2: &[f64]) -> f64 {
     p1.iter()
         .zip(p2.iter())
         .map(|(a, b)| *a - *b)
         .map(|a| a * a)
-        .fold(T::zero(), |acc, x| acc + x)
+        .fold(0.0, |acc, x| acc + x)
 }
 
-fn range_manhattan<T: Float>(p1: &[T], p2: &[T]) -> T {
+fn range_manhattan(p1: &[f64], p2: &[f64]) -> f64 {
     p1.iter()
         .zip(p2.iter())
         .map(|(a, b)| *a - *b)
         .map(|a| a.abs())
-        .fold(T::zero(), |acc, x| acc + x)
+        .fold(0.0, |acc, x| acc + x)
 }
 
-fn range_chebyshev<T: Float>(p1: &[T], p2: &[T]) -> T {
+fn range_chebyshev(p1: &[f64], p2: &[f64]) -> f64 {
     p1.iter()
         .zip(p2.iter())
         .map(|(a, b)| *a - *b)
         .map(|a| a.abs())
-        .fold(T::min_value(), |a, b| a.max(b))
+        .fold(std::f64::MIN, |a, b| a.max(b))
 }
 
-fn range_quadratic<T: Float>(p1: &[T], p2: &[T]) -> T {
-    let temp: Vec<T> = p1.iter().zip(p2.iter()).map(|(a, b)| *a - *b).collect();
+fn range_quadratic(p1: &[f64], p2: &[f64]) -> f64 {
+    let temp: Vec<f64> = p1.iter().zip(p2.iter()).map(|(a, b)| *a - *b).collect();
 
-    let length = temp.len();
-    let mut result = T::zero();
+    let mut result = 0.0;
 
-    for i in temp.iter().take(length) {
-        for j in temp.iter().take(length) {
-            result = result + (*i * *j);
+    for i in &temp {
+        for j in &temp {
+            result += *i * *j;
         }
     }
 
     result
 }
 
-impl<T: Float> NoiseFn<Point2<T>, T> for Worley<T> {
-    fn get(&self, point: Point2<T>) -> T {
+impl NoiseFn<Point2<f64>> for Worley {
+    fn get(&self, point: Point2<f64>) -> f64 {
         #[inline(always)]
-        fn get_point<T: Float>(perm_table: &PermutationTable, whole: Point2<i64>) -> Point2<T> {
-            math::add2(get_vec2(perm_table.get2(whole)), math::cast2::<_, T>(whole))
+        fn get_point(perm_table: &PermutationTable, whole: Point2<isize>) -> Point2<f64> {
+            math::add2(get_vec2(perm_table.get2(whole)), math::to_f642(whole))
         }
-
-        let half: T = math::cast(0.5);
 
         let point = &math::mul2(point, self.frequency);
 
-        let cell = math::map2(*point, T::floor);
-        let whole = math::map2(cell, math::cast::<_, i64>);
+        let cell = math::map2(*point, f64::floor);
+        let whole = math::to_isize2(cell);
         let frac = math::sub2(*point, cell);
 
-        let x_half = frac[0] > half;
-        let y_half = frac[1] > half;
+        let x_half = frac[0] > 0.5;
+        let y_half = frac[1] > 0.5;
 
-        let near = [whole[0] + (x_half as i64), whole[1] + (y_half as i64)];
-        let far = [whole[0] + (!x_half as i64), whole[1] + (!y_half as i64)];
+        let near = [
+            whole[0] + (x_half as isize),
+            whole[1] + (y_half as isize),
+        ];
+        let far = [
+            whole[0] + (!x_half as isize),
+            whole[1] + (!y_half as isize),
+        ];
 
         let mut seed_cell = near;
         let seed_point = get_point(&self.perm_table, near);
         let mut range = calculate_range(self.range_function, point, &seed_point);
 
-        let x_range = (half - frac[0]) * (half - frac[0]); // x-distance squared to center line
-        let y_range = (half - frac[1]) * (half - frac[1]); // y-distance squared to center line
+        let x_range = (0.5 - frac[0]) * (0.5 - frac[0]); // x-distance squared to center line
+        let y_range = (0.5 - frac[1]) * (0.5 - frac[1]); // y-distance squared to center line
 
         macro_rules! test_point(
             [$x:expr, $y:expr] => {
@@ -256,71 +262,66 @@ impl<T: Float> NoiseFn<Point2<T>, T> for Worley<T> {
         let value = if self.enable_range {
             range
         } else {
-            self.displacement * math::cast::<_, T>(self.perm_table.get2(seed_cell)) *
-                math::cast(1.0 / 255.0)
+            self.displacement * self.perm_table.get2(seed_cell) as f64 / 255.0
         };
 
-        value * math::cast(2.0) - T::one()
+        value * 2.0 - 1.0
     }
 }
 
 #[inline(always)]
 #[cfg_attr(rustfmt, rustfmt_skip)]
-fn get_vec2<T: Float>(index: usize) -> Point2<T> {
-    let length = math::cast::<_, T>((index & 0xF8) >> 3) * math::cast(0.5 / 31.0);
-    let diag = length * math::cast(::std::f64::consts::FRAC_1_SQRT_2);
-    let one = length;
-    let zero = T::zero();
+fn get_vec2(index: usize) -> Point2<f64> {
+    let length = ((index & 0xF8) >> 3) as f64 * 0.5 / 31.0;
+    let diag = length * std::f64::consts::FRAC_1_SQRT_2;
     match index & 0x07 {
-        0 => [ diag,  diag],
-        1 => [ diag, -diag],
-        2 => [-diag,  diag],
-        3 => [-diag, -diag],
-        4 => [ one,   zero],
-        5 => [-one,   zero],
-        6 => [ zero,  one],
-        7 => [ zero, -one],
+        0 => [   diag,    diag],
+        1 => [   diag,   -diag],
+        2 => [  -diag,    diag],
+        3 => [  -diag,   -diag],
+        4 => [ length,     0.0],
+        5 => [-length,     0.0],
+        6 => [    0.0,  length],
+        7 => [    0.0, -length],
         _ => unreachable!(),
     }
 }
 
-impl<T: Float> NoiseFn<Point3<T>, T> for Worley<T> {
-    fn get(&self, point: Point3<T>) -> T {
+impl NoiseFn<Point3<f64>> for Worley {
+    fn get(&self, point: Point3<f64>) -> f64 {
         #[inline(always)]
-        fn get_point<T: Float>(perm_table: &PermutationTable, whole: Point3<i64>) -> Point3<T> {
-            math::add3(get_vec3(perm_table.get3(whole)), math::cast3::<_, T>(whole))
+        fn get_point(perm_table: &PermutationTable, whole: Point3<isize>) -> Point3<f64> {
+            math::add3(get_vec3(perm_table.get3(whole)), math::to_f643(whole))
         }
-
-        let half: T = math::cast(0.5);
 
         let point = &math::mul3(point, self.frequency);
 
-        let cell = math::map3(*point, T::floor);
-        let whole = math::map3(cell, math::cast::<_, i64>);
+        let cell = math::map3(*point, f64::floor);
+        let whole = math::to_isize3(cell);
         let frac = math::sub3(*point, cell);
 
-        let x_half = frac[0] > half;
-        let y_half = frac[1] > half;
-        let z_half = frac[2] > half;
+        let x_half = frac[0] > 0.5;
+        let y_half = frac[1] > 0.5;
+        let z_half = frac[2] > 0.5;
 
         let near = [
-            whole[0] + (x_half as i64),
-            whole[1] + (y_half as i64),
-            whole[2] + (z_half as i64),
+            whole[0] + (x_half as isize),
+            whole[1] + (y_half as isize),
+            whole[2] + (z_half as isize),
         ];
         let far = [
-            whole[0] + (!x_half as i64),
-            whole[1] + (!y_half as i64),
-            whole[2] + (!z_half as i64),
+            whole[0] + (!x_half as isize),
+            whole[1] + (!y_half as isize),
+            whole[2] + (!z_half as isize),
         ];
 
         let mut seed_cell = near;
         let seed_point = get_point(&self.perm_table, near);
         let mut range = calculate_range(self.range_function, point, &seed_point);
 
-        let x_range = (half - frac[0]) * (half - frac[0]); // x-distance squared to center line
-        let y_range = (half - frac[1]) * (half - frac[1]); // y-distance squared to center line
-        let z_range = (half - frac[2]) * (half - frac[2]); // z-distance squared to center line
+        let x_range = (0.5 - frac[0]) * (0.5 - frac[0]); // x-distance squared to center line
+        let y_range = (0.5 - frac[1]) * (0.5 - frac[1]); // y-distance squared to center line
+        let z_range = (0.5 - frac[2]) * (0.5 - frac[2]); // z-distance squared to center line
 
         macro_rules! test_point(
             [$x:expr, $y:expr, $z:expr] => {
@@ -362,85 +363,80 @@ impl<T: Float> NoiseFn<Point3<T>, T> for Worley<T> {
         let value = if self.enable_range {
             range
         } else {
-            self.displacement * math::cast::<_, T>(self.perm_table.get3(seed_cell)) *
-                math::cast(1.0 / 255.0)
+            self.displacement * self.perm_table.get3(seed_cell) as f64 / 255.0
         };
 
-        value * math::cast(2.0) - T::one()
+        value * 2.0 - 1.0
     }
 }
 
 #[inline(always)]
 #[cfg_attr(rustfmt, rustfmt_skip)]
-fn get_vec3<T: Float>(index: usize) -> Point3<T> {
-    let length = math::cast::<_, T>((index & 0xE0) >> 5) * math::cast(0.5 / 7.0);
-    let diag = length * math::cast(::std::f64::consts::FRAC_1_SQRT_2);
-    let one = length;
-    let zero = T::zero();
+fn get_vec3(index: usize) -> Point3<f64> {
+    let length = ((index & 0xE0) >> 5) as f64 * 0.5 / 7.0;
+    let diag = length * std::f64::consts::FRAC_1_SQRT_2;
     match index % 18 {
-        0  => [ diag,  diag,  zero],
-        1  => [ diag, -diag,  zero],
-        2  => [-diag,  diag,  zero],
-        3  => [-diag, -diag,  zero],
-        4  => [ diag,  zero,  diag],
-        5  => [ diag,  zero, -diag],
-        6  => [-diag,  zero,  diag],
-        7  => [-diag,  zero, -diag],
-        8  => [ zero,  diag,  diag],
-        9  => [ zero,  diag, -diag],
-        10 => [ zero, -diag,  diag],
-        11 => [ zero, -diag, -diag],
-        12 => [ one,   zero,  zero],
-        13 => [ zero,  one,   zero],
-        14 => [ zero,  zero,  one],
-        15 => [-one,   zero,  zero],
-        16 => [ zero, -one,   zero],
-        17 => [ zero,  zero, -one],
+        0  => [   diag,    diag,     0.0],
+        1  => [   diag,   -diag,     0.0],
+        2  => [  -diag,    diag,     0.0],
+        3  => [  -diag,   -diag,     0.0],
+        4  => [   diag,     0.0,    diag],
+        5  => [   diag,     0.0,   -diag],
+        6  => [  -diag,     0.0,    diag],
+        7  => [  -diag,     0.0,   -diag],
+        8  => [    0.0,    diag,    diag],
+        9  => [    0.0,    diag,   -diag],
+        10 => [    0.0,   -diag,    diag],
+        11 => [    0.0,   -diag,   -diag],
+        12 => [ length,     0.0,     0.0],
+        13 => [    0.0,  length,     0.0],
+        14 => [    0.0,     0.0,  length],
+        15 => [-length,     0.0,     0.0],
+        16 => [    0.0, -length,     0.0],
+        17 => [    0.0,     0.0, -length],
         _ => panic!("Attempt to access 3D gradient {} of 18", index % 18),
     }
 }
 
-impl<T: Float> NoiseFn<Point4<T>, T> for Worley<T> {
-    fn get(&self, point: Point4<T>) -> T {
+impl NoiseFn<Point4<f64>> for Worley {
+    fn get(&self, point: Point4<f64>) -> f64 {
         #[inline(always)]
-        fn get_point<T: Float>(perm_table: &PermutationTable, whole: Point4<i64>) -> Point4<T> {
-            math::add4(get_vec4(perm_table.get4(whole)), math::cast4::<_, T>(whole))
+        fn get_point(perm_table: &PermutationTable, whole: Point4<isize>) -> Point4<f64> {
+            math::add4(get_vec4(perm_table.get4(whole)), math::to_f644(whole))
         }
-
-        let half: T = math::cast(0.5);
 
         let point = &math::mul4(point, self.frequency);
 
-        let cell = math::map4(*point, T::floor);
-        let whole = math::map4(cell, math::cast::<_, i64>);
+        let cell = math::map4(*point, f64::floor);
+        let whole = math::to_isize4(cell);
         let frac = math::sub4(*point, cell);
 
-        let x_half = frac[0] > half;
-        let y_half = frac[1] > half;
-        let z_half = frac[2] > half;
-        let w_half = frac[3] > half;
+        let x_half = frac[0] > 0.5;
+        let y_half = frac[1] > 0.5;
+        let z_half = frac[2] > 0.5;
+        let w_half = frac[3] > 0.5;
 
         let near = [
-            whole[0] + (x_half as i64),
-            whole[1] + (y_half as i64),
-            whole[2] + (z_half as i64),
-            whole[3] + (w_half as i64),
+            whole[0] + (x_half as isize),
+            whole[1] + (y_half as isize),
+            whole[2] + (z_half as isize),
+            whole[3] + (w_half as isize),
         ];
         let far = [
-            whole[0] + (!x_half as i64),
-            whole[1] + (!y_half as i64),
-            whole[2] + (!z_half as i64),
-            whole[3] + (!w_half as i64),
+            whole[0] + (!x_half as isize),
+            whole[1] + (!y_half as isize),
+            whole[2] + (!z_half as isize),
+            whole[3] + (!w_half as isize),
         ];
 
         let mut seed_cell = near;
         let seed_point = get_point(&self.perm_table, near);
         let mut range = calculate_range(self.range_function, point, &seed_point);
 
-        let x_range = (half - frac[0]) * (half - frac[0]); // x-distance squared to center line
-        let y_range = (half - frac[1]) * (half - frac[1]); // y-distance squared to center line
-        let z_range = (half - frac[2]) * (half - frac[2]); // z-distance squared to center line
-        let w_range = (half - frac[3]) * (half - frac[3]); // w-distance squared to center line
+        let x_range = (0.5 - frac[0]) * (0.5 - frac[0]); // x-distance squared to center line
+        let y_range = (0.5 - frac[1]) * (0.5 - frac[1]); // y-distance squared to center line
+        let z_range = (0.5 - frac[2]) * (0.5 - frac[2]); // z-distance squared to center line
+        let w_range = (0.5 - frac[3]) * (0.5 - frac[3]); // w-distance squared to center line
 
         macro_rules! test_point(
             [$x:expr, $y:expr, $z:expr, $w:expr] => {
@@ -507,53 +503,51 @@ impl<T: Float> NoiseFn<Point4<T>, T> for Worley<T> {
         let value = if self.enable_range {
             range
         } else {
-            self.displacement * math::cast::<_, T>(self.perm_table.get4(seed_cell)) *
-                math::cast(1.0 / 255.0)
+            self.displacement * self.perm_table.get4(seed_cell) as f64 / 255.0
         };
 
-        value * math::cast(2.0) - T::one()
+        value * 2.0 - 1.0
     }
 }
 
 #[inline(always)]
 #[cfg_attr(rustfmt, rustfmt_skip)]
-fn get_vec4<T: Float>(index: usize) -> Point4<T> {
-    let length = math::cast::<_, T>((index & 0xE0) >> 5) * math::cast(0.5 / 7.0);
-    let diag = length * math::cast(0.57735026919);
-    let zero = T::zero();
+fn get_vec4(index: usize) -> Point4<f64> {
+    let length = ((index & 0xE0) >> 5) as f64 * 0.5 / 7.0;
+    let diag = length * 0.5773502691896258;
     match index % 32 {
-        0  => [ diag,  diag,  diag,  zero],
-        1  => [ diag, -diag,  diag,  zero],
-        2  => [-diag,  diag,  diag,  zero],
-        3  => [-diag, -diag,  diag,  zero],
-        4  => [ diag,  diag, -diag,  zero],
-        5  => [ diag, -diag, -diag,  zero],
-        6  => [-diag,  diag, -diag,  zero],
-        7  => [-diag, -diag, -diag,  zero],
-        8  => [ diag,  diag,  zero,  diag],
-        9  => [ diag, -diag,  zero,  diag],
-        10 => [-diag,  diag,  zero,  diag],
-        11 => [-diag, -diag,  zero,  diag],
-        12 => [ diag,  diag,  zero, -diag],
-        13 => [ diag, -diag,  zero, -diag],
-        14 => [-diag,  diag,  zero, -diag],
-        15 => [-diag, -diag,  zero, -diag],
-        16 => [ diag,  zero,  diag,  diag],
-        17 => [ diag,  zero, -diag,  diag],
-        18 => [-diag,  zero,  diag,  diag],
-        19 => [-diag,  zero, -diag,  diag],
-        20 => [ diag,  zero,  diag, -diag],
-        21 => [ diag,  zero, -diag, -diag],
-        22 => [-diag,  zero,  diag, -diag],
-        23 => [-diag,  zero, -diag, -diag],
-        24 => [ zero,  diag,  diag,  diag],
-        25 => [ zero,  diag, -diag,  diag],
-        26 => [ zero, -diag,  diag,  diag],
-        27 => [ zero, -diag, -diag,  diag],
-        28 => [ zero,  diag,  diag, -diag],
-        29 => [ zero,  diag, -diag, -diag],
-        30 => [ zero, -diag,  diag, -diag],
-        31 => [ zero, -diag, -diag, -diag],
+        0  => [ diag,  diag,  diag,  0.0],
+        1  => [ diag, -diag,  diag,  0.0],
+        2  => [-diag,  diag,  diag,  0.0],
+        3  => [-diag, -diag,  diag,  0.0],
+        4  => [ diag,  diag, -diag,  0.0],
+        5  => [ diag, -diag, -diag,  0.0],
+        6  => [-diag,  diag, -diag,  0.0],
+        7  => [-diag, -diag, -diag,  0.0],
+        8  => [ diag,  diag,  0.0,  diag],
+        9  => [ diag, -diag,  0.0,  diag],
+        10 => [-diag,  diag,  0.0,  diag],
+        11 => [-diag, -diag,  0.0,  diag],
+        12 => [ diag,  diag,  0.0, -diag],
+        13 => [ diag, -diag,  0.0, -diag],
+        14 => [-diag,  diag,  0.0, -diag],
+        15 => [-diag, -diag,  0.0, -diag],
+        16 => [ diag,  0.0,  diag,  diag],
+        17 => [ diag,  0.0, -diag,  diag],
+        18 => [-diag,  0.0,  diag,  diag],
+        19 => [-diag,  0.0, -diag,  diag],
+        20 => [ diag,  0.0,  diag, -diag],
+        21 => [ diag,  0.0, -diag, -diag],
+        22 => [-diag,  0.0,  diag, -diag],
+        23 => [-diag,  0.0, -diag, -diag],
+        24 => [ 0.0,  diag,  diag,  diag],
+        25 => [ 0.0,  diag, -diag,  diag],
+        26 => [ 0.0, -diag,  diag,  diag],
+        27 => [ 0.0, -diag, -diag,  diag],
+        28 => [ 0.0,  diag,  diag, -diag],
+        29 => [ 0.0,  diag, -diag, -diag],
+        30 => [ 0.0, -diag,  diag, -diag],
+        31 => [ 0.0, -diag, -diag, -diag],
         _ => panic!("Attempt to access 4D gradient {} of 32", index % 32),
     }
 }

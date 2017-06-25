@@ -7,20 +7,19 @@
 // except according to those terms.
 
 use noise_fns::NoiseFn;
-use num_traits::Float;
 
 /// Noise function that outputs the sum of the two output values from two source
 /// functions.
-pub struct Add<'a, T: 'a, U: 'a> {
+pub struct Add<'a, T: 'a> {
     /// Outputs a value.
-    pub source1: &'a NoiseFn<T, U>,
+    pub source1: &'a NoiseFn<T>,
 
     /// Outputs a value.
-    pub source2: &'a NoiseFn<T, U>,
+    pub source2: &'a NoiseFn<T>,
 }
 
-impl<'a, T, U> Add<'a, T, U> {
-    pub fn new(source1: &'a NoiseFn<T, U>, source2: &'a NoiseFn<T, U>) -> Add<'a, T, U> {
+impl<'a, T> Add<'a, T> {
+    pub fn new(source1: &'a NoiseFn<T>, source2: &'a NoiseFn<T>) -> Add<'a, T> {
         Add {
             source1: source1,
             source2: source2,
@@ -28,12 +27,11 @@ impl<'a, T, U> Add<'a, T, U> {
     }
 }
 
-impl<'a, T, U> NoiseFn<T, U> for Add<'a, T, U>
+impl<'a, T> NoiseFn<T> for Add<'a, T>
 where
     T: Copy,
-    U: Float,
 {
-    fn get(&self, point: T) -> U {
+    fn get(&self, point: T) -> f64 {
         self.source1.get(point) + self.source2.get(point)
     }
 }

@@ -8,53 +8,49 @@
 
 use math::interp;
 use noise_fns::NoiseFn;
-use num_traits::Float;
 
 /// Noise function that outputs the value selected from one of two source
 /// functions chosen by the output value from a control function.
-pub struct Select<'a, T: 'a, U: 'a> {
+pub struct Select<'a, T: 'a> {
     /// Outputs a value.
-    pub source1: &'a NoiseFn<T, U>,
+    pub source1: &'a NoiseFn<T>,
 
     /// Outputs a value.
-    pub source2: &'a NoiseFn<T, U>,
+    pub source2: &'a NoiseFn<T>,
 
     /// Determines the value to select. If the output value from
     /// the control function is within a range of values know as the _selection
     /// range_, this noise function outputs the value from `source2`.
     /// Otherwise, this noise function outputs the value from `source1`.
-    pub control: &'a NoiseFn<T, U>,
+    pub control: &'a NoiseFn<T>,
 
     /// Lower bound of the selection range. Default is 0.0.
-    pub lower_bound: U,
+    pub lower_bound: f64,
 
     /// Upper bound of the selection range. Default is 1.0.
-    pub upper_bound: U,
+    pub upper_bound: f64,
 
     /// Edge-falloff value. Default is 0.0.
-    pub edge_falloff: U,
+    pub edge_falloff: f64,
 }
 
-impl<'a, T, U> Select<'a, T, U>
-where
-    U: Float,
-{
+impl<'a, T> Select<'a, T> {
     pub fn new(
-        source1: &'a NoiseFn<T, U>,
-        source2: &'a NoiseFn<T, U>,
-        control: &'a NoiseFn<T, U>,
-    ) -> Select<'a, T, U> {
+        source1: &'a NoiseFn<T>,
+        source2: &'a NoiseFn<T>,
+        control: &'a NoiseFn<T>,
+    ) -> Select<'a, T> {
         Select {
             source1: source1,
             source2: source2,
             control: control,
-            lower_bound: U::zero(),
-            upper_bound: U::one(),
-            edge_falloff: U::zero(),
+            lower_bound: 0.0,
+            upper_bound: 1.0,
+            edge_falloff: 0.0,
         }
     }
 
-    pub fn set_bounds(self, lower: U, upper: U) -> Select<'a, T, U> {
+    pub fn set_bounds(self, lower: f64, upper: f64) -> Select<'a, T> {
         Select {
             lower_bound: lower,
             upper_bound: upper,
@@ -62,7 +58,7 @@ where
         }
     }
 
-    pub fn set_edge_falloff(self, falloff: U) -> Select<'a, T, U> {
+    pub fn set_edge_falloff(self, falloff: f64) -> Select<'a, T> {
         Select {
             edge_falloff: falloff,
             ..self
@@ -70,22 +66,21 @@ where
     }
 }
 
-impl<'a, T, U> NoiseFn<T, U> for Select<'a, T, U>
+impl<'a, T> NoiseFn<T> for Select<'a, T>
 where
     T: Copy,
-    U: Float,
 {
-    fn get(&self, point: T) -> U {
+    fn get(&self, point: T) -> f64 {
         let control_value = self.control.get(point);
 
-        if self.edge_falloff > U::zero() {
+        if self.edge_falloff > 0.0 {
             match () {
                 _ if control_value < (self.lower_bound - self.edge_falloff) => {
                     self.source1.get(point)
                 },
                 _ if control_value < (self.lower_bound + self.edge_falloff) => {
-                    let lower_curve: U = self.lower_bound - self.edge_falloff;
-                    let upper_curve: U = self.lower_bound + self.edge_falloff;
+                    let lower_curve = self.lower_bound - self.edge_falloff;
+                    let upper_curve = self.lower_bound + self.edge_falloff;
                     let alpha = interp::s_curve3((control_value - lower_curve) /
                                                      (upper_curve - lower_curve));
 
@@ -95,8 +90,8 @@ where
                     self.source2.get(point)
                 },
                 _ if control_value < (self.upper_bound + self.edge_falloff) => {
-                    let lower_curve: U = self.upper_bound - self.edge_falloff;
-                    let upper_curve: U = self.upper_bound + self.edge_falloff;
+                    let lower_curve = self.upper_bound - self.edge_falloff;
+                    let upper_curve = self.upper_bound + self.edge_falloff;
                     let alpha = interp::s_curve3((control_value - lower_curve) /
                                                      (upper_curve - lower_curve));
 

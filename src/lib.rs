@@ -20,7 +20,6 @@
 #![cfg_attr(feature = "cargo-clippy", allow(inline_always))]
 #![deny(missing_copy_implementations)]
 
-extern crate num_traits;
 extern crate rand;
 
 pub use math::{Point2, Point3, Point4};
