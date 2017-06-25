@@ -6,10 +6,8 @@
 // project carrying such notice may not be copied, modified, or distributed
 // except according to those terms.
 
-use math;
 use math::{Point2, Point3, Point4};
 use noise_fns::NoiseFn;
-use num_traits::Float;
 
 /// Default Checkerboard size
 pub const DEFAULT_CHECKERBOARD_SIZE: usize = 0;
@@ -22,7 +20,7 @@ pub const DEFAULT_CHECKERBOARD_SIZE: usize = 0;
 ///
 /// This noise function is not very useful by itself, but it can be used for
 /// debugging purposes.
-#[derive(Clone, Copy, Debug, Default)]
+#[derive(Clone, Copy, Debug)]
 pub struct Checkerboard {
     /// Controls the size of the block in 2^(size).
     pub size: usize,
@@ -48,39 +46,37 @@ impl Checkerboard {
     }
 }
 
-fn fast_floor<T: Float>(x: T) -> usize {
-    if x > T::zero() {
-        math::cast(x)
-    } else {
-        math::cast(x - T::one())
+impl Default for Checkerboard {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
 // These impl's should be made generic over Point, but there is no higher Point
 // type. Keep the code the same anyway.
-impl<T: Float> NoiseFn<Point2<T>, T> for Checkerboard {
-    fn get(&self, point: Point2<T>) -> T {
+impl NoiseFn<Point2<f64>> for Checkerboard {
+    fn get(&self, point: Point2<f64>) -> f64 {
         calculate_checkerboard(&point, self.size)
     }
 }
 
-impl<T: Float> NoiseFn<Point3<T>, T> for Checkerboard {
-    fn get(&self, point: Point3<T>) -> T {
+impl NoiseFn<Point3<f64>> for Checkerboard {
+    fn get(&self, point: Point3<f64>) -> f64 {
         calculate_checkerboard(&point, self.size)
     }
 }
 
-impl<T: Float> NoiseFn<Point4<T>, T> for Checkerboard {
-    fn get(&self, point: Point4<T>) -> T {
+impl NoiseFn<Point4<f64>> for Checkerboard {
+    fn get(&self, point: Point4<f64>) -> f64 {
         calculate_checkerboard(&point, self.size)
     }
 }
 
-fn calculate_checkerboard<T: Float>(point: &[T], size: usize) -> T {
+fn calculate_checkerboard(point: &[f64], size: usize) -> f64 {
     let result = point
         .iter()
-        .map(|&a| fast_floor(a))
+        .map(|&a| a.floor() as usize)
         .fold(0, |a, b| (a & size) ^ (b & size));
 
-    if result > 0 { -T::one() } else { T::one() }
+    if result > 0 { -1.0 } else { 1.0 }
 }

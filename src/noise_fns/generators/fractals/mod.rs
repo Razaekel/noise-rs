@@ -21,14 +21,14 @@ mod ridgedmulti;
 use noise_fns::{Perlin, Seedable};
 
 /// Trait for `MultiFractal` functions
-pub trait MultiFractal<T> {
+pub trait MultiFractal {
     fn set_octaves(self, octaves: usize) -> Self;
 
-    fn set_frequency(self, frequency: T) -> Self;
+    fn set_frequency(self, frequency: f64) -> Self;
 
-    fn set_lacunarity(self, lacunarity: T) -> Self;
+    fn set_lacunarity(self, lacunarity: f64) -> Self;
 
-    fn set_persistence(self, persistence: T) -> Self;
+    fn set_persistence(self, persistence: f64) -> Self;
 }
 
 fn build_sources(seed: u32, octaves: usize) -> Vec<Perlin> {

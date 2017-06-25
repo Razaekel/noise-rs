@@ -7,20 +7,19 @@
 // except according to those terms.
 
 use noise_fns::NoiseFn;
-use num_traits::Float;
 
 /// Noise function that outputs the larger of the two output values from two source
 /// functions.
-pub struct Max<'a, T: 'a, U: 'a> {
+pub struct Max<'a, T: 'a> {
     /// Outputs a value.
-    pub source1: &'a NoiseFn<T, U>,
+    pub source1: &'a NoiseFn<T>,
 
     /// Outputs a value.
-    pub source2: &'a NoiseFn<T, U>,
+    pub source2: &'a NoiseFn<T>,
 }
 
-impl<'a, T, U> Max<'a, T, U> {
-    pub fn new(source1: &'a NoiseFn<T, U>, source2: &'a NoiseFn<T, U>) -> Max<'a, T, U> {
+impl<'a, T> Max<'a, T> {
+    pub fn new(source1: &'a NoiseFn<T>, source2: &'a NoiseFn<T>) -> Max<'a, T> {
         Max {
             source1: source1,
             source2: source2,
@@ -28,12 +27,11 @@ impl<'a, T, U> Max<'a, T, U> {
     }
 }
 
-impl<'a, T, U> NoiseFn<T, U> for Max<'a, T, U>
+impl<'a, T> NoiseFn<T> for Max<'a, T>
 where
     T: Copy,
-    U: Float,
 {
-    fn get(&self, point: T) -> U {
+    fn get(&self, point: T) -> f64 {
         (self.source1.get(point)).max(self.source2.get(point))
     }
 }

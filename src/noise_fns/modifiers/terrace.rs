@@ -6,9 +6,8 @@
 // project carrying such notice may not be copied, modified, or distributed
 // except according to those terms.
 
-use math::interp;
+use math::{clamp, interp};
 use noise_fns::NoiseFn;
-use num_traits::Float;
 use std;
 
 /// Noise function that maps the output value from the source function onto a
@@ -34,23 +33,20 @@ use std;
 ///
 /// This noise function is often used to generate terrain features such as the
 /// stereotypical desert canyon.
-pub struct Terrace<'a, T: 'a, U: 'a> {
+pub struct Terrace<'a, T: 'a> {
     /// Outputs a value.
-    pub source: &'a NoiseFn<T, U>,
+    pub source: &'a NoiseFn<T>,
 
     /// Determines if the terrace-forming curve between all control points is
     /// inverted.
     pub invert_terraces: bool,
 
     /// Vec that stores the control points.
-    control_points: Vec<U>,
+    control_points: Vec<f64>,
 }
 
-impl<'a, T, U> Terrace<'a, T, U>
-where
-    U: Float,
-{
-    pub fn new(source: &'a NoiseFn<T, U>) -> Terrace<'a, T, U> {
+impl<'a, T> Terrace<'a, T> {
+    pub fn new(source: &'a NoiseFn<T>) -> Terrace<'a, T> {
         Terrace {
             source: source,
             invert_terraces: false,
@@ -65,9 +61,12 @@ where
     /// At the control points, its slope resets to zero.
     ///
     /// It does not matter which order these points are added in.
-    pub fn add_control_point(mut self, control_point: U) -> Terrace<'a, T, U> {
+    pub fn add_control_point(mut self, control_point: f64) -> Terrace<'a, T> {
         // check to see if the vector already contains the input point.
-        if !self.control_points.iter().any(|&x| x == control_point) {
+        if !self.control_points
+            .iter()
+            .any(|&x| (x - control_point).abs() < std::f64::EPSILON)
+        {
             // it doesn't, so find the correct position to insert the new
             // control point.
             let insertion_point = self.control_points
@@ -85,7 +84,7 @@ where
 
     /// Enables or disables the inversion of the terrain-forming curve between
     /// the control points.
-    pub fn invert_terraces(self, invert_terraces: bool) -> Terrace<'a, T, U> {
+    pub fn invert_terraces(self, invert_terraces: bool) -> Terrace<'a, T> {
         Terrace {
             invert_terraces: invert_terraces,
             ..self
@@ -93,11 +92,8 @@ where
     }
 }
 
-impl<'a, T, U> NoiseFn<T, U> for Terrace<'a, T, U>
-where
-    U: Float,
-{
-    fn get(&self, point: T) -> U {
+impl<'a, T> NoiseFn<T> for Terrace<'a, T> {
+    fn get(&self, point: T) -> f64 {
         // confirm that there's at least 2 control points in the vector.
         assert!(self.control_points.len() >= 2);
 
@@ -130,12 +126,12 @@ where
         let mut alpha = (source_value - input0) / (input1 - input0);
 
         if self.invert_terraces {
-            alpha = U::one() - alpha;
+            alpha = 1.0 - alpha;
             std::mem::swap(&mut input0, &mut input1);
         }
 
         // Squaring the alpha produces the terrace effect.
-        alpha = alpha * alpha;
+        alpha *= alpha;
 
         // Now perform the cubic interpolation and return.
         interp::linear(input0, input1, alpha)
@@ -143,9 +139,5 @@ where
 }
 
 fn clamp_index(index: isize, min: usize, max: usize) -> usize {
-    match () {
-        _ if index <= min as isize => min,
-        _ if index >= max as isize => max,
-        _ => index as usize,
-    }
+    clamp(index, min as isize, max as isize) as usize
 }

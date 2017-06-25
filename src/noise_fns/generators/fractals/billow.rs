@@ -9,18 +9,17 @@
 use math;
 use math::{Point2, Point3, Point4};
 use noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
-use num_traits::Float;
 
 /// Default noise seed for the Billow noise function.
 pub const DEFAULT_BILLOW_SEED: u32 = 0;
 /// Default number of octaves for the Billow noise function.
 pub const DEFAULT_BILLOW_OCTAVE_COUNT: usize = 6;
 /// Default frequency for the Billow noise function.
-pub const DEFAULT_BILLOW_FREQUENCY: f32 = 1.0;
+pub const DEFAULT_BILLOW_FREQUENCY: f64 = 1.0;
 /// Default lacunarity for the Billow noise function.
-pub const DEFAULT_BILLOW_LACUNARITY: f32 = 2.0;
+pub const DEFAULT_BILLOW_LACUNARITY: f64 = 2.0;
 /// Default persistence for the Billow noise function.
-pub const DEFAULT_BILLOW_PERSISTENCE: f32 = 0.5;
+pub const DEFAULT_BILLOW_PERSISTENCE: f64 = 0.5;
 /// Maximum number of octaves for the Billow noise function.
 pub const BILLOW_MAX_OCTAVES: usize = 32;
 
@@ -32,7 +31,7 @@ pub const BILLOW_MAX_OCTAVES: usize = 32;
 /// function modifes each octave with an absolute-value function. See the
 /// documentation for fBm for more information.
 #[derive(Clone, Debug)]
-pub struct Billow<T> {
+pub struct Billow {
     /// Total number of frequency octaves to generate the noise with.
     ///
     /// The number of octaves control the _amount of detail_ in the noise
@@ -41,7 +40,7 @@ pub struct Billow<T> {
     pub octaves: usize,
 
     /// The number of cycles per unit length that the noise function outputs.
-    pub frequency: T,
+    pub frequency: f64,
 
     /// A multiplier that determines how quickly the frequency increases for
     /// each successive octave in the noise function.
@@ -51,7 +50,7 @@ pub struct Billow<T> {
     ///
     /// A lacunarity of 2.0 results in the frequency doubling every octave. For
     /// almost all cases, 2.0 is a good value to use.
-    pub lacunarity: T,
+    pub lacunarity: f64,
 
     /// A multiplier that determines how quickly the amplitudes diminish for
     /// each successive octave in the noise function.
@@ -59,38 +58,38 @@ pub struct Billow<T> {
     /// The amplitude of each successive octave is equal to the product of the
     /// previous octave's amplitude and the persistence value. Increasing the
     /// persistence produces "rougher" noise.
-    pub persistence: T,
+    pub persistence: f64,
 
     seed: u32,
     sources: Vec<Perlin>,
 }
 
-impl<T: Float> Billow<T> {
-    pub fn new() -> Billow<T> {
+impl Billow {
+    pub fn new() -> Billow {
         Billow {
             seed: DEFAULT_BILLOW_SEED,
             octaves: DEFAULT_BILLOW_OCTAVE_COUNT,
-            frequency: math::cast(DEFAULT_BILLOW_FREQUENCY),
-            lacunarity: math::cast(DEFAULT_BILLOW_LACUNARITY),
-            persistence: math::cast(DEFAULT_BILLOW_PERSISTENCE),
+            frequency: DEFAULT_BILLOW_FREQUENCY,
+            lacunarity: DEFAULT_BILLOW_LACUNARITY,
+            persistence: DEFAULT_BILLOW_PERSISTENCE,
             sources: super::build_sources(DEFAULT_BILLOW_SEED, DEFAULT_BILLOW_OCTAVE_COUNT),
         }
     }
 }
 
-impl<T: Float> Default for Billow<T> {
+impl Default for Billow {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> MultiFractal<T> for Billow<T> {
-    fn set_octaves(self, mut octaves: usize) -> Billow<T> {
+impl MultiFractal for Billow {
+    fn set_octaves(self, mut octaves: usize) -> Billow {
         if self.octaves == octaves {
             return self;
-        } else if octaves > BILLOW_MAX_OCTAVES {
-            octaves = BILLOW_MAX_OCTAVES;
         }
+
+        octaves = math::clamp(octaves, 1, BILLOW_MAX_OCTAVES);
         Billow {
             octaves: octaves,
             sources: super::build_sources(self.seed, octaves),
@@ -98,21 +97,21 @@ impl<T> MultiFractal<T> for Billow<T> {
         }
     }
 
-    fn set_frequency(self, frequency: T) -> Billow<T> {
+    fn set_frequency(self, frequency: f64) -> Billow {
         Billow {
             frequency: frequency,
             ..self
         }
     }
 
-    fn set_lacunarity(self, lacunarity: T) -> Billow<T> {
+    fn set_lacunarity(self, lacunarity: f64) -> Billow {
         Billow {
             lacunarity: lacunarity,
             ..self
         }
     }
 
-    fn set_persistence(self, persistence: T) -> Billow<T> {
+    fn set_persistence(self, persistence: f64) -> Billow {
         Billow {
             persistence: persistence,
             ..self
@@ -120,11 +119,12 @@ impl<T> MultiFractal<T> for Billow<T> {
     }
 }
 
-impl<T> Seedable for Billow<T> {
-    fn set_seed(self, seed: u32) -> Billow<T> {
+impl Seedable for Billow {
+    fn set_seed(self, seed: u32) -> Billow {
         if self.seed == seed {
             return self;
         }
+
         Billow {
             seed: seed,
             sources: super::build_sources(seed, self.octaves),
@@ -138,9 +138,9 @@ impl<T> Seedable for Billow<T> {
 }
 
 /// 2-dimensional Billow noise
-impl<T: Float> NoiseFn<Point2<T>, T> for Billow<T> {
-    fn get(&self, mut point: Point2<T>) -> T {
-        let mut result = T::zero();
+impl NoiseFn<Point2<f64>> for Billow {
+    fn get(&self, mut point: Point2<f64>) -> f64 {
+        let mut result = 0.0;
 
         point = math::mul2(point, self.frequency);
 
@@ -150,27 +150,27 @@ impl<T: Float> NoiseFn<Point2<T>, T> for Billow<T> {
 
             // Take the abs of the signal, then scale and shift back to
             // the [-1,1] range.
-            signal = signal.abs().mul_add(math::cast(2.0), -T::one());
+            signal = signal.abs().mul_add(2.0, -1.0);
 
             // Scale the amplitude appropriately for this frequency.
-            signal = signal * self.persistence.powi(math::cast(x));
+            signal *= self.persistence.powi(x as i32);
 
             // Add the signal to the result.
-            result = result + signal;
+            result += signal;
 
             // Increase the frequency for the next octave.
             point = math::mul2(point, self.lacunarity);
         }
 
         // Scale the result to the [-1,1] range.
-        result * math::cast(0.5)
+        result * 0.5
     }
 }
 
 /// 3-dimensional Billow noise
-impl<T: Float> NoiseFn<Point3<T>, T> for Billow<T> {
-    fn get(&self, mut point: Point3<T>) -> T {
-        let mut result = T::zero();
+impl NoiseFn<Point3<f64>> for Billow {
+    fn get(&self, mut point: Point3<f64>) -> f64 {
+        let mut result = 0.0;
 
         point = math::mul3(point, self.frequency);
 
@@ -180,27 +180,27 @@ impl<T: Float> NoiseFn<Point3<T>, T> for Billow<T> {
 
             // Take the abs of the signal, then scale and shift back to
             // the [-1,1] range.
-            signal = signal.abs().mul_add(math::cast(2.0), -T::one());
+            signal = signal.abs().mul_add(2.0, -1.0);
 
             // Scale the amplitude appropriately for this frequency.
-            signal = signal * self.persistence.powi(math::cast(x));
+            signal *= self.persistence.powi(x as i32);
 
             // Add the signal to the result.
-            result = result + signal;
+            result += signal;
 
             // Increase the frequency for the next octave.
             point = math::mul3(point, self.lacunarity);
         }
 
         // Scale the result to the [-1,1] range.
-        result * math::cast(0.5)
+        result * 0.5
     }
 }
 
 /// 4-dimensional Billow noise
-impl<T: Float> NoiseFn<Point4<T>, T> for Billow<T> {
-    fn get(&self, mut point: Point4<T>) -> T {
-        let mut result = T::zero();
+impl NoiseFn<Point4<f64>> for Billow {
+    fn get(&self, mut point: Point4<f64>) -> f64 {
+        let mut result = 0.0;
 
         point = math::mul4(point, self.frequency);
 
@@ -210,19 +210,19 @@ impl<T: Float> NoiseFn<Point4<T>, T> for Billow<T> {
 
             // Take the abs of the signal, then scale and shift back to
             // the [-1,1] range.
-            signal = signal.abs().mul_add(math::cast(2.0), -T::one());
+            signal = signal.abs().mul_add(2.0, -1.0);
 
             // Scale the amplitude appropriately for this frequency.
-            signal = signal * self.persistence.powi(math::cast(x));
+            signal *= self.persistence.powi(x as i32);
 
             // Add the signal to the output value.
-            result = result + signal;
+            result += signal;
 
             // Increase the frequency for the next octave.
             point = math::mul4(point, self.lacunarity);
         }
 
         // Scale the result to the [-1,1] range.
-        result * math::cast(0.5)
+        result * 0.5
     }
 }

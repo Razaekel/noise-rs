@@ -7,7 +7,6 @@
 // except according to those terms.
 
 use noise_fns::NoiseFn;
-use num_traits::Float;
 
 /// Noise function that outputs a constant value.
 ///
@@ -17,23 +16,19 @@ use num_traits::Float;
 /// This function is not very useful by itself, but can be used as a source
 /// function for other noise functions.
 #[derive(Clone, Copy, Debug)]
-pub struct Constant<T: Float> {
+pub struct Constant {
     /// Constant value.
-    pub value: T,
+    pub value: f64,
 }
 
-impl<T: Float> Constant<T> {
-    pub fn new(value: T) -> Constant<T> {
+impl Constant {
+    pub fn new(value: f64) -> Constant {
         Constant { value: value }
     }
 }
 
-impl<T, U> NoiseFn<T, U> for Constant<U>
-where
-    T: Copy,
-    U: Float,
-{
-    fn get(&self, _point: T) -> U {
+impl<T: Copy> NoiseFn<T> for Constant {
+    fn get(&self, _point: T) -> f64 {
         self.value
     }
 }

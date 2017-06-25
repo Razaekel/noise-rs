@@ -6,9 +6,7 @@
 // project carrying such notice may not be copied, modified, or distributed
 // except according to those terms.
 
-use math;
 use noise_fns::NoiseFn;
-use num_traits::Float;
 
 /// Noise function that maps the output value from the source function onto an
 /// exponential curve.
@@ -17,27 +15,24 @@ use num_traits::Float;
 /// this noise function first normalizes the output value (the range becomes 0.0
 /// to 1.0), maps that value onto an exponential curve, then rescales that
 /// value back to the original range.
-pub struct Exponent<'a, T: 'a, U: 'a> {
+pub struct Exponent<'a, T: 'a> {
     /// Outputs a value.
-    pub source: &'a NoiseFn<T, U>,
+    pub source: &'a NoiseFn<T>,
 
     /// Exponent to apply to the output value from the source function. Default
     /// is 1.0.
-    pub exponent: U,
+    pub exponent: f64,
 }
 
-impl<'a, T, U> Exponent<'a, T, U>
-where
-    U: Float,
-{
-    pub fn new(source: &'a NoiseFn<T, U>) -> Exponent<'a, T, U> {
+impl<'a, T> Exponent<'a, T> {
+    pub fn new(source: &'a NoiseFn<T>) -> Exponent<'a, T> {
         Exponent {
             source: source,
-            exponent: U::one(),
+            exponent: 1.0,
         }
     }
 
-    pub fn set_exponent(self, exponent: U) -> Exponent<'a, T, U> {
+    pub fn set_exponent(self, exponent: f64) -> Exponent<'a, T> {
         Exponent {
             exponent: exponent,
             ..self
@@ -45,15 +40,12 @@ where
     }
 }
 
-impl<'a, T, U> NoiseFn<T, U> for Exponent<'a, T, U>
-where
-    U: Float,
-{
-    fn get(&self, point: T) -> U {
+impl<'a, T> NoiseFn<T> for Exponent<'a, T> {
+    fn get(&self, point: T) -> f64 {
         let mut value = self.source.get(point);
-        value = (value + U::one()) / math::cast(2.0);
+        value = (value + 1.0) / 2.0;
         value = value.abs();
         value = value.powf(self.exponent);
-        value.mul_add(math::cast(2.0), -U::one())
+        value.mul_add(2.0, -1.0)
     }
 }

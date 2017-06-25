@@ -6,9 +6,9 @@
 // project carrying such notice may not be copied, modified, or distributed
 // except according to those terms.
 
-use math::interp;
+use math::{clamp, interp};
 use noise_fns::NoiseFn;
-use num_traits::Float;
+use std;
 
 /// Noise function that maps the output value from the source function onto an
 /// arbitrary function curve.
@@ -24,12 +24,12 @@ use num_traits::Float;
 /// four control points to the curve. If there is less than four control
 /// points, the get() method panics. Each control point can have any input
 /// and output value, although no two control points can have the same input.
-pub struct Curve<'a, T: 'a, U: 'a> {
+pub struct Curve<'a, T: 'a> {
     /// Outputs a value.
-    pub source: &'a NoiseFn<T, U>,
+    pub source: &'a NoiseFn<T>,
 
     /// Vec that stores the control points.
-    control_points: Vec<ControlPoint<U>>,
+    control_points: Vec<ControlPoint<f64>>,
 }
 
 struct ControlPoint<T> {
@@ -37,20 +37,20 @@ struct ControlPoint<T> {
     output: T,
 }
 
-impl<'a, T, U> Curve<'a, T, U>
-where
-    U: Float,
-{
-    pub fn new(source: &'a NoiseFn<T, U>) -> Curve<'a, T, U> {
+impl<'a, T> Curve<'a, T> {
+    pub fn new(source: &'a NoiseFn<T>) -> Curve<'a, T> {
         Curve {
             source: source,
             control_points: Vec::with_capacity(4),
         }
     }
 
-    pub fn add_control_point(mut self, input_value: U, output_value: U) -> Curve<'a, T, U> {
+    pub fn add_control_point(mut self, input_value: f64, output_value: f64) -> Curve<'a, T> {
         // check to see if the vector already contains the input point.
-        if !self.control_points.iter().any(|x| x.input == input_value) {
+        if !self.control_points
+            .iter()
+            .any(|x| (x.input - input_value).abs() < std::f64::EPSILON)
+        {
             // it doesn't, so find the correct position to insert the new
             // control point.
             let insertion_point = self.control_points
@@ -71,11 +71,8 @@ where
     }
 }
 
-impl<'a, T, U> NoiseFn<T, U> for Curve<'a, T, U>
-where
-    U: Float,
-{
-    fn get(&self, point: T) -> U {
+impl<'a, T> NoiseFn<T> for Curve<'a, T> {
+    fn get(&self, point: T) -> f64 {
         // confirm that there's at least 4 control points in the vector.
         assert!(self.control_points.len() >= 4);
 
@@ -119,9 +116,5 @@ where
 }
 
 fn clamp_index(index: isize, min: usize, max: usize) -> usize {
-    match () {
-        _ if index <= min as isize => min,
-        _ if index >= max as isize => max,
-        _ => index as usize,
-    }
+    clamp(index, min as isize, max as isize) as usize
 }
