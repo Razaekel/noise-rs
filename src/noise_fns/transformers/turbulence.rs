@@ -26,6 +26,7 @@ pub const DEFAULT_TURBULENCE_ROUGHNESS: usize = 3;
 /// retrieving the output value from the source function. To control the
 /// turbulence, an application can modify its frequency, its power, and its
 /// roughness.
+#[derive(Clone, Debug)]
 pub struct Turbulence<Source> {
     /// Source function that outputs a value.
     pub source: Source,
