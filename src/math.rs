@@ -316,13 +316,13 @@ pub fn to_isize2(x: Point2<f64>) -> Point2<isize> {
 #[cfg(not(target_os = "emscripten"))]
 #[inline]
 pub fn scale_shift(value: f64, n: f64) -> f64 {
-    value.abs().mul_add(cast(n), -1.0_f64)
+    value.abs().mul_add(n, -1.0_f64)
 }
 
 #[cfg(target_os = "emscripten")]
 #[inline]
 pub fn scale_shift(value: f64, n: f64) -> f64 {
-    (value.abs() * cast(n)) + -1.0_f64
+    (value.abs() * n) + -1.0_f64
 }
 
 #[inline]
@@ -351,7 +351,7 @@ pub mod interp {
     /// Performs linear interploation between two values.
     #[cfg(target_os = "emscripten")]
     #[inline]
-    pub fn linear<T: Float>(a: T, b: T, x: T) -> T {
+    pub fn linear(a: f64, b: f64, x: f64) -> f64 {
         (x * (b - a)) + a
     }
 
