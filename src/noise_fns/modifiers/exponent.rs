@@ -8,6 +8,8 @@
 
 use noise_fns::NoiseFn;
 
+use math::scale_shift;
+
 /// Noise function that maps the output value from the source function onto an
 /// exponential curve.
 ///
@@ -46,6 +48,6 @@ impl<'a, T> NoiseFn<T> for Exponent<'a, T> {
         value = (value + 1.0) / 2.0;
         value = value.abs();
         value = value.powf(self.exponent);
-        value.mul_add(2.0, -1.0)
+        scale_shift(value, 2.0)
     }
 }

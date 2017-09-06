@@ -6,8 +6,7 @@
 // project carrying such notice may not be copied, modified, or distributed
 // except according to those terms.
 
-use math;
-use math::{Point2, Point3, Point4};
+use math::{self, scale_shift, Point2, Point3, Point4};
 use noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
 
 /// Default noise seed for the `RidgedMulti` noise function.
@@ -204,7 +203,7 @@ impl NoiseFn<Point2<f64>> for RidgedMulti {
 
         // Scale and shift the result into the [-1,1] range
         let scale = 2.0 - 0.5_f64.powi(self.octaves as i32 - 1);
-        result.mul_add(2.0 / scale, -1.0)
+        scale_shift(result, 2.0 / scale)
     }
 }
 
@@ -250,7 +249,7 @@ impl NoiseFn<Point3<f64>> for RidgedMulti {
 
         // Scale and shift the result into the [-1,1] range
         let scale = 2.0 - 0.5_f64.powi(self.octaves as i32 - 1);
-        result.mul_add(2.0 / scale, -1.0)
+        scale_shift(result, 2.0 / scale)
     }
 }
 
@@ -296,6 +295,6 @@ impl NoiseFn<Point4<f64>> for RidgedMulti {
 
         // Scale and shift the result into the [-1,1] range
         let scale = 2.0 - 0.5_f64.powi(self.octaves as i32 - 1);
-        result.mul_add(2.0 / scale, -1.0)
+        scale_shift(result, 2.0 / scale)
     }
 }

@@ -6,8 +6,7 @@
 // project carrying such notice may not be copied, modified, or distributed
 // except according to those terms.
 
-use math;
-use math::{Point2, Point3, Point4};
+use math::{self, scale_shift, Point2, Point3, Point4};
 use noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
 
 /// Default noise seed for the Billow noise function.
@@ -150,7 +149,7 @@ impl NoiseFn<Point2<f64>> for Billow {
 
             // Take the abs of the signal, then scale and shift back to
             // the [-1,1] range.
-            signal = signal.abs().mul_add(2.0, -1.0);
+            signal = scale_shift(signal, 2.0);
 
             // Scale the amplitude appropriately for this frequency.
             signal *= self.persistence.powi(x as i32);
@@ -180,7 +179,7 @@ impl NoiseFn<Point3<f64>> for Billow {
 
             // Take the abs of the signal, then scale and shift back to
             // the [-1,1] range.
-            signal = signal.abs().mul_add(2.0, -1.0);
+            signal = scale_shift(signal, 2.0);
 
             // Scale the amplitude appropriately for this frequency.
             signal *= self.persistence.powi(x as i32);
@@ -210,7 +209,7 @@ impl NoiseFn<Point4<f64>> for Billow {
 
             // Take the abs of the signal, then scale and shift back to
             // the [-1,1] range.
-            signal = signal.abs().mul_add(2.0, -1.0);
+            signal = scale_shift(signal, 2.0);
 
             // Scale the amplitude appropriately for this frequency.
             signal *= self.persistence.powi(x as i32);

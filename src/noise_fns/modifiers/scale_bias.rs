@@ -48,7 +48,13 @@ impl<'a, T> ScaleBias<'a, T> {
 }
 
 impl<'a, T> NoiseFn<T> for ScaleBias<'a, T> {
+    #[cfg(not(target_os = "emscripten"))]
     fn get(&self, point: T) -> f64 {
         (self.source.get(point)).mul_add(self.scale, self.bias)
+    }
+
+    #[cfg(target_os = "emscripten")]
+    fn get(&self, point: T) -> f64 {
+        (self.source.get(point) * self.scale) + self.bias
     }
 }
