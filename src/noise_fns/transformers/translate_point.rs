@@ -117,12 +117,8 @@ where
     Source: NoiseFn<Point2<f64>>,
 {
     fn get(&self, point: Point2<f64>) -> f64 {
-        self.source.get(
-            [
-                point[0] + self.x_translation,
-                point[1] + self.y_translation,
-            ],
-        )
+        self.source
+            .get([point[0] + self.x_translation, point[1] + self.y_translation])
     }
 }
 
@@ -131,13 +127,11 @@ where
     Source: NoiseFn<Point3<f64>>,
 {
     fn get(&self, point: Point3<f64>) -> f64 {
-        self.source.get(
-            [
-                point[0] + self.x_translation,
-                point[1] + self.y_translation,
-                point[2] + self.z_translation,
-            ],
-        )
+        self.source.get([
+            point[0] + self.x_translation,
+            point[1] + self.y_translation,
+            point[2] + self.z_translation,
+        ])
     }
 }
 
@@ -146,13 +140,11 @@ where
     Source: NoiseFn<Point4<f64>>,
 {
     fn get(&self, point: Point4<f64>) -> f64 {
-        self.source.get(
-            [
-                point[0] + self.x_translation,
-                point[1] + self.y_translation,
-                point[2] + self.z_translation,
-                point[3] + self.u_translation,
-            ],
-        )
+        self.source.get([
+            point[0] + self.x_translation,
+            point[1] + self.y_translation,
+            point[2] + self.z_translation,
+            point[3] + self.u_translation,
+        ])
     }
 }

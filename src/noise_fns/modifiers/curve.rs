@@ -59,11 +59,13 @@ impl<'a, T> Curve<'a, T> {
                 .unwrap_or_else(|| self.control_points.len());
 
             // add the new control point at the correct position.
-            self.control_points.insert(insertion_point,
-                                       ControlPoint {
-                                           input: input_value,
-                                           output: output_value,
-                                       });
+            self.control_points.insert(
+                insertion_point,
+                ControlPoint {
+                    input: input_value,
+                    output: output_value,
+                },
+            );
         }
 
         // create new Curve with updated control_points vector
@@ -107,11 +109,13 @@ impl<'a, T> NoiseFn<T> for Curve<'a, T> {
         let alpha = (source_value - input0) / (input1 - input0);
 
         // Now perform the cubic interpolation and return.
-        interp::cubic(self.control_points[index0].output,
-                      self.control_points[index1].output,
-                      self.control_points[index2].output,
-                      self.control_points[index3].output,
-                      alpha)
+        interp::cubic(
+            self.control_points[index0].output,
+            self.control_points[index1].output,
+            self.control_points[index2].output,
+            self.control_points[index3].output,
+            alpha,
+        )
     }
 }
 

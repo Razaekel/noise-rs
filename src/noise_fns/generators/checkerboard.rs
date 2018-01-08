@@ -78,5 +78,9 @@ fn calculate_checkerboard(point: &[f64], size: usize) -> f64 {
         .map(|&a| a.floor() as usize)
         .fold(0, |a, b| (a & size) ^ (b & size));
 
-    if result > 0 { -1.0 } else { 1.0 }
+    if result > 0 {
+        -1.0
+    } else {
+        1.0
+    }
 }

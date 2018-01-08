@@ -165,7 +165,8 @@ fn main() {
     const RIVER_DEPTH: f64 = 0.0234375;
 
     // Create the output directory for the images.
-    std::fs::create_dir("complexplanet_images/").expect("failed to create complexplanet_images directory");
+    std::fs::create_dir("complexplanet_images/")
+        .expect("failed to create complexplanet_images directory");
 
     // ////////////////////////////////////////////////////////////////////////
     // Function group: continent definition
@@ -489,9 +490,11 @@ fn main() {
     // uses the scaled-river-valley module as the control module, causing the
     // low-flat module to appear in the lower areas and causing the scaled-
     // mountain-ridge module to appear in the higher areas.
-    let mountainBaseDef_bl = Blend::new(&mountainBaseDef_co,
-                                        &mountainBaseDef_sb0,
-                                        &mountainBaseDef_sb1);
+    let mountainBaseDef_bl = Blend::new(
+        &mountainBaseDef_co,
+        &mountainBaseDef_sb0,
+        &mountainBaseDef_sb1,
+    );
 
     // 7: [Coarse-turbulence module]: This turbulence module warps the output
     // value from the mountain-and-valleys module, adding some coarse detail to
@@ -650,10 +653,11 @@ fn main() {
     // definition subgroup is higher than a set amount. Otherwise, this noise
     // module selects the output value from the scaled-low-mountainous-terrain
     // module.
-    let mountainousTerrain_se = Select::new(&mountainousTerrain_sb0,
-                                            &mountainousTerrain_ad,
-                                            &mountainBaseDef)
-        .set_bounds(-0.5, 999.5)
+    let mountainousTerrain_se = Select::new(
+        &mountainousTerrain_sb0,
+        &mountainousTerrain_ad,
+        &mountainBaseDef,
+    ).set_bounds(-0.5, 999.5)
         .set_edge_falloff(0.5);
 
     // 5: [Scaled-mountainous-terrain-module]: This scale/bias module slightly
@@ -669,8 +673,8 @@ fn main() {
     // smoothly increase towards higher elevations, as if a glacier ground out
     // those mountains. This exponential-curve module expects the output value
     // to range from -1.0 to +1.0.
-    let mountainousTerrain_ex = Exponent::new(&mountainousTerrain_sb2)
-        .set_exponent(MOUNTAIN_GLACIATION);
+    let mountainousTerrain_ex =
+        Exponent::new(&mountainousTerrain_sb2).set_exponent(MOUNTAIN_GLACIATION);
 
     let mountainousTerrain = Cache::new(mountainousTerrain_ex);
 
@@ -1126,8 +1130,8 @@ fn main() {
     // number of low values. This means there will be a few peaks with much
     // higher elevations than the majority of the peaks, making the terrain
     // features more varied.
-    let scaledMountainousTerrain_ex = Exponent::new(&scaledMountainousTerrain_fb)
-        .set_exponent(1.25);
+    let scaledMountainousTerrain_ex =
+        Exponent::new(&scaledMountainousTerrain_fb).set_exponent(1.25);
 
     // 4: [Scaled-peak-modulation module]: This scale/bias module modifies the
     // range of the output value from the peak-modulation module so that it can
@@ -1140,8 +1144,8 @@ fn main() {
     // 5: [Peak-height-multiplier module]: This multiplier module modulates the
     // heights of the mountain peaks from the base-scaled-mountainous-terrain
     // module using the output value from the scaled-peak-modulation module.
-    let scaledMountainousTerrain_mu = Multiply::new(&scaledMountainousTerrain_sb0,
-                                                    &scaledMountainousTerrain_sb1);
+    let scaledMountainousTerrain_mu =
+        Multiply::new(&scaledMountainousTerrain_sb0, &scaledMountainousTerrain_sb1);
 
     // 6: [Scaled-mountainous-terrain group]: Caches the output value from the
     // peak-height-multiplier module.  This is the output value for the
@@ -1274,8 +1278,6 @@ fn main() {
     let scaledBadlandsTerrain_sb = ScaleBias::new(&badlandsTerrain)
         .set_scale(0.0625)
         .set_bias(0.0625);
-
-
 
     // 2: [Scaled-badlands-terrain group]: Caches the output value from the
     // scaled-badlands-terrain module. This is the output value for the
@@ -1481,10 +1483,11 @@ fn main() {
     // output value from the terrain-type-definition group is above a certain
     // value. Otherwise, it selects the output value from the continents-with-
     // plains subgroup.
-    let continentsWithHills_se = Select::new(&continentsWithPlains,
-                                             &continentsWithHills_ad,
-                                             &terrainTypeDef)
-        .set_bounds(1.0 - HILLS_AMOUNT, 1001.0 - HILLS_AMOUNT)
+    let continentsWithHills_se = Select::new(
+        &continentsWithPlains,
+        &continentsWithHills_ad,
+        &terrainTypeDef,
+    ).set_bounds(1.0 - HILLS_AMOUNT, 1001.0 - HILLS_AMOUNT)
         .set_edge_falloff(0.25);
 
     // 3: [Continents-with-hills subgroup]: Caches the output value from the
@@ -1540,8 +1543,8 @@ fn main() {
     // 3: [Add-increased-mountain-heights module]: This addition module adds the
     // increased-mountain-heights module to the continents-and-mountains module.
     // The highest continent elevations now have the highest mountains.
-    let continentsWithMountains_ad1 = Add::new(&continentsWithMountains_ad0,
-                                               &continentsWithMountains_cu);
+    let continentsWithMountains_ad1 =
+        Add::new(&continentsWithMountains_ad0, &continentsWithMountains_cu);
 
     //    debug::render_noise_module("complexplanet_images/22_2_continentsWithMountains_ad1.png",
     //                               &continentsWithMountains_ad1,
@@ -1556,11 +1559,13 @@ fn main() {
     // above a certain value. Otherwise, it selects the output value from the
     // continents-with-hills subgroup. Note that the continents-with-hills
     // subgroup also contains the plains terrain.
-    let continentsWithMountains_se = Select::new(&continentsWithHills,
-                                                 &continentsWithMountains_ad1,
-                                                 &terrainTypeDef)
-        .set_bounds(1.0 - MOUNTAINS_AMOUNT, 1001.0 - MOUNTAINS_AMOUNT)
-        .set_edge_falloff(0.25);
+    let continentsWithMountains_se =
+        Select::new(
+            &continentsWithHills,
+            &continentsWithMountains_ad1,
+            &terrainTypeDef,
+        ).set_bounds(1.0 - MOUNTAINS_AMOUNT, 1001.0 - MOUNTAINS_AMOUNT)
+            .set_edge_falloff(0.25);
 
     // 5: [Continents-with-mountains subgroup]: Caches the output value from the
     // select-high-elevations module.
@@ -1619,10 +1624,11 @@ fn main() {
     // from the continents-with-mountains subgroup. There is also a wide
     // transition between these two noise functions so that the badlands can blend
     // into the rest of the terrain on the continents.
-    let continentsWithBadlands_se = Select::new(&continentsWithMountains,
-                                                &continentsWithBadlands_ad,
-                                                &continentsWithBadlands_bm)
-        .set_bounds(1.0 - BADLANDS_AMOUNT, 1001.0 - BADLANDS_AMOUNT)
+    let continentsWithBadlands_se = Select::new(
+        &continentsWithMountains,
+        &continentsWithBadlands_ad,
+        &continentsWithBadlands_bm,
+    ).set_bounds(1.0 - BADLANDS_AMOUNT, 1001.0 - BADLANDS_AMOUNT)
         .set_edge_falloff(0.25);
 
     //    debug::render_noise_module("complexplanet_images/23_2_continentsWithBadlands_se.png",
@@ -1692,10 +1698,11 @@ fn main() {
     // continents-with-badlands subgroup is far from sea level.  Otherwise,
     // this selector module selects the output value from the add-rivers-to-
     // continents module.
-    let continentsWithRivers_se = Select::new(&continentsWithBadlands,
-                                              &continentsWithRivers_ad,
-                                              &continentsWithBadlands)
-        .set_bounds(SEA_LEVEL, CONTINENT_HEIGHT_SCALE + SEA_LEVEL)
+    let continentsWithRivers_se = Select::new(
+        &continentsWithBadlands,
+        &continentsWithRivers_ad,
+        &continentsWithBadlands,
+    ).set_bounds(SEA_LEVEL, CONTINENT_HEIGHT_SCALE + SEA_LEVEL)
         .set_edge_falloff(CONTINENT_HEIGHT_SCALE - SEA_LEVEL);
 
     // 4: [Continents-with-rivers subgroup]: Caches the output value from the
@@ -1713,32 +1720,39 @@ fn main() {
     //    continent-with-rivers subgroup.
     let unscaledFinalPlanet = Cache::new(continentsWithRivers);
 
-    debug::render_noise_module3("complexplanet_images/30_0_unscaledFinalPlanet\
-                                 .png",
-                                &unscaledFinalPlanet,
-                                1024,
-                                1024,
-                                100);
+    debug::render_noise_module3(
+        "complexplanet_images/30_0_unscaledFinalPlanet\
+         .png",
+        &unscaledFinalPlanet,
+        1024,
+        1024,
+        100,
+    );
 
-    debug::render_noise_module3("complexplanet_images/30_1_unscaledFinalPlanet\
-                                 .png",
-                                &unscaledFinalPlanet,
-                                2048,
-                                2048,
-                                1000);
+    debug::render_noise_module3(
+        "complexplanet_images/30_1_unscaledFinalPlanet\
+         .png",
+        &unscaledFinalPlanet,
+        2048,
+        2048,
+        1000,
+    );
 
-    debug::render_noise_module3("complexplanet_images/30_2_unscaledFinalPlanet\
-                                 .png",
-                                &unscaledFinalPlanet,
-                                2048,
-                                2048,
-                                10000);
+    debug::render_noise_module3(
+        "complexplanet_images/30_2_unscaledFinalPlanet\
+         .png",
+        &unscaledFinalPlanet,
+        2048,
+        2048,
+        10000,
+    );
 
-    debug::render_noise_module3("complexplanet_images/30_3_unscaledFinalPlanet\
-                                 .png",
-                                &unscaledFinalPlanet,
-                                4096,
-                                4096,
-                                100000);
-
+    debug::render_noise_module3(
+        "complexplanet_images/30_3_unscaledFinalPlanet\
+         .png",
+        &unscaledFinalPlanet,
+        4096,
+        4096,
+        100000,
+    );
 }

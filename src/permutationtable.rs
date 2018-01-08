@@ -30,7 +30,9 @@ impl Rand for PermutationTable {
         // It's unfortunate that this double-initializes the array, but Rust
         // doesn't currently provide a clean way to do this in one pass. Hopefully
         // it won't matter, as Seed creation will usually be a one-time event.
-        let mut perm_table = PermutationTable { values: [0; TABLE_SIZE] };
+        let mut perm_table = PermutationTable {
+            values: [0; TABLE_SIZE],
+        };
         let seq_it = seq.iter();
         for (x, y) in perm_table.values.iter_mut().zip(seq_it) {
             *x = *y
@@ -76,7 +78,9 @@ impl PermutationTable {
 
 impl Clone for PermutationTable {
     fn clone(&self) -> PermutationTable {
-        PermutationTable { values: self.values }
+        PermutationTable {
+            values: self.values,
+        }
     }
 }
 

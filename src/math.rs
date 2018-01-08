@@ -332,12 +332,7 @@ pub fn to_isize3(x: Point3<f64>) -> Point3<isize> {
 
 #[inline]
 pub fn to_isize4(x: Point4<f64>) -> Point4<isize> {
-    [
-        x[0] as isize,
-        x[1] as isize,
-        x[2] as isize,
-        x[3] as isize,
-    ]
+    [x[0] as isize, x[1] as isize, x[2] as isize, x[3] as isize]
 }
 
 pub mod interp {

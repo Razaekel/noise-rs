@@ -62,18 +62,23 @@ fn main() {
         let skew_factor = -1.0 - 2.0 * skew_constant;
         lookup_2d[i * 4 + 1] = ([1, 1], [skew_factor, skew_factor]);
         let skew_factor = (i1 as f64 + j1 as f64) * skew_constant;
-        lookup_2d[i * 4 + 2] = ([i1, j1], [-i1 as f64 - skew_factor, -j1 as f64 - skew_factor]);
+        lookup_2d[i * 4 + 2] = (
+            [i1, j1],
+            [-i1 as f64 - skew_factor, -j1 as f64 - skew_factor],
+        );
         let skew_factor = (i2 as f64 + j2 as f64) * skew_constant;
-        lookup_2d[i * 4 + 3] = ([i2, j2], [-i2 as f64 - skew_factor, -j2 as f64 - skew_factor]);
+        lookup_2d[i * 4 + 3] = (
+            [i2, j2],
+            [-i2 as f64 - skew_factor, -j2 as f64 - skew_factor],
+        );
     }
 
     print!("lookup_2d = [");
     for x in &lookup_2d {
-        print!("([{}, {}], [{}f64, {}f64]),",
-               x.0[0],
-               x.0[1],
-               x.1[0],
-               x.1[1]);
+        print!(
+            "([{}, {}], [{}f64, {}f64]),",
+            x.0[0], x.0[1], x.1[0], x.1[1]
+        );
     }
     println!("\x08]");
 
@@ -210,15 +215,19 @@ fn main() {
     // eq3dsp[xout, yout, zout]
 
     debug::render_noise_module2("super_simplex_2d.png", &SuperSimplex::new(), 1024, 1024, 50);
-    debug::render_noise_module2("super_simplex_2d_seeded.png",
-                                &SuperSimplex::new().set_seed(1),
-                                1024,
-                                1024,
-                                50);
+    debug::render_noise_module2(
+        "super_simplex_2d_seeded.png",
+        &SuperSimplex::new().set_seed(1),
+        1024,
+        1024,
+        50,
+    );
     debug::render_noise_module3("super_simplex_3d.png", &SuperSimplex::new(), 1024, 1024, 50);
-    debug::render_noise_module3("super_simplex_3d_seeded.png",
-                                &SuperSimplex::new().set_seed(1),
-                                1024,
-                                1024,
-                                50);
+    debug::render_noise_module3(
+        "super_simplex_3d_seeded.png",
+        &SuperSimplex::new().set_seed(1),
+        1024,
+        1024,
+        50,
+    );
 }

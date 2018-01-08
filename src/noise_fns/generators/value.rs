@@ -6,9 +6,8 @@
 // project carrying such notice may not be copied, modified, or distributed
 // except according to those terms.
 
-
 use math;
-use math::{Point2, Point3, Point4, interp};
+use math::{interp, Point2, Point3, Point4};
 use noise_fns::{NoiseFn, Seedable};
 use permutationtable::PermutationTable;
 
@@ -96,22 +95,38 @@ impl NoiseFn<Point3<f64>> for Value {
         let far_corner = math::add3(near_corner, math::one3());
         let weight = math::map3(math::sub3(point, floored), interp::s_curve5);
 
-        let f000 = get(&self.perm_table,
-                       [near_corner[0], near_corner[1], near_corner[2]]);
-        let f100 = get(&self.perm_table,
-                       [far_corner[0], near_corner[1], near_corner[2]]);
-        let f010 = get(&self.perm_table,
-                       [near_corner[0], far_corner[1], near_corner[2]]);
-        let f110 = get(&self.perm_table,
-                       [far_corner[0], far_corner[1], near_corner[2]]);
-        let f001 = get(&self.perm_table,
-                       [near_corner[0], near_corner[1], far_corner[2]]);
-        let f101 = get(&self.perm_table,
-                       [far_corner[0], near_corner[1], far_corner[2]]);
-        let f011 = get(&self.perm_table,
-                       [near_corner[0], far_corner[1], far_corner[2]]);
-        let f111 = get(&self.perm_table,
-                       [far_corner[0], far_corner[1], far_corner[2]]);
+        let f000 = get(
+            &self.perm_table,
+            [near_corner[0], near_corner[1], near_corner[2]],
+        );
+        let f100 = get(
+            &self.perm_table,
+            [far_corner[0], near_corner[1], near_corner[2]],
+        );
+        let f010 = get(
+            &self.perm_table,
+            [near_corner[0], far_corner[1], near_corner[2]],
+        );
+        let f110 = get(
+            &self.perm_table,
+            [far_corner[0], far_corner[1], near_corner[2]],
+        );
+        let f001 = get(
+            &self.perm_table,
+            [near_corner[0], near_corner[1], far_corner[2]],
+        );
+        let f101 = get(
+            &self.perm_table,
+            [far_corner[0], near_corner[1], far_corner[2]],
+        );
+        let f011 = get(
+            &self.perm_table,
+            [near_corner[0], far_corner[1], far_corner[2]],
+        );
+        let f111 = get(
+            &self.perm_table,
+            [far_corner[0], far_corner[1], far_corner[2]],
+        );
 
         let d00 = interp::linear(f000, f100, weight[0]);
         let d01 = interp::linear(f001, f101, weight[0]);
@@ -167,12 +182,7 @@ impl NoiseFn<Point4<f64>> for Value {
         );
         let f1100 = get(
             &self.perm_table,
-            [
-                far_corner[0],
-                far_corner[1],
-                near_corner[2],
-                near_corner[3],
-            ],
+            [far_corner[0], far_corner[1], near_corner[2], near_corner[3]],
         );
         let f0010 = get(
             &self.perm_table,
@@ -185,30 +195,15 @@ impl NoiseFn<Point4<f64>> for Value {
         );
         let f1010 = get(
             &self.perm_table,
-            [
-                far_corner[0],
-                near_corner[1],
-                far_corner[2],
-                near_corner[3],
-            ],
+            [far_corner[0], near_corner[1], far_corner[2], near_corner[3]],
         );
         let f0110 = get(
             &self.perm_table,
-            [
-                near_corner[0],
-                far_corner[1],
-                far_corner[2],
-                near_corner[3],
-            ],
+            [near_corner[0], far_corner[1], far_corner[2], near_corner[3]],
         );
         let f1110 = get(
             &self.perm_table,
-            [
-                far_corner[0],
-                far_corner[1],
-                far_corner[2],
-                near_corner[3],
-            ],
+            [far_corner[0], far_corner[1], far_corner[2], near_corner[3]],
         );
         let f0001 = get(
             &self.perm_table,
@@ -221,66 +216,31 @@ impl NoiseFn<Point4<f64>> for Value {
         );
         let f1001 = get(
             &self.perm_table,
-            [
-                far_corner[0],
-                near_corner[1],
-                near_corner[2],
-                far_corner[3],
-            ],
+            [far_corner[0], near_corner[1], near_corner[2], far_corner[3]],
         );
         let f0101 = get(
             &self.perm_table,
-            [
-                near_corner[0],
-                far_corner[1],
-                near_corner[2],
-                far_corner[3],
-            ],
+            [near_corner[0], far_corner[1], near_corner[2], far_corner[3]],
         );
         let f1101 = get(
             &self.perm_table,
-            [
-                far_corner[0],
-                far_corner[1],
-                near_corner[2],
-                far_corner[3],
-            ],
+            [far_corner[0], far_corner[1], near_corner[2], far_corner[3]],
         );
         let f0011 = get(
             &self.perm_table,
-            [
-                near_corner[0],
-                near_corner[1],
-                far_corner[2],
-                far_corner[3],
-            ],
+            [near_corner[0], near_corner[1], far_corner[2], far_corner[3]],
         );
         let f1011 = get(
             &self.perm_table,
-            [
-                far_corner[0],
-                near_corner[1],
-                far_corner[2],
-                far_corner[3],
-            ],
+            [far_corner[0], near_corner[1], far_corner[2], far_corner[3]],
         );
         let f0111 = get(
             &self.perm_table,
-            [
-                near_corner[0],
-                far_corner[1],
-                far_corner[2],
-                far_corner[3],
-            ],
+            [near_corner[0], far_corner[1], far_corner[2], far_corner[3]],
         );
         let f1111 = get(
             &self.perm_table,
-            [
-                far_corner[0],
-                far_corner[1],
-                far_corner[2],
-                far_corner[3],
-            ],
+            [far_corner[0], far_corner[1], far_corner[2], far_corner[3]],
         );
 
         let d000 = interp::linear(f0000, f1000, weight[0]);

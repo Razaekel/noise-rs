@@ -218,14 +218,8 @@ impl NoiseFn<Point2<f64>> for Worley {
         let x_half = frac[0] > 0.5;
         let y_half = frac[1] > 0.5;
 
-        let near = [
-            whole[0] + (x_half as isize),
-            whole[1] + (y_half as isize),
-        ];
-        let far = [
-            whole[0] + (!x_half as isize),
-            whole[1] + (!y_half as isize),
-        ];
+        let near = [whole[0] + (x_half as isize), whole[1] + (y_half as isize)];
+        let far = [whole[0] + (!x_half as isize), whole[1] + (!y_half as isize)];
 
         let mut seed_cell = near;
         let seed_point = get_point(&self.perm_table, near);

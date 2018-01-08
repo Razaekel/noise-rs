@@ -127,13 +127,11 @@ where
     Source: NoiseFn<Point3<f64>>,
 {
     fn get(&self, point: Point3<f64>) -> f64 {
-        self.source.get(
-            [
-                point[0] * self.x_scale,
-                point[1] * self.y_scale,
-                point[2] * self.z_scale,
-            ],
-        )
+        self.source.get([
+            point[0] * self.x_scale,
+            point[1] * self.y_scale,
+            point[2] * self.z_scale,
+        ])
     }
 }
 
@@ -142,13 +140,11 @@ where
     Source: NoiseFn<Point4<f64>>,
 {
     fn get(&self, point: Point4<f64>) -> f64 {
-        self.source.get(
-            [
-                point[0] * self.x_scale,
-                point[1] * self.y_scale,
-                point[2] * self.z_scale,
-                point[3] * self.u_scale,
-            ],
-        )
+        self.source.get([
+            point[0] * self.x_scale,
+            point[1] * self.y_scale,
+            point[2] * self.z_scale,
+            point[3] * self.u_scale,
+        ])
     }
 }

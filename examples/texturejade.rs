@@ -34,8 +34,8 @@ fn main() {
     // Rotate the base secondary jade texture so that the cylinders are not
     // aligned with any axis. This produces more variation in the secondary
     // jade texture since the texture is parallel to the y-axis.
-    let rotated_base_secondary_jade = RotatePoint::new(base_secondary_jade)
-        .set_angles(90.0, 25.0, 5.0, 0.0);
+    let rotated_base_secondary_jade =
+        RotatePoint::new(base_secondary_jade).set_angles(90.0, 25.0, 5.0, 0.0);
 
     // Slightly perturb the secondary jade texture for more realism.
     let perturbed_base_secondary_jade = Turbulence::new(rotated_base_secondary_jade)

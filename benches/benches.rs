@@ -12,7 +12,7 @@ extern crate noise;
 extern crate test;
 
 use noise::{NoiseFn, OpenSimplex, Perlin, SuperSimplex, Value, Worley};
-use test::{Bencher, black_box};
+use test::{black_box, Bencher};
 
 #[bench]
 fn bench_open_simplex2(bencher: &mut Bencher) {
@@ -119,169 +119,203 @@ fn bench_worley4_value(bencher: &mut Bencher) {
 #[bench]
 fn bench_open_simplex2_64x64(bencher: &mut Bencher) {
     let open_simplex = OpenSimplex::new();
-    bencher.iter(|| for y in 0i8..64 {
-                     for x in 0i8..64 {
-                         black_box(open_simplex.get([x as f64, y as f64]));
-                     }
-                 });
+    bencher.iter(|| {
+        for y in 0i8..64 {
+            for x in 0i8..64 {
+                black_box(open_simplex.get([x as f64, y as f64]));
+            }
+        }
+    });
 }
 
 #[bench]
 fn bench_open_simplex3_64x64(bencher: &mut Bencher) {
     let open_simplex = OpenSimplex::new();
-    bencher.iter(|| for y in 0i8..64 {
-                     for x in 0i8..64 {
-                         black_box(open_simplex.get([x as f64, y as f64, x as f64]));
-                     }
-                 });
+    bencher.iter(|| {
+        for y in 0i8..64 {
+            for x in 0i8..64 {
+                black_box(open_simplex.get([x as f64, y as f64, x as f64]));
+            }
+        }
+    });
 }
 
 #[bench]
 fn bench_open_simplex4_64x64(bencher: &mut Bencher) {
     let open_simplex = OpenSimplex::new();
-    bencher.iter(|| for y in 0i8..64 {
-                     for x in 0i8..64 {
-                         black_box(open_simplex.get([x as f64, y as f64, x as f64, y as f64]));
-                     }
-                 });
+    bencher.iter(|| {
+        for y in 0i8..64 {
+            for x in 0i8..64 {
+                black_box(open_simplex.get([x as f64, y as f64, x as f64, y as f64]));
+            }
+        }
+    });
 }
 
 #[bench]
 fn bench_perlin2_64x64(bencher: &mut Bencher) {
     let perlin = Perlin::new();
-    bencher.iter(|| for y in 0i8..64 {
-                     for x in 0i8..64 {
-                         black_box(perlin.get([x as f64, y as f64]));
-                     }
-                 });
+    bencher.iter(|| {
+        for y in 0i8..64 {
+            for x in 0i8..64 {
+                black_box(perlin.get([x as f64, y as f64]));
+            }
+        }
+    });
 }
 
 #[bench]
 fn bench_perlin3_64x64(bencher: &mut Bencher) {
     let perlin = Perlin::new();
-    bencher.iter(|| for y in 0i8..64 {
-                     for x in 0i8..64 {
-                         black_box(perlin.get([x as f64, y as f64, x as f64]));
-                     }
-                 });
+    bencher.iter(|| {
+        for y in 0i8..64 {
+            for x in 0i8..64 {
+                black_box(perlin.get([x as f64, y as f64, x as f64]));
+            }
+        }
+    });
 }
 
 #[bench]
 fn bench_perlin4_64x64(bencher: &mut Bencher) {
     let perlin = Perlin::new();
-    bencher.iter(|| for y in 0i8..64 {
-                     for x in 0i8..64 {
-                         black_box(perlin.get([x as f64, y as f64, x as f64, y as f64]));
-                     }
-                 });
+    bencher.iter(|| {
+        for y in 0i8..64 {
+            for x in 0i8..64 {
+                black_box(perlin.get([x as f64, y as f64, x as f64, y as f64]));
+            }
+        }
+    });
 }
 
 #[bench]
 fn bench_super_simplex2_64x64(bencher: &mut Bencher) {
     let super_simplex = SuperSimplex::new();
-    bencher.iter(|| for y in 0i8..64 {
-                     for x in 0i8..64 {
-                         black_box(super_simplex.get([x as f64, y as f64]));
-                     }
-                 });
+    bencher.iter(|| {
+        for y in 0i8..64 {
+            for x in 0i8..64 {
+                black_box(super_simplex.get([x as f64, y as f64]));
+            }
+        }
+    });
 }
 
 #[bench]
 fn bench_super_simplex3_64x64(bencher: &mut Bencher) {
     let super_simplex = SuperSimplex::new();
-    bencher.iter(|| for y in 0i8..64 {
-                     for x in 0i8..64 {
-                         black_box(super_simplex.get([x as f64, y as f64, x as f64]));
-                     }
-                 });
+    bencher.iter(|| {
+        for y in 0i8..64 {
+            for x in 0i8..64 {
+                black_box(super_simplex.get([x as f64, y as f64, x as f64]));
+            }
+        }
+    });
 }
 
 #[bench]
 fn bench_value2_64x64(bencher: &mut Bencher) {
     let value = Value::new();
-    bencher.iter(|| for y in 0i8..64 {
-                     for x in 0i8..64 {
-                         black_box(value.get([x as f64, y as f64]));
-                     }
-                 });
+    bencher.iter(|| {
+        for y in 0i8..64 {
+            for x in 0i8..64 {
+                black_box(value.get([x as f64, y as f64]));
+            }
+        }
+    });
 }
 
 #[bench]
 fn bench_value3_64x64(bencher: &mut Bencher) {
     let value = Value::new();
-    bencher.iter(|| for y in 0i8..64 {
-                     for x in 0i8..64 {
-                         black_box(value.get([x as f64, y as f64, x as f64]));
-                     }
-                 });
+    bencher.iter(|| {
+        for y in 0i8..64 {
+            for x in 0i8..64 {
+                black_box(value.get([x as f64, y as f64, x as f64]));
+            }
+        }
+    });
 }
 
 #[bench]
 fn bench_value4_64x64(bencher: &mut Bencher) {
     let value = Value::new();
-    bencher.iter(|| for y in 0i8..64 {
-                     for x in 0i8..64 {
-                         black_box(value.get([x as f64, y as f64, x as f64, y as f64]));
-                     }
-                 });
+    bencher.iter(|| {
+        for y in 0i8..64 {
+            for x in 0i8..64 {
+                black_box(value.get([x as f64, y as f64, x as f64, y as f64]));
+            }
+        }
+    });
 }
 
 #[bench]
 fn bench_worley2_range_64x64(bencher: &mut Bencher) {
     let worley = Worley::new().enable_range(true);
-    bencher.iter(|| for y in 0i8..64 {
-                     for x in 0i8..64 {
-                         black_box(worley.get([x as f64, y as f64]));
-                     }
-                 });
+    bencher.iter(|| {
+        for y in 0i8..64 {
+            for x in 0i8..64 {
+                black_box(worley.get([x as f64, y as f64]));
+            }
+        }
+    });
 }
 
 #[bench]
 fn bench_worley3_range_64x64(bencher: &mut Bencher) {
     let worley = Worley::new().enable_range(true);
-    bencher.iter(|| for y in 0i8..64 {
-                     for x in 0i8..64 {
-                         black_box(worley.get([x as f64, y as f64, x as f64]));
-                     }
-                 });
+    bencher.iter(|| {
+        for y in 0i8..64 {
+            for x in 0i8..64 {
+                black_box(worley.get([x as f64, y as f64, x as f64]));
+            }
+        }
+    });
 }
 
 #[bench]
 fn bench_worley4_range_64x64(bencher: &mut Bencher) {
     let worley = Worley::new().enable_range(true);
-    bencher.iter(|| for y in 0i8..64 {
-                     for x in 0i8..64 {
-                         black_box(worley.get([x as f64, y as f64, x as f64, y as f64]));
-                     }
-                 });
+    bencher.iter(|| {
+        for y in 0i8..64 {
+            for x in 0i8..64 {
+                black_box(worley.get([x as f64, y as f64, x as f64, y as f64]));
+            }
+        }
+    });
 }
 
 #[bench]
 fn bench_worley2_value_64x64(bencher: &mut Bencher) {
     let worley = Worley::new();
-    bencher.iter(|| for y in 0i8..64 {
-                     for x in 0i8..64 {
-                         black_box(worley.get([x as f64, y as f64]));
-                     }
-                 });
+    bencher.iter(|| {
+        for y in 0i8..64 {
+            for x in 0i8..64 {
+                black_box(worley.get([x as f64, y as f64]));
+            }
+        }
+    });
 }
 
 #[bench]
 fn bench_worley3_value_64x64(bencher: &mut Bencher) {
     let worley = Worley::new();
-    bencher.iter(|| for y in 0i8..64 {
-                     for x in 0i8..64 {
-                         black_box(worley.get([x as f64, y as f64, x as f64]));
-                     }
-                 });
+    bencher.iter(|| {
+        for y in 0i8..64 {
+            for x in 0i8..64 {
+                black_box(worley.get([x as f64, y as f64, x as f64]));
+            }
+        }
+    });
 }
 
 #[bench]
 fn bench_worley4_value_64x64(bencher: &mut Bencher) {
     let worley = Worley::new();
-    bencher.iter(|| for y in 0i8..64 {
-                     for x in 0i8..64 {
-                         black_box(worley.get([x as f64, y as f64, x as f64, y as f64]));
-                     }
-                 });
+    bencher.iter(|| {
+        for y in 0i8..64 {
+            for x in 0i8..64 {
+                black_box(worley.get([x as f64, y as f64, x as f64, y as f64]));
+            }
+        }
+    });
 }

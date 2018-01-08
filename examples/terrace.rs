@@ -36,5 +36,4 @@ fn main() {
         .invert_terraces(true);
 
     debug::render_noise_module3("terrace_inverted.png", &terrace_inverted, 1024, 1024, 100);
-
 }

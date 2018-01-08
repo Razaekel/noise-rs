@@ -66,17 +66,17 @@ where
 
     for y in 0..height {
         for x in 0..width {
-            let value = module.get(
-                [
-                    ((x as f64 - (width as f64 / 2.0)) / zoom as f64),
-                    ((y as f64 - (height as f64 / 2.0)) / zoom as f64),
-                ],
-            );
+            let value = module.get([
+                ((x as f64 - (width as f64 / 2.0)) / zoom as f64),
+                ((y as f64 - (height as f64 / 2.0)) / zoom as f64),
+            ]);
             pixels.push((clamp(value * 0.5 + 0.5, 0.0, 1.0) * 255.0) as u8);
 
-            print!("\rProcessing {} of {}",
-                   (y * width) + height,
-                   width * height);
+            print!(
+                "\rProcessing {} of {}",
+                (y * width) + height,
+                width * height
+            );
 
             if value > max_value {
                 max_value = value
@@ -106,18 +106,18 @@ where
 
     for y in 0..height {
         for x in 0..width {
-            let value = module.get(
-                [
-                    ((x as f64 - (width as f64 / 2.0)) / zoom as f64),
-                    ((y as f64 - (height as f64 / 2.0)) / zoom as f64),
-                    0.0,
-                ],
-            );
+            let value = module.get([
+                ((x as f64 - (width as f64 / 2.0)) / zoom as f64),
+                ((y as f64 - (height as f64 / 2.0)) / zoom as f64),
+                0.0,
+            ]);
             pixels.push((clamp(value * 0.5 + 0.5, 0.0, 1.0) * 255.0) as u8);
 
-            print!("\rProcessing {} of {}",
-                   (y * width) + height,
-                   width * height);
+            print!(
+                "\rProcessing {} of {}",
+                (y * width) + height,
+                width * height
+            );
 
             if value > max_value {
                 max_value = value
@@ -147,19 +147,19 @@ where
 
     for y in 0..height {
         for x in 0..width {
-            let value = module.get(
-                [
-                    ((x as f64 - (width as f64 / 2.0)) / zoom as f64),
-                    ((y as f64 - (height as f64 / 2.0)) / zoom as f64),
-                    0.0,
-                    0.0,
-                ],
-            );
+            let value = module.get([
+                ((x as f64 - (width as f64 / 2.0)) / zoom as f64),
+                ((y as f64 - (height as f64 / 2.0)) / zoom as f64),
+                0.0,
+                0.0,
+            ]);
             pixels.push((clamp(value * 0.5 + 0.5, 0.0, 1.0) * 255.0) as u8);
 
-            print!("\rProcessing {} of {}",
-                   (y * width) + height,
-                   width * height);
+            print!(
+                "\rProcessing {} of {}",
+                (y * width) + height,
+                width * height
+            );
 
             if value > max_value {
                 max_value = value

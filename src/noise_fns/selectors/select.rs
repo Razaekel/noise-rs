@@ -81,8 +81,9 @@ where
                 _ if control_value < (self.lower_bound + self.edge_falloff) => {
                     let lower_curve = self.lower_bound - self.edge_falloff;
                     let upper_curve = self.lower_bound + self.edge_falloff;
-                    let alpha = interp::s_curve3((control_value - lower_curve) /
-                                                     (upper_curve - lower_curve));
+                    let alpha = interp::s_curve3(
+                        (control_value - lower_curve) / (upper_curve - lower_curve),
+                    );
 
                     interp::linear(self.source1.get(point), self.source2.get(point), alpha)
                 },
@@ -92,8 +93,9 @@ where
                 _ if control_value < (self.upper_bound + self.edge_falloff) => {
                     let lower_curve = self.upper_bound - self.edge_falloff;
                     let upper_curve = self.upper_bound + self.edge_falloff;
-                    let alpha = interp::s_curve3((control_value - lower_curve) /
-                                                     (upper_curve - lower_curve));
+                    let alpha = interp::s_curve3(
+                        (control_value - lower_curve) / (upper_curve - lower_curve),
+                    );
 
                     interp::linear(self.source2.get(point), self.source1.get(point), alpha)
                 },
