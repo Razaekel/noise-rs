@@ -34,6 +34,25 @@ pub fn clamp<T: PartialOrd>(input: T, min: T, max: T) -> T {
     x
 }
 
+fn write_to_file(filename: &str, pixels: Vec<u8>, width: u32, height: u32) {
+    // Create the output directory for the images, if it doesn't already exist
+    std::fs::create_dir("example_images/").expect("failed to create example_images directory");
+
+    //concatenate the directory to the filename string
+    let directory: String = "example_images/".to_owned();
+    let filepath = directory + filename;
+
+    let _ = image::save_buffer(
+        &Path::new(&filepath),
+        &*pixels,
+        width,
+        height,
+        image::Gray(8),
+    );
+
+    println!("\nFinished generating {}", filename);
+}
+
 #[allow(dead_code)]
 pub fn render_noise_module2<M>(filename: &str, module: &M, width: u32, height: u32, zoom: u32)
 where
@@ -68,15 +87,10 @@ where
         }
     }
 
-    let _ = image::save_buffer(&Path::new(filename),
-                               &*pixels,
-                               width,
-                               height,
-                               image::Gray(8));
-
-    println!("\nFinished generating {}", filename);
     println!("\nMaxValue: {}", max_value);
     println!("\nMinValue: {}", min_value);
+
+    write_to_file(filename, pixels, width, height);
 }
 
 #[allow(dead_code)]
@@ -114,15 +128,10 @@ where
         }
     }
 
-    let _ = image::save_buffer(&Path::new(filename),
-                               &*pixels,
-                               width,
-                               height,
-                               image::Gray(8));
-
-    println!("\nFinished generating {}", filename);
     println!("\nMaxValue: {}", max_value);
     println!("\nMinValue: {}", min_value);
+
+    write_to_file(filename, pixels, width, height);
 }
 
 #[allow(dead_code)]
@@ -161,13 +170,8 @@ where
         }
     }
 
-    let _ = image::save_buffer(&Path::new(filename),
-                               &*pixels,
-                               width,
-                               height,
-                               image::Gray(8));
-
-    println!("\nFinished generating {}", filename);
     println!("\nMaxValue: {}", max_value);
     println!("\nMinValue: {}", min_value);
+
+    write_to_file(filename, pixels, width, height);
 }
