@@ -36,7 +36,13 @@ pub fn clamp<T: PartialOrd>(input: T, min: T, max: T) -> T {
 
 fn write_to_file(filename: &str, pixels: Vec<u8>, width: u32, height: u32) {
     // Create the output directory for the images, if it doesn't already exist
-    std::fs::create_dir("example_images/").expect("failed to create example_images directory");
+    let f = std::fs::create_dir("example_images/");
+
+    match f {
+        Ok(_) => {},
+        Err(_) => {},
+    };
+    //        expect("failed to create example_images directory");
 
     //concatenate the directory to the filename string
     let directory: String = "example_images/".to_owned();

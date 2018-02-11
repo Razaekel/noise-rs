@@ -164,9 +164,13 @@ fn main() {
     /// Maximum depth of the rivers, in planetary elevation units.
     const RIVER_DEPTH: f64 = 0.0234375;
 
-    // Create the output directory for the images.
-    std::fs::create_dir("complexplanet_images/")
-        .expect("failed to create complexplanet_images directory");
+        // Create the output directory for the images.
+    let f = std::fs::create_dir("complexplanet_images/");
+
+    match f {
+        Ok(_) => {},
+        Err(_) => {},
+    };
 
     // ////////////////////////////////////////////////////////////////////////
     // Function group: continent definition
