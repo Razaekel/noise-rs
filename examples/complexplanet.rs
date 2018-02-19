@@ -15,6 +15,7 @@
 extern crate noise;
 
 use noise::*;
+use std::path::Path;
 
 mod debug;
 
@@ -164,13 +165,12 @@ fn main() {
     /// Maximum depth of the rivers, in planetary elevation units.
     const RIVER_DEPTH: f64 = 0.0234375;
 
-        // Create the output directory for the images.
-    let f = std::fs::create_dir("complexplanet_images/");
+    // Create the output directory for the images, if it doesn't already exist
+    let target_dir = Path::new("complexplanet_images/");
 
-    match f {
-        Ok(_) => {},
-        Err(_) => {},
-    };
+    if !target_dir.exists() {
+        std::fs::create_dir(target_dir).expect("failed to create complexplanet_images directory");
+    }
 
     // ////////////////////////////////////////////////////////////////////////
     // Function group: continent definition
