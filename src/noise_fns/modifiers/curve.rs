@@ -77,8 +77,15 @@ impl<'a, T> NoiseFn<T> for Curve<'a, T> {
         // value larger than the output value from the source function
         let index_pos = self.control_points
             .iter()
-            .position(|x| x.input >= source_value)
+            .position(|x| x.input > source_value)
             .unwrap_or_else(|| self.control_points.len());
+
+        if index_pos < 2 {
+            println!("index_pos in curve was less than 2! source value was {}", source_value);
+        }
+
+        // ensure that the index is at least 2 and less than control_points.len()
+        let index_pos = math::clamp(index_pos, 2, self.control_points.len());
 
         // Find the four nearest control points so that we can perform cubic
         // interpolation.
