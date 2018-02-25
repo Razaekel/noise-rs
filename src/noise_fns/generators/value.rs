@@ -22,7 +22,7 @@ pub struct Value {
 }
 
 impl Value {
-    pub fn new() -> Value {
+    pub fn new() -> Self {
         Value {
             seed: DEFAULT_VALUE_SEED,
             perm_table: PermutationTable::new(DEFAULT_VALUE_SEED),
@@ -38,7 +38,7 @@ impl Default for Value {
 
 impl Seedable for Value {
     /// Sets the seed value for Value noise
-    fn set_seed(self, seed: u32) -> Value {
+    fn set_seed(self, seed: u32) -> Self {
         // If the new seed is the same as the current seed, just return self.
         if self.seed == seed {
             return self;
@@ -46,7 +46,7 @@ impl Seedable for Value {
 
         // Otherwise, regenerate the permutation table based on the new seed.
         Value {
-            seed: seed,
+            seed,
             perm_table: PermutationTable::new(seed),
         }
     }

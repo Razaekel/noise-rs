@@ -31,14 +31,14 @@ pub struct Checkerboard {
 }
 
 impl Checkerboard {
-    pub fn new() -> Checkerboard {
+    pub fn new() -> Self {
         Checkerboard {
             size: 1 << DEFAULT_CHECKERBOARD_SIZE,
             _dummy: (),
         }
     }
 
-    pub fn set_size(self, size: usize) -> Checkerboard {
+    pub fn set_size(self, size: usize) -> Self {
         Checkerboard {
             size: 1 << size,
             ..self

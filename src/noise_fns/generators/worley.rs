@@ -48,7 +48,7 @@ pub struct Worley {
 }
 
 impl Worley {
-    pub fn new() -> Worley {
+    pub fn new() -> Self {
         Worley {
             perm_table: PermutationTable::new(DEFAULT_WORLEY_SEED),
             seed: DEFAULT_WORLEY_SEED,
@@ -60,33 +60,33 @@ impl Worley {
     }
 
     /// Sets the range function used by the Worley cells.
-    pub fn set_range_function(self, range_function: RangeFunction) -> Worley {
+    pub fn set_range_function(self, range_function: RangeFunction) -> Self {
         Worley {
-            range_function: range_function,
+            range_function,
             ..self
         }
     }
 
     /// Enables or disables applying the distance from the nearest seed point
     /// to the output value.
-    pub fn enable_range(self, enable_range: bool) -> Worley {
+    pub fn enable_range(self, enable_range: bool) -> Self {
         Worley {
-            enable_range: enable_range,
+            enable_range,
             ..self
         }
     }
 
     /// Sets the frequency of the seed points.
-    pub fn set_frequency(self, frequency: f64) -> Worley {
+    pub fn set_frequency(self, frequency: f64) -> Self {
         Worley {
-            frequency: frequency,
+            frequency,
             ..self
         }
     }
 
-    pub fn set_displacement(self, displacement: f64) -> Worley {
+    pub fn set_displacement(self, displacement: f64) -> Self {
         Worley {
-            displacement: displacement,
+            displacement,
             ..self
         }
     }
@@ -100,7 +100,7 @@ impl Default for Worley {
 
 impl Seedable for Worley {
     /// Sets the seed value used by the Worley cells.
-    fn set_seed(self, seed: u32) -> Worley {
+    fn set_seed(self, seed: u32) -> Self {
         // If the new seed is the same as the current seed, just return self.
         if self.seed == seed {
             return self;
@@ -109,7 +109,7 @@ impl Seedable for Worley {
         // Otherwise, regenerate the permutation table based on the new seed.
         Worley {
             perm_table: PermutationTable::new(seed),
-            seed: seed,
+            seed,
             ..self
         }
     }

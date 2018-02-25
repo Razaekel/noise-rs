@@ -36,9 +36,9 @@ pub struct ScalePoint<Source> {
 }
 
 impl<Source> ScalePoint<Source> {
-    pub fn new(source: Source) -> ScalePoint<Source> {
+    pub fn new(source: Source) -> Self {
         ScalePoint {
-            source: source,
+            source,
             x_scale: 1.0,
             y_scale: 1.0,
             z_scale: 1.0,
@@ -48,42 +48,42 @@ impl<Source> ScalePoint<Source> {
 
     /// Sets the scaling factor to apply to the _x_ coordinate of the input
     /// value.
-    pub fn set_x_scale(self, x_scale: f64) -> ScalePoint<Source> {
+    pub fn set_x_scale(self, x_scale: f64) -> Self {
         ScalePoint {
-            x_scale: x_scale,
+            x_scale,
             ..self
         }
     }
 
     /// Sets the scaling factor to apply to the _x_ coordinate of the input
     /// value.
-    pub fn set_y_scale(self, y_scale: f64) -> ScalePoint<Source> {
+    pub fn set_y_scale(self, y_scale: f64) -> Self {
         ScalePoint {
-            y_scale: y_scale,
+            y_scale,
             ..self
         }
     }
 
     /// Sets the scaling factor to apply to the _x_ coordinate of the input
     /// value.
-    pub fn set_z_scale(self, z_scale: f64) -> ScalePoint<Source> {
+    pub fn set_z_scale(self, z_scale: f64) -> Self {
         ScalePoint {
-            z_scale: z_scale,
+            z_scale,
             ..self
         }
     }
 
     /// Sets the scaling factor to apply to the _x_ coordinate of the input
     /// value.
-    pub fn set_u_scale(self, u_scale: f64) -> ScalePoint<Source> {
+    pub fn set_u_scale(self, u_scale: f64) -> Self {
         ScalePoint {
-            u_scale: u_scale,
+            u_scale,
             ..self
         }
     }
 
     /// Sets the scaling factor to apply to all coordinates of the input value.
-    pub fn set_scale(self, scale: f64) -> ScalePoint<Source> {
+    pub fn set_scale(self, scale: f64) -> Self {
         ScalePoint {
             x_scale: scale,
             y_scale: scale,
@@ -101,12 +101,12 @@ impl<Source> ScalePoint<Source> {
         y_scale: f64,
         z_scale: f64,
         u_scale: f64,
-    ) -> ScalePoint<Source> {
+    ) -> Self {
         ScalePoint {
-            x_scale: x_scale,
-            y_scale: y_scale,
-            z_scale: z_scale,
-            u_scale: u_scale,
+            x_scale,
+            y_scale,
+            z_scale,
+            u_scale,
             ..self
         }
     }

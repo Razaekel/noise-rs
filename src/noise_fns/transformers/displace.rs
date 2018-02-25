@@ -40,13 +40,13 @@ impl<Source, XDisplace, YDisplace, ZDisplace, UDisplace>
         y_displace: YDisplace,
         z_displace: ZDisplace,
         u_displace: UDisplace,
-    ) -> Displace<Source, XDisplace, YDisplace, ZDisplace, UDisplace> {
+    ) -> Self {
         Displace {
-            source: source,
-            x_displace: x_displace,
-            y_displace: y_displace,
-            z_displace: z_displace,
-            u_displace: u_displace,
+            source,
+            x_displace,
+            y_displace,
+            z_displace,
+            u_displace,
         }
     }
 }

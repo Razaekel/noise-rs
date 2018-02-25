@@ -55,7 +55,7 @@ fn main() {
     // two textures.
     let slime_chooser = Select::new(&large_slime, &small_slime, &slime_map)
         .set_bounds(-0.375, 0.375)
-        .set_edge_falloff(0.5);
+        .set_falloff(0.5);
 
     // Finally, perturb the slime texture to add realism.
     let final_slime = Turbulence::new(slime_chooser)

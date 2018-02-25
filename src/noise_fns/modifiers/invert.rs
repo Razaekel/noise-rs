@@ -15,8 +15,8 @@ pub struct Invert<'a, T: 'a> {
 }
 
 impl<'a, T> Invert<'a, T> {
-    pub fn new(source: &'a NoiseFn<T>) -> Invert<'a, T> {
-        Invert { source: source }
+    pub fn new(source: &'a NoiseFn<T>) -> Self {
+        Invert { source }
     }
 }
 

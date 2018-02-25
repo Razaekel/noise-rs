@@ -49,9 +49,9 @@ pub struct Turbulence<Source> {
 }
 
 impl<Source> Turbulence<Source> {
-    pub fn new(source: Source) -> Turbulence<Source> {
+    pub fn new(source: Source) -> Self {
         Turbulence {
-            source: source,
+            source,
             seed: DEFAULT_TURBULENCE_SEED,
             frequency: DEFAULT_TURBULENCE_FREQUENCY,
             power: DEFAULT_TURBULENCE_POWER,
@@ -75,9 +75,9 @@ impl<Source> Turbulence<Source> {
         }
     }
 
-    pub fn set_frequency(self, frequency: f64) -> Turbulence<Source> {
+    pub fn set_frequency(self, frequency: f64) -> Self {
         Turbulence {
-            frequency: frequency,
+            frequency,
             x_distort_function: self.x_distort_function.set_frequency(frequency),
             y_distort_function: self.y_distort_function.set_frequency(frequency),
             z_distort_function: self.z_distort_function.set_frequency(frequency),
@@ -86,16 +86,16 @@ impl<Source> Turbulence<Source> {
         }
     }
 
-    pub fn set_power(self, power: f64) -> Turbulence<Source> {
+    pub fn set_power(self, power: f64) -> Self {
         Turbulence {
-            power: power,
+            power,
             ..self
         }
     }
 
-    pub fn set_roughness(self, roughness: usize) -> Turbulence<Source> {
+    pub fn set_roughness(self, roughness: usize) -> Self {
         Turbulence {
-            roughness: roughness,
+            roughness,
             x_distort_function: self.x_distort_function.set_octaves(roughness),
             y_distort_function: self.y_distort_function.set_octaves(roughness),
             z_distort_function: self.z_distort_function.set_octaves(roughness),
@@ -106,9 +106,9 @@ impl<Source> Turbulence<Source> {
 }
 
 impl<Source> Seedable for Turbulence<Source> {
-    fn set_seed(self, seed: u32) -> Turbulence<Source> {
+    fn set_seed(self, seed: u32) -> Self {
         Turbulence {
-            seed: seed,
+            seed,
             x_distort_function: self.x_distort_function.set_seed(seed),
             y_distort_function: self.y_distort_function.set_seed(seed + 1),
             z_distort_function: self.z_distort_function.set_seed(seed + 2),

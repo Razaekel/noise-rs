@@ -24,15 +24,15 @@ pub struct Cylinders {
 }
 
 impl Cylinders {
-    pub fn new() -> Cylinders {
+    pub fn new() -> Self {
         Cylinders {
             frequency: DEFAULT_CYLINDERS_FREQUENCY,
         }
     }
 
-    pub fn set_frequency(self, frequency: f64) -> Cylinders {
+    pub fn set_frequency(self, frequency: f64) -> Self {
         Cylinders {
-            frequency: frequency,
+            frequency,
         }
     }
 }

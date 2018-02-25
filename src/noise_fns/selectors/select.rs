@@ -30,8 +30,8 @@ pub struct Select<'a, T: 'a> {
     /// Upper bound of the selection range. Default is 1.0.
     pub upper_bound: f64,
 
-    /// Edge-falloff value. Default is 0.0.
-    pub edge_falloff: f64,
+    /// Edge falloff value. Default is 0.0.
+    pub falloff: f64,
 }
 
 impl<'a, T> Select<'a, T> {
@@ -39,28 +39,28 @@ impl<'a, T> Select<'a, T> {
         source1: &'a NoiseFn<T>,
         source2: &'a NoiseFn<T>,
         control: &'a NoiseFn<T>,
-    ) -> Select<'a, T> {
+    ) -> Self {
         Select {
-            source1: source1,
-            source2: source2,
-            control: control,
+            source1,
+            source2,
+            control,
             lower_bound: 0.0,
             upper_bound: 1.0,
-            edge_falloff: 0.0,
+            falloff: 0.0,
         }
     }
 
-    pub fn set_bounds(self, lower: f64, upper: f64) -> Select<'a, T> {
+    pub fn set_bounds(self, lower_bound: f64, upper_bound: f64) -> Self {
         Select {
-            lower_bound: lower,
-            upper_bound: upper,
+            lower_bound,
+            upper_bound,
             ..self
         }
     }
 
-    pub fn set_edge_falloff(self, falloff: f64) -> Select<'a, T> {
+    pub fn set_falloff(self, falloff: f64) -> Self {
         Select {
-            edge_falloff: falloff,
+            falloff,
             ..self
         }
     }
@@ -73,26 +73,26 @@ where
     fn get(&self, point: T) -> f64 {
         let control_value = self.control.get(point);
 
-        if self.edge_falloff > 0.0 {
+        if self.falloff > 0.0 {
             match () {
-                _ if control_value < (self.lower_bound - self.edge_falloff) => {
+                _ if control_value < (self.lower_bound - self.falloff) => {
                     self.source1.get(point)
                 },
-                _ if control_value < (self.lower_bound + self.edge_falloff) => {
-                    let lower_curve = self.lower_bound - self.edge_falloff;
-                    let upper_curve = self.lower_bound + self.edge_falloff;
+                _ if control_value < (self.lower_bound + self.falloff) => {
+                    let lower_curve = self.lower_bound - self.falloff;
+                    let upper_curve = self.lower_bound + self.falloff;
                     let alpha = interp::s_curve3(
                         (control_value - lower_curve) / (upper_curve - lower_curve),
                     );
 
                     interp::linear(self.source1.get(point), self.source2.get(point), alpha)
                 },
-                _ if control_value < (self.upper_bound - self.edge_falloff) => {
+                _ if control_value < (self.upper_bound - self.falloff) => {
                     self.source2.get(point)
                 },
-                _ if control_value < (self.upper_bound + self.edge_falloff) => {
-                    let lower_curve = self.upper_bound - self.edge_falloff;
-                    let upper_curve = self.upper_bound + self.edge_falloff;
+                _ if control_value < (self.upper_bound + self.falloff) => {
+                    let lower_curve = self.upper_bound - self.falloff;
+                    let upper_curve = self.upper_bound + self.falloff;
                     let alpha = interp::s_curve3(
                         (control_value - lower_curve) / (upper_curve - lower_curve),
                     );

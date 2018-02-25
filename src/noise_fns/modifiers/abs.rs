@@ -16,8 +16,8 @@ pub struct Abs<'a, T: 'a> {
 }
 
 impl<'a, T> Abs<'a, T> {
-    pub fn new(source: &'a NoiseFn<T>) -> Abs<'a, T> {
-        Abs { source: source }
+    pub fn new(source: &'a NoiseFn<T>) -> Self {
+        Abs { source }
     }
 }
 

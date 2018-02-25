@@ -27,16 +27,16 @@ pub struct Exponent<'a, T: 'a> {
 }
 
 impl<'a, T> Exponent<'a, T> {
-    pub fn new(source: &'a NoiseFn<T>) -> Exponent<'a, T> {
+    pub fn new(source: &'a NoiseFn<T>) -> Self {
         Exponent {
-            source: source,
+            source,
             exponent: 1.0,
         }
     }
 
-    pub fn set_exponent(self, exponent: f64) -> Exponent<'a, T> {
+    pub fn set_exponent(self, exponent: f64) -> Self {
         Exponent {
-            exponent: exponent,
+            exponent,
             ..self
         }
     }

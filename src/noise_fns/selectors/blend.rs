@@ -33,11 +33,11 @@ impl<'a, T> Blend<'a, T> {
         source1: &'a NoiseFn<T>,
         source2: &'a NoiseFn<T>,
         control: &'a NoiseFn<T>,
-    ) -> Blend<'a, T> {
+    ) -> Self {
         Blend {
-            source1: source1,
-            source2: source2,
-            control: control,
+            source1,
+            source2,
+            control,
         }
     }
 }

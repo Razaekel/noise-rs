@@ -34,9 +34,9 @@ pub struct Cache<Source> {
 }
 
 impl<Source> Cache<Source> {
-    pub fn new(source: Source) -> Cache<Source> {
+    pub fn new(source: Source) -> Self {
         Cache {
-            source: source,
+            source,
             value: Cell::new(None),
             point: RefCell::new(Vec::new()),
         }

@@ -22,8 +22,8 @@ pub struct Constant {
 }
 
 impl Constant {
-    pub fn new(value: f64) -> Constant {
-        Constant { value: value }
+    pub fn new(value: f64) -> Self {
+        Constant { value }
     }
 }
 

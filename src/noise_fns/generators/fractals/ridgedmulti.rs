@@ -81,7 +81,7 @@ pub struct RidgedMulti {
 }
 
 impl RidgedMulti {
-    pub fn new() -> RidgedMulti {
+    pub fn new() -> Self {
         RidgedMulti {
             seed: DEFAULT_RIDGED_SEED,
             octaves: DEFAULT_RIDGED_OCTAVE_COUNT,
@@ -93,9 +93,9 @@ impl RidgedMulti {
         }
     }
 
-    pub fn set_attenuation(self, attenuation: f64) -> RidgedMulti {
+    pub fn set_attenuation(self, attenuation: f64) -> Self {
         RidgedMulti {
-            attenuation: attenuation,
+            attenuation,
             ..self
         }
     }
@@ -108,49 +108,49 @@ impl Default for RidgedMulti {
 }
 
 impl MultiFractal for RidgedMulti {
-    fn set_octaves(self, mut octaves: usize) -> RidgedMulti {
+    fn set_octaves(self, mut octaves: usize) -> Self {
         if self.octaves == octaves {
             return self;
         }
 
         octaves = math::clamp(octaves, 1, RIDGED_MAX_OCTAVES);
         RidgedMulti {
-            octaves: octaves,
+            octaves,
             sources: super::build_sources(self.seed, octaves),
             ..self
         }
     }
 
-    fn set_frequency(self, frequency: f64) -> RidgedMulti {
+    fn set_frequency(self, frequency: f64) -> Self {
         RidgedMulti {
-            frequency: frequency,
+            frequency,
             ..self
         }
     }
 
-    fn set_lacunarity(self, lacunarity: f64) -> RidgedMulti {
+    fn set_lacunarity(self, lacunarity: f64) -> Self {
         RidgedMulti {
-            lacunarity: lacunarity,
+            lacunarity,
             ..self
         }
     }
 
-    fn set_persistence(self, persistence: f64) -> RidgedMulti {
+    fn set_persistence(self, persistence: f64) -> Self {
         RidgedMulti {
-            persistence: persistence,
+            persistence,
             ..self
         }
     }
 }
 
 impl Seedable for RidgedMulti {
-    fn set_seed(self, seed: u32) -> RidgedMulti {
+    fn set_seed(self, seed: u32) -> Self {
         if self.seed == seed {
             return self;
         }
 
         RidgedMulti {
-            seed: seed,
+            seed,
             sources: super::build_sources(seed, self.octaves),
             ..self
         }

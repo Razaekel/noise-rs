@@ -366,7 +366,7 @@ fn main() {
     // remain unaffected.
     let continentDef_se = Select::new(&baseContinentDef, &continentDef_tu2, &baseContinentDef)
         .set_bounds(SEA_LEVEL - 0.0375, SEA_LEVEL + 1000.0375)
-        .set_edge_falloff(0.0625);
+        .set_falloff(0.0625);
 
     //    debug::render_noise_module("complexplanet_images/01_3_continentDef_se.png",
     //                               &continentDef_se,
@@ -662,7 +662,7 @@ fn main() {
         &mountainousTerrain_ad,
         &mountainBaseDef,
     ).set_bounds(-0.5, 999.5)
-        .set_edge_falloff(0.5);
+        .set_falloff(0.5);
 
     // 5: [Scaled-mountainous-terrain-module]: This scale/bias module slightly
     // reduces the range of the output value from the combined-mountainous-
@@ -1421,7 +1421,7 @@ fn main() {
     // module.
     let baseContinentElev_se = Select::new(&baseContinentElev_sb, &continentalShelf, &continentDef)
         .set_bounds(SHELF_LEVEL - 1000.0, SHELF_LEVEL)
-        .set_edge_falloff(0.03125);
+        .set_falloff(0.03125);
 
     // 3: [Base-continent-elevation subgroup]: Caches the output value from the
     // base-continent-with-oceans module.
@@ -1492,7 +1492,7 @@ fn main() {
         &continentsWithHills_ad,
         &terrainTypeDef,
     ).set_bounds(1.0 - HILLS_AMOUNT, 1001.0 - HILLS_AMOUNT)
-        .set_edge_falloff(0.25);
+        .set_falloff(0.25);
 
     // 3: [Continents-with-hills subgroup]: Caches the output value from the
     // select-high-elevations module.
@@ -1569,7 +1569,7 @@ fn main() {
             &continentsWithMountains_ad1,
             &terrainTypeDef,
         ).set_bounds(1.0 - MOUNTAINS_AMOUNT, 1001.0 - MOUNTAINS_AMOUNT)
-            .set_edge_falloff(0.25);
+            .set_falloff(0.25);
 
     // 5: [Continents-with-mountains subgroup]: Caches the output value from the
     // select-high-elevations module.
@@ -1633,7 +1633,7 @@ fn main() {
         &continentsWithBadlands_ad,
         &continentsWithBadlands_bm,
     ).set_bounds(1.0 - BADLANDS_AMOUNT, 1001.0 - BADLANDS_AMOUNT)
-        .set_edge_falloff(0.25);
+        .set_falloff(0.25);
 
     //    debug::render_noise_module("complexplanet_images/23_2_continentsWithBadlands_se.png",
     //                               &continentsWithBadlands_se,
@@ -1707,7 +1707,7 @@ fn main() {
         &continentsWithRivers_ad,
         &continentsWithBadlands,
     ).set_bounds(SEA_LEVEL, CONTINENT_HEIGHT_SCALE + SEA_LEVEL)
-        .set_edge_falloff(CONTINENT_HEIGHT_SCALE - SEA_LEVEL);
+        .set_falloff(CONTINENT_HEIGHT_SCALE - SEA_LEVEL);
 
     // 4: [Continents-with-rivers subgroup]: Caches the output value from the
     // blended-rivers-to-continents module.

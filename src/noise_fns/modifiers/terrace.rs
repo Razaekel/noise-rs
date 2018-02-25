@@ -46,9 +46,9 @@ pub struct Terrace<'a, T: 'a> {
 }
 
 impl<'a, T> Terrace<'a, T> {
-    pub fn new(source: &'a NoiseFn<T>) -> Terrace<'a, T> {
+    pub fn new(source: &'a NoiseFn<T>) -> Self {
         Terrace {
-            source: source,
+            source,
             invert_terraces: false,
             control_points: Vec::with_capacity(2),
         }
@@ -61,7 +61,7 @@ impl<'a, T> Terrace<'a, T> {
     /// At the control points, its slope resets to zero.
     ///
     /// It does not matter which order these points are added in.
-    pub fn add_control_point(mut self, control_point: f64) -> Terrace<'a, T> {
+    pub fn add_control_point(mut self, control_point: f64) -> Self {
         // check to see if the vector already contains the input point.
         if !self.control_points
             .iter()
@@ -84,9 +84,9 @@ impl<'a, T> Terrace<'a, T> {
 
     /// Enables or disables the inversion of the terrain-forming curve between
     /// the control points.
-    pub fn invert_terraces(self, invert_terraces: bool) -> Terrace<'a, T> {
+    pub fn invert_terraces(self, invert_terraces: bool) -> Self {
         Terrace {
-            invert_terraces: invert_terraces,
+            invert_terraces,
             ..self
         }
     }

@@ -62,7 +62,7 @@ pub struct HybridMulti {
 }
 
 impl HybridMulti {
-    pub fn new() -> HybridMulti {
+    pub fn new() -> Self {
         HybridMulti {
             seed: DEFAULT_HYBRIDMULTI_SEED,
             octaves: DEFAULT_HYBRIDMULTI_OCTAVES,
@@ -81,49 +81,49 @@ impl Default for HybridMulti {
 }
 
 impl MultiFractal for HybridMulti {
-    fn set_octaves(self, mut octaves: usize) -> HybridMulti {
+    fn set_octaves(self, mut octaves: usize) -> Self {
         if self.octaves == octaves {
             return self;
         }
 
         octaves = math::clamp(octaves, 1, HYBRIDMULTI_MAX_OCTAVES);
         HybridMulti {
-            octaves: octaves,
+            octaves,
             sources: super::build_sources(self.seed, octaves),
             ..self
         }
     }
 
-    fn set_frequency(self, frequency: f64) -> HybridMulti {
+    fn set_frequency(self, frequency: f64) -> Self {
         HybridMulti {
-            frequency: frequency,
+            frequency,
             ..self
         }
     }
 
-    fn set_lacunarity(self, lacunarity: f64) -> HybridMulti {
+    fn set_lacunarity(self, lacunarity: f64) -> Self {
         HybridMulti {
-            lacunarity: lacunarity,
+            lacunarity,
             ..self
         }
     }
 
-    fn set_persistence(self, persistence: f64) -> HybridMulti {
+    fn set_persistence(self, persistence: f64) -> Self {
         HybridMulti {
-            persistence: persistence,
+            persistence,
             ..self
         }
     }
 }
 
 impl Seedable for HybridMulti {
-    fn set_seed(self, seed: u32) -> HybridMulti {
+    fn set_seed(self, seed: u32) -> Self {
         if self.seed == seed {
             return self;
         }
 
         HybridMulti {
-            seed: seed,
+            seed,
             sources: super::build_sources(seed, self.octaves),
             ..self
         }

@@ -27,23 +27,23 @@ pub struct ScaleBias<'a, T: 'a> {
 }
 
 impl<'a, T> ScaleBias<'a, T> {
-    pub fn new(source: &'a NoiseFn<T>) -> ScaleBias<'a, T> {
+    pub fn new(source: &'a NoiseFn<T>) -> Self {
         ScaleBias {
-            source: source,
+            source,
             scale: 1.0,
             bias: 0.0,
         }
     }
 
-    pub fn set_scale(self, scale: f64) -> ScaleBias<'a, T> {
+    pub fn set_scale(self, scale: f64) -> Self {
         ScaleBias {
-            scale: scale,
+            scale,
             ..self
         }
     }
 
-    pub fn set_bias(self, bias: f64) -> ScaleBias<'a, T> {
-        ScaleBias { bias: bias, ..self }
+    pub fn set_bias(self, bias: f64) -> Self {
+        ScaleBias { bias, ..self }
     }
 }
 

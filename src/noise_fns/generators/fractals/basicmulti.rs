@@ -68,7 +68,7 @@ pub struct BasicMulti {
 }
 
 impl BasicMulti {
-    pub fn new() -> BasicMulti {
+    pub fn new() -> Self {
         BasicMulti {
             seed: DEFAULT_BASICMULTI_SEED,
             octaves: DEFAULT_BASICMULTI_OCTAVES,
@@ -87,49 +87,49 @@ impl Default for BasicMulti {
 }
 
 impl MultiFractal for BasicMulti {
-    fn set_octaves(self, mut octaves: usize) -> BasicMulti {
+    fn set_octaves(self, mut octaves: usize) -> Self {
         if self.octaves == octaves {
             return self;
         }
 
         octaves = math::clamp(octaves, 1, BASICMULTI_MAX_OCTAVES);
         BasicMulti {
-            octaves: octaves,
+            octaves,
             sources: super::build_sources(self.seed, octaves),
             ..self
         }
     }
 
-    fn set_frequency(self, frequency: f64) -> BasicMulti {
+    fn set_frequency(self, frequency: f64) -> Self {
         BasicMulti {
-            frequency: frequency,
+            frequency,
             ..self
         }
     }
 
-    fn set_lacunarity(self, lacunarity: f64) -> BasicMulti {
+    fn set_lacunarity(self, lacunarity: f64) -> Self {
         BasicMulti {
-            lacunarity: lacunarity,
+            lacunarity,
             ..self
         }
     }
 
-    fn set_persistence(self, persistence: f64) -> BasicMulti {
+    fn set_persistence(self, persistence: f64) -> Self {
         BasicMulti {
-            persistence: persistence,
+            persistence,
             ..self
         }
     }
 }
 
 impl Seedable for BasicMulti {
-    fn set_seed(self, seed: u32) -> BasicMulti {
+    fn set_seed(self, seed: u32) -> Self {
         if self.seed == seed {
             return self;
         }
 
         BasicMulti {
-            seed: seed,
+            seed,
             sources: super::build_sources(seed, self.octaves),
             ..self
         }

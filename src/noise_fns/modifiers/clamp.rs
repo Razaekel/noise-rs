@@ -23,32 +23,32 @@ pub struct Clamp<'a, T: 'a> {
 }
 
 impl<'a, T> Clamp<'a, T> {
-    pub fn new(source: &'a NoiseFn<T>) -> Clamp<'a, T> {
+    pub fn new(source: &'a NoiseFn<T>) -> Self {
         Clamp {
-            source: source,
+            source,
             lower_bound: -1.0,
             upper_bound: 1.0,
         }
     }
 
-    pub fn set_lower_bound(self, lower_bound: f64) -> Clamp<'a, T> {
+    pub fn set_lower_bound(self, lower_bound: f64) -> Self {
         Clamp {
-            lower_bound: lower_bound,
+            lower_bound,
             ..self
         }
     }
 
-    pub fn set_upper_bound(self, upper_bound: f64) -> Clamp<'a, T> {
+    pub fn set_upper_bound(self, upper_bound: f64) -> Self {
         Clamp {
-            upper_bound: upper_bound,
+            upper_bound,
             ..self
         }
     }
 
-    pub fn set_bounds(self, lower_bound: f64, upper_bound: f64) -> Clamp<'a, T> {
+    pub fn set_bounds(self, lower_bound: f64, upper_bound: f64) -> Self {
         Clamp {
-            lower_bound: lower_bound,
-            upper_bound: upper_bound,
+            lower_bound,
+            upper_bound,
             ..self
         }
     }

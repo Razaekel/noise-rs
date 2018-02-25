@@ -38,14 +38,14 @@ struct ControlPoint<T> {
 }
 
 impl<'a, T> Curve<'a, T> {
-    pub fn new(source: &'a NoiseFn<T>) -> Curve<'a, T> {
+    pub fn new(source: &'a NoiseFn<T>) -> Self {
         Curve {
-            source: source,
+            source,
             control_points: Vec::with_capacity(4),
         }
     }
 
-    pub fn add_control_point(mut self, input_value: f64, output_value: f64) -> Curve<'a, T> {
+    pub fn add_control_point(mut self, input_value: f64, output_value: f64) -> Self {
         // check to see if the vector already contains the input point.
         if !self.control_points
             .iter()
@@ -68,8 +68,7 @@ impl<'a, T> Curve<'a, T> {
             );
         }
 
-        // create new Curve with updated control_points vector
-        Curve { ..self }
+        self
     }
 }
 

@@ -74,7 +74,7 @@ pub struct Fbm {
 }
 
 impl Fbm {
-    pub fn new() -> Fbm {
+    pub fn new() -> Self {
         Fbm {
             seed: DEFAULT_FBM_SEED,
             octaves: DEFAULT_FBM_OCTAVE_COUNT,
@@ -93,49 +93,49 @@ impl Default for Fbm {
 }
 
 impl MultiFractal for Fbm {
-    fn set_octaves(self, mut octaves: usize) -> Fbm {
+    fn set_octaves(self, mut octaves: usize) -> Self {
         if self.octaves == octaves {
             return self;
         }
 
         octaves = math::clamp(octaves, 1, FBM_MAX_OCTAVES);
         Fbm {
-            octaves: octaves,
+            octaves,
             sources: super::build_sources(self.seed, octaves),
             ..self
         }
     }
 
-    fn set_frequency(self, frequency: f64) -> Fbm {
+    fn set_frequency(self, frequency: f64) -> Self {
         Fbm {
-            frequency: frequency,
+            frequency,
             ..self
         }
     }
 
-    fn set_lacunarity(self, lacunarity: f64) -> Fbm {
+    fn set_lacunarity(self, lacunarity: f64) -> Self {
         Fbm {
-            lacunarity: lacunarity,
+            lacunarity,
             ..self
         }
     }
 
-    fn set_persistence(self, persistence: f64) -> Fbm {
+    fn set_persistence(self, persistence: f64) -> Self {
         Fbm {
-            persistence: persistence,
+            persistence,
             ..self
         }
     }
 }
 
 impl Seedable for Fbm {
-    fn set_seed(self, seed: u32) -> Fbm {
+    fn set_seed(self, seed: u32) -> Self {
         if self.seed == seed {
             return self;
         }
 
         Fbm {
-            seed: seed,
+            seed,
             sources: super::build_sources(seed, self.octaves),
             ..self
         }
