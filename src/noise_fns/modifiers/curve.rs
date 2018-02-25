@@ -6,7 +6,8 @@
 // project carrying such notice may not be copied, modified, or distributed
 // except according to those terms.
 
-use math::{clamp, interp};
+use math;
+use math::interp;
 use noise_fns::NoiseFn;
 use std;
 
@@ -89,10 +90,10 @@ impl<'a, T> NoiseFn<T> for Curve<'a, T> {
 
         // Find the four nearest control points so that we can perform cubic
         // interpolation.
-        let index0 = clamp_index(index_pos as isize - 2, 0, self.control_points.len() - 1);
-        let index1 = clamp_index(index_pos as isize - 1, 0, self.control_points.len() - 1);
-        let index2 = clamp_index(index_pos as isize, 0, self.control_points.len() - 1);
-        let index3 = clamp_index(index_pos as isize + 1, 0, self.control_points.len() - 1);
+        let index0 = math::clamp(index_pos - 2, 0, self.control_points.len() - 1);
+        let index1 = math::clamp(index_pos - 1, 0, self.control_points.len() - 1);
+        let index2 = math::clamp(index_pos, 0, self.control_points.len() - 1);
+        let index3 = math::clamp(index_pos + 1, 0, self.control_points.len() - 1);
 
         // If some control points are missing (which occurs if the value from
         // the source function is greater than the largest input value or less
@@ -116,8 +117,4 @@ impl<'a, T> NoiseFn<T> for Curve<'a, T> {
             alpha,
         )
     }
-}
-
-fn clamp_index(index: isize, min: usize, max: usize) -> usize {
-    clamp(index, min as isize, max as isize) as usize
 }

@@ -38,17 +38,13 @@ pub type Vector3<T> = [T; 3];
 pub type Vector4<T> = [T; 4];
 
 #[inline]
-pub fn clamp<T: PartialOrd>(input: T, min: T, max: T) -> T {
+pub fn clamp<T: PartialOrd>(val: T, min: T, max: T) -> T {
     assert!(max >= min);
-
-    let mut x = input;
-    if x < min {
-        x = min;
+    match () {
+        _ if val < min => min,
+        _ if val > max => max,
+        _ => val,
     }
-    if x > max {
-        x = max;
-    }
-    x
 }
 
 #[inline]
