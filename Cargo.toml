@@ -1,8 +1,8 @@
 [package]
 name = "noise"
 description = "Procedural noise generation library."
-homepage = "https://github.com/bjz/noise-rs"
-repository = "https://github.com/bjz/noise-rs"
+homepage = "https://github.com/razaekel/noise-rs"
+repository = "https://github.com/razaekel/noise-rs"
 documentation = "https://docs.rs/noise/"
 version = "0.4.1"
 license = "Apache-2.0/MIT"

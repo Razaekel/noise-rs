@@ -14,15 +14,14 @@
 # limitations under the License.
 language: rust
 rust:
-  - nightly
   - stable
+  - beta
+  - nightly
 sudo: false
-env:
-  global:
-    - secure: YzRpe+UOEphNAMdiKdvslYnLPVhLWs10+SRvKzmdhbiq3aagIkUWewmQGdrrhYpIdHyCi/iNiOYu28aBYoh1Qr2o46JKvvZh4MtNlK0KjQOv6K4YBYL1OB3XPjTvP6Eei2Pma//G4hfChovOtCbXZT2y+vzDXgoVp8MvUS0L//g=
 script:
   - cargo test
   - cargo doc
-after_script:
-  - cd target
-  - curl http://www.rust-ci.org/artifacts/put?t=$RUSTCI_TOKEN | sh
+matrix:
+  allow_failures:
+    - rust: nightly
+    - rust: beta

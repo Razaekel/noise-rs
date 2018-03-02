@@ -1,6 +1,6 @@
 # noise-rs
 
-[![Build Status](https://travis-ci.org/brendanzab/noise-rs.svg?branch=master)](https://travis-ci.org/brendanzab/noise-rs)
+[![Build Status](https://travis-ci.org/Razaekel/noise-rs.svg?branch=master)](https://travis-ci.org/Razaekel/noise-rs)
 
 A procedural noise generation library for Rust.
 
