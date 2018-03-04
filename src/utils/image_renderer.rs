@@ -193,11 +193,7 @@ impl ImageRenderer {
                     light_intensity = 1.0;
                 }
 
-//                println!("calculated source color {:?} at {}, {}", source_color, x, y );
-
                 let destination_color = self.calc_destination_color(source_color, light_intensity);
-
-//                println!("calculated destination color {:?} at {}, {}", destination_color, x, y );
 
                 destination_image.set_value(x, y, destination_color);
             }

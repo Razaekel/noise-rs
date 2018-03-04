@@ -4,7 +4,7 @@ description = "Procedural noise generation library."
 homepage = "https://github.com/razaekel/noise-rs"
 repository = "https://github.com/razaekel/noise-rs"
 documentation = "https://docs.rs/noise/"
-version = "0.4.1"
+version = "0.5.0"
 license = "Apache-2.0/MIT"
 keywords = ["math", "random"]
 authors = ["The Noise-rs Developers."]
@@ -14,9 +14,6 @@ name = "noise"
 
 [dependencies]
 rand = "0.3"
-image = "0.18"
-
-[dev-dependencies]
 image = "0.18"
 
 [[bench]]

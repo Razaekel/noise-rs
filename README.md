@@ -1,6 +1,8 @@
 # noise-rs
 
 [![Build Status](https://travis-ci.org/Razaekel/noise-rs.svg?branch=master)](https://travis-ci.org/Razaekel/noise-rs)
+[![Documentation](https://img.shields.io/badge/documentation-online-blue.svg)](https://docs.rs/noise/)
+[![Crates.io](https://img.shields.io/crates/v/noise.svg)](https://crates.io/crates/noise)
 
 A procedural noise generation library for Rust.
 
@@ -28,13 +30,13 @@ A very fast and reasonable quality gradient noise:
 
 - `Perlin::new()`
 
-#### OpenSimplex noise (To be deprecated)
+#### OpenSimplex noise
 
 A slower but higher quality form of gradient noise:
 
 - `OpenSimplex::new()`
 
-### Value Noise (To be deprecated)
+### Value Noise
 
 Value noise (sometimes mistaken with gradient noise) produces lower quality
 smooth noise. It exhibits pronounced grid artifacts, but can be slightly faster
@@ -54,14 +56,14 @@ more varied output:
 
 ### Worley Noise
 
-Named after Steven Worley, and also called voronoi noise, is based on dividing
+Named after Steven Worley, and also called Voronoi noise, is based on dividing
 space into cells based on proximity to a random set of seed points.
 
 - `Worley::new()`
 
 #### Noise Functions
 
-These are the actual noise functionss, which just take a coordinate using `get()` and return
+These are the actual noise functions, which just take a coordinate using `get()` and return
 a value. They can be chained together when declared, creating very complex noise results.
 
 See the individual function pages for their descriptions, and the examples for their usage.

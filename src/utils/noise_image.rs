@@ -58,7 +58,6 @@ impl NoiseImage {
         let (width, height) = self.size;
 
         if x < width && y < height {
-//            println!("setting value {:?} at position {}, {}", value, x, y);
             self.map[x + y * width] = value;
         } else {
             eprintln!("input point out of bounds")
