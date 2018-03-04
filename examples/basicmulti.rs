@@ -3,9 +3,10 @@
 extern crate noise;
 
 use noise::BasicMulti;
-
-mod debug;
+use noise::utils::*;
 
 fn main() {
-    debug::render_noise_module3("basicmulti.png", &BasicMulti::new(), 1024, 1024, 100);
+    PlaneMapBuilder::new(&BasicMulti::new())
+        .build()
+        .write_to_file("basicmulti.png");
 }

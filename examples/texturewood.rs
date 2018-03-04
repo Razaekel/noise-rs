@@ -1,8 +1,7 @@
 extern crate noise;
 
 use noise::*;
-
-mod debug;
+use noise::utils::*;
 
 fn main() {
     // Base wood texture. Uses concentric cylinders aligned on the z-axis, like a log.
@@ -48,5 +47,20 @@ fn main() {
         .set_power(1.0 / 64.0)
         .set_roughness(4);
 
-    debug::render_noise_module3("texturewood.png", &final_wood, 1024, 1024, 100);
+    let planar_texture = PlaneMapBuilder::new(&final_wood)
+        .set_size(1024, 1024)
+        .build();
+
+    // Create a wood palette.
+    let wood_gradient = ColorGradient::new()
+        .clear_gradient()
+        .add_gradient_point(-1.000, [189, 94, 4, 255])
+        .add_gradient_point(0.500, [144, 48, 6, 255])
+        .add_gradient_point(1.0, [60, 10, 8, 255]);
+
+    let mut renderer = ImageRenderer::new().set_gradient(wood_gradient);
+
+    renderer
+        .render(&planar_texture)
+        .write_to_file("texture_wood_planar.png");
 }

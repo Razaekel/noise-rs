@@ -1,8 +1,7 @@
 extern crate noise;
 
 use noise::{Blend, Fbm, Perlin, RidgedMulti};
-
-mod debug;
+use noise::utils::*;
 
 fn main() {
     let perlin = Perlin::new();
@@ -10,5 +9,7 @@ fn main() {
     let fbm = Fbm::new();
     let blend = Blend::new(&perlin, &ridged, &fbm);
 
-    debug::render_noise_module3("blend.png", &blend, 1024, 1024, 100);
+    PlaneMapBuilder::new(&blend)
+        .build()
+        .write_to_file("blend.png");
 }

@@ -1,12 +1,12 @@
 extern crate noise;
 
 use noise::{Cylinders, Max, Perlin};
-
-mod debug;
+use noise::utils::*;
 
 fn main() {
     let cyl = Cylinders::new();
     let perlin = Perlin::new();
+    let max = Max::new(&cyl, &perlin);
 
-    debug::render_noise_module3("max.png", &Max::new(&cyl, &perlin), 1024, 1024, 100);
+    PlaneMapBuilder::new(&max).build().write_to_file("max.png");
 }

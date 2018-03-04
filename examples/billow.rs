@@ -3,9 +3,10 @@
 extern crate noise;
 
 use noise::Billow;
-
-mod debug;
+use noise::utils::*;
 
 fn main() {
-    debug::render_noise_module3("billow.png", &Billow::new(), 1024, 1024, 400);
+    PlaneMapBuilder::new(&Billow::new())
+        .build()
+        .write_to_file("billow.png");
 }

@@ -3,8 +3,7 @@
 extern crate noise;
 
 use noise::{Seedable, SuperSimplex};
-
-mod debug;
+use noise::utils::*;
 
 fn main() {
     let mut lookup_2d: [([i8; 2], [f64; 2]); 8 * 4] = [([0; 2], [0.0; 2]); 8 * 4];
@@ -200,20 +199,15 @@ fn main() {
     // {xout, yout, zout} = P0;
     // eq3dsp[xout, yout, zout]
 
-    debug::render_noise_module2("super_simplex_2d.png", &SuperSimplex::new(), 1024, 1024, 50);
-    debug::render_noise_module2(
-        "super_simplex_2d_seeded.png",
-        &SuperSimplex::new().set_seed(1),
-        1024,
-        1024,
-        50,
-    );
-    debug::render_noise_module3("super_simplex_3d.png", &SuperSimplex::new(), 1024, 1024, 50);
-    debug::render_noise_module3(
-        "super_simplex_3d_seeded.png",
-        &SuperSimplex::new().set_seed(1),
-        1024,
-        1024,
-        50,
-    );
+    let super_simplex = SuperSimplex::new();
+
+    PlaneMapBuilder::new(&super_simplex)
+        .build()
+        .write_to_file("super_simplex.png");
+
+    let super_simplex = super_simplex.set_seed(1);
+
+    PlaneMapBuilder::new(&super_simplex)
+        .build()
+        .write_to_file("super_simplex_seed=1.png");
 }

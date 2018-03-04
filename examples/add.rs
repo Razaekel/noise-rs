@@ -1,12 +1,13 @@
 extern crate noise;
 
 use noise::{Add, Cylinders, Perlin};
-
-mod debug;
+use noise::utils::*;
 
 fn main() {
     let cyl = Cylinders::new();
     let perlin = Perlin::new();
 
-    debug::render_noise_module3("add.png", &Add::new(&cyl, &perlin), 1024, 1024, 100);
+    let add = Add::new(&cyl, &perlin);
+
+    PlaneMapBuilder::new(&add).build().write_to_file("add.png");
 }

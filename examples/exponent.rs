@@ -1,17 +1,13 @@
 extern crate noise;
 
 use noise::{Exponent, Perlin};
-
-mod debug;
+use noise::utils::*;
 
 fn main() {
     let perlin = Perlin::new();
+    let exponent = Exponent::new(&perlin).set_exponent(3.0);
 
-    debug::render_noise_module3(
-        "exponent.png",
-        &Exponent::new(&perlin).set_exponent(3.0),
-        1024,
-        1024,
-        100,
-    );
+    PlaneMapBuilder::new(&exponent)
+        .build()
+        .write_to_file("exponent.png");
 }

@@ -1,18 +1,14 @@
 extern crate noise;
 
 use noise::{Cylinders, Multiply, Perlin};
-
-mod debug;
+use noise::utils::*;
 
 fn main() {
     let cyl = Cylinders::new();
     let perlin = Perlin::new();
+    let multiply = Multiply::new(&cyl, &perlin);
 
-    debug::render_noise_module3(
-        "multiply.png",
-        &Multiply::new(&cyl, &perlin),
-        1024,
-        1024,
-        100,
-    );
+    PlaneMapBuilder::new(&multiply)
+        .build()
+        .write_to_file("multiply.png");
 }

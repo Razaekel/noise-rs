@@ -1,11 +1,13 @@
 extern crate noise;
 
 use noise::{Perlin, Turbulence};
-
-mod debug;
+use noise::utils::*;
 
 fn main() {
     let perlin = Perlin::new();
+    let turbulence = Turbulence::new(&perlin);
 
-    debug::render_noise_module3("turbulence.png", &Turbulence::new(perlin), 1024, 1024, 50);
+    PlaneMapBuilder::new(&turbulence)
+        .build()
+        .write_to_file("turbulence.png");
 }

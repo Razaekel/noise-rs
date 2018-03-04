@@ -1,8 +1,7 @@
 extern crate noise;
 
 use noise::{Clamp, Perlin};
-
-mod debug;
+use noise::utils::*;
 
 fn main() {
     let perlin = Perlin::new();
@@ -10,5 +9,7 @@ fn main() {
         .set_lower_bound(0.0)
         .set_upper_bound(0.5);
 
-    debug::render_noise_module3("clamp.png", &clamp, 1024, 1024, 100);
+    PlaneMapBuilder::new(&clamp)
+        .build()
+        .write_to_file("clamp.png");
 }

@@ -3,32 +3,18 @@
 extern crate noise;
 
 use noise::{Perlin, Seedable};
-
-mod debug;
+use noise::utils::*;
 
 fn main() {
-    debug::render_noise_module2("perlin_2d.png", &Perlin::new(), 1024, 1024, 50);
-    debug::render_noise_module2(
-        "perlin_2d_seeded.png",
-        &Perlin::new().set_seed(1),
-        1024,
-        1024,
-        50,
-    );
-    debug::render_noise_module3("perlin_3d.png", &Perlin::new(), 1024, 1024, 50);
-    debug::render_noise_module3(
-        "perlin_3d_seeded.png",
-        &Perlin::new().set_seed(1),
-        1024,
-        1024,
-        50,
-    );
-    debug::render_noise_module4("perlin_4d.png", &Perlin::new(), 1024, 1024, 50);
-    debug::render_noise_module4(
-        "perlin_4d_seeded.png",
-        &Perlin::new().set_seed(1),
-        1024,
-        1024,
-        50,
-    );
+    let perlin = Perlin::new();
+
+    PlaneMapBuilder::new(&perlin)
+        .build()
+        .write_to_file("perlin.png");
+
+    let perlin = perlin.set_seed(1);
+
+    PlaneMapBuilder::new(&perlin)
+        .build()
+        .write_to_file("perlin_seed=1.png");
 }
