@@ -2,16 +2,13 @@
 
 extern crate noise;
 
-use noise::{MultiFractal, RidgedMulti};
-
-mod debug;
+use noise::RidgedMulti;
+use noise::utils::*;
 
 fn main() {
-    debug::render_noise_module3(
-        "ridgedmulti.png",
-        &RidgedMulti::new().set_octaves(2),
-        1024,
-        1024,
-        100,
-    );
+    let ridged_multi = RidgedMulti::new();
+
+    PlaneMapBuilder::new(&ridged_multi)
+        .build()
+        .write_to_file("ridged_multi.png");
 }

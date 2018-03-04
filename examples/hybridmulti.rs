@@ -3,9 +3,12 @@
 extern crate noise;
 
 use noise::HybridMulti;
-
-mod debug;
+use noise::utils::*;
 
 fn main() {
-    debug::render_noise_module3("hybridmulti.png", &HybridMulti::new(), 1024, 1024, 200);
+    let hybrid_multi = HybridMulti::new();
+
+    PlaneMapBuilder::new(&hybrid_multi)
+        .build()
+        .write_to_file("hybrid_multi.png");
 }

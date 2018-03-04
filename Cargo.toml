@@ -14,9 +14,10 @@ name = "noise"
 
 [dependencies]
 rand = "0.3"
+image = "0.18"
 
 [dev-dependencies]
-image = "0.13"
+image = "0.18"
 
 [[bench]]
 name = "benches"

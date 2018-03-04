@@ -3,9 +3,10 @@
 extern crate noise;
 
 use noise::Fbm;
-
-mod debug;
+use noise::utils::*;
 
 fn main() {
-    debug::render_noise_module3("fbm.png", &Fbm::new(), 1024, 1024, 400);
+    let fbm = Fbm::new();
+
+    PlaneMapBuilder::new(&fbm).build().write_to_file("fbm.png");
 }

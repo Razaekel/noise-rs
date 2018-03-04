@@ -3,11 +3,16 @@
 extern crate noise;
 
 use noise::Constant;
-
-mod debug;
+use noise::utils::*;
 
 fn main() {
-    debug::render_noise_module3("constant1.png", &Constant::new(-1.0), 1024, 1024, 1);
-    debug::render_noise_module3("constant2.png", &Constant::new(0.0), 1024, 1024, 1);
-    debug::render_noise_module3("constant3.png", &Constant::new(1.0), 1024, 1024, 1);
+    PlaneMapBuilder::new(&Constant::new(-1.0))
+        .build()
+        .write_to_file("constant_-1.png");
+    PlaneMapBuilder::new(&Constant::new(0.0))
+        .build()
+        .write_to_file("constant_0.png");
+    PlaneMapBuilder::new(&Constant::new(1.0))
+        .build()
+        .write_to_file("constant_1.png");
 }

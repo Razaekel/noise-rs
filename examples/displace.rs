@@ -1,8 +1,7 @@
 extern crate noise;
 
 use noise::{Checkerboard, Constant, Cylinders, Displace, Perlin};
-
-mod debug;
+use noise::utils::*;
 
 fn main() {
     let cboard = Checkerboard::new();
@@ -11,5 +10,7 @@ fn main() {
     let perlin = Perlin::new();
     let displace = Displace::new(cylinders, cboard, perlin, constant, constant);
 
-    debug::render_noise_module3("displace.png", &displace, 1024, 1024, 50);
+    PlaneMapBuilder::new(&displace)
+        .build()
+        .write_to_file("displace.png");
 }

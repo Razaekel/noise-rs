@@ -1,8 +1,7 @@
 extern crate noise;
 
 use noise::*;
-
-mod debug;
+use noise::utils::*;
 
 fn main() {
     // Large slime bubble texture.
@@ -50,5 +49,29 @@ fn main() {
         .set_power(1.0 / 32.0)
         .set_roughness(2);
 
-    debug::render_noise_module3("textureslime.png", &final_slime, 1024, 1024, 500);
+    let planar_texture = PlaneMapBuilder::new(&final_slime)
+        .set_size(1024, 1024)
+        .build();
+
+    let seamless_texture = PlaneMapBuilder::new(&final_slime)
+        .set_size(1024, 1024)
+        .set_is_seamless(true)
+        .build();
+
+    // Create a slime palette.
+    let slime_gradient = ColorGradient::new()
+        .clear_gradient()
+        .add_gradient_point(-1.0, [160, 64, 42, 255])
+        .add_gradient_point(0.0, [64, 192, 64, 255])
+        .add_gradient_point(1.0, [128, 255, 128, 255]);
+
+    let mut renderer = ImageRenderer::new().set_gradient(slime_gradient);
+
+    renderer
+        .render(&planar_texture)
+        .write_to_file("texture_slime_planar.png");
+
+    renderer
+        .render(&seamless_texture)
+        .write_to_file("texture_slime_seamless.png");
 }

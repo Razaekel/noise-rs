@@ -1,12 +1,12 @@
 extern crate noise;
 
 use noise::{Cylinders, Min, Perlin};
-
-mod debug;
+use noise::utils::*;
 
 fn main() {
     let cyl = Cylinders::new();
     let perlin = Perlin::new();
+    let min = Min::new(&cyl, &perlin);
 
-    debug::render_noise_module3("min.png", &Min::new(&cyl, &perlin), 1024, 1024, 100);
+    PlaneMapBuilder::new(&min).build().write_to_file("min.png");
 }

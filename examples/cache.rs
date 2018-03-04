@@ -1,11 +1,13 @@
 extern crate noise;
 
 use noise::{Cache, Checkerboard};
-
-mod debug;
+use noise::utils::*;
 
 fn main() {
     let cboard = Checkerboard::new();
+    let cache = Cache::new(&cboard);
 
-    debug::render_noise_module3("cache.png", &Cache::new(cboard), 1024, 1024, 100);
+    PlaneMapBuilder::new(&cache)
+        .build()
+        .write_to_file("cache.png");
 }

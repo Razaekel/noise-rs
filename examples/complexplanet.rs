@@ -1,7 +1,7 @@
 extern crate noise;
 
 use noise::*;
-use std::path::Path;
+use utils::*;
 
 mod debug;
 
@@ -150,13 +150,6 @@ fn main() {
 
     /// Maximum depth of the rivers, in planetary elevation units.
     const RIVER_DEPTH: f64 = 0.0234375;
-
-    // Create the output directory for the images, if it doesn't already exist
-    let target_dir = Path::new("complexplanet_images/");
-
-    if !target_dir.exists() {
-        std::fs::create_dir(target_dir).expect("failed to create complexplanet_images directory");
-    }
 
     // ////////////////////////////////////////////////////////////////////////
     // Function group: continent definition
@@ -1710,39 +1703,50 @@ fn main() {
     //    continent-with-rivers subgroup.
     let unscaledFinalPlanet = Cache::new(continentsWithRivers);
 
-    debug::render_noise_module3(
-        "complexplanet_images/30_0_unscaledFinalPlanet\
-         .png",
-        &unscaledFinalPlanet,
-        1024,
-        1024,
-        100,
-    );
+    //    debug::render_noise_module3(
+    //        "complexplanet_images/30_0_unscaledFinalPlanet\
+    //         .png",
+    //        &unscaledFinalPlanet,
+    //        1024,
+    //        1024,
+    //        100,
+    //    );
+    //
+    //    debug::render_noise_module3(
+    //        "complexplanet_images/30_1_unscaledFinalPlanet\
+    //         .png",
+    //        &unscaledFinalPlanet,
+    //        2048,
+    //        2048,
+    //        1000,
+    //    );
+    //
+    //    debug::render_noise_module3(
+    //        "complexplanet_images/30_2_unscaledFinalPlanet\
+    //         .png",
+    //        &unscaledFinalPlanet,
+    //        2048,
+    //        2048,
+    //        10000,
+    //    );
+    //
+    //    debug::render_noise_module3(
+    //        "complexplanet_images/30_3_unscaledFinalPlanet\
+    //         .png",
+    //        &unscaledFinalPlanet,
+    //        4096,
+    //        4096,
+    //        100000,
+    //    );
 
-    debug::render_noise_module3(
-        "complexplanet_images/30_1_unscaledFinalPlanet\
-         .png",
-        &unscaledFinalPlanet,
-        2048,
-        2048,
-        1000,
-    );
+    let noise_map = PlaneMapBuilder::new(&unscaledFinalPlanet)
+        .set_size(1024, 1024)
+        .set_x_bounds(-2.0, 2.0)
+        .set_y_bounds(-2.0, 2.0)
+        .build();
 
-    debug::render_noise_module3(
-        "complexplanet_images/30_2_unscaledFinalPlanet\
-         .png",
-        &unscaledFinalPlanet,
-        2048,
-        2048,
-        10000,
-    );
-
-    debug::render_noise_module3(
-        "complexplanet_images/30_3_unscaledFinalPlanet\
-         .png",
-        &unscaledFinalPlanet,
-        4096,
-        4096,
-        100000,
-    );
+    ImageRenderer::new()
+        .set_gradient(ColorGradient::new().build_terrain_gradient())
+        .render(&noise_map)
+        .write_to_file("unscaledFinalPlanet.png");
 }

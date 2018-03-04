@@ -1,16 +1,13 @@
 extern crate noise;
 
 use noise::Cylinders;
-
-mod debug;
+use noise::utils::*;
 
 fn main() {
-    debug::render_noise_module3("cylinders.png", &Cylinders::new(), 1024, 1024, 50);
-    debug::render_noise_module3(
-        "cylinders-f5.png",
-        &Cylinders::new().set_frequency(5.0),
-        1024,
-        1024,
-        50,
-    );
+    PlaneMapBuilder::new(&Cylinders::new())
+        .build()
+        .write_to_file("cylinders.png");
+    PlaneMapBuilder::new(&Cylinders::new().set_frequency(5.0))
+        .build()
+        .write_to_file("cylinders-f5.png");
 }

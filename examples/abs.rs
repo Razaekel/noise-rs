@@ -1,11 +1,11 @@
 extern crate noise;
 
 use noise::{Abs, Perlin};
-
-mod debug;
+use noise::utils::*;
 
 fn main() {
     let perlin = Perlin::new();
+    let abs = Abs::new(&perlin);
 
-    debug::render_noise_module3("abs.png", &Abs::new(&perlin), 1024, 1024, 100);
+    PlaneMapBuilder::new(&abs).build().write_to_file("abs.png");
 }

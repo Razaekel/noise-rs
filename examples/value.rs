@@ -2,33 +2,11 @@
 
 extern crate noise;
 
-use noise::{Seedable, Value};
-
-mod debug;
+use noise::Value;
+use noise::utils::*;
 
 fn main() {
-    debug::render_noise_module2("value2.png", &Value::new(), 1024, 1024, 50);
-    debug::render_noise_module2(
-        "value2_seeded.png",
-        &Value::new().set_seed(1),
-        1024,
-        1024,
-        50,
-    );
-    debug::render_noise_module3("value3.png", &Value::new(), 1024, 1024, 50);
-    debug::render_noise_module3(
-        "value3_seeded.png",
-        &Value::new().set_seed(1),
-        1024,
-        1024,
-        50,
-    );
-    debug::render_noise_module4("value4.png", &Value::new(), 1024, 1024, 50);
-    debug::render_noise_module4(
-        "value4_seeded.png",
-        &Value::new().set_seed(1),
-        1024,
-        1024,
-        50,
-    );
+    PlaneMapBuilder::new(&Value::new())
+        .build()
+        .write_to_file("value.png");
 }
