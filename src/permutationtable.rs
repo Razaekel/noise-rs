@@ -8,7 +8,7 @@ const TABLE_SIZE: usize = 256;
 ///
 /// Table creation is expensive, so in most circumstances you'll only want to
 /// create one of these per generator.
-#[derive(Copy)]
+#[derive(Copy, Clone)]
 pub struct PermutationTable {
     values: [u8; TABLE_SIZE],
 }
@@ -65,14 +65,6 @@ impl PermutationTable {
     pub fn get4(&self, pos: Point4<isize>) -> usize {
         let w = (pos[3] & 0xff) as usize;
         self.values[self.get3([pos[0], pos[1], pos[2]]) ^ w] as usize
-    }
-}
-
-impl Clone for PermutationTable {
-    fn clone(&self) -> PermutationTable {
-        PermutationTable {
-            values: self.values,
-        }
     }
 }
 

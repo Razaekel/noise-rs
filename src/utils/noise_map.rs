@@ -3,8 +3,8 @@ use math;
 use std;
 use std::path::*;
 
-const RASTER_MAX_WIDTH: u16 = 32767;
-const RASTER_MAX_HEIGHT: u16 = 32767;
+const RASTER_MAX_WIDTH: u16 = 32_767;
+const RASTER_MAX_HEIGHT: u16 = 32_767;
 
 pub struct NoiseMap {
     size: (usize, usize),
@@ -24,7 +24,7 @@ impl NoiseMap {
 
         if width == 0 || height == 0 {
             // An empty noise map was specified. Return a new blank, empty map.
-            return NoiseMap::initialize();
+            NoiseMap::initialize()
         } else {
             // New noise map size specified. Allocate a new Vec unless the current Vec is large
             // enough.
@@ -32,17 +32,17 @@ impl NoiseMap {
             if self.map.capacity() < map_size {
                 // New size is too big for the current Vec. Create a new Vec with a large enough
                 // capacity now so we're not reallocating when filling the map.
-                return NoiseMap {
+                NoiseMap {
                     map: vec![0.0; map_size],
                     size: (width, height),
                     ..self
-                };
+                }
             } else {
                 // Vec capacity is already big enough, so leave it alone and just change the set size.
-                return NoiseMap {
+                NoiseMap {
                     size: (width, height),
                     ..self
-                };
+                }
             }
         }
     }

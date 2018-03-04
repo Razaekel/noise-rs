@@ -30,17 +30,15 @@ impl<'a> CylinderMapBuilder<'a> {
     }
 
     pub fn set_angle_bounds(self, lower_bound: f64, upper_bound: f64) -> Self {
-        let angle_bounds;
-
-        if lower_bound >= upper_bound {
+        let angle_bounds = if lower_bound >= upper_bound {
             eprintln!(
                 "lower bound {:?} is larger than upper bound {:?}, switching order",
                 lower_bound, upper_bound
             );
-            angle_bounds = (upper_bound, lower_bound);
+            (upper_bound, lower_bound)
         } else {
-            angle_bounds = (lower_bound, upper_bound);
-        }
+            (lower_bound, upper_bound)
+        };
 
         CylinderMapBuilder {
             angle_bounds,
@@ -49,17 +47,15 @@ impl<'a> CylinderMapBuilder<'a> {
     }
 
     pub fn set_height_bounds(self, lower_bound: f64, upper_bound: f64) -> Self {
-        let height_bounds;
-
-        if lower_bound >= upper_bound {
+        let height_bounds = if lower_bound >= upper_bound {
             eprintln!(
                 "lower bound {:?} is larger than upper bound {:?}, switching order",
                 lower_bound, upper_bound
             );
-            height_bounds = (upper_bound, lower_bound);
+            (upper_bound, lower_bound)
         } else {
-            height_bounds = (lower_bound, upper_bound);
-        }
+            (lower_bound, upper_bound)
+        };
 
         CylinderMapBuilder {
             height_bounds,
@@ -215,9 +211,7 @@ impl<'a> NoiseMapBuilder<'a> for PlaneMapBuilder<'a> {
             for x in 0..width {
                 let current_x = self.x_bounds.0 + x_step * x as f64;
 
-                let final_value;
-
-                if self.is_seamless {
+                let final_value = if self.is_seamless {
                     let sw_value = self.source_module.get([current_x, current_y, 0.0]);
                     let se_value = self.source_module
                         .get([current_x + x_extent, current_y, 0.0]);
@@ -233,10 +227,10 @@ impl<'a> NoiseMapBuilder<'a> for PlaneMapBuilder<'a> {
                     let y0 = interp::linear(sw_value, se_value, x_blend);
                     let y1 = interp::linear(nw_value, ne_value, x_blend);
 
-                    final_value = interp::linear(y0, y1, y_blend);
+                    interp::linear(y0, y1, y_blend)
                 } else {
-                    final_value = self.source_module.get([current_x, current_y, 0.0]);
-                }
+                    self.source_module.get([current_x, current_y, 0.0])
+                };
 
                 result_map.set_value(x, y, final_value);
             }

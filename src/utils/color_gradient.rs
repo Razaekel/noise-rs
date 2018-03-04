@@ -3,12 +3,13 @@ use std;
 
 pub type Color = [u8; 4];
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Default)]
 struct GradientPoint {
     pos: f64,
     color: Color,
 }
 
+#[derive(Clone, Debug, Default)]
 pub struct ColorGradient {
     gradient_points: Vec<GradientPoint>,
 }
@@ -44,7 +45,7 @@ impl ColorGradient {
         self.gradient_points
             .iter()
             .position(|x| x.pos >= pos)
-            .unwrap_or(self.gradient_points.len())
+            .unwrap_or_else(|| self.gradient_points.len())
     }
 
     pub fn clear_gradient(mut self) -> Self {

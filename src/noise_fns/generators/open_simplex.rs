@@ -1,6 +1,6 @@
 //! Note that this is NOT Ken Perlin's simplex noise, as that is patent encumbered.
 //! Instead, these functions use the `OpenSimplex` algorithm, as detailed here:
-//! http://uniblock.tumblr.com/post/97868843242/noise
+//! <http://uniblock.tumblr.com/post/97868843242/noise>
 
 use {gradient, math};
 use math::{Point2, Point3, Point4};

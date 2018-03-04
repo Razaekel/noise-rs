@@ -353,7 +353,13 @@ impl ImageRenderer {
     }
 }
 
-#[derive(Copy, Clone)]
+impl Default for ImageRenderer {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+#[derive(Copy, Clone, Default)]
 pub struct LightSource {
     // Azimuth of the light source, in degrees.
     azimuth: f64,
