@@ -22,9 +22,7 @@ impl Cylinders {
     }
 
     pub fn set_frequency(self, frequency: f64) -> Self {
-        Cylinders {
-            frequency,
-        }
+        Cylinders { frequency }
     }
 }
 

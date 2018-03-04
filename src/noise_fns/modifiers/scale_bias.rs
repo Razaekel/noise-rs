@@ -28,10 +28,7 @@ impl<'a, T> ScaleBias<'a, T> {
     }
 
     pub fn set_scale(self, scale: f64) -> Self {
-        ScaleBias {
-            scale,
-            ..self
-        }
+        ScaleBias { scale, ..self }
     }
 
     pub fn set_bias(self, bias: f64) -> Self {

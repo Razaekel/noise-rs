@@ -35,7 +35,7 @@ impl Worley {
     pub const DEFAULT_RANGEFUNCTION: RangeFunction = RangeFunction::Euclidean;
     pub const DEFAULT_FREQUENCY: f64 = 1.0;
     pub const DEFAULT_DISPLACEMENT: f64 = 1.0;
-    
+
     pub fn new() -> Self {
         Worley {
             perm_table: PermutationTable::new(Self::DEFAULT_SEED),
@@ -66,10 +66,7 @@ impl Worley {
 
     /// Sets the frequency of the seed points.
     pub fn set_frequency(self, frequency: f64) -> Self {
-        Worley {
-            frequency,
-            ..self
-        }
+        Worley { frequency, ..self }
     }
 
     pub fn set_displacement(self, displacement: f64) -> Self {

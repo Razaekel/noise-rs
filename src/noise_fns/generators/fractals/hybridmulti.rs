@@ -48,7 +48,7 @@ impl HybridMulti {
     pub const DEFAULT_LACUNARITY: f64 = std::f64::consts::PI * 2.0 / 3.0;
     pub const DEFAULT_PERSISTENCE: f64 = 0.25;
     pub const MAX_OCTAVES: usize = 32;
-    
+
     pub fn new() -> Self {
         HybridMulti {
             seed: Self::DEFAULT_SEED,
@@ -82,17 +82,11 @@ impl MultiFractal for HybridMulti {
     }
 
     fn set_frequency(self, frequency: f64) -> Self {
-        HybridMulti {
-            frequency,
-            ..self
-        }
+        HybridMulti { frequency, ..self }
     }
 
     fn set_lacunarity(self, lacunarity: f64) -> Self {
-        HybridMulti {
-            lacunarity,
-            ..self
-        }
+        HybridMulti { lacunarity, ..self }
     }
 
     fn set_persistence(self, persistence: f64) -> Self {

@@ -94,17 +94,11 @@ impl MultiFractal for Fbm {
     }
 
     fn set_frequency(self, frequency: f64) -> Self {
-        Fbm {
-            frequency,
-            ..self
-        }
+        Fbm { frequency, ..self }
     }
 
     fn set_lacunarity(self, lacunarity: f64) -> Self {
-        Fbm {
-            lacunarity,
-            ..self
-        }
+        Fbm { lacunarity, ..self }
     }
 
     fn set_persistence(self, persistence: f64) -> Self {

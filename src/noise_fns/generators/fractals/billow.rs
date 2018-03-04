@@ -50,7 +50,7 @@ impl Billow {
     pub const DEFAULT_LACUNARITY: f64 = std::f64::consts::PI * 2.0 / 3.0;
     pub const DEFAULT_PERSISTENCE: f64 = 0.5;
     pub const MAX_OCTAVES: usize = 32;
-    
+
     pub fn new() -> Self {
         Billow {
             seed: Self::DEFAULT_SEED,
@@ -84,17 +84,11 @@ impl MultiFractal for Billow {
     }
 
     fn set_frequency(self, frequency: f64) -> Self {
-        Billow {
-            frequency,
-            ..self
-        }
+        Billow { frequency, ..self }
     }
 
     fn set_lacunarity(self, lacunarity: f64) -> Self {
-        Billow {
-            lacunarity,
-            ..self
-        }
+        Billow { lacunarity, ..self }
     }
 
     fn set_persistence(self, persistence: f64) -> Self {

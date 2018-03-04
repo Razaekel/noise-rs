@@ -12,10 +12,7 @@ pub struct Min<'a, T: 'a> {
 
 impl<'a, T> Min<'a, T> {
     pub fn new(source1: &'a NoiseFn<T>, source2: &'a NoiseFn<T>) -> Self {
-        Min {
-            source1,
-            source2,
-        }
+        Min { source1, source2 }
     }
 }
 

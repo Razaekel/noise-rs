@@ -36,7 +36,7 @@ impl<Source> Turbulence<Source> {
     pub const DEFAULT_FREQUENCY: f64 = 1.0;
     pub const DEFAULT_POWER: f64 = 1.0;
     pub const DEFAULT_ROUGHNESS: usize = 3;
-    
+
     pub fn new(source: Source) -> Self {
         Turbulence {
             source,
@@ -75,10 +75,7 @@ impl<Source> Turbulence<Source> {
     }
 
     pub fn set_power(self, power: f64) -> Self {
-        Turbulence {
-            power,
-            ..self
-        }
+        Turbulence { power, ..self }
     }
 
     pub fn set_roughness(self, roughness: usize) -> Self {

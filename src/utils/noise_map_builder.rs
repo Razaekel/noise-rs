@@ -1,6 +1,6 @@
-use utils::noise_map::NoiseMap;
-use noise_fns::NoiseFn;
 use math::interp;
+use noise_fns::NoiseFn;
+use utils::noise_map::NoiseMap;
 
 pub trait NoiseMapBuilder<'a> {
     fn set_size(self, width: usize, height: usize) -> Self;

@@ -66,7 +66,7 @@ impl RidgedMulti {
     pub const DEFAULT_PERSISTENCE: f64 = 1.0;
     pub const DEFAULT_ATTENUATION: f64 = 2.0;
     pub const MAX_OCTAVES: usize = 32;
-    
+
     pub fn new() -> Self {
         RidgedMulti {
             seed: Self::DEFAULT_SEED,
@@ -108,17 +108,11 @@ impl MultiFractal for RidgedMulti {
     }
 
     fn set_frequency(self, frequency: f64) -> Self {
-        RidgedMulti {
-            frequency,
-            ..self
-        }
+        RidgedMulti { frequency, ..self }
     }
 
     fn set_lacunarity(self, lacunarity: f64) -> Self {
-        RidgedMulti {
-            lacunarity,
-            ..self
-        }
+        RidgedMulti { lacunarity, ..self }
     }
 
     fn set_persistence(self, persistence: f64) -> Self {

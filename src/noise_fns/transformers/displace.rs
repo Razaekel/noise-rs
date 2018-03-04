@@ -25,7 +25,8 @@ pub struct Displace<Source, XDisplace, YDisplace, ZDisplace, UDisplace> {
 }
 
 impl<Source, XDisplace, YDisplace, ZDisplace, UDisplace>
-    Displace<Source, XDisplace, YDisplace, ZDisplace, UDisplace> {
+    Displace<Source, XDisplace, YDisplace, ZDisplace, UDisplace>
+{
     pub fn new(
         source: Source,
         x_displace: XDisplace,

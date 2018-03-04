@@ -41,37 +41,25 @@ impl<Source> ScalePoint<Source> {
     /// Sets the scaling factor to apply to the _x_ coordinate of the input
     /// value.
     pub fn set_x_scale(self, x_scale: f64) -> Self {
-        ScalePoint {
-            x_scale,
-            ..self
-        }
+        ScalePoint { x_scale, ..self }
     }
 
     /// Sets the scaling factor to apply to the _x_ coordinate of the input
     /// value.
     pub fn set_y_scale(self, y_scale: f64) -> Self {
-        ScalePoint {
-            y_scale,
-            ..self
-        }
+        ScalePoint { y_scale, ..self }
     }
 
     /// Sets the scaling factor to apply to the _x_ coordinate of the input
     /// value.
     pub fn set_z_scale(self, z_scale: f64) -> Self {
-        ScalePoint {
-            z_scale,
-            ..self
-        }
+        ScalePoint { z_scale, ..self }
     }
 
     /// Sets the scaling factor to apply to the _x_ coordinate of the input
     /// value.
     pub fn set_u_scale(self, u_scale: f64) -> Self {
-        ScalePoint {
-            u_scale,
-            ..self
-        }
+        ScalePoint { u_scale, ..self }
     }
 
     /// Sets the scaling factor to apply to all coordinates of the input value.
@@ -87,13 +75,7 @@ impl<Source> ScalePoint<Source> {
 
     /// Sets the individual scaling factors to apply to each coordinate of the
     /// input value.
-    pub fn set_all_scales(
-        self,
-        x_scale: f64,
-        y_scale: f64,
-        z_scale: f64,
-        u_scale: f64,
-    ) -> Self {
+    pub fn set_all_scales(self, x_scale: f64, y_scale: f64, z_scale: f64, u_scale: f64) -> Self {
         ScalePoint {
             x_scale,
             y_scale,

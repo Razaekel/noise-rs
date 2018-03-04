@@ -1,7 +1,7 @@
-use utils::color_gradient::Color;
+use image;
 use std;
 use std::path::Path;
-use image;
+use utils::color_gradient::Color;
 
 const RASTER_MAX_WIDTH: u16 = 32767;
 const RASTER_MAX_HEIGHT: u16 = 32767;
@@ -33,16 +33,16 @@ impl NoiseImage {
                 // New size is too big for the current Vec. Create a new Vec with a large enough
                 // capacity now so we're not reallocating when filling the map.
                 return NoiseImage {
-                    map: vec!([0; 4]; map_size),
+                    map: vec![[0; 4]; map_size],
                     size: (width, height),
                     ..self
-                }
+                };
             } else {
                 // Vec capacity is already big enough, so leave it alone and just change the set size.
                 return NoiseImage {
                     size: (width, height),
                     ..self
-                }
+                };
             }
         }
     }
@@ -129,5 +129,3 @@ impl Default for NoiseImage {
         NoiseImage::initialize()
     }
 }
-
-

@@ -30,10 +30,7 @@ impl ImageRenderer {
     }
 
     pub fn set_gradient(self, gradient: ColorGradient) -> Self {
-        ImageRenderer {
-            gradient,
-            ..self
-        }
+        ImageRenderer { gradient, ..self }
     }
 
     pub fn gradient(&self) -> &ColorGradient {
@@ -178,14 +175,10 @@ impl ImageRenderer {
                     }
 
                     let pc = point;
-                    let pl = noise_map
-                        .get_value((x as isize + x_left_offset) as usize, y);
-                    let pr = noise_map
-                        .get_value((x as isize + x_right_offset) as usize, y);
-                    let pd = noise_map
-                        .get_value(x, (y as isize + y_down_offset) as usize);
-                    let pu = noise_map
-                        .get_value(x, (y as isize + y_up_offset) as usize);
+                    let pl = noise_map.get_value((x as isize + x_left_offset) as usize, y);
+                    let pr = noise_map.get_value((x as isize + x_right_offset) as usize, y);
+                    let pd = noise_map.get_value(x, (y as isize + y_down_offset) as usize);
+                    let pu = noise_map.get_value(x, (y as isize + y_up_offset) as usize);
 
                     light_intensity = self.light_source.calc_light_intensity(pc, pl, pr, pd, pu);
                     light_intensity *= self.light_source.brightness;
@@ -202,11 +195,7 @@ impl ImageRenderer {
         destination_image
     }
 
-    fn calc_destination_color(
-        &self,
-        source_color: Color,
-        light_value: f64,
-    ) -> Color {
+    fn calc_destination_color(&self, source_color: Color, light_value: f64) -> Color {
         let source = u8_array_to_f64_array(source_color);
 
         let mut red = source[0];
@@ -239,7 +228,11 @@ impl ImageRenderer {
         ]
     }
 
-    pub fn render_with_background(&mut self, noise_map: &NoiseMap, background: &NoiseImage) -> NoiseImage {
+    pub fn render_with_background(
+        &mut self,
+        noise_map: &NoiseMap,
+        background: &NoiseImage,
+    ) -> NoiseImage {
         // noise_map.width
         let (width, height) = noise_map.size();
 
@@ -293,14 +286,10 @@ impl ImageRenderer {
                     }
 
                     let pc = point;
-                    let pl = noise_map
-                        .get_value((x as isize + x_left_offset) as usize, y);
-                    let pr = noise_map
-                        .get_value((x as isize + x_right_offset) as usize, y);
-                    let pd = noise_map
-                        .get_value(x, (y as isize + y_down_offset) as usize);
-                    let pu = noise_map
-                        .get_value(x, (y as isize + y_up_offset) as usize);
+                    let pl = noise_map.get_value((x as isize + x_left_offset) as usize, y);
+                    let pr = noise_map.get_value((x as isize + x_right_offset) as usize, y);
+                    let pd = noise_map.get_value(x, (y as isize + y_down_offset) as usize);
+                    let pu = noise_map.get_value(x, (y as isize + y_up_offset) as usize);
 
                     light_intensity = self.light_source.calc_light_intensity(pc, pl, pr, pd, pu);
                     light_intensity *= self.light_source.brightness;
@@ -308,9 +297,13 @@ impl ImageRenderer {
                     light_intensity = 1.0;
                 }
 
-                let background_color = background.get_value(x,y);
+                let background_color = background.get_value(x, y);
 
-                let destination_color = self.calc_destination_color_with_background(source_color, background_color, light_intensity);
+                let destination_color = self.calc_destination_color_with_background(
+                    source_color,
+                    background_color,
+                    light_intensity,
+                );
 
                 destination_image.set_value(x, y, destination_color);
             }
@@ -431,7 +424,7 @@ impl LightSource {
         self.color = color;
     }
 
-    pub fn set_contrast(&mut self, contrast: f64){
+    pub fn set_contrast(&mut self, contrast: f64) {
         if contrast >= 0.0 {
             self.contrast = contrast;
             self.recalculate_light_values = true;

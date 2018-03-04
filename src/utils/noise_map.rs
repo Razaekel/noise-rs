@@ -1,7 +1,7 @@
-use std;
-use std::path::*;
 use image;
 use math;
+use std;
+use std::path::*;
 
 const RASTER_MAX_WIDTH: u16 = 32767;
 const RASTER_MAX_HEIGHT: u16 = 32767;

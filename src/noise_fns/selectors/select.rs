@@ -24,11 +24,7 @@ pub struct Select<'a, T: 'a> {
 }
 
 impl<'a, T> Select<'a, T> {
-    pub fn new(
-        source1: &'a NoiseFn<T>,
-        source2: &'a NoiseFn<T>,
-        control: &'a NoiseFn<T>,
-    ) -> Self {
+    pub fn new(source1: &'a NoiseFn<T>, source2: &'a NoiseFn<T>, control: &'a NoiseFn<T>) -> Self {
         Select {
             source1,
             source2,
@@ -46,10 +42,7 @@ impl<'a, T> Select<'a, T> {
     }
 
     pub fn set_falloff(self, falloff: f64) -> Self {
-        Select {
-            falloff,
-            ..self
-        }
+        Select { falloff, ..self }
     }
 }
 
@@ -63,9 +56,7 @@ where
 
         if self.falloff > 0.0 {
             match () {
-                _ if control_value < (lower - self.falloff) => {
-                    self.source1.get(point)
-                },
+                _ if control_value < (lower - self.falloff) => self.source1.get(point),
                 _ if control_value < (lower + self.falloff) => {
                     let lower_curve = lower - self.falloff;
                     let upper_curve = lower + self.falloff;
@@ -75,9 +66,7 @@ where
 
                     interp::linear(self.source1.get(point), self.source2.get(point), alpha)
                 },
-                _ if control_value < (upper - self.falloff) => {
-                    self.source2.get(point)
-                },
+                _ if control_value < (upper - self.falloff) => self.source2.get(point),
                 _ if control_value < (upper + self.falloff) => {
                     let lower_curve = upper - self.falloff;
                     let upper_curve = upper + self.falloff;

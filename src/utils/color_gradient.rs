@@ -1,5 +1,5 @@
-use std;
 use math;
+use std;
 
 pub type Color = [u8; 4];
 
@@ -88,7 +88,11 @@ impl ColorGradient {
         assert!(self.gradient_points.len() >= 2);
 
         // we need to clamp the value to the range of pos in the gradient.
-        let clamped_pos = math::clamp(pos, self.gradient_points[0].pos, self.gradient_points[self.gradient_points.len() - 1].pos);
+        let clamped_pos = math::clamp(
+            pos,
+            self.gradient_points[0].pos,
+            self.gradient_points[self.gradient_points.len() - 1].pos,
+        );
 
         // Find the first element in the control point array that has a input
         // value larger than the output value from the source module
@@ -98,7 +102,10 @@ impl ColorGradient {
             .unwrap_or_else(|| self.gradient_points.len());
 
         if index < 1 {
-            println!("index_pos in curve was less than 1! source value was {}", pos);
+            println!(
+                "index_pos in curve was less than 1! source value was {}",
+                pos
+            );
         }
 
         // Find the two nearest control points so that we can perform linear
@@ -152,8 +159,7 @@ mod tests {
     fn blend_channels_min() {
         let result = blend_channels(0, 255, 0.0);
         assert_eq!(
-            0,
-            result,
+            0, result,
             "blend_channels should've created 0, produced `{}` instead",
             result
         );
@@ -163,8 +169,7 @@ mod tests {
     fn blend_channels_mid() {
         let result = blend_channels(0, 255, 0.5);
         assert_eq!(
-            127,
-            result,
+            127, result,
             "blend_channels should've created 127, produced `{}` instead",
             result
         );
@@ -174,8 +179,7 @@ mod tests {
     fn blend_channels_max() {
         let result = blend_channels(0, 255, 1.0);
         assert_eq!(
-            255,
-            result,
+            255, result,
             "blend_channels should've created 255, produced `{}` instead",
             result
         );
@@ -193,7 +197,8 @@ mod tests {
     fn color_gradient_1() {
         let gradient = ColorGradient::new();
 
-        let gradient = gradient.clear_gradient()
+        let gradient = gradient
+            .clear_gradient()
             .add_gradient_point(0.0, [0, 0, 0, 0])
             .add_gradient_point(1.0, [255, 255, 255, 255]);
 
