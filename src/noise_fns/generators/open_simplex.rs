@@ -19,8 +19,6 @@ const NORM_CONSTANT_2D: f64 = 1.0 / 14.0;
 const NORM_CONSTANT_3D: f64 = 1.0 / 14.0;
 const NORM_CONSTANT_4D: f64 = 1.0 / 6.8699090070956625;
 
-pub const DEFAULT_OPENSIMPLEX_SEED: u32 = 0;
-
 /// Noise function that outputs 2/3/4-dimensional Open Simplex noise.
 #[derive(Clone, Copy, Debug)]
 pub struct OpenSimplex {
@@ -29,10 +27,12 @@ pub struct OpenSimplex {
 }
 
 impl OpenSimplex {
+    const DEFAULT_SEED: u32 = 0;
+
     pub fn new() -> Self {
         OpenSimplex {
-            seed: DEFAULT_OPENSIMPLEX_SEED,
-            perm_table: PermutationTable::new(DEFAULT_OPENSIMPLEX_SEED),
+            seed: Self::DEFAULT_SEED,
+            perm_table: PermutationTable::new(Self::DEFAULT_SEED),
         }
     }
 }

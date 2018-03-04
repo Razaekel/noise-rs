@@ -1,9 +1,6 @@
 use math::{Point2, Point3, Point4};
 use noise_fns::NoiseFn;
 
-/// Default cylinders frequency
-pub const DEFAULT_CYLINDERS_FREQUENCY: f64 = 1.0;
-
 /// Noise function that outputs concentric cylinders.
 ///
 /// This noise function outputs concentric cylinders centered on the origin. The
@@ -16,9 +13,11 @@ pub struct Cylinders {
 }
 
 impl Cylinders {
+    pub const DEFAULT_FREQUENCY: f64 = 1.0;
+
     pub fn new() -> Self {
         Cylinders {
-            frequency: DEFAULT_CYLINDERS_FREQUENCY,
+            frequency: Self::DEFAULT_FREQUENCY,
         }
     }
 

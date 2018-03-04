@@ -1,20 +1,6 @@
 use math::{self, scale_shift, Point2, Point3, Point4};
 use noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
-
-/// Default noise seed for the `RidgedMulti` noise function.
-pub const DEFAULT_RIDGED_SEED: u32 = 0;
-/// Default number of octaves for the `RidgedMulti` noise function.
-pub const DEFAULT_RIDGED_OCTAVE_COUNT: usize = 6;
-/// Default frequency for the `RidgedMulti` noise function.
-pub const DEFAULT_RIDGED_FREQUENCY: f64 = 1.0;
-/// Default lacunarity for the `RidgedMulti` noise function.
-pub const DEFAULT_RIDGED_LACUNARITY: f64 = 2.0;
-/// Default persistence for the `RidgedMulti` noise function.
-pub const DEFAULT_RIDGED_PERSISTENCE: f64 = 1.0;
-/// Default attenuation for the `RidgedMulti` noise function.
-pub const DEFAULT_RIDGED_ATTENUATION: f64 = 2.0;
-/// Maximum number of octaves for the `RidgedMulti` noise function.
-pub const RIDGED_MAX_OCTAVES: usize = 32;
+use std;
 
 /// Noise function that outputs ridged-multifractal noise.
 ///
@@ -73,15 +59,23 @@ pub struct RidgedMulti {
 }
 
 impl RidgedMulti {
+    pub const DEFAULT_SEED: u32 = 0;
+    pub const DEFAULT_OCTAVE_COUNT: usize = 6;
+    pub const DEFAULT_FREQUENCY: f64 = 1.0;
+    pub const DEFAULT_LACUNARITY: f64 = std::f64::consts::PI * 2.0 / 3.0;
+    pub const DEFAULT_PERSISTENCE: f64 = 1.0;
+    pub const DEFAULT_ATTENUATION: f64 = 2.0;
+    pub const MAX_OCTAVES: usize = 32;
+    
     pub fn new() -> Self {
         RidgedMulti {
-            seed: DEFAULT_RIDGED_SEED,
-            octaves: DEFAULT_RIDGED_OCTAVE_COUNT,
-            frequency: DEFAULT_RIDGED_FREQUENCY,
-            lacunarity: DEFAULT_RIDGED_LACUNARITY,
-            persistence: DEFAULT_RIDGED_PERSISTENCE,
-            attenuation: DEFAULT_RIDGED_ATTENUATION,
-            sources: super::build_sources(DEFAULT_RIDGED_SEED, DEFAULT_RIDGED_OCTAVE_COUNT),
+            seed: Self::DEFAULT_SEED,
+            octaves: Self::DEFAULT_OCTAVE_COUNT,
+            frequency: Self::DEFAULT_FREQUENCY,
+            lacunarity: Self::DEFAULT_LACUNARITY,
+            persistence: Self::DEFAULT_PERSISTENCE,
+            attenuation: Self::DEFAULT_ATTENUATION,
+            sources: super::build_sources(Self::DEFAULT_SEED, Self::DEFAULT_OCTAVE_COUNT),
         }
     }
 
@@ -105,7 +99,7 @@ impl MultiFractal for RidgedMulti {
             return self;
         }
 
-        octaves = math::clamp(octaves, 1, RIDGED_MAX_OCTAVES);
+        octaves = math::clamp(octaves, 1, Self::MAX_OCTAVES);
         RidgedMulti {
             octaves,
             sources: super::build_sources(self.seed, octaves),

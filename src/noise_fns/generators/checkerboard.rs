@@ -1,9 +1,6 @@
 use math::{Point2, Point3, Point4};
 use noise_fns::NoiseFn;
 
-/// Default Checkerboard size
-pub const DEFAULT_CHECKERBOARD_SIZE: usize = 0;
-
 /// Noise function that outputs a checkerboard pattern.
 ///
 /// This noise function can take one input, size, and outputs 2<sup>size</sup>-sized
@@ -23,9 +20,11 @@ pub struct Checkerboard {
 }
 
 impl Checkerboard {
+    const DEFAULT_SIZE: usize = 0;
+
     pub fn new() -> Self {
         Checkerboard {
-            size: 1 << DEFAULT_CHECKERBOARD_SIZE,
+            size: 1 << Self::DEFAULT_SIZE,
             _dummy: (),
         }
     }

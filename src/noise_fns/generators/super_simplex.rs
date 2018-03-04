@@ -4,9 +4,6 @@ use noise_fns::{NoiseFn, Seedable};
 use permutationtable::PermutationTable;
 use std::ops::Add;
 
-/// Default Seed for the `SuperSimplex` noise function.
-pub const DEFAULT_SUPER_SIMPLEX_SEED: u32 = 0;
-
 const TO_REAL_CONSTANT_2D: f64 = -0.211324865405187; // (1 / sqrt(2 + 1) - 1) / 2
 const TO_SIMPLEX_CONSTANT_2D: f64 = 0.366025403784439; // (sqrt(2 + 1) - 1) / 2
 const TO_SIMPLEX_CONSTANT_3D: f64 = -2.0 / 3.0;
@@ -97,10 +94,12 @@ pub struct SuperSimplex {
 }
 
 impl SuperSimplex {
+    pub const DEFAULT_SEED: u32 = 0;
+
     pub fn new() -> Self {
         SuperSimplex {
-            seed: DEFAULT_SUPER_SIMPLEX_SEED,
-            perm_table: PermutationTable::new(DEFAULT_SUPER_SIMPLEX_SEED),
+            seed: Self::DEFAULT_SEED,
+            perm_table: PermutationTable::new(Self::DEFAULT_SEED),
         }
     }
 }
