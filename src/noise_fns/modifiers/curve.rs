@@ -81,7 +81,10 @@ impl<'a, T> NoiseFn<T> for Curve<'a, T> {
             .unwrap_or_else(|| self.control_points.len());
 
         if index_pos < 2 {
-            println!("index_pos in curve was less than 2! source value was {}", source_value);
+            println!(
+                "index_pos in curve was less than 2! source value was {}",
+                source_value
+            );
         }
 
         // ensure that the index is at least 2 and less than control_points.len()

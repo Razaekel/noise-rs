@@ -4,15 +4,6 @@ use noise_fns::{NoiseFn, Seedable};
 use permutationtable::PermutationTable;
 use std;
 
-/// Default noise seed for the `Worley` noise function.
-pub const DEFAULT_WORLEY_SEED: u32 = 0;
-/// Default `RangeFunction` for the `Worley` noise function.
-pub const DEFAULT_WORLEY_RANGEFUNCTION: RangeFunction = RangeFunction::Euclidean;
-/// Default frequency for the `Worley` noise function.
-pub const DEFAULT_WORLEY_FREQUENCY: f64 = 1.0;
-/// Default displacement for the `Worley` noise function.
-pub const DEFAULT_WORLEY_DISPLACEMENT: f64 = 1.0;
-
 /// Noise function that outputs Worley noise.
 #[derive(Clone, Copy, Debug)]
 pub struct Worley {
@@ -40,14 +31,19 @@ pub struct Worley {
 }
 
 impl Worley {
+    pub const DEFAULT_SEED: u32 = 0;
+    pub const DEFAULT_RANGEFUNCTION: RangeFunction = RangeFunction::Euclidean;
+    pub const DEFAULT_FREQUENCY: f64 = 1.0;
+    pub const DEFAULT_DISPLACEMENT: f64 = 1.0;
+
     pub fn new() -> Self {
         Worley {
-            perm_table: PermutationTable::new(DEFAULT_WORLEY_SEED),
-            seed: DEFAULT_WORLEY_SEED,
-            range_function: DEFAULT_WORLEY_RANGEFUNCTION,
+            perm_table: PermutationTable::new(Self::DEFAULT_SEED),
+            seed: Self::DEFAULT_SEED,
+            range_function: Self::DEFAULT_RANGEFUNCTION,
             enable_range: false,
-            frequency: DEFAULT_WORLEY_FREQUENCY,
-            displacement: DEFAULT_WORLEY_DISPLACEMENT,
+            frequency: Self::DEFAULT_FREQUENCY,
+            displacement: Self::DEFAULT_DISPLACEMENT,
         }
     }
 
@@ -70,10 +66,7 @@ impl Worley {
 
     /// Sets the frequency of the seed points.
     pub fn set_frequency(self, frequency: f64) -> Self {
-        Worley {
-            frequency,
-            ..self
-        }
+        Worley { frequency, ..self }
     }
 
     pub fn set_displacement(self, displacement: f64) -> Self {

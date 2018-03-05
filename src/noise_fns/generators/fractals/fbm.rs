@@ -1,19 +1,7 @@
 use math;
 use math::{Point2, Point3, Point4};
 use noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
-
-/// Default noise seed for the fBm noise function.
-pub const DEFAULT_FBM_SEED: u32 = 0;
-/// Default number of octaves for the fBm noise function.
-pub const DEFAULT_FBM_OCTAVE_COUNT: usize = 6;
-/// Default frequency for the fBm noise function.
-pub const DEFAULT_FBM_FREQUENCY: f64 = 1.0;
-/// Default lacunarity for the fBm noise function.
-pub const DEFAULT_FBM_LACUNARITY: f64 = 2.0;
-/// Default Hurst exponent for the fBm noise function
-pub const DEFAULT_FBM_PERSISTENCE: f64 = 0.5;
-/// Maximum number of octaves for the fBm noise function.
-pub const FBM_MAX_OCTAVES: usize = 32;
+use std;
 
 /// Noise function that outputs fBm (fractal Brownian motion) noise.
 ///
@@ -66,14 +54,21 @@ pub struct Fbm {
 }
 
 impl Fbm {
+    pub const DEFAULT_SEED: u32 = 0;
+    pub const DEFAULT_OCTAVE_COUNT: usize = 6;
+    pub const DEFAULT_FREQUENCY: f64 = 1.0;
+    pub const DEFAULT_LACUNARITY: f64 = std::f64::consts::PI * 2.0 / 3.0;
+    pub const DEFAULT_PERSISTENCE: f64 = 0.5;
+    pub const MAX_OCTAVES: usize = 32;
+
     pub fn new() -> Self {
         Fbm {
-            seed: DEFAULT_FBM_SEED,
-            octaves: DEFAULT_FBM_OCTAVE_COUNT,
-            frequency: DEFAULT_FBM_FREQUENCY,
-            lacunarity: DEFAULT_FBM_LACUNARITY,
-            persistence: DEFAULT_FBM_PERSISTENCE,
-            sources: super::build_sources(DEFAULT_FBM_SEED, DEFAULT_FBM_OCTAVE_COUNT),
+            seed: Self::DEFAULT_SEED,
+            octaves: Self::DEFAULT_OCTAVE_COUNT,
+            frequency: Self::DEFAULT_FREQUENCY,
+            lacunarity: Self::DEFAULT_LACUNARITY,
+            persistence: Self::DEFAULT_PERSISTENCE,
+            sources: super::build_sources(Self::DEFAULT_SEED, Self::DEFAULT_OCTAVE_COUNT),
         }
     }
 }
@@ -90,7 +85,7 @@ impl MultiFractal for Fbm {
             return self;
         }
 
-        octaves = math::clamp(octaves, 1, FBM_MAX_OCTAVES);
+        octaves = math::clamp(octaves, 1, Self::MAX_OCTAVES);
         Fbm {
             octaves,
             sources: super::build_sources(self.seed, octaves),
@@ -99,17 +94,11 @@ impl MultiFractal for Fbm {
     }
 
     fn set_frequency(self, frequency: f64) -> Self {
-        Fbm {
-            frequency,
-            ..self
-        }
+        Fbm { frequency, ..self }
     }
 
     fn set_lacunarity(self, lacunarity: f64) -> Self {
-        Fbm {
-            lacunarity,
-            ..self
-        }
+        Fbm { lacunarity, ..self }
     }
 
     fn set_persistence(self, persistence: f64) -> Self {

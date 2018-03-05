@@ -27,10 +27,7 @@ impl<'a, T> Exponent<'a, T> {
     }
 
     pub fn set_exponent(self, exponent: f64) -> Self {
-        Exponent {
-            exponent,
-            ..self
-        }
+        Exponent { exponent, ..self }
     }
 }
 

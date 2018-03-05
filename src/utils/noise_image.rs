@@ -1,10 +1,10 @@
-use utils::color_gradient::Color;
+use image;
 use std;
 use std::path::Path;
-use image;
+use utils::color_gradient::Color;
 
-const RASTER_MAX_WIDTH: u16 = 32767;
-const RASTER_MAX_HEIGHT: u16 = 32767;
+const RASTER_MAX_WIDTH: u16 = 32_767;
+const RASTER_MAX_HEIGHT: u16 = 32_767;
 
 pub struct NoiseImage {
     size: (usize, usize),
@@ -24,7 +24,7 @@ impl NoiseImage {
 
         if width == 0 || height == 0 {
             // An empty noise image was specified. Return a new blank, empty map.
-            return NoiseImage::initialize();
+            NoiseImage::initialize()
         } else {
             // New noise map size specified. Allocate a new Vec unless the current Vec is large
             // enough.
@@ -32,14 +32,14 @@ impl NoiseImage {
             if self.map.capacity() < map_size {
                 // New size is too big for the current Vec. Create a new Vec with a large enough
                 // capacity now so we're not reallocating when filling the map.
-                return NoiseImage {
-                    map: vec!([0; 4]; map_size),
+                NoiseImage {
+                    map: vec![[0; 4]; map_size],
                     size: (width, height),
                     ..self
                 }
             } else {
                 // Vec capacity is already big enough, so leave it alone and just change the set size.
-                return NoiseImage {
+                NoiseImage {
                     size: (width, height),
                     ..self
                 }
@@ -58,7 +58,6 @@ impl NoiseImage {
         let (width, height) = self.size;
 
         if x < width && y < height {
-//            println!("setting value {:?} at position {}, {}", value, x, y);
             self.map[x + y * width] = value;
         } else {
             eprintln!("input point out of bounds")
@@ -130,5 +129,3 @@ impl Default for NoiseImage {
         NoiseImage::initialize()
     }
 }
-
-

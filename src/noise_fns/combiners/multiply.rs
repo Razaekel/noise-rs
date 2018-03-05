@@ -12,10 +12,7 @@ pub struct Multiply<'a, T: 'a> {
 
 impl<'a, T> Multiply<'a, T> {
     pub fn new(source1: &'a NoiseFn<T>, source2: &'a NoiseFn<T>) -> Self {
-        Multiply {
-            source1,
-            source2,
-        }
+        Multiply { source1, source2 }
     }
 }
 

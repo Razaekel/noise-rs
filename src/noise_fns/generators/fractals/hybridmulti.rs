@@ -1,19 +1,7 @@
 use math;
 use math::{Point2, Point3, Point4};
 use noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
-
-/// Default noise seed for the `HybridMulti` noise function.
-pub const DEFAULT_HYBRIDMULTI_SEED: u32 = 0;
-/// Default number of octaves for the `HybridMulti` noise function.
-pub const DEFAULT_HYBRIDMULTI_OCTAVES: usize = 6;
-/// Default frequency for the `HybridMulti` noise function.
-pub const DEFAULT_HYBRIDMULTI_FREQUENCY: f64 = 2.0;
-/// Default lacunarity for the `HybridMulti` noise function.
-pub const DEFAULT_HYBRIDMULTI_LACUNARITY: f64 = 2.0;
-/// Default persistence for the `HybridMulti` noise function.
-pub const DEFAULT_HYBRIDMULTI_PERSISTENCE: f64 = 0.25;
-/// Maximum number of octaves for the `HybridMulti` noise function.
-pub const HYBRIDMULTI_MAX_OCTAVES: usize = 32;
+use std;
 
 /// Noise function that outputs hybrid Multifractal noise.
 ///
@@ -54,14 +42,21 @@ pub struct HybridMulti {
 }
 
 impl HybridMulti {
+    pub const DEFAULT_SEED: u32 = 0;
+    pub const DEFAULT_OCTAVES: usize = 6;
+    pub const DEFAULT_FREQUENCY: f64 = 2.0;
+    pub const DEFAULT_LACUNARITY: f64 = std::f64::consts::PI * 2.0 / 3.0;
+    pub const DEFAULT_PERSISTENCE: f64 = 0.25;
+    pub const MAX_OCTAVES: usize = 32;
+
     pub fn new() -> Self {
         HybridMulti {
-            seed: DEFAULT_HYBRIDMULTI_SEED,
-            octaves: DEFAULT_HYBRIDMULTI_OCTAVES,
-            frequency: DEFAULT_HYBRIDMULTI_FREQUENCY,
-            lacunarity: DEFAULT_HYBRIDMULTI_LACUNARITY,
-            persistence: DEFAULT_HYBRIDMULTI_PERSISTENCE,
-            sources: super::build_sources(DEFAULT_HYBRIDMULTI_SEED, DEFAULT_HYBRIDMULTI_OCTAVES),
+            seed: Self::DEFAULT_SEED,
+            octaves: Self::DEFAULT_OCTAVES,
+            frequency: Self::DEFAULT_FREQUENCY,
+            lacunarity: Self::DEFAULT_LACUNARITY,
+            persistence: Self::DEFAULT_PERSISTENCE,
+            sources: super::build_sources(Self::DEFAULT_SEED, Self::DEFAULT_OCTAVES),
         }
     }
 }
@@ -78,7 +73,7 @@ impl MultiFractal for HybridMulti {
             return self;
         }
 
-        octaves = math::clamp(octaves, 1, HYBRIDMULTI_MAX_OCTAVES);
+        octaves = math::clamp(octaves, 1, Self::MAX_OCTAVES);
         HybridMulti {
             octaves,
             sources: super::build_sources(self.seed, octaves),
@@ -87,17 +82,11 @@ impl MultiFractal for HybridMulti {
     }
 
     fn set_frequency(self, frequency: f64) -> Self {
-        HybridMulti {
-            frequency,
-            ..self
-        }
+        HybridMulti { frequency, ..self }
     }
 
     fn set_lacunarity(self, lacunarity: f64) -> Self {
-        HybridMulti {
-            lacunarity,
-            ..self
-        }
+        HybridMulti { lacunarity, ..self }
     }
 
     fn set_persistence(self, persistence: f64) -> Self {

@@ -1,25 +1,13 @@
 use math::{self, scale_shift, Point2, Point3, Point4};
 use noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
-
-/// Default noise seed for the Billow noise function.
-pub const DEFAULT_BILLOW_SEED: u32 = 0;
-/// Default number of octaves for the Billow noise function.
-pub const DEFAULT_BILLOW_OCTAVE_COUNT: usize = 6;
-/// Default frequency for the Billow noise function.
-pub const DEFAULT_BILLOW_FREQUENCY: f64 = 1.0;
-/// Default lacunarity for the Billow noise function.
-pub const DEFAULT_BILLOW_LACUNARITY: f64 = 2.0;
-/// Default persistence for the Billow noise function.
-pub const DEFAULT_BILLOW_PERSISTENCE: f64 = 0.5;
-/// Maximum number of octaves for the Billow noise function.
-pub const BILLOW_MAX_OCTAVES: usize = 32;
+use std;
 
 /// Noise function that outputs "billowy" noise.
 ///
 /// This noise function produces "billowy" noise suitable for clouds and rocks.
 ///
 /// This noise function is nearly identical to fBm noise, except this noise
-/// function modifes each octave with an absolute-value function. See the
+/// function modifies each octave with an absolute-value function. See the
 /// documentation for fBm for more information.
 #[derive(Clone, Debug)]
 pub struct Billow {
@@ -56,14 +44,21 @@ pub struct Billow {
 }
 
 impl Billow {
+    pub const DEFAULT_SEED: u32 = 0;
+    pub const DEFAULT_OCTAVE_COUNT: usize = 6;
+    pub const DEFAULT_FREQUENCY: f64 = 1.0;
+    pub const DEFAULT_LACUNARITY: f64 = std::f64::consts::PI * 2.0 / 3.0;
+    pub const DEFAULT_PERSISTENCE: f64 = 0.5;
+    pub const MAX_OCTAVES: usize = 32;
+
     pub fn new() -> Self {
         Billow {
-            seed: DEFAULT_BILLOW_SEED,
-            octaves: DEFAULT_BILLOW_OCTAVE_COUNT,
-            frequency: DEFAULT_BILLOW_FREQUENCY,
-            lacunarity: DEFAULT_BILLOW_LACUNARITY,
-            persistence: DEFAULT_BILLOW_PERSISTENCE,
-            sources: super::build_sources(DEFAULT_BILLOW_SEED, DEFAULT_BILLOW_OCTAVE_COUNT),
+            seed: Self::DEFAULT_SEED,
+            octaves: Self::DEFAULT_OCTAVE_COUNT,
+            frequency: Self::DEFAULT_FREQUENCY,
+            lacunarity: Self::DEFAULT_LACUNARITY,
+            persistence: Self::DEFAULT_PERSISTENCE,
+            sources: super::build_sources(Self::DEFAULT_SEED, Self::DEFAULT_OCTAVE_COUNT),
         }
     }
 }
@@ -80,7 +75,7 @@ impl MultiFractal for Billow {
             return self;
         }
 
-        octaves = math::clamp(octaves, 1, BILLOW_MAX_OCTAVES);
+        octaves = math::clamp(octaves, 1, Self::MAX_OCTAVES);
         Billow {
             octaves,
             sources: super::build_sources(self.seed, octaves),
@@ -89,17 +84,11 @@ impl MultiFractal for Billow {
     }
 
     fn set_frequency(self, frequency: f64) -> Self {
-        Billow {
-            frequency,
-            ..self
-        }
+        Billow { frequency, ..self }
     }
 
     fn set_lacunarity(self, lacunarity: f64) -> Self {
-        Billow {
-            lacunarity,
-            ..self
-        }
+        Billow { lacunarity, ..self }
     }
 
     fn set_persistence(self, persistence: f64) -> Self {

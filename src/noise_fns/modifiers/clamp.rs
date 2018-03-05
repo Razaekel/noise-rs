@@ -8,7 +8,7 @@ pub struct Clamp<'a, T: 'a> {
     pub source: &'a NoiseFn<T>,
 
     /// Bound of the clamping range. Default is -1.0 to 1.0.
-    pub bounds: (f64, f64)
+    pub bounds: (f64, f64),
 }
 
 impl<'a, T> Clamp<'a, T> {

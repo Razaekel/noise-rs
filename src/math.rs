@@ -328,7 +328,7 @@ pub mod interp {
     #[cfg(not(target_os = "emscripten"))]
     #[inline]
     pub fn linear(a: f64, b: f64, x: f64) -> f64 {
-        x.mul_add((b - a), a)
+        x.mul_add(b - a, a)
     }
 
     /// Performs linear interploation between two values.

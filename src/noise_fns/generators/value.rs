@@ -3,9 +3,6 @@ use math::{interp, Point2, Point3, Point4};
 use noise_fns::{NoiseFn, Seedable};
 use permutationtable::PermutationTable;
 
-/// Default Seed for the Value noise function.
-pub const DEFAULT_VALUE_SEED: u32 = 0;
-
 /// Noise function that outputs 2/3/4-dimensional Value noise.
 #[derive(Clone, Copy, Debug)]
 pub struct Value {
@@ -14,10 +11,12 @@ pub struct Value {
 }
 
 impl Value {
+    pub const DEFAULT_SEED: u32 = 0;
+
     pub fn new() -> Self {
         Value {
-            seed: DEFAULT_VALUE_SEED,
-            perm_table: PermutationTable::new(DEFAULT_VALUE_SEED),
+            seed: Self::DEFAULT_SEED,
+            perm_table: PermutationTable::new(Self::DEFAULT_SEED),
         }
     }
 }

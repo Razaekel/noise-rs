@@ -21,11 +21,7 @@ pub struct Blend<'a, T: 'a> {
 }
 
 impl<'a, T> Blend<'a, T> {
-    pub fn new(
-        source1: &'a NoiseFn<T>,
-        source2: &'a NoiseFn<T>,
-        control: &'a NoiseFn<T>,
-    ) -> Self {
+    pub fn new(source1: &'a NoiseFn<T>, source2: &'a NoiseFn<T>, control: &'a NoiseFn<T>) -> Self {
         Blend {
             source1,
             source2,

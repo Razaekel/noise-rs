@@ -3,8 +3,6 @@ extern crate noise;
 use noise::*;
 use utils::*;
 
-mod debug;
-
 /// This example demonstrates how to use the noise-rs library to generate
 /// terrain elevations for a complex planetary surface.
 ///

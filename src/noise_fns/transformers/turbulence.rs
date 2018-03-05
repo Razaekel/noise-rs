@@ -1,19 +1,10 @@
 use math::{Point2, Point3, Point4};
 use noise_fns::{Fbm, MultiFractal, NoiseFn, Seedable};
 
-/// Default seed for the Turbulence noise function.
-pub const DEFAULT_TURBULENCE_SEED: u32 = 0;
-/// Default frequency for the Turbulence noise function.
-pub const DEFAULT_TURBULENCE_FREQUENCY: f64 = 1.0;
-/// Default power for the turbulence noise function.
-pub const DEFAULT_TURBULENCE_POWER: f64 = 1.0;
-/// Default roughness for the Turbulence noise function.
-pub const DEFAULT_TURBULENCE_ROUGHNESS: usize = 3;
-
 /// Noise function that randomly displaces the input value before returning the
 /// output value from the source function.
 ///
-/// _Turbulence_ is the pseudo-random displacement of the input value. The
+/// _ is the pseudo-random displacement of the input value. The
 /// get() method randomly displaces the coordinates of the input value before
 /// retrieving the output value from the source function. To control the
 /// turbulence, an application can modify its frequency, its power, and its
@@ -41,29 +32,34 @@ pub struct Turbulence<Source> {
 }
 
 impl<Source> Turbulence<Source> {
+    pub const DEFAULT_SEED: u32 = 0;
+    pub const DEFAULT_FREQUENCY: f64 = 1.0;
+    pub const DEFAULT_POWER: f64 = 1.0;
+    pub const DEFAULT_ROUGHNESS: usize = 3;
+
     pub fn new(source: Source) -> Self {
         Turbulence {
             source,
-            seed: DEFAULT_TURBULENCE_SEED,
-            frequency: DEFAULT_TURBULENCE_FREQUENCY,
-            power: DEFAULT_TURBULENCE_POWER,
-            roughness: DEFAULT_TURBULENCE_ROUGHNESS,
+            seed: Self::DEFAULT_SEED,
+            frequency: Self::DEFAULT_FREQUENCY,
+            power: Self::DEFAULT_POWER,
+            roughness: Self::DEFAULT_ROUGHNESS,
             x_distort_function: Fbm::new()
-                .set_seed(DEFAULT_TURBULENCE_SEED)
-                .set_octaves(DEFAULT_TURBULENCE_ROUGHNESS)
-                .set_frequency(DEFAULT_TURBULENCE_FREQUENCY),
+                .set_seed(Self::DEFAULT_SEED)
+                .set_octaves(Self::DEFAULT_ROUGHNESS)
+                .set_frequency(Self::DEFAULT_FREQUENCY),
             y_distort_function: Fbm::new()
-                .set_seed(DEFAULT_TURBULENCE_SEED + 1)
-                .set_octaves(DEFAULT_TURBULENCE_ROUGHNESS)
-                .set_frequency(DEFAULT_TURBULENCE_FREQUENCY),
+                .set_seed(Self::DEFAULT_SEED + 1)
+                .set_octaves(Self::DEFAULT_ROUGHNESS)
+                .set_frequency(Self::DEFAULT_FREQUENCY),
             z_distort_function: Fbm::new()
-                .set_seed(DEFAULT_TURBULENCE_SEED + 2)
-                .set_octaves(DEFAULT_TURBULENCE_ROUGHNESS)
-                .set_frequency(DEFAULT_TURBULENCE_FREQUENCY),
+                .set_seed(Self::DEFAULT_SEED + 2)
+                .set_octaves(Self::DEFAULT_ROUGHNESS)
+                .set_frequency(Self::DEFAULT_FREQUENCY),
             u_distort_function: Fbm::new()
-                .set_seed(DEFAULT_TURBULENCE_SEED + 3)
-                .set_octaves(DEFAULT_TURBULENCE_ROUGHNESS)
-                .set_frequency(DEFAULT_TURBULENCE_FREQUENCY),
+                .set_seed(Self::DEFAULT_SEED + 3)
+                .set_octaves(Self::DEFAULT_ROUGHNESS)
+                .set_frequency(Self::DEFAULT_FREQUENCY),
         }
     }
 
@@ -79,10 +75,7 @@ impl<Source> Turbulence<Source> {
     }
 
     pub fn set_power(self, power: f64) -> Self {
-        Turbulence {
-            power,
-            ..self
-        }
+        Turbulence { power, ..self }
     }
 
     pub fn set_roughness(self, roughness: usize) -> Self {
