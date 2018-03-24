@@ -9,9 +9,9 @@ use noise_fns::NoiseFn;
 ///
 /// The coordinate system of the input value is assumed to be "right-handed"
 /// (_x_ increases to the right, _y_ increases upward, and _z_ increases inward).
-pub struct RotatePoint<Source> {
+pub struct RotatePoint<'a, Source: 'a> {
     /// Source function that outputs a value
-    pub source: Source,
+    pub source: &'a Source,
 
     /// _x_ rotation angle applied to the input value, in degrees. The
     /// default angle is set to 0.0 degrees.
@@ -30,8 +30,8 @@ pub struct RotatePoint<Source> {
     pub u_angle: f64,
 }
 
-impl<Source> RotatePoint<Source> {
-    pub fn new(source: Source) -> Self {
+impl<'a, Source> RotatePoint<'a, Source> {
+    pub fn new(source: &'a Source) -> Self {
         RotatePoint {
             source,
             x_angle: 0.0,
@@ -78,7 +78,7 @@ impl<Source> RotatePoint<Source> {
     }
 }
 
-impl<Source> NoiseFn<Point2<f64>> for RotatePoint<Source>
+impl<'a, Source> NoiseFn<Point2<f64>> for RotatePoint<'a, Source>
 where
     Source: NoiseFn<Point2<f64>>,
 {
@@ -98,7 +98,7 @@ where
     }
 }
 
-impl<Source> NoiseFn<Point3<f64>> for RotatePoint<Source>
+impl<'a, Source> NoiseFn<Point3<f64>> for RotatePoint<'a, Source>
 where
     Source: NoiseFn<Point3<f64>>,
 {
@@ -132,7 +132,7 @@ where
     }
 }
 
-impl<Source> NoiseFn<Point4<f64>> for RotatePoint<Source>
+impl<'a, Source> NoiseFn<Point4<f64>> for RotatePoint<'a, Source>
 where
     Source: NoiseFn<Point4<f64>>,
 {
