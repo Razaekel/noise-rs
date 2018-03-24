@@ -16,17 +16,17 @@ use std::cell::{Cell, RefCell};
 /// function will redundantly calculate the same output value once for each
 /// noise function in which it is included.
 #[derive(Clone, Debug)]
-pub struct Cache<Source> {
+pub struct Cache<'a, Source: 'a> {
     /// Outputs the value to be cached.
-    pub source: Source,
+    pub source: &'a Source,
 
     value: Cell<Option<f64>>,
 
     point: RefCell<Vec<f64>>,
 }
 
-impl<Source> Cache<Source> {
-    pub fn new(source: Source) -> Self {
+impl<'a, Source> Cache<'a, Source> {
+    pub fn new(source: &'a Source) -> Self {
         Cache {
             source,
             value: Cell::new(None),
@@ -35,7 +35,7 @@ impl<Source> Cache<Source> {
     }
 }
 
-impl<Source> NoiseFn<Point2<f64>> for Cache<Source>
+impl<'a, Source> NoiseFn<Point2<f64>> for Cache<'a, Source>
 where
     Source: NoiseFn<Point2<f64>>,
 {
@@ -56,7 +56,7 @@ where
     }
 }
 
-impl<Source> NoiseFn<Point3<f64>> for Cache<Source>
+impl<'a, Source> NoiseFn<Point3<f64>> for Cache<'a, Source>
 where
     Source: NoiseFn<Point3<f64>>,
 {
@@ -77,7 +77,7 @@ where
     }
 }
 
-impl<Source> NoiseFn<Point4<f64>> for Cache<Source>
+impl<'a, Source> NoiseFn<Point4<f64>> for Cache<'a, Source>
 where
     Source: NoiseFn<Point4<f64>>,
 {

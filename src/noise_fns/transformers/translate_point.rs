@@ -6,9 +6,9 @@ use noise_fns::NoiseFn;
 ///
 /// The get() method moves the coordinates of the input value by a translation
 /// amount before returning the output value from the source function.
-pub struct TranslatePoint<Source> {
+pub struct TranslatePoint<'a, Source: 'a> {
     /// Source function that outputs a value
-    pub source: Source,
+    pub source: &'a Source,
 
     /// Translation amount applied to the _x_ coordinate of the input value.
     /// The default translation amount is set to 0.0.
@@ -27,8 +27,8 @@ pub struct TranslatePoint<Source> {
     pub u_translation: f64,
 }
 
-impl<Source> TranslatePoint<Source> {
-    pub fn new(source: Source) -> Self {
+impl<'a, Source> TranslatePoint<'a, Source> {
+    pub fn new(source: &'a Source) -> Self {
         TranslatePoint {
             source,
             x_translation: 0.0,
@@ -104,7 +104,7 @@ impl<Source> TranslatePoint<Source> {
     }
 }
 
-impl<Source> NoiseFn<Point2<f64>> for TranslatePoint<Source>
+impl<'a, Source> NoiseFn<Point2<f64>> for TranslatePoint<'a, Source>
 where
     Source: NoiseFn<Point2<f64>>,
 {
@@ -114,7 +114,7 @@ where
     }
 }
 
-impl<Source> NoiseFn<Point3<f64>> for TranslatePoint<Source>
+impl<'a, Source> NoiseFn<Point3<f64>> for TranslatePoint<'a, Source>
 where
     Source: NoiseFn<Point3<f64>>,
 {
@@ -127,7 +127,7 @@ where
     }
 }
 
-impl<Source> NoiseFn<Point4<f64>> for TranslatePoint<Source>
+impl<'a, Source> NoiseFn<Point4<f64>> for TranslatePoint<'a, Source>
 where
     Source: NoiseFn<Point4<f64>>,
 {
