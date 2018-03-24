@@ -20,10 +20,10 @@ fn main() {
     // aligned with any axis. This produces more variation in the secondary
     // jade texture since the texture is parallel to the y-axis.
     let rotated_base_secondary_jade =
-        RotatePoint::new(base_secondary_jade).set_angles(90.0, 25.0, 5.0, 0.0);
+        RotatePoint::new(&base_secondary_jade).set_angles(90.0, 25.0, 5.0, 0.0);
 
     // Slightly perturb the secondary jade texture for more realism.
-    let perturbed_base_secondary_jade = Turbulence::new(rotated_base_secondary_jade)
+    let perturbed_base_secondary_jade = Turbulence::new(&rotated_base_secondary_jade)
         .set_seed(1)
         .set_frequency(4.0)
         .set_power(1.0 / 4.0)
@@ -42,7 +42,7 @@ fn main() {
 
     // Finally, perturb the combined jade texture to produce the final jade
     // texture. A low roughness produces nice veins.
-    let final_jade = Turbulence::new(combined_jade)
+    let final_jade = Turbulence::new(&combined_jade)
         .set_seed(2)
         .set_frequency(4.0)
         .set_power(1.0 / 16.0)
