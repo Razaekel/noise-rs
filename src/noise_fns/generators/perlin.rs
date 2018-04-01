@@ -49,118 +49,134 @@ impl Seedable for Perlin {
 /// 2-dimensional perlin noise
 impl NoiseFn<[f64; 2]> for Perlin {
     fn get(&self, point: [f64; 2]) -> f64 {
-        const SCALE_FACTOR: f64 = 3.160_493_827_160_493_7;
+        #[inline]
+        fn gradient_dot_v(perm: usize, point: [f64; 2]) -> f64 {
+            let x = point[0];
+            let y = point[1];
 
-        #[inline(always)]
-        fn surflet(perm_table: &PermutationTable, corner: [isize; 2], distance: [f64; 2]) -> f64 {
-            let attn = 1.0 - math::dot2(distance, distance);
-            if attn > 0.0 {
-                attn.powi(4) * math::dot2(distance, gradient::get2(perm_table.get2(corner)))
-            } else {
-                0.0
+            match perm & 0b11 {
+                0 =>  x + y, // ( 1,  1)
+                1 => -x + y, // (-1,  1)
+                2 =>  x - y, // ( 1, -1)
+                3 => -x - y, // (-1, -1)
+                _ => unreachable!(),
+        #[cfg_attr(rustfmt, rustfmt_skip)]
             }
         }
 
         let floored = math::map2(point, f64::floor);
         let near_corner = math::to_isize2(floored);
-        let far_corner = math::add2(near_corner, math::one2());
+        let far_corner = math::add2(near_corner, [1; 2]);
         let near_distance = math::sub2(point, floored);
-        let far_distance = math::sub2(near_distance, math::one2());
+        let far_distance = math::sub2(near_distance, [1.0; 2]);
 
-        let f00 = surflet(
-            &self.perm_table,
-            [near_corner[0], near_corner[1]],
-            [near_distance[0], near_distance[1]],
-        );
-        let f10 = surflet(
-            &self.perm_table,
-            [far_corner[0], near_corner[1]],
+        let u = s_curve5(near_distance[0]);
+        let v = s_curve5(near_distance[1]);
+
+        let a = gradient_dot_v(self.perm_table.get2(near_corner), near_distance);
+        let b = gradient_dot_v(
+            self.perm_table.get2([far_corner[0], near_corner[1]]),
             [far_distance[0], near_distance[1]],
         );
-        let f01 = surflet(
-            &self.perm_table,
-            [near_corner[0], far_corner[1]],
+        let c = gradient_dot_v(
+            self.perm_table.get2([near_corner[0], far_corner[1]]),
             [near_distance[0], far_distance[1]],
         );
-        let f11 = surflet(
-            &self.perm_table,
-            [far_corner[0], far_corner[1]],
-            [far_distance[0], far_distance[1]],
-        );
+        let d = gradient_dot_v(self.perm_table.get2(far_corner), far_distance);
 
-        // Multiply by arbitrary value to scale to -1..1
-        math::clamp((f00 + f10 + f01 + f11) * SCALE_FACTOR, -1.0, 1.0)
+        let k0 = a;
+        let k1 = b - a;
+        let k2 = c - a;
+        let k3 = a + d - b - c;
+
+        k0 + k1 * u + k2 * v + k3 * u * v
     }
 }
 
 /// 3-dimensional perlin noise
 impl NoiseFn<[f64; 3]> for Perlin {
     fn get(&self, point: [f64; 3]) -> f64 {
-        const SCALE_FACTOR: f64 = 3.889_855_325_553_107_4;
+        #[inline]
+        #[cfg_attr(rustfmt, rustfmt_skip)]
+        fn gradient_dot_v(perm: usize, point: [f64; 3]) -> f64 {
+            let x = point[0];
+            let y = point[1];
+            let z = point[2];
 
-        #[inline(always)]
-        fn surflet(perm_table: &PermutationTable, corner: [isize; 3], distance: [f64; 3]) -> f64 {
-            let attn = 1.0 - math::dot3(distance, distance);
-            if attn > 0.0 {
-                attn.powi(4) * math::dot3(distance, gradient::get3(perm_table.get3(corner)))
-            } else {
-                0.0
+            match perm & 0b1111 {
+                 0 =>  x + y, // ( 1,  1,  0)
+                 1 => -x + y, // (-1,  1,  0)
+                 2 =>  x - y, // ( 1, -1,  0)
+                 3 => -x - y, // (-1, -1,  0)
+                 4 =>  x + z, // ( 1,  0,  1)
+                 5 => -x + z, // (-1,  0,  1)
+                 6 =>  x - z, // ( 1,  0, -1)
+                 7 => -x - z, // (-1,  0, -1)
+                 8 =>  y + z, // ( 0,  1,  1)
+                 9 => -y + z, // ( 0, -1,  1)
+                10 =>  y - z, // ( 0,  1, -1)
+                11 => -y - z, // ( 0, -1, -1)
+                12 =>  x + y, // ( 1,  1,  0)
+                13 => -x + y, // (-1,  1,  0)
+                14 => -y + z, // ( 0, -1,  1)
+                15 => -y - z, // ( 0, -1, -1)
+                _ => unreachable!(),
             }
         }
 
         let floored = math::map3(point, f64::floor);
         let near_corner = math::to_isize3(floored);
-        let far_corner = math::add3(near_corner, math::one3());
+        let far_corner = math::add3(near_corner, [1; 3]);
         let near_distance = math::sub3(point, floored);
-        let far_distance = math::sub3(near_distance, math::one3());
+        let far_distance = math::sub3(near_distance, [1.0; 3]);
 
-        let f000 = surflet(
-            &self.perm_table,
-            [near_corner[0], near_corner[1], near_corner[2]],
-            [near_distance[0], near_distance[1], near_distance[2]],
-        );
-        let f100 = surflet(
-            &self.perm_table,
-            [far_corner[0], near_corner[1], near_corner[2]],
+        let u = s_curve5(near_distance[0]);
+        let v = s_curve5(near_distance[1]);
+        let w = s_curve5(near_distance[2]);
+
+        let a = gradient_dot_v(self.perm_table.get3(near_corner), near_distance);
+        let b = gradient_dot_v(
+            self.perm_table
+                .get3([far_corner[0], near_corner[1], near_corner[2]]),
             [far_distance[0], near_distance[1], near_distance[2]],
         );
-        let f010 = surflet(
-            &self.perm_table,
-            [near_corner[0], far_corner[1], near_corner[2]],
+        let c = gradient_dot_v(
+            self.perm_table
+                .get3([near_corner[0], far_corner[1], near_corner[2]]),
             [near_distance[0], far_distance[1], near_distance[2]],
         );
-        let f110 = surflet(
-            &self.perm_table,
-            [far_corner[0], far_corner[1], near_corner[2]],
+        let d = gradient_dot_v(
+            self.perm_table
+                .get3([far_corner[0], far_corner[1], near_corner[2]]),
             [far_distance[0], far_distance[1], near_distance[2]],
         );
-        let f001 = surflet(
-            &self.perm_table,
-            [near_corner[0], near_corner[1], far_corner[2]],
+        let e = gradient_dot_v(
+            self.perm_table
+                .get3([near_corner[0], near_corner[1], far_corner[2]]),
             [near_distance[0], near_distance[1], far_distance[2]],
         );
-        let f101 = surflet(
-            &self.perm_table,
-            [far_corner[0], near_corner[1], far_corner[2]],
+        let f = gradient_dot_v(
+            self.perm_table
+                .get3([far_corner[0], near_corner[1], far_corner[2]]),
             [far_distance[0], near_distance[1], far_distance[2]],
         );
-        let f011 = surflet(
-            &self.perm_table,
-            [near_corner[0], far_corner[1], far_corner[2]],
+        let g = gradient_dot_v(
+            self.perm_table
+                .get3([near_corner[0], far_corner[1], far_corner[2]]),
             [near_distance[0], far_distance[1], far_distance[2]],
         );
-        let f111 = surflet(
-            &self.perm_table,
-            [far_corner[0], far_corner[1], far_corner[2]],
-            [far_distance[0], far_distance[1], far_distance[2]],
-        );
+        let h = gradient_dot_v(self.perm_table.get3(far_corner), far_distance);
 
-        // Multiply by arbitrary value to scale to -1..1
-        math::clamp(
-            (f000 + f100 + f010 + f110 + f001 + f101 + f011 + f111) * SCALE_FACTOR,
-            -1.0,
-            1.0,
-        )
+        let k0 = a;
+        let k1 = b - a;
+        let k2 = c - a;
+        let k3 = e - a;
+        let k4 = a + d - b - c;
+        let k5 = a + f - b - e;
+        let k6 = a + g - c - e;
+        let k7 = b + c + e + h - a - d - f - g;
+
+        k0 + k1 * u + k2 * v + k3 * w + k4 * u * v + k5 * u * w + k6 * v * w + k7 * u * v * w
     }
 }
 
