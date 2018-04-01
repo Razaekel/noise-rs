@@ -368,6 +368,6 @@ pub mod interp {
     /// Maps a value onto a quintic S-curve.
     #[inline]
     pub fn s_curve5(x: f64) -> f64 {
-        x * x * x * (x * (x * 6.0 - 15.0 + 10.0))
+        x * x * x * (x * (x * 6.0 - 15.0) + 10.0)
     }
 }
