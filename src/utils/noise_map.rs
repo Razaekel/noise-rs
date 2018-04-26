@@ -1,6 +1,10 @@
+#[cfg(feature = "image")]
 use image;
+#[cfg(feature = "image")]
 use math;
+#[cfg(feature = "image")]
 use std;
+#[cfg(feature = "image")]
 use std::path::*;
 
 const RASTER_MAX_WIDTH: u16 = 32_767;
@@ -82,6 +86,7 @@ impl NoiseMap {
         }
     }
 
+    #[cfg(feature = "image")]
     pub fn write_to_file(&self, filename: &str) {
         // Create the output directory for the images, if it doesn't already exist
         let target_dir = Path::new("example_images/");
