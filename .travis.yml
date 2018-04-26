@@ -5,8 +5,11 @@ rust:
   - nightly
 sudo: false
 script:
-  - cargo test
-  - cargo doc
+  - cargo test ${FEATURE_FLAGS}
+  - cargo doc ${FEATURE_FLAGS}
+env:
+  -  FEATURE_FLAGS=""
+  -  FEATURE_FLAGS="--no-default-features"
 matrix:
   allow_failures:
     - rust: nightly
