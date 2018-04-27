@@ -1,5 +1,8 @@
+#[cfg(feature = "image")]
 use image;
+#[cfg(feature = "image")]
 use std;
+#[cfg(feature = "image")]
 use std::path::Path;
 use utils::color_gradient::Color;
 
@@ -90,6 +93,7 @@ impl NoiseImage {
         }
     }
 
+    #[cfg(feature = "image")]
     pub fn write_to_file(&self, filename: &str) {
         // Create the output directory for the images, if it doesn't already exist
         let target_dir = Path::new("example_images/");

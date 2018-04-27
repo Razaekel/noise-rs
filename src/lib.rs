@@ -12,6 +12,7 @@
 #![cfg_attr(feature = "cargo-clippy", allow(inline_always))]
 #![deny(missing_copy_implementations)]
 
+#[cfg(feature = "image")]
 extern crate image;
 extern crate rand;
 
