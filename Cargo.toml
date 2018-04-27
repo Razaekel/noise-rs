@@ -13,7 +13,7 @@ authors = ["The Noise-rs Developers."]
 name = "noise"
 
 [dependencies]
-rand = "0.3"
+rand = "0.4"
 image = "0.18"
 
 [[bench]]
