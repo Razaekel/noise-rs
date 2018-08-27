@@ -1,5 +1,5 @@
 use math::{Point2, Point3, Point4};
-use rand::{Rand, Rng, SeedableRng, XorShiftRng};
+use rand::{distributions::{Distribution, Standard}, Rng, SeedableRng, XorShiftRng};
 use std::fmt;
 
 const TABLE_SIZE: usize = 256;
@@ -13,9 +13,9 @@ pub struct PermutationTable {
     values: [u8; TABLE_SIZE],
 }
 
-impl Rand for PermutationTable {
+impl Distribution<PermutationTable> for Standard {
     /// Generates a PermutationTable using a random seed.
-    fn rand<R: Rng>(rng: &mut R) -> PermutationTable {
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> PermutationTable {
         let mut seq: Vec<u8> = (0..TABLE_SIZE).map(|x| x as u8).collect();
         rng.shuffle(&mut *seq);
 
@@ -39,7 +39,15 @@ impl PermutationTable {
     /// Internally this uses a `XorShiftRng`, but we don't really need to worry
     /// about cryptographic security when working with procedural noise.
     pub fn new(seed: u32) -> PermutationTable {
-        let mut rng: XorShiftRng = SeedableRng::from_seed([1, seed, seed, seed]);
+        let mut real = [0; 16];
+        real[0] = 1;
+        for i in 1..4 {
+            real[0+i*4] = seed as u8;
+            real[1+i*4] = (seed >> 8) as u8;
+            real[2+i*4] = (seed >> 16) as u8;
+            real[3+i*4] = (seed >> 24) as u8;
+        }
+        let mut rng: XorShiftRng = SeedableRng::from_seed(real);
         rng.gen()
     }
 
