@@ -8,12 +8,11 @@ fn main() {
     let base_wood = Cylinders::new().set_frequency(16.0);
 
     // Basic Multifractal noise to use for the wood grain.
-    let wood_grain_noise = BasicMulti::new()
-        .set_seed(0)
-        .set_frequency(48.0)
-        .set_persistence(0.5)
-        .set_lacunarity(2.20703125)
-        .set_octaves(3);
+    let wood_grain_noise = BasicMulti::new(3, FractalParams {
+        frequency: 48.0,
+        persistence: 0.5,
+        lacunarity: 2.20703125,
+    });
 
     // Stretch the perlin noise in the same direction as the center of the log. Should
     // produce a nice wood-grain texture.

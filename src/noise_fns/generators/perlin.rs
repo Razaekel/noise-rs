@@ -1,7 +1,8 @@
 use {gradient, math};
 use math::{Point2, Point3, Point4, Vector2, Vector3, Vector4};
-use noise_fns::{NoiseFn, Seedable};
+use noise_fns::{NoiseFn, Seedable, Random, default};
 use permutationtable::PermutationTable;
+use rand::Rng;
 
 /// Noise function that outputs 2/3/4-dimensional Perlin noise.
 #[derive(Clone, Copy, Debug)]
@@ -11,20 +12,13 @@ pub struct Perlin {
 }
 
 impl Perlin {
-    pub const DEFAULT_SEED: u32 = 0;
-
     pub fn new() -> Self {
-        Perlin {
-            seed: Self::DEFAULT_SEED,
-            perm_table: PermutationTable::new(Self::DEFAULT_SEED),
-        }
+        Self::default()
     }
 }
 
 impl Default for Perlin {
-    fn default() -> Self {
-        Self::new()
-    }
+    fn default() -> Self { default() }
 }
 
 impl Seedable for Perlin {
@@ -44,6 +38,12 @@ impl Seedable for Perlin {
 
     fn seed(&self) -> u32 {
         self.seed
+    }
+}
+
+impl Random for Perlin {
+    fn from_rng<R: Rng + ?Sized>(rng: &mut R) -> Self {
+        Self { seed: 0, perm_table: rng.gen() }
     }
 }
 

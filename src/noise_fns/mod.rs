@@ -1,3 +1,5 @@
+use rand::{Rng, SeedableRng, XorShiftRng};
+
 pub use self::cache::*;
 pub use self::combiners::*;
 pub use self::generators::*;
@@ -44,3 +46,28 @@ pub trait Seedable {
     /// Getter to retrieve the seed from the function
     fn seed(&self) -> u32;
 }
+
+/// Noise functions that can be randomly generated.
+pub trait Random {
+    fn from_rng<R: Rng + ?Sized>(rng: &mut R) -> Self;
+
+    fn from_seed(seed: u128) -> Self
+        where Self: Sized
+    {
+        Self::from_rng(&mut seed_rng(seed))
+    }
+}
+
+fn default<T: Random>() -> T { T::from_rng(&mut default_rng()) }
+
+const DEFAULT_SEED: u128 = 0x52d80a69a14cb7ee252471a2a8ee0185;
+
+fn seed_rng(seed: u128) -> impl Rng {
+    let mut bytes = [0; 16];
+    for (i, x) in bytes.iter_mut().enumerate() {
+        *x = (seed >> (i * 8)) as u8;
+    }
+    XorShiftRng::from_seed(bytes)
+}
+
+fn default_rng() -> impl Rng { seed_rng(DEFAULT_SEED) }
