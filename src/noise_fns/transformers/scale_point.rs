@@ -6,9 +6,9 @@ use noise_fns::NoiseFn;
 ///
 /// The get() method multiplies the coordinates of the input value with a
 /// scaling factor before returning the output value from the source function.
-pub struct ScalePoint<'a, Source: 'a> {
+pub struct ScalePoint<Source> {
     /// Source function that outputs a value
-    pub source: &'a Source,
+    pub source: Source,
 
     /// Scaling factor applied to the _x_ coordinate of the input value. The
     /// default scaling factor is set to 1.0.
@@ -27,8 +27,8 @@ pub struct ScalePoint<'a, Source: 'a> {
     pub u_scale: f64,
 }
 
-impl<'a, Source> ScalePoint<'a, Source> {
-    pub fn new(source: &'a Source) -> Self {
+impl<Source> ScalePoint<Source> {
+    pub fn new(source: Source) -> Self {
         ScalePoint {
             source,
             x_scale: 1.0,
@@ -86,7 +86,7 @@ impl<'a, Source> ScalePoint<'a, Source> {
     }
 }
 
-impl<'a, Source> NoiseFn<Point2<f64>> for ScalePoint<'a, Source>
+impl<Source> NoiseFn<Point2<f64>> for ScalePoint<Source>
 where
     Source: NoiseFn<Point2<f64>>,
 {
@@ -96,7 +96,7 @@ where
     }
 }
 
-impl<'a, Source> NoiseFn<Point3<f64>> for ScalePoint<'a, Source>
+impl<Source> NoiseFn<Point3<f64>> for ScalePoint<Source>
 where
     Source: NoiseFn<Point3<f64>>,
 {
@@ -109,7 +109,7 @@ where
     }
 }
 
-impl<'a, Source> NoiseFn<Point4<f64>> for ScalePoint<'a, Source>
+impl<Source> NoiseFn<Point4<f64>> for ScalePoint<Source>
 where
     Source: NoiseFn<Point4<f64>>,
 {
