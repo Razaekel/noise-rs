@@ -10,9 +10,9 @@ use noise_fns::{Fbm, MultiFractal, NoiseFn, Seedable};
 /// turbulence, an application can modify its frequency, its power, and its
 /// roughness.
 #[derive(Clone, Debug)]
-pub struct Turbulence<'a, Source: 'a> {
+pub struct Turbulence<Source> {
     /// Source function that outputs a value.
-    pub source: &'a Source,
+    pub source: Source,
 
     /// Frequency value for the Turbulence function.
     pub frequency: f64,
@@ -31,13 +31,13 @@ pub struct Turbulence<'a, Source: 'a> {
     u_distort_function: Fbm,
 }
 
-impl<'a, Source> Turbulence<'a, Source> {
+impl<Source> Turbulence<Source> {
     pub const DEFAULT_SEED: u32 = 0;
     pub const DEFAULT_FREQUENCY: f64 = 1.0;
     pub const DEFAULT_POWER: f64 = 1.0;
     pub const DEFAULT_ROUGHNESS: usize = 3;
 
-    pub fn new(source: &'a Source) -> Self {
+    pub fn new(source: Source) -> Self {
         Turbulence {
             source,
             seed: Self::DEFAULT_SEED,
@@ -90,7 +90,7 @@ impl<'a, Source> Turbulence<'a, Source> {
     }
 }
 
-impl<'a, Source> Seedable for Turbulence<'a, Source> {
+impl<Source> Seedable for Turbulence<Source> {
     fn set_seed(self, seed: u32) -> Self {
         Turbulence {
             seed,
@@ -107,7 +107,7 @@ impl<'a, Source> Seedable for Turbulence<'a, Source> {
     }
 }
 
-impl<'a, Source> NoiseFn<Point2<f64>> for Turbulence<'a, Source>
+impl<Source> NoiseFn<Point2<f64>> for Turbulence<Source>
 where
     Source: NoiseFn<Point2<f64>>,
 {
@@ -128,7 +128,7 @@ where
     }
 }
 
-impl<'a, Source> NoiseFn<Point3<f64>> for Turbulence<'a, Source>
+impl<Source> NoiseFn<Point3<f64>> for Turbulence<Source>
 where
     Source: NoiseFn<Point3<f64>>,
 {
@@ -156,7 +156,7 @@ where
     }
 }
 
-impl<'a, Source> NoiseFn<Point4<f64>> for Turbulence<'a, Source>
+impl<Source> NoiseFn<Point4<f64>> for Turbulence<Source>
 where
     Source: NoiseFn<Point4<f64>>,
 {
