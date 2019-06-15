@@ -4,6 +4,7 @@ rust:
   - beta
   - nightly
 sudo: false
+cache: cargo
 script:
   - cargo build ${FEATURE_FLAGS}
   - cargo test ${FEATURE_FLAGS}
