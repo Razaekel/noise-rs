@@ -1,6 +1,7 @@
 /doc/
 /target/
 /.idea/
+/.criterion/
 *.iml
 Cargo.lock
 *.png

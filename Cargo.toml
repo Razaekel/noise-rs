@@ -19,8 +19,28 @@ image = { version = "0.18", optional = true }
 [features]
 default = ["image"]
 
+[dev-dependencies]
+criterion = "0.1.2"
+
 [[bench]]
-name = "benches"
+name = "open_simplex"
+harness = false
+
+[[bench]]
+name = "perlin"
+harness = false
+
+[[bench]]
+name = "super_simplex"
+harness = false
+
+[[bench]]
+name = "value"
+harness = false
+
+[[bench]]
+name = "worley"
+harness = false
 
 [[example]]
 name = "perlin"
