@@ -1,4 +1,0 @@
-match_block_trailing_comma = true
-reorder_imported_names = true
-reorder_imports = true
-reorder_imports_in_group = true
