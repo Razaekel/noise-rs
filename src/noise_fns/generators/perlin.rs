@@ -64,6 +64,11 @@ impl NoiseFn<[f64; 2]> for Perlin {
             }
         }
 
+        // Unscaled range of linearly interpolated perlin noise should be (-sqrt(N/4), sqrt(N/4)).
+        // Need to invert this value and multiply the unscaled result by the value to get a scaled
+        // range of (-1, 1).
+        let scale_factor = (2.0_f64).sqrt(); // 1/sqrt(N/4), N=2 -> 1/sqrt(1/2) -> sqrt(2)
+
         let floored = math::map2(point, f64::floor);
         let near_corner = math::to_isize2(floored);
         let far_corner = math::add2(near_corner, [1; 2]);
@@ -89,7 +94,15 @@ impl NoiseFn<[f64; 2]> for Perlin {
         let k2 = c - a;
         let k3 = a + d - b - c;
 
-        k0 + k1 * u + k2 * v + k3 * u * v
+        let unscaled_result = k0 + k1 * u + k2 * v + k3 * u * v;
+
+        let scaled_result = unscaled_result * scale_factor;
+
+        // At this point, we should be really damn close to the (-1, 1) range, but some float errors
+        // could have accumulated, so let's just clamp the results to (-1, 1) to cut off any
+        // outliers and return it.
+
+        math::clamp(scaled_result, -1.0, 1.0)
     }
 }
 
@@ -123,6 +136,11 @@ impl NoiseFn<[f64; 3]> for Perlin {
                 _ => unreachable!(),
             }
         }
+
+        // Unscaled range of linearly interpolated perlin noise should be (-sqrt(N/4), sqrt(N/4)).
+        // Need to invert this value and multiply the unscaled result by the value to get a scaled
+        // range of (-1, 1).
+        let scale_factor = 2.0_f64/((3.0_f64).sqrt()); // 1/sqrt(N/4), N=3 -> 1/sqrt(3/4) -> 2/sqrt(3)
 
         let floored = math::map3(point, f64::floor);
         let near_corner = math::to_isize3(floored);
@@ -176,15 +194,21 @@ impl NoiseFn<[f64; 3]> for Perlin {
         let k6 = a + g - c - e;
         let k7 = b + c + e + h - a - d - f - g;
 
-        k0 + k1 * u + k2 * v + k3 * w + k4 * u * v + k5 * u * w + k6 * v * w + k7 * u * v * w
+        let unscaled_result = k0 + k1 * u + k2 * v + k3 * w + k4 * u * v + k5 * u * w + k6 * v * w + k7 * u * v * w;
+
+        let scaled_result = unscaled_result * scale_factor;
+
+        // At this point, we should be really damn close to the (-1, 1) range, but some float errors
+        // could have accumulated, so let's just clamp the results to (-1, 1) to cut off any
+        // outliers and return it.
+
+        math::clamp(scaled_result, -1.0, 1.0)
     }
 }
 
 /// 4-dimensional perlin noise
 impl NoiseFn<[f64; 4]> for Perlin {
     fn get(&self, point: [f64; 4]) -> f64 {
-        const SCALE_FACTOR: f64 = 4.424_369_240_215_691;
-
         #[inline(always)]
         fn surflet(perm_table: &PermutationTable, corner: [isize; 4], distance: [f64; 4]) -> f64 {
             let attn = 1.0 - math::dot4(distance, distance);
@@ -194,6 +218,11 @@ impl NoiseFn<[f64; 4]> for Perlin {
                 0.0
             }
         }
+
+        // Unscaled range of linearly interpolated perlin noise should be (-sqrt(N/4), sqrt(N/4)).
+        // Need to invert this value and multiply the unscaled result by the value to get a scaled
+        // range of (-1, 1).
+        let _scale_factor = 1; // 1/sqrt(N/4), N=4 -> 1/sqrt(1) -> sqrt(1) -> 1
 
         let floored = math::map4(point, f64::floor);
         let near_corner = math::to_isize4(floored);
