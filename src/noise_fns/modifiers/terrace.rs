@@ -27,7 +27,7 @@ use std;
 /// stereotypical desert canyon.
 pub struct Terrace<'a, T: 'a> {
     /// Outputs a value.
-    pub source: &'a NoiseFn<T>,
+    pub source: &'a dyn NoiseFn<T>,
 
     /// Determines if the terrace-forming curve between all control points is
     /// inverted.
@@ -38,7 +38,7 @@ pub struct Terrace<'a, T: 'a> {
 }
 
 impl<'a, T> Terrace<'a, T> {
-    pub fn new(source: &'a NoiseFn<T>) -> Self {
+    pub fn new(source: &'a dyn NoiseFn<T>) -> Self {
         Terrace {
             source,
             invert_terraces: false,

@@ -5,16 +5,16 @@ use noise_fns::NoiseFn;
 /// functions chosen by the output value from a control function.
 pub struct Select<'a, T: 'a> {
     /// Outputs a value.
-    pub source1: &'a NoiseFn<T>,
+    pub source1: &'a dyn NoiseFn<T>,
 
     /// Outputs a value.
-    pub source2: &'a NoiseFn<T>,
+    pub source2: &'a dyn NoiseFn<T>,
 
     /// Determines the value to select. If the output value from
     /// the control function is within a range of values know as the _selection
     /// range_, this noise function outputs the value from `source2`.
     /// Otherwise, this noise function outputs the value from `source1`.
-    pub control: &'a NoiseFn<T>,
+    pub control: &'a dyn NoiseFn<T>,
 
     /// Bounds of the selection range. Default is 0.0 to 1.0.
     pub bounds: (f64, f64),
@@ -24,7 +24,7 @@ pub struct Select<'a, T: 'a> {
 }
 
 impl<'a, T> Select<'a, T> {
-    pub fn new(source1: &'a NoiseFn<T>, source2: &'a NoiseFn<T>, control: &'a NoiseFn<T>) -> Self {
+    pub fn new(source1: &'a dyn NoiseFn<T>, source2: &'a dyn NoiseFn<T>, control: &'a dyn NoiseFn<T>) -> Self {
         Select {
             source1,
             source2,

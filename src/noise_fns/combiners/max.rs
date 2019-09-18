@@ -4,14 +4,14 @@ use noise_fns::NoiseFn;
 /// functions.
 pub struct Max<'a, T: 'a> {
     /// Outputs a value.
-    pub source1: &'a NoiseFn<T>,
+    pub source1: &'a dyn NoiseFn<T>,
 
     /// Outputs a value.
-    pub source2: &'a NoiseFn<T>,
+    pub source2: &'a dyn NoiseFn<T>,
 }
 
 impl<'a, T> Max<'a, T> {
-    pub fn new(source1: &'a NoiseFn<T>, source2: &'a NoiseFn<T>) -> Self {
+    pub fn new(source1: &'a dyn NoiseFn<T>, source2: &'a dyn NoiseFn<T>) -> Self {
         Max { source1, source2 }
     }
 }

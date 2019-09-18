@@ -130,7 +130,7 @@ impl ImageRenderer {
             for x in 0..width {
                 let point = noise_map.get_value(x, y);
 
-                let mut source_color = self.gradient.get_color(point);
+                let source_color = self.gradient.get_color(point);
 
                 let mut light_intensity;
 
@@ -241,7 +241,7 @@ impl ImageRenderer {
         for y in 0..height {
             for x in 0..width {
                 let point = noise_map.get_value(x, y);
-                let mut source_color = self.gradient.get_color(point);
+                let source_color = self.gradient.get_color(point);
 
                 let mut light_intensity;
 

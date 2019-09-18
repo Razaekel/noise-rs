@@ -19,7 +19,7 @@ use std;
 /// and output value, although no two control points can have the same input.
 pub struct Curve<'a, T: 'a> {
     /// Outputs a value.
-    pub source: &'a NoiseFn<T>,
+    pub source: &'a dyn NoiseFn<T>,
 
     /// Vec that stores the control points.
     control_points: Vec<ControlPoint<f64>>,
@@ -31,7 +31,7 @@ struct ControlPoint<T> {
 }
 
 impl<'a, T> Curve<'a, T> {
-    pub fn new(source: &'a NoiseFn<T>) -> Self {
+    pub fn new(source: &'a dyn NoiseFn<T>) -> Self {
         Curve {
             source,
             control_points: Vec::with_capacity(4),

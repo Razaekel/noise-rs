@@ -3,11 +3,11 @@ use noise_fns::NoiseFn;
 /// Noise function that inverts the output value from the source function.
 pub struct Invert<'a, T: 'a> {
     /// Outputs a value.
-    pub source: &'a NoiseFn<T>,
+    pub source: &'a dyn NoiseFn<T>,
 }
 
 impl<'a, T> Invert<'a, T> {
-    pub fn new(source: &'a NoiseFn<T>) -> Self {
+    pub fn new(source: &'a dyn NoiseFn<T>) -> Self {
         Invert { source }
     }
 }

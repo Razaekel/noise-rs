@@ -8,20 +8,20 @@ use noise_fns::NoiseFn;
 /// operation.
 pub struct Blend<'a, T: 'a> {
     /// Outputs one of the values to blend.
-    pub source1: &'a NoiseFn<T>,
+    pub source1: &'a dyn NoiseFn<T>,
 
     /// Outputs one of the values to blend.
-    pub source2: &'a NoiseFn<T>,
+    pub source2: &'a dyn NoiseFn<T>,
 
     /// Determines the weight of the blending operation. Negative values weight
     /// the blend towards the output value from the `source1` function. Positive
     /// values weight the blend towards the output value from the `source2`
     /// function.
-    pub control: &'a NoiseFn<T>,
+    pub control: &'a dyn NoiseFn<T>,
 }
 
 impl<'a, T> Blend<'a, T> {
-    pub fn new(source1: &'a NoiseFn<T>, source2: &'a NoiseFn<T>, control: &'a NoiseFn<T>) -> Self {
+    pub fn new(source1: &'a dyn NoiseFn<T>, source2: &'a dyn NoiseFn<T>, control: &'a dyn NoiseFn<T>) -> Self {
         Blend {
             source1,
             source2,
