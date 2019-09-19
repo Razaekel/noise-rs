@@ -234,10 +234,10 @@ impl<'a> NoiseMapBuilder<'a> for PlaneMapBuilder<'a> {
                   let x_blend = 1.0 - ((current_x - x_bounds.0) / x_extent);
                   let y_blend = 1.0 - ((current_y - y_bounds.0) / y_extent);
 
-                  let y0 = interp::linear(sw_value, se_value, x_blend);
-                  let y1 = interp::linear(nw_value, ne_value, x_blend);
+                  let y0 = interpolate::linear(sw_value, se_value, x_blend);
+                  let y1 = interpolate::linear(nw_value, ne_value, x_blend);
 
-                  interp::linear(y0, y1, y_blend)
+                  interpolate::linear(y0, y1, y_blend)
                 } else {
                   readable.source_module.get([current_x, current_y, 0.0])
                 };
