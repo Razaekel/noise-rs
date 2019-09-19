@@ -1,7 +1,7 @@
 extern crate noise;
 
-use noise::{Cache, Checkerboard};
 use noise::utils::*;
+use noise::{Cache, Checkerboard};
 
 fn main() {
     let cboard = Checkerboard::new();

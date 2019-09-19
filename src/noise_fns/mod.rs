@@ -5,11 +5,11 @@ pub use self::modifiers::*;
 pub use self::selectors::*;
 pub use self::transformers::*;
 
+mod cache;
 mod combiners;
 mod generators;
 mod modifiers;
 mod selectors;
-mod cache;
 mod transformers;
 
 /// Base trait for noise functions.

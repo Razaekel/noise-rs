@@ -9,7 +9,7 @@ pub struct Abs<'a, T: 'a> {
 
 impl<'a, T> Abs<'a, T> {
     pub fn new(source: &'a dyn NoiseFn<T>) -> Self {
-        Abs { source }
+        Self { source }
     }
 }
 

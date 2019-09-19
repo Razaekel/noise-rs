@@ -1,4 +1,4 @@
-use math::interp;
+use math::interpolate;
 use noise_fns::NoiseFn;
 
 /// Noise function that outputs a weighted blend of the output values from two
@@ -21,7 +21,11 @@ pub struct Blend<'a, T: 'a> {
 }
 
 impl<'a, T> Blend<'a, T> {
-    pub fn new(source1: &'a dyn NoiseFn<T>, source2: &'a dyn NoiseFn<T>, control: &'a dyn NoiseFn<T>) -> Self {
+    pub fn new(
+        source1: &'a dyn NoiseFn<T>,
+        source2: &'a dyn NoiseFn<T>,
+        control: &'a dyn NoiseFn<T>,
+    ) -> Self {
         Blend {
             source1,
             source2,
@@ -39,6 +43,6 @@ where
         let upper = self.source2.get(point);
         let control = self.control.get(point);
 
-        interp::linear(lower, upper, control)
+        interpolate::linear(lower, upper, control)
     }
 }

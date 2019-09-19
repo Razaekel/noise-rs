@@ -1,4 +1,4 @@
-use math::interp;
+use math::interpolate;
 use noise_fns::NoiseFn;
 
 /// Noise function that outputs the value selected from one of two source
@@ -24,7 +24,11 @@ pub struct Select<'a, T: 'a> {
 }
 
 impl<'a, T> Select<'a, T> {
-    pub fn new(source1: &'a dyn NoiseFn<T>, source2: &'a dyn NoiseFn<T>, control: &'a dyn NoiseFn<T>) -> Self {
+    pub fn new(
+        source1: &'a dyn NoiseFn<T>,
+        source2: &'a dyn NoiseFn<T>,
+        control: &'a dyn NoiseFn<T>,
+    ) -> Self {
         Select {
             source1,
             source2,
@@ -60,21 +64,21 @@ where
                 _ if control_value < (lower + self.falloff) => {
                     let lower_curve = lower - self.falloff;
                     let upper_curve = lower + self.falloff;
-                    let alpha = interp::s_curve3(
+                    let alpha = interpolate::s_curve3(
                         (control_value - lower_curve) / (upper_curve - lower_curve),
                     );
 
-                    interp::linear(self.source1.get(point), self.source2.get(point), alpha)
+                    interpolate::linear(self.source1.get(point), self.source2.get(point), alpha)
                 },
                 _ if control_value < (upper - self.falloff) => self.source2.get(point),
                 _ if control_value < (upper + self.falloff) => {
                     let lower_curve = upper - self.falloff;
                     let upper_curve = upper + self.falloff;
-                    let alpha = interp::s_curve3(
+                    let alpha = interpolate::s_curve3(
                         (control_value - lower_curve) / (upper_curve - lower_curve),
                     );
 
-                    interp::linear(self.source2.get(point), self.source1.get(point), alpha)
+                    interpolate::linear(self.source2.get(point), self.source1.get(point), alpha)
                 },
                 _ => self.source1.get(point),
             }

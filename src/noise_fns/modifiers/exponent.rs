@@ -20,14 +20,14 @@ pub struct Exponent<'a, T: 'a> {
 
 impl<'a, T> Exponent<'a, T> {
     pub fn new(source: &'a dyn NoiseFn<T>) -> Self {
-        Exponent {
+        Self {
             source,
             exponent: 1.0,
         }
     }
 
     pub fn set_exponent(self, exponent: f64) -> Self {
-        Exponent { exponent, ..self }
+        Self { exponent, ..self }
     }
 }
 

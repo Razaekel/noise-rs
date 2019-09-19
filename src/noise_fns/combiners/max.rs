@@ -12,7 +12,7 @@ pub struct Max<'a, T: 'a> {
 
 impl<'a, T> Max<'a, T> {
     pub fn new(source1: &'a dyn NoiseFn<T>, source2: &'a dyn NoiseFn<T>) -> Self {
-        Max { source1, source2 }
+        Self { source1, source2 }
     }
 }
 

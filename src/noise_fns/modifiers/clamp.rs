@@ -13,28 +13,28 @@ pub struct Clamp<'a, T: 'a> {
 
 impl<'a, T> Clamp<'a, T> {
     pub fn new(source: &'a dyn NoiseFn<T>) -> Self {
-        Clamp {
+        Self {
             source,
             bounds: (-1.0, 1.0),
         }
     }
 
     pub fn set_lower_bound(self, lower_bound: f64) -> Self {
-        Clamp {
+        Self {
             bounds: (lower_bound, self.bounds.1),
             ..self
         }
     }
 
     pub fn set_upper_bound(self, upper_bound: f64) -> Self {
-        Clamp {
+        Self {
             bounds: (self.bounds.0, upper_bound),
             ..self
         }
     }
 
     pub fn set_bounds(self, lower_bound: f64, upper_bound: f64) -> Self {
-        Clamp {
+        Self {
             bounds: (lower_bound, upper_bound),
             ..self
         }

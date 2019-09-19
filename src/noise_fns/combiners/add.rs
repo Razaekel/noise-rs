@@ -12,7 +12,7 @@ pub struct Add<'a, T: 'a> {
 
 impl<'a, T> Add<'a, T> {
     pub fn new(source1: &'a dyn NoiseFn<T>, source2: &'a dyn NoiseFn<T>) -> Self {
-        Add { source1, source2 }
+        Self { source1, source2 }
     }
 }
 

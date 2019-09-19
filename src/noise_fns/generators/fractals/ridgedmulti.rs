@@ -68,7 +68,7 @@ impl RidgedMulti {
     pub const MAX_OCTAVES: usize = 32;
 
     pub fn new() -> Self {
-        RidgedMulti {
+        Self {
             seed: Self::DEFAULT_SEED,
             octaves: Self::DEFAULT_OCTAVE_COUNT,
             frequency: Self::DEFAULT_FREQUENCY,
@@ -80,7 +80,7 @@ impl RidgedMulti {
     }
 
     pub fn set_attenuation(self, attenuation: f64) -> Self {
-        RidgedMulti {
+        Self {
             attenuation,
             ..self
         }
@@ -100,7 +100,7 @@ impl MultiFractal for RidgedMulti {
         }
 
         octaves = math::clamp(octaves, 1, Self::MAX_OCTAVES);
-        RidgedMulti {
+        Self {
             octaves,
             sources: super::build_sources(self.seed, octaves),
             ..self
@@ -108,15 +108,15 @@ impl MultiFractal for RidgedMulti {
     }
 
     fn set_frequency(self, frequency: f64) -> Self {
-        RidgedMulti { frequency, ..self }
+        Self { frequency, ..self }
     }
 
     fn set_lacunarity(self, lacunarity: f64) -> Self {
-        RidgedMulti { lacunarity, ..self }
+        Self { lacunarity, ..self }
     }
 
     fn set_persistence(self, persistence: f64) -> Self {
-        RidgedMulti {
+        Self {
             persistence,
             ..self
         }
@@ -129,7 +129,7 @@ impl Seedable for RidgedMulti {
             return self;
         }
 
-        RidgedMulti {
+        Self {
             seed,
             sources: super::build_sources(seed, self.octaves),
             ..self
