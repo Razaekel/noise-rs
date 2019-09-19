@@ -37,7 +37,7 @@ impl Worley {
     pub const DEFAULT_DISPLACEMENT: f64 = 1.0;
 
     pub fn new() -> Self {
-        Worley {
+        Self {
             perm_table: PermutationTable::new(Self::DEFAULT_SEED),
             seed: Self::DEFAULT_SEED,
             range_function: Self::DEFAULT_RANGEFUNCTION,
@@ -49,7 +49,7 @@ impl Worley {
 
     /// Sets the range function used by the Worley cells.
     pub fn set_range_function(self, range_function: RangeFunction) -> Self {
-        Worley {
+        Self {
             range_function,
             ..self
         }
@@ -58,7 +58,7 @@ impl Worley {
     /// Enables or disables applying the distance from the nearest seed point
     /// to the output value.
     pub fn enable_range(self, enable_range: bool) -> Self {
-        Worley {
+        Self {
             enable_range,
             ..self
         }
@@ -66,11 +66,11 @@ impl Worley {
 
     /// Sets the frequency of the seed points.
     pub fn set_frequency(self, frequency: f64) -> Self {
-        Worley { frequency, ..self }
+        Self { frequency, ..self }
     }
 
     pub fn set_displacement(self, displacement: f64) -> Self {
-        Worley {
+        Self {
             displacement,
             ..self
         }
@@ -92,7 +92,7 @@ impl Seedable for Worley {
         }
 
         // Otherwise, regenerate the permutation table based on the new seed.
-        Worley {
+        Self {
             perm_table: PermutationTable::new(seed),
             seed,
             ..self
@@ -189,9 +189,8 @@ fn range_quadratic(p1: &[f64], p2: &[f64]) -> f64 {
 
 impl NoiseFn<Point2<f64>> for Worley {
     fn get(&self, point: Point2<f64>) -> f64 {
-        #[inline(always)]
         fn get_point(perm_table: &PermutationTable, whole: Point2<isize>) -> Point2<f64> {
-            math::add2(get_vec2(perm_table.get2(whole)), math::to_f642(whole))
+            math::add2(get_vec2(perm_table.get2(whole)), math::to_f64_2(whole))
         }
 
         let point = &math::mul2(point, self.frequency);
@@ -248,11 +247,11 @@ impl NoiseFn<Point2<f64>> for Worley {
     }
 }
 
-#[inline(always)]
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 fn get_vec2(index: usize) -> Point2<f64> {
     let length = ((index & 0xF8) >> 3) as f64 * 0.5 / 31.0;
     let diag = length * std::f64::consts::FRAC_1_SQRT_2;
+
     match index & 0x07 {
         0 => [   diag,    diag],
         1 => [   diag,   -diag],
@@ -268,9 +267,8 @@ fn get_vec2(index: usize) -> Point2<f64> {
 
 impl NoiseFn<Point3<f64>> for Worley {
     fn get(&self, point: Point3<f64>) -> f64 {
-        #[inline(always)]
         fn get_point(perm_table: &PermutationTable, whole: Point3<isize>) -> Point3<f64> {
-            math::add3(get_vec3(perm_table.get3(whole)), math::to_f643(whole))
+            math::add3(get_vec3(perm_table.get3(whole)), math::to_f64_3(whole))
         }
 
         let point = &math::mul3(point, self.frequency);
@@ -349,11 +347,11 @@ impl NoiseFn<Point3<f64>> for Worley {
     }
 }
 
-#[inline(always)]
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 fn get_vec3(index: usize) -> Point3<f64> {
     let length = ((index & 0xE0) >> 5) as f64 * 0.5 / 7.0;
     let diag = length * std::f64::consts::FRAC_1_SQRT_2;
+
     match index % 18 {
         0  => [   diag,    diag,     0.0],
         1  => [   diag,   -diag,     0.0],
@@ -379,9 +377,8 @@ fn get_vec3(index: usize) -> Point3<f64> {
 
 impl NoiseFn<Point4<f64>> for Worley {
     fn get(&self, point: Point4<f64>) -> f64 {
-        #[inline(always)]
         fn get_point(perm_table: &PermutationTable, whole: Point4<isize>) -> Point4<f64> {
-            math::add4(get_vec4(perm_table.get4(whole)), math::to_f644(whole))
+            math::add4(get_vec4(perm_table.get4(whole)), math::to_f64_4(whole))
         }
 
         let point = &math::mul4(point, self.frequency);
@@ -489,11 +486,11 @@ impl NoiseFn<Point4<f64>> for Worley {
     }
 }
 
-#[inline(always)]
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 fn get_vec4(index: usize) -> Point4<f64> {
     let length = ((index & 0xE0) >> 5) as f64 * 0.5 / 7.0;
-    let diag = length * 0.5773502691896258;
+    let diag = length * 0.577_350_269_189_625_8;
+
     match index % 32 {
         0  => [ diag,  diag,  diag,  0.0],
         1  => [ diag, -diag,  diag,  0.0],

@@ -29,7 +29,7 @@ pub struct TranslatePoint<Source> {
 
 impl<Source> TranslatePoint<Source> {
     pub fn new(source: Source) -> Self {
-        TranslatePoint {
+        Self {
             source,
             x_translation: 0.0,
             y_translation: 0.0,
@@ -41,7 +41,7 @@ impl<Source> TranslatePoint<Source> {
     /// Sets the scaling factor to apply to the _x_ coordinate of the input
     /// value.
     pub fn set_x_translation(self, x_translation: f64) -> Self {
-        TranslatePoint {
+        Self {
             x_translation,
             ..self
         }
@@ -50,7 +50,7 @@ impl<Source> TranslatePoint<Source> {
     /// Sets the scaling factor to apply to the _y_ coordinate of the input
     /// value.
     pub fn set_y_translation(self, y_translation: f64) -> Self {
-        TranslatePoint {
+        Self {
             y_translation,
             ..self
         }
@@ -59,7 +59,7 @@ impl<Source> TranslatePoint<Source> {
     /// Sets the scaling factor to apply to the _z_ coordinate of the input
     /// value.
     pub fn set_z_translation(self, z_translation: f64) -> Self {
-        TranslatePoint {
+        Self {
             z_translation,
             ..self
         }
@@ -68,7 +68,7 @@ impl<Source> TranslatePoint<Source> {
     /// Sets the scaling factor to apply to the _u_ coordinate of the input
     /// value.
     pub fn set_u_translation(self, u_translation: f64) -> Self {
-        TranslatePoint {
+        Self {
             u_translation,
             ..self
         }
@@ -76,7 +76,7 @@ impl<Source> TranslatePoint<Source> {
 
     /// Sets the translation amount to apply to all coordinates of the input value.
     pub fn set_translation(self, scale: f64) -> Self {
-        TranslatePoint {
+        Self {
             x_translation: scale,
             y_translation: scale,
             z_translation: scale,
@@ -94,7 +94,7 @@ impl<Source> TranslatePoint<Source> {
         z_translation: f64,
         u_translation: f64,
     ) -> Self {
-        TranslatePoint {
+        Self {
             x_translation,
             y_translation,
             z_translation,

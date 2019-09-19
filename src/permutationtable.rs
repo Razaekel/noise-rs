@@ -1,5 +1,8 @@
 use math::{Point2, Point3, Point4};
-use rand::{distributions::{Distribution, Standard}, Rng, SeedableRng, XorShiftRng};
+use rand::{
+    distributions::{Distribution, Standard},
+    Rng, SeedableRng, XorShiftRng,
+};
 use std::fmt;
 
 const TABLE_SIZE: usize = 256;
@@ -38,38 +41,34 @@ impl PermutationTable {
     ///
     /// Internally this uses a `XorShiftRng`, but we don't really need to worry
     /// about cryptographic security when working with procedural noise.
-    pub fn new(seed: u32) -> PermutationTable {
+    pub fn new(seed: u32) -> Self {
         let mut real = [0; 16];
         real[0] = 1;
         for i in 1..4 {
-            real[0+i*4] = seed as u8;
-            real[1+i*4] = (seed >> 8) as u8;
-            real[2+i*4] = (seed >> 16) as u8;
-            real[3+i*4] = (seed >> 24) as u8;
+            real[i * 4] = seed as u8;
+            real[(i * 4) + 1] = (seed >> 8) as u8;
+            real[(i * 4) + 2] = (seed >> 16) as u8;
+            real[(i * 4) + 3] = (seed >> 24) as u8;
         }
         let mut rng: XorShiftRng = SeedableRng::from_seed(real);
         rng.gen()
     }
 
-    #[inline(always)]
     pub fn get1(&self, x: isize) -> usize {
         let x = (x & 0xff) as usize;
         self.values[x] as usize
     }
 
-    #[inline(always)]
     pub fn get2(&self, pos: Point2<isize>) -> usize {
         let y = (pos[1] & 0xff) as usize;
         self.values[self.get1(pos[0]) ^ y] as usize
     }
 
-    #[inline(always)]
     pub fn get3(&self, pos: Point3<isize>) -> usize {
         let z = (pos[2] & 0xff) as usize;
         self.values[self.get2([pos[0], pos[1]]) ^ z] as usize
     }
 
-    #[inline(always)]
     pub fn get4(&self, pos: Point4<isize>) -> usize {
         let w = (pos[3] & 0xff) as usize;
         self.values[self.get3([pos[0], pos[1], pos[2]]) ^ w] as usize
@@ -84,8 +83,8 @@ impl fmt::Debug for PermutationTable {
 
 #[cfg(test)]
 mod tests {
-    use {NoiseFn, Perlin, Seedable};
     use rand::random;
+    use {NoiseFn, Perlin, Seedable};
 
     #[test]
     fn test_random_seed() {

@@ -23,14 +23,14 @@ impl Checkerboard {
     const DEFAULT_SIZE: usize = 0;
 
     pub fn new() -> Self {
-        Checkerboard {
+        Self {
             size: 1 << Self::DEFAULT_SIZE,
             _dummy: (),
         }
     }
 
     pub fn set_size(self, size: usize) -> Self {
-        Checkerboard {
+        Self {
             size: 1 << size,
             ..self
         }

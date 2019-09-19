@@ -38,7 +38,7 @@ impl<Source> Turbulence<Source> {
     pub const DEFAULT_ROUGHNESS: usize = 3;
 
     pub fn new(source: Source) -> Self {
-        Turbulence {
+        Self {
             source,
             seed: Self::DEFAULT_SEED,
             frequency: Self::DEFAULT_FREQUENCY,
@@ -64,7 +64,7 @@ impl<Source> Turbulence<Source> {
     }
 
     pub fn set_frequency(self, frequency: f64) -> Self {
-        Turbulence {
+        Self {
             frequency,
             x_distort_function: self.x_distort_function.set_frequency(frequency),
             y_distort_function: self.y_distort_function.set_frequency(frequency),
@@ -75,11 +75,11 @@ impl<Source> Turbulence<Source> {
     }
 
     pub fn set_power(self, power: f64) -> Self {
-        Turbulence { power, ..self }
+        Self { power, ..self }
     }
 
     pub fn set_roughness(self, roughness: usize) -> Self {
-        Turbulence {
+        Self {
             roughness,
             x_distort_function: self.x_distort_function.set_octaves(roughness),
             y_distort_function: self.y_distort_function.set_octaves(roughness),
@@ -92,7 +92,7 @@ impl<Source> Turbulence<Source> {
 
 impl<Source> Seedable for Turbulence<Source> {
     fn set_seed(self, seed: u32) -> Self {
-        Turbulence {
+        Self {
             seed,
             x_distort_function: self.x_distort_function.set_seed(seed),
             y_distort_function: self.y_distort_function.set_seed(seed + 1),

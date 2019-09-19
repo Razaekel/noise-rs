@@ -18,7 +18,7 @@ pub struct NoiseMap {
 
 impl NoiseMap {
     pub fn new(width: usize, height: usize) -> Self {
-        NoiseMap::initialize().set_size(width, height)
+        Self::initialize().set_size(width, height)
     }
 
     pub fn set_size(self, width: usize, height: usize) -> Self {
@@ -28,7 +28,7 @@ impl NoiseMap {
 
         if width == 0 || height == 0 {
             // An empty noise map was specified. Return a new blank, empty map.
-            NoiseMap::initialize()
+            Self::initialize()
         } else {
             // New noise map size specified. Allocate a new Vec unless the current Vec is large
             // enough.
@@ -36,14 +36,14 @@ impl NoiseMap {
             if self.map.capacity() < map_size {
                 // New size is too big for the current Vec. Create a new Vec with a large enough
                 // capacity now so we're not reallocating when filling the map.
-                NoiseMap {
+                Self {
                     map: vec![0.0; map_size],
                     size: (width, height),
                     ..self
                 }
             } else {
                 // Vec capacity is already big enough, so leave it alone and just change the set size.
-                NoiseMap {
+                Self {
                     size: (width, height),
                     ..self
                 }
@@ -56,7 +56,7 @@ impl NoiseMap {
     }
 
     pub fn set_border_value(self, border_value: f64) -> Self {
-        NoiseMap {
+        Self {
             border_value,
             ..self
         }
@@ -119,7 +119,7 @@ impl NoiseMap {
     }
 
     fn initialize() -> Self {
-        NoiseMap {
+        Self {
             size: (0, 0),
             border_value: 0.0,
             map: Vec::new(),
@@ -129,6 +129,6 @@ impl NoiseMap {
 
 impl Default for NoiseMap {
     fn default() -> Self {
-        NoiseMap::initialize()
+        Self::initialize()
     }
 }

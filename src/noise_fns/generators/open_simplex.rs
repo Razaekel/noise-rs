@@ -2,22 +2,22 @@
 //! Instead, these functions use the `OpenSimplex` algorithm, as detailed here:
 //! <http://uniblock.tumblr.com/post/97868843242/noise>
 
-use {gradient, math};
 use math::{Point2, Point3, Point4};
 use noise_fns::{NoiseFn, Seedable};
 use permutationtable::PermutationTable;
 use std::ops::Add;
+use {gradient, math};
 
-const STRETCH_CONSTANT_2D: f64 = -0.211324865405187; //(1/sqrt(2+1)-1)/2;
-const SQUISH_CONSTANT_2D: f64 = 0.366025403784439; //(sqrt(2+1)-1)/2;
+const STRETCH_CONSTANT_2D: f64 = -0.211_324_865_405_187; //(1/sqrt(2+1)-1)/2;
+const SQUISH_CONSTANT_2D: f64 = 0.366_025_403_784_439; //(sqrt(2+1)-1)/2;
 const STRETCH_CONSTANT_3D: f64 = -1.0 / 6.0; //(1/Math.sqrt(3+1)-1)/3;
 const SQUISH_CONSTANT_3D: f64 = 1.0 / 3.0; //(Math.sqrt(3+1)-1)/3;
-const STRETCH_CONSTANT_4D: f64 = -0.138196601125011; //(Math.sqrt(4+1)-1)/4;
-const SQUISH_CONSTANT_4D: f64 = 0.309016994374947; //(Math.sqrt(4+1)-1)/4;
+const STRETCH_CONSTANT_4D: f64 = -0.138_196_601_125_011; //(Math.sqrt(4+1)-1)/4;
+const SQUISH_CONSTANT_4D: f64 = 0.309_016_994_374_947; //(Math.sqrt(4+1)-1)/4;
 
 const NORM_CONSTANT_2D: f64 = 1.0 / 14.0;
 const NORM_CONSTANT_3D: f64 = 1.0 / 14.0;
-const NORM_CONSTANT_4D: f64 = 1.0 / 6.8699090070956625;
+const NORM_CONSTANT_4D: f64 = 1.0 / 6.869_909_007_095_662_5;
 
 /// Noise function that outputs 2/3/4-dimensional Open Simplex noise.
 #[derive(Clone, Copy, Debug)]
@@ -30,7 +30,7 @@ impl OpenSimplex {
     const DEFAULT_SEED: u32 = 0;
 
     pub fn new() -> Self {
-        OpenSimplex {
+        Self {
             seed: Self::DEFAULT_SEED,
             perm_table: PermutationTable::new(Self::DEFAULT_SEED),
         }
@@ -52,7 +52,7 @@ impl Seedable for OpenSimplex {
         }
 
         // Otherwise, regenerate the permutation table based on the new seed.
-        OpenSimplex {
+        Self {
             seed,
             perm_table: PermutationTable::new(seed),
         }
@@ -68,7 +68,6 @@ impl Seedable for OpenSimplex {
 /// This is a slower but higher quality form of gradient noise than `Perlin` 2D.
 impl NoiseFn<Point2<f64>> for OpenSimplex {
     fn get(&self, point: Point2<f64>) -> f64 {
-        #[inline(always)]
         fn gradient(perm_table: &PermutationTable, vertex: Point2<f64>, pos: Point2<f64>) -> f64 {
             let attn = 2.0 - math::dot2(pos, pos);
             if attn > 0.0 {
@@ -150,7 +149,6 @@ impl NoiseFn<Point2<f64>> for OpenSimplex {
 /// This is a slower but higher quality form of gradient noise than `Perlin` 3D.
 impl NoiseFn<Point3<f64>> for OpenSimplex {
     fn get(&self, point: Point3<f64>) -> f64 {
-        #[inline(always)]
         fn gradient(perm_table: &PermutationTable, vertex: Point3<f64>, pos: Point3<f64>) -> f64 {
             let attn = 2.0 - math::dot3(pos, pos);
             if attn > 0.0 {

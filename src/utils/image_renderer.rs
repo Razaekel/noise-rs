@@ -1,4 +1,4 @@
-use math::interp;
+use math::interpolate;
 use std;
 use std::f64::consts::SQRT_2;
 
@@ -20,8 +20,8 @@ pub struct ImageRenderer {
 }
 
 impl ImageRenderer {
-    pub fn new() -> ImageRenderer {
-        ImageRenderer {
+    pub fn new() -> Self {
+        Self {
             gradient: ColorGradient::new(),
             light_source: LightSource::new(),
             light_enabled: false,
@@ -30,7 +30,7 @@ impl ImageRenderer {
     }
 
     pub fn set_gradient(self, gradient: ColorGradient) -> Self {
-        ImageRenderer { gradient, ..self }
+        Self { gradient, ..self }
     }
 
     pub fn gradient(&self) -> &ColorGradient {
@@ -110,7 +110,7 @@ impl ImageRenderer {
     }
 
     pub fn enable_wrap(self) -> Self {
-        ImageRenderer {
+        Self {
             wrap_enabled: true,
             ..self
         }
@@ -130,7 +130,7 @@ impl ImageRenderer {
             for x in 0..width {
                 let point = noise_map.get_value(x, y);
 
-                let mut source_color = self.gradient.get_color(point);
+                let source_color = self.gradient.get_color(point);
 
                 let mut light_intensity;
 
@@ -204,9 +204,9 @@ impl ImageRenderer {
 
         if self.light_enabled {
             // Calculate light color
-            let light_red = light_value * self.light_source.color[0] as f64 / 255.0;
-            let light_green = light_value * self.light_source.color[1] as f64 / 255.0;
-            let light_blue = light_value * self.light_source.color[2] as f64 / 255.0;
+            let light_red = light_value * f64::from(self.light_source.color[0]) / 255.0;
+            let light_green = light_value * f64::from(self.light_source.color[1]) / 255.0;
+            let light_blue = light_value * f64::from(self.light_source.color[2]) / 255.0;
 
             // Apply the light color
             red *= light_red;
@@ -241,7 +241,7 @@ impl ImageRenderer {
         for y in 0..height {
             for x in 0..width {
                 let point = noise_map.get_value(x, y);
-                let mut source_color = self.gradient.get_color(point);
+                let source_color = self.gradient.get_color(point);
 
                 let mut light_intensity;
 
@@ -322,15 +322,15 @@ impl ImageRenderer {
         let background = u8_array_to_f64_array(background_color);
 
         // Blend source color and background color together using source's alpha.
-        let mut red = interp::linear(source[0], background[0], source[3]);
-        let mut green = interp::linear(source[1], background[1], source[3]);
-        let mut blue = interp::linear(source[2], background[2], source[3]);
+        let mut red = interpolate::linear(source[0], background[0], source[3]);
+        let mut green = interpolate::linear(source[1], background[1], source[3]);
+        let mut blue = interpolate::linear(source[2], background[2], source[3]);
 
         if self.light_enabled {
             // Calculate light color
-            let light_red = light_value * self.light_source.color[0] as f64 / 255.0;
-            let light_green = light_value * self.light_source.color[1] as f64 / 255.0;
-            let light_blue = light_value * self.light_source.color[2] as f64 / 255.0;
+            let light_red = light_value * f64::from(self.light_source.color[0]) / 255.0;
+            let light_green = light_value * f64::from(self.light_source.color[1]) / 255.0;
+            let light_blue = light_value * f64::from(self.light_source.color[2]) / 255.0;
 
             // Apply the light color
             red *= light_red;
@@ -400,8 +400,8 @@ pub struct LightSource {
 }
 
 impl LightSource {
-    pub fn new() -> LightSource {
-        LightSource {
+    pub fn new() -> Self {
+        Self {
             azimuth: 45.0,
             brightness: 1.0,
             color: [255; 4],
@@ -490,7 +490,7 @@ fn u8_array_to_f64_array(input: [u8; 4]) -> [f64; 4] {
     let mut result = [0.0; 4];
 
     for x in 0..4 {
-        result[x] = input[x] as f64 / 255.0;
+        result[x] = f64::from(input[x]) / 255.0;
     }
 
     result
@@ -505,5 +505,4 @@ mod tests {
         assert_eq!([0.0; 4], u8_array_to_f64_array([0; 4]));
         assert_eq!([1.0; 4], u8_array_to_f64_array([255; 4]));
     }
-
 }

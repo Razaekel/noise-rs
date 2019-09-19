@@ -1,7 +1,7 @@
 extern crate noise;
 
-use noise::{Add, Cylinders, Perlin};
 use noise::utils::*;
+use noise::{Add, Cylinders, Perlin};
 
 fn main() {
     let cyl = Cylinders::new();

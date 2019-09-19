@@ -32,7 +32,7 @@ pub struct RotatePoint<Source> {
 
 impl<Source> RotatePoint<Source> {
     pub fn new(source: Source) -> Self {
-        RotatePoint {
+        Self {
             source,
             x_angle: 0.0,
             y_angle: 0.0,
@@ -44,31 +44,31 @@ impl<Source> RotatePoint<Source> {
     /// Sets the rotation angle around the _x_ axis to apply to the input
     /// value.
     pub fn set_x_angle(self, x_angle: f64) -> Self {
-        RotatePoint { x_angle, ..self }
+        Self { x_angle, ..self }
     }
 
     /// Sets the rotation angle around the _y_ axis to apply to the input
     /// value.
     pub fn set_y_angle(self, y_angle: f64) -> Self {
-        RotatePoint { y_angle, ..self }
+        Self { y_angle, ..self }
     }
 
     /// Sets the rotation angle around the _z_ axis to apply to the input
     /// value.
     pub fn set_z_angle(self, z_angle: f64) -> Self {
-        RotatePoint { z_angle, ..self }
+        Self { z_angle, ..self }
     }
 
     /// Sets the rotation angle around the _u_ axis to apply to the input
     /// value.
     pub fn set_u_angle(self, u_angle: f64) -> Self {
-        RotatePoint { u_angle, ..self }
+        Self { u_angle, ..self }
     }
 
     /// Sets the rotation angles around all of the axes to apply to the input
     /// value.
     pub fn set_angles(self, x_angle: f64, y_angle: f64, z_angle: f64, u_angle: f64) -> Self {
-        RotatePoint {
+        Self {
             x_angle,
             y_angle,
             z_angle,

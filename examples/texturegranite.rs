@@ -1,7 +1,7 @@
 extern crate noise;
 
-use noise::*;
 use noise::utils::*;
+use noise::*;
 
 fn main() {
     // Primary granite texture. This generates the "roughness" of the texture

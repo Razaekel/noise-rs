@@ -1,5 +1,5 @@
 use math;
-use math::interp;
+use math::interpolate;
 use noise_fns::NoiseFn;
 use std;
 
@@ -19,7 +19,7 @@ use std;
 /// and output value, although no two control points can have the same input.
 pub struct Curve<'a, T: 'a> {
     /// Outputs a value.
-    pub source: &'a NoiseFn<T>,
+    pub source: &'a dyn NoiseFn<T>,
 
     /// Vec that stores the control points.
     control_points: Vec<ControlPoint<f64>>,
@@ -31,8 +31,8 @@ struct ControlPoint<T> {
 }
 
 impl<'a, T> Curve<'a, T> {
-    pub fn new(source: &'a NoiseFn<T>) -> Self {
-        Curve {
+    pub fn new(source: &'a dyn NoiseFn<T>) -> Self {
+        Self {
             source,
             control_points: Vec::with_capacity(4),
         }
@@ -40,13 +40,15 @@ impl<'a, T> Curve<'a, T> {
 
     pub fn add_control_point(mut self, input_value: f64, output_value: f64) -> Self {
         // check to see if the vector already contains the input point.
-        if !self.control_points
+        if !self
+            .control_points
             .iter()
             .any(|x| (x.input - input_value).abs() < std::f64::EPSILON)
         {
             // it doesn't, so find the correct position to insert the new
             // control point.
-            let insertion_point = self.control_points
+            let insertion_point = self
+                .control_points
                 .iter()
                 .position(|x| x.input >= input_value)
                 .unwrap_or_else(|| self.control_points.len());
@@ -75,7 +77,8 @@ impl<'a, T> NoiseFn<T> for Curve<'a, T> {
 
         // Find the first element in the control point array that has a input
         // value larger than the output value from the source function
-        let index_pos = self.control_points
+        let index_pos = self
+            .control_points
             .iter()
             .position(|x| x.input > source_value)
             .unwrap_or_else(|| self.control_points.len());
@@ -111,7 +114,7 @@ impl<'a, T> NoiseFn<T> for Curve<'a, T> {
         let alpha = (source_value - input0) / (input1 - input0);
 
         // Now perform the cubic interpolation and return.
-        interp::cubic(
+        interpolate::cubic(
             self.control_points[index0].output,
             self.control_points[index1].output,
             self.control_points[index2].output,

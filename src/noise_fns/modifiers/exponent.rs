@@ -11,7 +11,7 @@ use math::scale_shift;
 /// value back to the original range.
 pub struct Exponent<'a, T: 'a> {
     /// Outputs a value.
-    pub source: &'a NoiseFn<T>,
+    pub source: &'a dyn NoiseFn<T>,
 
     /// Exponent to apply to the output value from the source function. Default
     /// is 1.0.
@@ -19,15 +19,15 @@ pub struct Exponent<'a, T: 'a> {
 }
 
 impl<'a, T> Exponent<'a, T> {
-    pub fn new(source: &'a NoiseFn<T>) -> Self {
-        Exponent {
+    pub fn new(source: &'a dyn NoiseFn<T>) -> Self {
+        Self {
             source,
             exponent: 1.0,
         }
     }
 
     pub fn set_exponent(self, exponent: f64) -> Self {
-        Exponent { exponent, ..self }
+        Self { exponent, ..self }
     }
 }
 

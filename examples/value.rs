@@ -2,8 +2,8 @@
 
 extern crate noise;
 
-use noise::Value;
 use noise::utils::*;
+use noise::Value;
 
 fn main() {
     PlaneMapBuilder::new(&Value::new())

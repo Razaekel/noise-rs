@@ -1,7 +1,7 @@
 extern crate noise;
 
-use noise::{Perlin, Terrace};
 use noise::utils::*;
+use noise::{Perlin, Terrace};
 
 fn main() {
     let perlin = Perlin::new();

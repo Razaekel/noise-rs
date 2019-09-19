@@ -17,7 +17,7 @@ pub struct NoiseImage {
 
 impl NoiseImage {
     pub fn new(width: usize, height: usize) -> Self {
-        NoiseImage::initialize().set_size(width, height)
+        Self::initialize().set_size(width, height)
     }
 
     pub fn set_size(self, width: usize, height: usize) -> Self {
@@ -27,7 +27,7 @@ impl NoiseImage {
 
         if width == 0 || height == 0 {
             // An empty noise image was specified. Return a new blank, empty map.
-            NoiseImage::initialize()
+            Self::initialize()
         } else {
             // New noise map size specified. Allocate a new Vec unless the current Vec is large
             // enough.
@@ -35,14 +35,14 @@ impl NoiseImage {
             if self.map.capacity() < map_size {
                 // New size is too big for the current Vec. Create a new Vec with a large enough
                 // capacity now so we're not reallocating when filling the map.
-                NoiseImage {
+                Self {
                     map: vec![[0; 4]; map_size],
                     size: (width, height),
                     ..self
                 }
             } else {
                 // Vec capacity is already big enough, so leave it alone and just change the set size.
-                NoiseImage {
+                Self {
                     size: (width, height),
                     ..self
                 }
@@ -51,7 +51,7 @@ impl NoiseImage {
     }
 
     pub fn set_border_color(self, color: Color) -> Self {
-        NoiseImage {
+        Self {
             border_color: color,
             ..self
         }
@@ -86,7 +86,7 @@ impl NoiseImage {
     }
 
     fn initialize() -> Self {
-        NoiseImage {
+        Self {
             size: (0, 0),
             border_color: [0; 4],
             map: Vec::new(),
@@ -130,6 +130,6 @@ impl NoiseImage {
 
 impl Default for NoiseImage {
     fn default() -> Self {
-        NoiseImage::initialize()
+        Self::initialize()
     }
 }
