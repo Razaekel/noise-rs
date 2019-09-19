@@ -9,7 +9,7 @@ pub trait NoiseMapBuilder<'a> {
 
     fn size(&self) -> (usize, usize);
 
-    fn build(&mut self) -> NoiseMap;
+    fn build(&self) -> NoiseMap;
 }
 
 pub struct CylinderMapBuilder<'a> {
@@ -91,7 +91,7 @@ impl<'a> NoiseMapBuilder<'a> for CylinderMapBuilder<'a> {
         self.size
     }
 
-    fn build(&mut self) -> NoiseMap {
+    fn build(&self) -> NoiseMap {
         let mut result_map = NoiseMap::new(self.size.0, self.size.1);
 
         let (width, height) = self.size;
@@ -194,7 +194,7 @@ impl<'a> NoiseMapBuilder<'a> for PlaneMapBuilder<'a> {
         self.size
     }
 
-    fn build(&mut self) -> NoiseMap {
+    fn build(&self) -> NoiseMap {
         let (width, height) = self.size;
 
         let mut result_map = NoiseMap::new(width, height);
@@ -315,7 +315,7 @@ impl<'a> NoiseMapBuilder<'a> for SphereMapBuilder<'a> {
         self.size
     }
 
-    fn build(&mut self) -> NoiseMap {
+    fn build(&self) -> NoiseMap {
         let (width, height) = self.size;
 
         let mut result_map = NoiseMap::new(width, height);
