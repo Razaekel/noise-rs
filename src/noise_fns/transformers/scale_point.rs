@@ -1,4 +1,3 @@
-use math::{Point2, Point3, Point4};
 use noise_fns::NoiseFn;
 
 /// Noise function that scales the coordinates of the input value before
@@ -86,21 +85,21 @@ impl<Source> ScalePoint<Source> {
     }
 }
 
-impl<Source> NoiseFn<Point2<f64>> for ScalePoint<Source>
+impl<Source> NoiseFn<[f64; 2]> for ScalePoint<Source>
 where
-    Source: NoiseFn<Point2<f64>>,
+    Source: NoiseFn<[f64; 2]>,
 {
-    fn get(&self, point: Point2<f64>) -> f64 {
+    fn get(&self, point: [f64; 2]) -> f64 {
         self.source
             .get([point[0] * self.x_scale, point[1] * self.y_scale])
     }
 }
 
-impl<Source> NoiseFn<Point3<f64>> for ScalePoint<Source>
+impl<Source> NoiseFn<[f64; 3]> for ScalePoint<Source>
 where
-    Source: NoiseFn<Point3<f64>>,
+    Source: NoiseFn<[f64; 3]>,
 {
-    fn get(&self, point: Point3<f64>) -> f64 {
+    fn get(&self, point: [f64; 3]) -> f64 {
         self.source.get([
             point[0] * self.x_scale,
             point[1] * self.y_scale,
@@ -109,11 +108,11 @@ where
     }
 }
 
-impl<Source> NoiseFn<Point4<f64>> for ScalePoint<Source>
+impl<Source> NoiseFn<[f64; 4]> for ScalePoint<Source>
 where
-    Source: NoiseFn<Point4<f64>>,
+    Source: NoiseFn<[f64; 4]>,
 {
-    fn get(&self, point: Point4<f64>) -> f64 {
+    fn get(&self, point: [f64; 4]) -> f64 {
         self.source.get([
             point[0] * self.x_scale,
             point[1] * self.y_scale,

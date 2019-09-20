@@ -1,4 +1,3 @@
-use math::{Point2, Point3, Point4};
 use rand::{
     distributions::{Distribution, Standard},
     Rng, SeedableRng, XorShiftRng,
@@ -59,17 +58,17 @@ impl PermutationTable {
         self.values[x] as usize
     }
 
-    pub fn get2(&self, pos: Point2<isize>) -> usize {
+    pub fn get2(&self, pos: [isize; 2]) -> usize {
         let y = (pos[1] & 0xff) as usize;
         self.values[self.get1(pos[0]) ^ y] as usize
     }
 
-    pub fn get3(&self, pos: Point3<isize>) -> usize {
+    pub fn get3(&self, pos: [isize; 3]) -> usize {
         let z = (pos[2] & 0xff) as usize;
         self.values[self.get2([pos[0], pos[1]]) ^ z] as usize
     }
 
-    pub fn get4(&self, pos: Point4<isize>) -> usize {
+    pub fn get4(&self, pos: [isize; 4]) -> usize {
         let w = (pos[3] & 0xff) as usize;
         self.values[self.get3([pos[0], pos[1], pos[2]]) ^ w] as usize
     }

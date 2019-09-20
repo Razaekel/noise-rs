@@ -1,4 +1,3 @@
-use math::{Point2, Point3, Point4, Vector2, Vector3, Vector4};
 use noise_fns::{NoiseFn, Seedable};
 use permutationtable::PermutationTable;
 use {gradient, math};
@@ -48,16 +47,12 @@ impl Seedable for Perlin {
 }
 
 /// 2-dimensional perlin noise
-impl NoiseFn<Point2<f64>> for Perlin {
-    fn get(&self, point: Point2<f64>) -> f64 {
+impl NoiseFn<[f64; 2]> for Perlin {
+    fn get(&self, point: [f64; 2]) -> f64 {
         const SCALE_FACTOR: f64 = 3.160_493_827_160_493_7;
 
         #[inline(always)]
-        fn surflet(
-            perm_table: &PermutationTable,
-            corner: Point2<isize>,
-            distance: Vector2<f64>,
-        ) -> f64 {
+        fn surflet(perm_table: &PermutationTable, corner: [isize; 2], distance: [f64; 2]) -> f64 {
             let attn = 1.0 - math::dot2(distance, distance);
             if attn > 0.0 {
                 attn.powi(4) * math::dot2(distance, gradient::get2(perm_table.get2(corner)))
@@ -99,16 +94,12 @@ impl NoiseFn<Point2<f64>> for Perlin {
 }
 
 /// 3-dimensional perlin noise
-impl NoiseFn<Point3<f64>> for Perlin {
-    fn get(&self, point: Point3<f64>) -> f64 {
+impl NoiseFn<[f64; 3]> for Perlin {
+    fn get(&self, point: [f64; 3]) -> f64 {
         const SCALE_FACTOR: f64 = 3.889_855_325_553_107_4;
 
         #[inline(always)]
-        fn surflet(
-            perm_table: &PermutationTable,
-            corner: Point3<isize>,
-            distance: Vector3<f64>,
-        ) -> f64 {
+        fn surflet(perm_table: &PermutationTable, corner: [isize; 3], distance: [f64; 3]) -> f64 {
             let attn = 1.0 - math::dot3(distance, distance);
             if attn > 0.0 {
                 attn.powi(4) * math::dot3(distance, gradient::get3(perm_table.get3(corner)))
@@ -174,16 +165,12 @@ impl NoiseFn<Point3<f64>> for Perlin {
 }
 
 /// 4-dimensional perlin noise
-impl NoiseFn<Point4<f64>> for Perlin {
-    fn get(&self, point: Point4<f64>) -> f64 {
+impl NoiseFn<[f64; 4]> for Perlin {
+    fn get(&self, point: [f64; 4]) -> f64 {
         const SCALE_FACTOR: f64 = 4.424_369_240_215_691;
 
         #[inline(always)]
-        fn surflet(
-            perm_table: &PermutationTable,
-            corner: Point4<isize>,
-            distance: Vector4<f64>,
-        ) -> f64 {
+        fn surflet(perm_table: &PermutationTable, corner: [isize; 4], distance: [f64; 4]) -> f64 {
             let attn = 1.0 - math::dot4(distance, distance);
             if attn > 0.0 {
                 attn.powi(4) * math::dot4(distance, gradient::get4(perm_table.get4(corner)))

@@ -1,5 +1,5 @@
 use math;
-use math::{Point2, Point3, Point4};
+
 use noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
 use std;
 
@@ -122,8 +122,8 @@ impl Seedable for BasicMulti {
 }
 
 /// 2-dimensional `BasicMulti` noise
-impl NoiseFn<Point2<f64>> for BasicMulti {
-    fn get(&self, mut point: Point2<f64>) -> f64 {
+impl NoiseFn<[f64; 2]> for BasicMulti {
+    fn get(&self, mut point: [f64; 2]) -> f64 {
         // First unscaled octave of function; later octaves are scaled.
         point = math::mul2(point, self.frequency);
         let mut result = self.sources[0].get(point);
@@ -152,8 +152,8 @@ impl NoiseFn<Point2<f64>> for BasicMulti {
 }
 
 /// 3-dimensional `BasicMulti` noise
-impl NoiseFn<Point3<f64>> for BasicMulti {
-    fn get(&self, mut point: Point3<f64>) -> f64 {
+impl NoiseFn<[f64; 3]> for BasicMulti {
+    fn get(&self, mut point: [f64; 3]) -> f64 {
         // First unscaled octave of function; later octaves are scaled.
         point = math::mul3(point, self.frequency);
         let mut result = self.sources[0].get(point);
@@ -182,8 +182,8 @@ impl NoiseFn<Point3<f64>> for BasicMulti {
 }
 
 /// 4-dimensional `BasicMulti` noise
-impl NoiseFn<Point4<f64>> for BasicMulti {
-    fn get(&self, mut point: Point4<f64>) -> f64 {
+impl NoiseFn<[f64; 4]> for BasicMulti {
+    fn get(&self, mut point: [f64; 4]) -> f64 {
         // First unscaled octave of function; later octaves are scaled.
         point = math::mul4(point, self.frequency);
         let mut result = self.sources[0].get(point);

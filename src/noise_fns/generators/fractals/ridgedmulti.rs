@@ -1,4 +1,4 @@
-use math::{self, scale_shift, Point2, Point3, Point4};
+use math::{self, scale_shift};
 use noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
 use std;
 
@@ -142,8 +142,8 @@ impl Seedable for RidgedMulti {
 }
 
 /// 2-dimensional `RidgedMulti` noise
-impl NoiseFn<Point2<f64>> for RidgedMulti {
-    fn get(&self, mut point: Point2<f64>) -> f64 {
+impl NoiseFn<[f64; 2]> for RidgedMulti {
+    fn get(&self, mut point: [f64; 2]) -> f64 {
         let mut result = 0.0;
         let mut weight = 1.0;
 
@@ -188,8 +188,8 @@ impl NoiseFn<Point2<f64>> for RidgedMulti {
 }
 
 /// 3-dimensional `RidgedMulti` noise
-impl NoiseFn<Point3<f64>> for RidgedMulti {
-    fn get(&self, mut point: Point3<f64>) -> f64 {
+impl NoiseFn<[f64; 3]> for RidgedMulti {
+    fn get(&self, mut point: [f64; 3]) -> f64 {
         let mut result = 0.0;
         let mut weight = 1.0;
 
@@ -234,8 +234,8 @@ impl NoiseFn<Point3<f64>> for RidgedMulti {
 }
 
 /// 4-dimensional `RidgedMulti` noise
-impl NoiseFn<Point4<f64>> for RidgedMulti {
-    fn get(&self, mut point: Point4<f64>) -> f64 {
+impl NoiseFn<[f64; 4]> for RidgedMulti {
+    fn get(&self, mut point: [f64; 4]) -> f64 {
         let mut result = 0.0;
         let mut weight = 1.0;
 

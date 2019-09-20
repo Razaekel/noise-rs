@@ -1,5 +1,5 @@
 use math;
-use math::{Point2, Point3, Point4};
+
 use noise_fns::{NoiseFn, Seedable};
 use permutationtable::PermutationTable;
 use std;
@@ -187,9 +187,9 @@ fn range_quadratic(p1: &[f64], p2: &[f64]) -> f64 {
     result
 }
 
-impl NoiseFn<Point2<f64>> for Worley {
-    fn get(&self, point: Point2<f64>) -> f64 {
-        fn get_point(perm_table: &PermutationTable, whole: Point2<isize>) -> Point2<f64> {
+impl NoiseFn<[f64; 2]> for Worley {
+    fn get(&self, point: [f64; 2]) -> f64 {
+        fn get_point(perm_table: &PermutationTable, whole: [isize; 2]) -> [f64; 2] {
             math::add2(get_vec2(perm_table.get2(whole)), math::to_f64_2(whole))
         }
 
@@ -248,7 +248,7 @@ impl NoiseFn<Point2<f64>> for Worley {
 }
 
 #[rustfmt::skip]
-fn get_vec2(index: usize) -> Point2<f64> {
+fn get_vec2(index: usize) -> [f64; 2] {
     let length = ((index & 0xF8) >> 3) as f64 * 0.5 / 31.0;
     let diag = length * std::f64::consts::FRAC_1_SQRT_2;
 
@@ -265,9 +265,9 @@ fn get_vec2(index: usize) -> Point2<f64> {
     }
 }
 
-impl NoiseFn<Point3<f64>> for Worley {
-    fn get(&self, point: Point3<f64>) -> f64 {
-        fn get_point(perm_table: &PermutationTable, whole: Point3<isize>) -> Point3<f64> {
+impl NoiseFn<[f64; 3]> for Worley {
+    fn get(&self, point: [f64; 3]) -> f64 {
+        fn get_point(perm_table: &PermutationTable, whole: [isize; 3]) -> [f64; 3] {
             math::add3(get_vec3(perm_table.get3(whole)), math::to_f64_3(whole))
         }
 
@@ -348,7 +348,7 @@ impl NoiseFn<Point3<f64>> for Worley {
 }
 
 #[rustfmt::skip]
-fn get_vec3(index: usize) -> Point3<f64> {
+fn get_vec3(index: usize) -> [f64; 3] {
     let length = ((index & 0xE0) >> 5) as f64 * 0.5 / 7.0;
     let diag = length * std::f64::consts::FRAC_1_SQRT_2;
 
@@ -375,9 +375,9 @@ fn get_vec3(index: usize) -> Point3<f64> {
     }
 }
 
-impl NoiseFn<Point4<f64>> for Worley {
-    fn get(&self, point: Point4<f64>) -> f64 {
-        fn get_point(perm_table: &PermutationTable, whole: Point4<isize>) -> Point4<f64> {
+impl NoiseFn<[f64; 4]> for Worley {
+    fn get(&self, point: [f64; 4]) -> f64 {
+        fn get_point(perm_table: &PermutationTable, whole: [isize; 4]) -> [f64; 4] {
             math::add4(get_vec4(perm_table.get4(whole)), math::to_f64_4(whole))
         }
 
@@ -487,7 +487,7 @@ impl NoiseFn<Point4<f64>> for Worley {
 }
 
 #[rustfmt::skip]
-fn get_vec4(index: usize) -> Point4<f64> {
+fn get_vec4(index: usize) -> [f64; 4] {
     let length = ((index & 0xE0) >> 5) as f64 * 0.5 / 7.0;
     let diag = length * 0.577_350_269_189_625_8;
 

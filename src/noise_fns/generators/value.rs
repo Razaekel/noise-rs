@@ -1,5 +1,4 @@
-use math;
-use math::{interpolate, Point2, Point3, Point4};
+use math::{self, interpolate};
 use noise_fns::{NoiseFn, Seedable};
 use permutationtable::PermutationTable;
 
@@ -48,9 +47,9 @@ impl Seedable for Value {
 }
 
 /// 2-dimensional value noise
-impl NoiseFn<Point2<f64>> for Value {
-    fn get(&self, point: Point2<f64>) -> f64 {
-        fn get(perm_table: &PermutationTable, corner: math::Point2<isize>) -> f64 {
+impl NoiseFn<[f64; 2]> for Value {
+    fn get(&self, point: [f64; 2]) -> f64 {
+        fn get(perm_table: &PermutationTable, corner: [isize; 2]) -> f64 {
             perm_table.get2(corner) as f64 / 255.0
         }
 
@@ -73,9 +72,9 @@ impl NoiseFn<Point2<f64>> for Value {
 }
 
 /// 3-dimensional value noise
-impl NoiseFn<Point3<f64>> for Value {
-    fn get(&self, point: Point3<f64>) -> f64 {
-        fn get(perm_table: &PermutationTable, corner: math::Point3<isize>) -> f64 {
+impl NoiseFn<[f64; 3]> for Value {
+    fn get(&self, point: [f64; 3]) -> f64 {
+        fn get(perm_table: &PermutationTable, corner: [isize; 3]) -> f64 {
             perm_table.get3(corner) as f64 / 255.0
         }
 
@@ -130,9 +129,9 @@ impl NoiseFn<Point3<f64>> for Value {
 }
 
 /// 4-dimensional value noise
-impl NoiseFn<Point4<f64>> for Value {
-    fn get(&self, point: Point4<f64>) -> f64 {
-        fn get(perm_table: &PermutationTable, corner: math::Point4<isize>) -> f64 {
+impl NoiseFn<[f64; 4]> for Value {
+    fn get(&self, point: [f64; 4]) -> f64 {
+        fn get(perm_table: &PermutationTable, corner: [isize; 4]) -> f64 {
             perm_table.get4(corner) as f64 / 255.0
         }
 

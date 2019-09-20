@@ -2,7 +2,6 @@
 //! Instead, these functions use the `OpenSimplex` algorithm, as detailed here:
 //! <http://uniblock.tumblr.com/post/97868843242/noise>
 
-use math::{Point2, Point3, Point4};
 use noise_fns::{NoiseFn, Seedable};
 use permutationtable::PermutationTable;
 use std::ops::Add;
@@ -66,9 +65,9 @@ impl Seedable for OpenSimplex {
 /// 2-dimensional [`OpenSimplex` Noise](http://uniblock.tumblr.com/post/97868843242/noise)
 ///
 /// This is a slower but higher quality form of gradient noise than `Perlin` 2D.
-impl NoiseFn<Point2<f64>> for OpenSimplex {
-    fn get(&self, point: Point2<f64>) -> f64 {
-        fn gradient(perm_table: &PermutationTable, vertex: Point2<f64>, pos: Point2<f64>) -> f64 {
+impl NoiseFn<[f64; 2]> for OpenSimplex {
+    fn get(&self, point: [f64; 2]) -> f64 {
+        fn gradient(perm_table: &PermutationTable, vertex: [f64; 2], pos: [f64; 2]) -> f64 {
             let attn = 2.0 - math::dot2(pos, pos);
             if attn > 0.0 {
                 let index = perm_table.get2(math::to_isize2(vertex));
@@ -147,9 +146,9 @@ impl NoiseFn<Point2<f64>> for OpenSimplex {
 /// 3-dimensional [`OpenSimplex` Noise](http://uniblock.tumblr.com/post/97868843242/noise)
 ///
 /// This is a slower but higher quality form of gradient noise than `Perlin` 3D.
-impl NoiseFn<Point3<f64>> for OpenSimplex {
-    fn get(&self, point: Point3<f64>) -> f64 {
-        fn gradient(perm_table: &PermutationTable, vertex: Point3<f64>, pos: Point3<f64>) -> f64 {
+impl NoiseFn<[f64; 3]> for OpenSimplex {
+    fn get(&self, point: [f64; 3]) -> f64 {
+        fn gradient(perm_table: &PermutationTable, vertex: [f64; 3], pos: [f64; 3]) -> f64 {
             let attn = 2.0 - math::dot3(pos, pos);
             if attn > 0.0 {
                 let index = perm_table.get3(math::to_isize3(vertex));
@@ -281,10 +280,10 @@ impl NoiseFn<Point3<f64>> for OpenSimplex {
 /// 4-dimensional [`OpenSimplex` Noise](http://uniblock.tumblr.com/post/97868843242/noise)
 ///
 /// This is a slower but higher quality form of gradient noise than `Perlin` 4D.
-impl NoiseFn<Point4<f64>> for OpenSimplex {
-    fn get(&self, point: Point4<f64>) -> f64 {
+impl NoiseFn<[f64; 4]> for OpenSimplex {
+    fn get(&self, point: [f64; 4]) -> f64 {
         #[inline(always)]
-        fn gradient(perm_table: &PermutationTable, vertex: Point4<f64>, pos: Point4<f64>) -> f64 {
+        fn gradient(perm_table: &PermutationTable, vertex: [f64; 4], pos: [f64; 4]) -> f64 {
             let attn = 2.0 - math::dot4(pos, pos);
             if attn > 0.0 {
                 let index = perm_table.get4(math::to_isize4(vertex));

@@ -10,25 +10,6 @@ pub fn cast<T, U: From<T>>(x: T) -> U {
     From::from(x)
 }
 
-/// A 2-dimensional point. This is a fixed sized array, so should be compatible
-/// with most linear algebra libraries.
-pub type Point2<T> = [T; 2];
-
-/// A 3-dimensional point. This is a fixed sized array, so should be compatible
-/// with most linear algebra libraries.
-pub type Point3<T> = [T; 3];
-
-/// A 4-dimensional point. This is a fixed sized array, so should be compatible
-/// with most linear algebra libraries.
-pub type Point4<T> = [T; 4];
-
-/// A 2-dimensional vector, for internal use.
-pub type Vector2<T> = [T; 2];
-/// A 3-dimensional vector, for internal use.
-pub type Vector3<T> = [T; 3];
-/// A 4-dimensional vector, for internal use.
-pub type Vector4<T> = [T; 4];
-
 #[inline]
 pub fn clamp<T: PartialOrd>(val: T, min: T, max: T) -> T {
     assert!(max >= min);
@@ -40,7 +21,7 @@ pub fn clamp<T: PartialOrd>(val: T, min: T, max: T) -> T {
 }
 
 #[inline]
-pub fn map2<T, U, F>(a: Vector2<T>, f: F) -> Vector2<U>
+pub fn map2<T, U, F>(a: [T; 2], f: F) -> [U; 2]
 where
     T: Copy,
     F: Fn(T) -> U,
@@ -50,7 +31,7 @@ where
 }
 
 #[inline]
-pub fn map3<T, U, F>(a: Vector3<T>, f: F) -> Vector3<U>
+pub fn map3<T, U, F>(a: [T; 3], f: F) -> [U; 3]
 where
     T: Copy,
     F: Fn(T) -> U,
@@ -60,7 +41,7 @@ where
 }
 
 #[inline]
-pub fn map4<T, U, F>(a: Vector4<T>, f: F) -> Vector4<U>
+pub fn map4<T, U, F>(a: [T; 4], f: F) -> [U; 4]
 where
     T: Copy,
     F: Fn(T) -> U,
@@ -70,7 +51,7 @@ where
 }
 
 #[inline]
-pub fn zip_with2<T, U, V, F>(a: Vector2<T>, b: Vector2<U>, f: F) -> Vector2<V>
+pub fn zip_with2<T, U, V, F>(a: [T; 2], b: [U; 2], f: F) -> [V; 2]
 where
     T: Copy,
     U: Copy,
@@ -82,7 +63,7 @@ where
 }
 
 #[inline]
-pub fn zip_with3<T, U, V, F>(a: Vector3<T>, b: Vector3<U>, f: F) -> Vector3<V>
+pub fn zip_with3<T, U, V, F>(a: [T; 3], b: [U; 3], f: F) -> [V; 3]
 where
     T: Copy,
     U: Copy,
@@ -94,7 +75,7 @@ where
 }
 
 #[inline]
-pub fn zip_with4<T, U, V, F>(a: Vector4<T>, b: Vector4<U>, f: F) -> Vector4<V>
+pub fn zip_with4<T, U, V, F>(a: [T; 4], b: [U; 4], f: F) -> [V; 4]
 where
     T: Copy,
     U: Copy,
@@ -106,7 +87,7 @@ where
 }
 
 #[inline]
-pub fn fold2<T, F>(a: Vector2<T>, f: F) -> T
+pub fn fold2<T, F>(a: [T; 2], f: F) -> T
 where
     T: Copy,
     F: Fn(T, T) -> T,
@@ -116,7 +97,7 @@ where
 }
 
 #[inline]
-pub fn fold3<T, F>(a: Vector3<T>, f: F) -> T
+pub fn fold3<T, F>(a: [T; 3], f: F) -> T
 where
     T: Copy,
     F: Fn(T, T) -> T,
@@ -126,7 +107,7 @@ where
 }
 
 #[inline]
-pub fn fold4<T, F>(a: Vector4<T>, f: F) -> T
+pub fn fold4<T, F>(a: [T; 4], f: F) -> T
 where
     T: Copy,
     F: Fn(T, T) -> T,
@@ -136,7 +117,7 @@ where
 }
 
 #[inline]
-pub fn add2<T>(a: Point2<T>, b: Vector2<T>) -> Point2<T>
+pub fn add2<T>(a: [T; 2], b: [T; 2]) -> [T; 2]
 where
     T: Copy + Add<T, Output = T>,
 {
@@ -144,7 +125,7 @@ where
 }
 
 #[inline]
-pub fn add3<T>(a: Point3<T>, b: Vector3<T>) -> Point3<T>
+pub fn add3<T>(a: [T; 3], b: [T; 3]) -> [T; 3]
 where
     T: Copy + Add<T, Output = T>,
 {
@@ -152,7 +133,7 @@ where
 }
 
 #[inline]
-pub fn add4<T>(a: Point4<T>, b: Vector4<T>) -> Point4<T>
+pub fn add4<T>(a: [T; 4], b: [T; 4]) -> [T; 4]
 where
     T: Copy + Add<T, Output = T>,
 {
@@ -160,7 +141,7 @@ where
 }
 
 #[inline]
-pub fn sub2<T>(a: Point2<T>, b: Point2<T>) -> Vector2<T>
+pub fn sub2<T>(a: [T; 2], b: [T; 2]) -> [T; 2]
 where
     T: Copy + Sub<T, Output = T>,
 {
@@ -168,7 +149,7 @@ where
 }
 
 #[inline]
-pub fn sub3<T>(a: Point3<T>, b: Point3<T>) -> Vector3<T>
+pub fn sub3<T>(a: [T; 3], b: [T; 3]) -> [T; 3]
 where
     T: Copy + Sub<T, Output = T>,
 {
@@ -176,7 +157,7 @@ where
 }
 
 #[inline]
-pub fn sub4<T>(a: Point4<T>, b: Point4<T>) -> Vector4<T>
+pub fn sub4<T>(a: [T; 4], b: [T; 4]) -> [T; 4]
 where
     T: Copy + Sub<T, Output = T>,
 {
@@ -184,7 +165,7 @@ where
 }
 
 #[inline]
-pub fn mul2<T>(a: Vector2<T>, b: T) -> Vector2<T>
+pub fn mul2<T>(a: [T; 2], b: T) -> [T; 2]
 where
     T: Copy + Mul<T, Output = T>,
 {
@@ -192,7 +173,7 @@ where
 }
 
 #[inline]
-pub fn mul3<T>(a: Vector3<T>, b: T) -> Vector3<T>
+pub fn mul3<T>(a: [T; 3], b: T) -> [T; 3]
 where
     T: Copy + Mul<T, Output = T>,
 {
@@ -200,7 +181,7 @@ where
 }
 
 #[inline]
-pub fn mul4<T>(a: Vector4<T>, b: T) -> Vector4<T>
+pub fn mul4<T>(a: [T; 4], b: T) -> [T; 4]
 where
     T: Copy + Mul<T, Output = T>,
 {
@@ -208,52 +189,52 @@ where
 }
 
 #[inline]
-pub fn dot2(a: Vector2<f64>, b: Vector2<f64>) -> f64 {
+pub fn dot2(a: [f64; 2], b: [f64; 2]) -> f64 {
     fold2(zip_with2(a, b, Mul::mul), Add::add)
 }
 
 #[inline]
-pub fn dot3(a: Vector3<f64>, b: Vector3<f64>) -> f64 {
+pub fn dot3(a: [f64; 3], b: [f64; 3]) -> f64 {
     fold3(zip_with3(a, b, Mul::mul), Add::add)
 }
 
 #[inline]
-pub fn dot4(a: Vector4<f64>, b: Vector4<f64>) -> f64 {
+pub fn dot4(a: [f64; 4], b: [f64; 4]) -> f64 {
     fold4(zip_with4(a, b, Mul::mul), Add::add)
 }
 
 #[inline]
-pub fn const2<T: Copy>(x: T) -> Vector2<T> {
+pub fn const2<T: Copy>(x: T) -> [T; 2] {
     [x, x]
 }
 
 #[inline]
-pub fn const3<T: Copy>(x: T) -> Vector3<T> {
+pub fn const3<T: Copy>(x: T) -> [T; 3] {
     [x, x, x]
 }
 
 #[inline]
-pub fn const4<T: Copy>(x: T) -> Vector4<T> {
+pub fn const4<T: Copy>(x: T) -> [T; 4] {
     [x, x, x, x]
 }
 
 #[inline]
-pub fn one2<T: Copy + From<i8>>() -> Vector2<T> {
+pub fn one2<T: Copy + From<i8>>() -> [T; 2] {
     cast2(const2(1))
 }
 
 #[inline]
-pub fn one3<T: Copy + From<i8>>() -> Vector3<T> {
+pub fn one3<T: Copy + From<i8>>() -> [T; 3] {
     cast3(const3(1))
 }
 
 #[inline]
-pub fn one4<T: Copy + From<i8>>() -> Vector4<T> {
+pub fn one4<T: Copy + From<i8>>() -> [T; 4] {
     cast4(const4(1))
 }
 
 #[inline]
-pub fn cast2<T, U>(x: Point2<T>) -> Point2<U>
+pub fn cast2<T, U>(x: [T; 2]) -> [U; 2]
 where
     T: Copy,
     U: Copy + From<T>,
@@ -262,7 +243,7 @@ where
 }
 
 #[inline]
-pub fn cast3<T, U>(x: Point3<T>) -> Point3<U>
+pub fn cast3<T, U>(x: [T; 3]) -> [U; 3]
 where
     T: Copy,
     U: Copy + From<T>,
@@ -271,7 +252,7 @@ where
 }
 
 #[inline]
-pub fn cast4<T, U>(x: Point4<T>) -> Point4<U>
+pub fn cast4<T, U>(x: [T; 4]) -> [U; 4]
 where
     T: Copy,
     U: Copy + From<T>,
@@ -281,30 +262,25 @@ where
 
 /// f64 doesn't implement From<isize>
 #[inline]
-pub fn to_f64_2(x: Point2<isize>) -> Point2<f64> {
+pub fn to_f64_2(x: [isize; 2]) -> [f64; 2] {
     [x[0] as f64, x[1] as f64]
 }
 
 /// f64 doesn't implement From<isize>
 #[inline]
-pub fn to_f64_3(x: Point3<isize>) -> Point3<f64> {
+pub fn to_f64_3(x: [isize; 3]) -> [f64; 3] {
     [x[0] as f64, x[1] as f64, x[2] as f64]
 }
 
 /// f64 doesn't implement From<isize>
 #[inline]
-pub fn to_f64_4(x: Point4<isize>) -> Point4<f64> {
-    [
-        x[0] as f64,
-        x[1] as f64,
-        x[2] as f64,
-        x[3] as f64,
-    ]
+pub fn to_f64_4(x: [isize; 4]) -> [f64; 4] {
+    [x[0] as f64, x[1] as f64, x[2] as f64, x[3] as f64]
 }
 
 // isize doesn't implement From<f64>
 #[inline]
-pub fn to_isize2(x: Point2<f64>) -> Point2<isize> {
+pub fn to_isize2(x: [f64; 2]) -> [isize; 2] {
     [x[0] as isize, x[1] as isize]
 }
 
@@ -321,12 +297,12 @@ pub fn scale_shift(value: f64, n: f64) -> f64 {
 }
 
 #[inline]
-pub fn to_isize3(x: Point3<f64>) -> Point3<isize> {
+pub fn to_isize3(x: [f64; 3]) -> [isize; 3] {
     [x[0] as isize, x[1] as isize, x[2] as isize]
 }
 
 #[inline]
-pub fn to_isize4(x: Point4<f64>) -> Point4<isize> {
+pub fn to_isize4(x: [f64; 4]) -> [isize; 4] {
     [x[0] as isize, x[1] as isize, x[2] as isize, x[3] as isize]
 }
 

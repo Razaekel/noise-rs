@@ -1,4 +1,3 @@
-use math::{Point2, Point3};
 use noise_fns::{NoiseFn, Seedable};
 use permutationtable::PermutationTable;
 use std::ops::Add;
@@ -132,8 +131,8 @@ impl Seedable for SuperSimplex {
 }
 
 /// 2-dimensional Super Simplex noise
-impl NoiseFn<Point2<f64>> for SuperSimplex {
-    fn get(&self, point: Point2<f64>) -> f64 {
+impl NoiseFn<[f64; 2]> for SuperSimplex {
+    fn get(&self, point: [f64; 2]) -> f64 {
         let mut value = 0.0;
 
         // Transform point from real space to simplex space
@@ -174,8 +173,8 @@ impl NoiseFn<Point2<f64>> for SuperSimplex {
 }
 
 /// 3-dimensional Super Simplex noise
-impl NoiseFn<Point3<f64>> for SuperSimplex {
-    fn get(&self, point: Point3<f64>) -> f64 {
+impl NoiseFn<[f64; 3]> for SuperSimplex {
+    fn get(&self, point: [f64; 3]) -> f64 {
         let mut value = 0.0;
 
         // Transform point from real space to simplex space

@@ -69,7 +69,7 @@ where
                     );
 
                     interpolate::linear(self.source1.get(point), self.source2.get(point), alpha)
-                },
+                }
                 _ if control_value < (upper - self.falloff) => self.source2.get(point),
                 _ if control_value < (upper + self.falloff) => {
                     let lower_curve = upper - self.falloff;
@@ -79,7 +79,7 @@ where
                     );
 
                     interpolate::linear(self.source2.get(point), self.source1.get(point), alpha)
-                },
+                }
                 _ => self.source1.get(point),
             }
         } else if control_value < lower || control_value > upper {

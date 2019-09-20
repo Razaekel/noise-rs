@@ -1,5 +1,4 @@
-use math;
-use math::interpolate;
+use math::{self, interpolate};
 use noise_fns::NoiseFn;
 use std;
 

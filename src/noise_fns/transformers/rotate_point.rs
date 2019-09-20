@@ -1,4 +1,3 @@
-use math::{Point2, Point3, Point4};
 use noise_fns::NoiseFn;
 
 /// Noise function that rotates the input value around the origin before
@@ -78,11 +77,11 @@ impl<Source> RotatePoint<Source> {
     }
 }
 
-impl<Source> NoiseFn<Point2<f64>> for RotatePoint<Source>
+impl<Source> NoiseFn<[f64; 2]> for RotatePoint<Source>
 where
-    Source: NoiseFn<Point2<f64>>,
+    Source: NoiseFn<[f64; 2]>,
 {
-    fn get(&self, point: Point2<f64>) -> f64 {
+    fn get(&self, point: [f64; 2]) -> f64 {
         // In two dimensions, the plane is _xy_, and we rotate around the
         // z-axis.
         let x = point[0];
@@ -98,11 +97,11 @@ where
     }
 }
 
-impl<Source> NoiseFn<Point3<f64>> for RotatePoint<Source>
+impl<Source> NoiseFn<[f64; 3]> for RotatePoint<Source>
 where
-    Source: NoiseFn<Point3<f64>>,
+    Source: NoiseFn<[f64; 3]>,
 {
-    fn get(&self, point: Point3<f64>) -> f64 {
+    fn get(&self, point: [f64; 3]) -> f64 {
         // In three dimensions, we could rotate around any of the x, y, or z
         // axes. Need a more complicated function to handle this case.
         let x_cos = self.x_angle.to_radians().cos();
@@ -132,11 +131,11 @@ where
     }
 }
 
-impl<Source> NoiseFn<Point4<f64>> for RotatePoint<Source>
+impl<Source> NoiseFn<[f64; 4]> for RotatePoint<Source>
 where
-    Source: NoiseFn<Point4<f64>>,
+    Source: NoiseFn<[f64; 4]>,
 {
-    fn get(&self, _point: Point4<f64>) -> f64 {
+    fn get(&self, _point: [f64; 4]) -> f64 {
         // 4d rotations are hard.
         unimplemented!();
     }

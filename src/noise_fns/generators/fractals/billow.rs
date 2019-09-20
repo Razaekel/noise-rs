@@ -1,4 +1,4 @@
-use math::{self, scale_shift, Point2, Point3, Point4};
+use math::{self, scale_shift};
 use noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
 use std;
 
@@ -118,8 +118,8 @@ impl Seedable for Billow {
 }
 
 /// 2-dimensional Billow noise
-impl NoiseFn<Point2<f64>> for Billow {
-    fn get(&self, mut point: Point2<f64>) -> f64 {
+impl NoiseFn<[f64; 2]> for Billow {
+    fn get(&self, mut point: [f64; 2]) -> f64 {
         let mut result = 0.0;
 
         point = math::mul2(point, self.frequency);
@@ -148,8 +148,8 @@ impl NoiseFn<Point2<f64>> for Billow {
 }
 
 /// 3-dimensional Billow noise
-impl NoiseFn<Point3<f64>> for Billow {
-    fn get(&self, mut point: Point3<f64>) -> f64 {
+impl NoiseFn<[f64; 3]> for Billow {
+    fn get(&self, mut point: [f64; 3]) -> f64 {
         let mut result = 0.0;
 
         point = math::mul3(point, self.frequency);
@@ -178,8 +178,8 @@ impl NoiseFn<Point3<f64>> for Billow {
 }
 
 /// 4-dimensional Billow noise
-impl NoiseFn<Point4<f64>> for Billow {
-    fn get(&self, mut point: Point4<f64>) -> f64 {
+impl NoiseFn<[f64; 4]> for Billow {
+    fn get(&self, mut point: [f64; 4]) -> f64 {
         let mut result = 0.0;
 
         point = math::mul4(point, self.frequency);
