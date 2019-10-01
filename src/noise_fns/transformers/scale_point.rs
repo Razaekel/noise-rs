@@ -6,9 +6,9 @@ use noise_fns::NoiseFn;
 ///
 /// The get() method multiplies the coordinates of the input value with a
 /// scaling factor before returning the output value from the source function.
-pub struct ScalePoint<'a, Source: 'a> {
+pub struct ScalePoint<Source> {
     /// Source function that outputs a value
-    pub source: &'a Source,
+    pub source: Source,
 
     /// Scaling factor applied to the _x_ coordinate of the input value. The
     /// default scaling factor is set to 1.0.
@@ -27,9 +27,9 @@ pub struct ScalePoint<'a, Source: 'a> {
     pub u_scale: f64,
 }
 
-impl<'a, Source> ScalePoint<'a, Source> {
-    pub fn new(source: &'a Source) -> Self {
-        ScalePoint {
+impl<Source> ScalePoint<Source> {
+    pub fn new(source: Source) -> Self {
+        Self {
             source,
             x_scale: 1.0,
             y_scale: 1.0,
@@ -41,30 +41,30 @@ impl<'a, Source> ScalePoint<'a, Source> {
     /// Sets the scaling factor to apply to the _x_ coordinate of the input
     /// value.
     pub fn set_x_scale(self, x_scale: f64) -> Self {
-        ScalePoint { x_scale, ..self }
+        Self { x_scale, ..self }
     }
 
     /// Sets the scaling factor to apply to the _x_ coordinate of the input
     /// value.
     pub fn set_y_scale(self, y_scale: f64) -> Self {
-        ScalePoint { y_scale, ..self }
+        Self { y_scale, ..self }
     }
 
     /// Sets the scaling factor to apply to the _x_ coordinate of the input
     /// value.
     pub fn set_z_scale(self, z_scale: f64) -> Self {
-        ScalePoint { z_scale, ..self }
+        Self { z_scale, ..self }
     }
 
     /// Sets the scaling factor to apply to the _x_ coordinate of the input
     /// value.
     pub fn set_u_scale(self, u_scale: f64) -> Self {
-        ScalePoint { u_scale, ..self }
+        Self { u_scale, ..self }
     }
 
     /// Sets the scaling factor to apply to all coordinates of the input value.
     pub fn set_scale(self, scale: f64) -> Self {
-        ScalePoint {
+        Self {
             x_scale: scale,
             y_scale: scale,
             z_scale: scale,
@@ -76,7 +76,7 @@ impl<'a, Source> ScalePoint<'a, Source> {
     /// Sets the individual scaling factors to apply to each coordinate of the
     /// input value.
     pub fn set_all_scales(self, x_scale: f64, y_scale: f64, z_scale: f64, u_scale: f64) -> Self {
-        ScalePoint {
+        Self {
             x_scale,
             y_scale,
             z_scale,
@@ -86,7 +86,7 @@ impl<'a, Source> ScalePoint<'a, Source> {
     }
 }
 
-impl<'a, Source> NoiseFn<Point2<f64>> for ScalePoint<'a, Source>
+impl<Source> NoiseFn<Point2<f64>> for ScalePoint<Source>
 where
     Source: NoiseFn<Point2<f64>>,
 {
@@ -96,7 +96,7 @@ where
     }
 }
 
-impl<'a, Source> NoiseFn<Point3<f64>> for ScalePoint<'a, Source>
+impl<Source> NoiseFn<Point3<f64>> for ScalePoint<Source>
 where
     Source: NoiseFn<Point3<f64>>,
 {
@@ -109,7 +109,7 @@ where
     }
 }
 
-impl<'a, Source> NoiseFn<Point4<f64>> for ScalePoint<'a, Source>
+impl<Source> NoiseFn<Point4<f64>> for ScalePoint<Source>
 where
     Source: NoiseFn<Point4<f64>>,
 {
@@ -120,5 +120,47 @@ where
             point[2] * self.z_scale,
             point[3] * self.u_scale,
         ])
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::super::super::Perlin;
+    use super::*;
+
+    #[test]
+    fn test_pass_by_ref() {
+        let source = Perlin::new();
+        let transformed_by_ref = ScalePoint::new(&source)
+            .set_x_scale(0.8)
+            .set_y_scale(0.1)
+            .set_z_scale(0.4)
+            .set_u_scale(0.2);
+        let mut zero_count = 0;
+
+        for x in 0..10 {
+            for y in 0..10 {
+                for z in 0..10 {
+                    for u in 0..10 {
+                        let point: [f64; 4] = [
+                            (x as f64) / 10.0,
+                            (y as f64) / 10.0,
+                            (z as f64) / 10.0,
+                            (u as f64) / 10.0,
+                        ];
+                        let source_value = source.get(point);
+                        let transform_value = transformed_by_ref.get(point);
+
+                        if source_value != 0.0 {
+                            assert_ne!(source_value, transform_value);
+                        } else {
+                            zero_count += 1;
+                        }
+                    }
+                }
+            }
+        }
+
+        assert!(zero_count < 10 * 10 * 10 * 10);
     }
 }

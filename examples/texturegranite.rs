@@ -1,7 +1,7 @@
 extern crate noise;
 
-use noise::*;
 use noise::utils::*;
+use noise::*;
 
 fn main() {
     // Primary granite texture. This generates the "roughness" of the texture
@@ -28,7 +28,7 @@ fn main() {
     let combined_granite = Add::new(&primary_granite, &scaled_grains);
 
     // Finally, perturb the granite texture to add realism.
-    let final_granite = Turbulence::new(&combined_granite)
+    let final_granite = Turbulence::new(combined_granite)
         .set_seed(2)
         .set_frequency(4.0)
         .set_power(1.0 / 8.0)

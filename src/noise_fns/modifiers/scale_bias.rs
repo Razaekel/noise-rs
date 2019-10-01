@@ -7,7 +7,7 @@ use noise_fns::NoiseFn;
 /// it with the scaling factor, adds the bias to it, then outputs the value.
 pub struct ScaleBias<'a, T: 'a> {
     /// Outputs a value.
-    pub source: &'a NoiseFn<T>,
+    pub source: &'a dyn NoiseFn<T>,
 
     /// Scaling factor to apply to the output value from the source function.
     /// The default value is 1.0.
@@ -19,8 +19,8 @@ pub struct ScaleBias<'a, T: 'a> {
 }
 
 impl<'a, T> ScaleBias<'a, T> {
-    pub fn new(source: &'a NoiseFn<T>) -> Self {
-        ScaleBias {
+    pub fn new(source: &'a dyn NoiseFn<T>) -> Self {
+        Self {
             source,
             scale: 1.0,
             bias: 0.0,
@@ -28,11 +28,11 @@ impl<'a, T> ScaleBias<'a, T> {
     }
 
     pub fn set_scale(self, scale: f64) -> Self {
-        ScaleBias { scale, ..self }
+        Self { scale, ..self }
     }
 
     pub fn set_bias(self, bias: f64) -> Self {
-        ScaleBias { bias, ..self }
+        Self { bias, ..self }
     }
 }
 

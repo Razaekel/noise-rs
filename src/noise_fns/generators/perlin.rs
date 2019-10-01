@@ -1,7 +1,7 @@
-use {gradient, math};
 use math::{Point2, Point3, Point4, Vector2, Vector3, Vector4};
 use noise_fns::{NoiseFn, Seedable};
 use permutationtable::PermutationTable;
+use {gradient, math};
 
 /// Noise function that outputs 2/3/4-dimensional Perlin noise.
 #[derive(Clone, Copy, Debug)]
@@ -14,7 +14,7 @@ impl Perlin {
     pub const DEFAULT_SEED: u32 = 0;
 
     pub fn new() -> Self {
-        Perlin {
+        Self {
             seed: Self::DEFAULT_SEED,
             perm_table: PermutationTable::new(Self::DEFAULT_SEED),
         }
@@ -36,7 +36,7 @@ impl Seedable for Perlin {
         }
 
         // Otherwise, regenerate the permutation table based on the new seed.
-        Perlin {
+        Self {
             seed,
             perm_table: PermutationTable::new(seed),
         }
@@ -50,6 +50,8 @@ impl Seedable for Perlin {
 /// 2-dimensional perlin noise
 impl NoiseFn<Point2<f64>> for Perlin {
     fn get(&self, point: Point2<f64>) -> f64 {
+        const SCALE_FACTOR: f64 = 3.160_493_827_160_493_7;
+
         #[inline(always)]
         fn surflet(
             perm_table: &PermutationTable,
@@ -92,13 +94,15 @@ impl NoiseFn<Point2<f64>> for Perlin {
         );
 
         // Multiply by arbitrary value to scale to -1..1
-        math::clamp((f00 + f10 + f01 + f11) * 3.1604938271604937, -1.0, 1.0)
+        math::clamp((f00 + f10 + f01 + f11) * SCALE_FACTOR, -1.0, 1.0)
     }
 }
 
 /// 3-dimensional perlin noise
 impl NoiseFn<Point3<f64>> for Perlin {
     fn get(&self, point: Point3<f64>) -> f64 {
+        const SCALE_FACTOR: f64 = 3.889_855_325_553_107_4;
+
         #[inline(always)]
         fn surflet(
             perm_table: &PermutationTable,
@@ -162,7 +166,7 @@ impl NoiseFn<Point3<f64>> for Perlin {
 
         // Multiply by arbitrary value to scale to -1..1
         math::clamp(
-            (f000 + f100 + f010 + f110 + f001 + f101 + f011 + f111) * 3.8898553255531074,
+            (f000 + f100 + f010 + f110 + f001 + f101 + f011 + f111) * SCALE_FACTOR,
             -1.0,
             1.0,
         )
@@ -172,6 +176,8 @@ impl NoiseFn<Point3<f64>> for Perlin {
 /// 4-dimensional perlin noise
 impl NoiseFn<Point4<f64>> for Perlin {
     fn get(&self, point: Point4<f64>) -> f64 {
+        const SCALE_FACTOR: f64 = 4.424_369_240_215_691;
+
         #[inline(always)]
         fn surflet(
             perm_table: &PermutationTable,
@@ -380,8 +386,23 @@ impl NoiseFn<Point4<f64>> for Perlin {
 
         // Multiply by arbitrary value to scale to -1..1
         math::clamp(
-            (f0000 + f1000 + f0100 + f1100 + f0010 + f1010 + f0110 + f1110 + f0001 + f1001 + f0101
-                + f1101 + f0011 + f1011 + f0111 + f1111) * 4.424369240215691,
+            (f0000
+                + f1000
+                + f0100
+                + f1100
+                + f0010
+                + f1010
+                + f0110
+                + f1110
+                + f0001
+                + f1001
+                + f0101
+                + f1101
+                + f0011
+                + f1011
+                + f0111
+                + f1111)
+                * SCALE_FACTOR,
             -1.0,
             1.0,
         )

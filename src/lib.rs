@@ -9,9 +9,9 @@
 //! let val = perlin.get([42.4, 37.7, 2.8]);
 //! ```
 
-#![cfg_attr(feature = "cargo-clippy", allow(inline_always))]
 #![deny(missing_copy_implementations)]
 
+#[cfg(feature = "image")]
 extern crate image;
 extern crate rand;
 

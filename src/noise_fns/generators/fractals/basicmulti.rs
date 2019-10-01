@@ -56,7 +56,7 @@ impl BasicMulti {
     pub const MAX_OCTAVES: usize = 32;
 
     pub fn new() -> Self {
-        BasicMulti {
+        Self {
             seed: Self::DEFAULT_SEED,
             octaves: Self::DEFAULT_OCTAVES,
             frequency: Self::DEFAULT_FREQUENCY,
@@ -80,7 +80,7 @@ impl MultiFractal for BasicMulti {
         }
 
         octaves = math::clamp(octaves, 1, Self::MAX_OCTAVES);
-        BasicMulti {
+        Self {
             octaves,
             sources: super::build_sources(self.seed, octaves),
             ..self
@@ -88,15 +88,15 @@ impl MultiFractal for BasicMulti {
     }
 
     fn set_frequency(self, frequency: f64) -> Self {
-        BasicMulti { frequency, ..self }
+        Self { frequency, ..self }
     }
 
     fn set_lacunarity(self, lacunarity: f64) -> Self {
-        BasicMulti { lacunarity, ..self }
+        Self { lacunarity, ..self }
     }
 
     fn set_persistence(self, persistence: f64) -> Self {
-        BasicMulti {
+        Self {
             persistence,
             ..self
         }
@@ -109,7 +109,7 @@ impl Seedable for BasicMulti {
             return self;
         }
 
-        BasicMulti {
+        Self {
             seed,
             sources: super::build_sources(seed, self.octaves),
             ..self

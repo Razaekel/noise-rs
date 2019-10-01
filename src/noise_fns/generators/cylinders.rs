@@ -16,13 +16,13 @@ impl Cylinders {
     pub const DEFAULT_FREQUENCY: f64 = 1.0;
 
     pub fn new() -> Self {
-        Cylinders {
+        Self {
             frequency: Self::DEFAULT_FREQUENCY,
         }
     }
 
     pub fn set_frequency(self, frequency: f64) -> Self {
-        Cylinders { frequency }
+        Self { frequency }
     }
 }
 

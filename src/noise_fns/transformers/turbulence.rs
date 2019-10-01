@@ -10,9 +10,9 @@ use noise_fns::{Fbm, MultiFractal, NoiseFn, Seedable};
 /// turbulence, an application can modify its frequency, its power, and its
 /// roughness.
 #[derive(Clone, Debug)]
-pub struct Turbulence<'a, Source: 'a> {
+pub struct Turbulence<Source> {
     /// Source function that outputs a value.
-    pub source: &'a Source,
+    pub source: Source,
 
     /// Frequency value for the Turbulence function.
     pub frequency: f64,
@@ -31,14 +31,14 @@ pub struct Turbulence<'a, Source: 'a> {
     u_distort_function: Fbm,
 }
 
-impl<'a, Source> Turbulence<'a, Source> {
+impl<Source> Turbulence<Source> {
     pub const DEFAULT_SEED: u32 = 0;
     pub const DEFAULT_FREQUENCY: f64 = 1.0;
     pub const DEFAULT_POWER: f64 = 1.0;
     pub const DEFAULT_ROUGHNESS: usize = 3;
 
-    pub fn new(source: &'a Source) -> Self {
-        Turbulence {
+    pub fn new(source: Source) -> Self {
+        Self {
             source,
             seed: Self::DEFAULT_SEED,
             frequency: Self::DEFAULT_FREQUENCY,
@@ -64,7 +64,7 @@ impl<'a, Source> Turbulence<'a, Source> {
     }
 
     pub fn set_frequency(self, frequency: f64) -> Self {
-        Turbulence {
+        Self {
             frequency,
             x_distort_function: self.x_distort_function.set_frequency(frequency),
             y_distort_function: self.y_distort_function.set_frequency(frequency),
@@ -75,11 +75,11 @@ impl<'a, Source> Turbulence<'a, Source> {
     }
 
     pub fn set_power(self, power: f64) -> Self {
-        Turbulence { power, ..self }
+        Self { power, ..self }
     }
 
     pub fn set_roughness(self, roughness: usize) -> Self {
-        Turbulence {
+        Self {
             roughness,
             x_distort_function: self.x_distort_function.set_octaves(roughness),
             y_distort_function: self.y_distort_function.set_octaves(roughness),
@@ -90,9 +90,9 @@ impl<'a, Source> Turbulence<'a, Source> {
     }
 }
 
-impl<'a, Source> Seedable for Turbulence<'a, Source> {
+impl<Source> Seedable for Turbulence<Source> {
     fn set_seed(self, seed: u32) -> Self {
-        Turbulence {
+        Self {
             seed,
             x_distort_function: self.x_distort_function.set_seed(seed),
             y_distort_function: self.y_distort_function.set_seed(seed + 1),
@@ -107,7 +107,7 @@ impl<'a, Source> Seedable for Turbulence<'a, Source> {
     }
 }
 
-impl<'a, Source> NoiseFn<Point2<f64>> for Turbulence<'a, Source>
+impl<Source> NoiseFn<Point2<f64>> for Turbulence<Source>
 where
     Source: NoiseFn<Point2<f64>>,
 {
@@ -128,7 +128,7 @@ where
     }
 }
 
-impl<'a, Source> NoiseFn<Point3<f64>> for Turbulence<'a, Source>
+impl<Source> NoiseFn<Point3<f64>> for Turbulence<Source>
 where
     Source: NoiseFn<Point3<f64>>,
 {
@@ -156,7 +156,7 @@ where
     }
 }
 
-impl<'a, Source> NoiseFn<Point4<f64>> for Turbulence<'a, Source>
+impl<Source> NoiseFn<Point4<f64>> for Turbulence<Source>
 where
     Source: NoiseFn<Point4<f64>>,
 {

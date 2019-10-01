@@ -1,26 +1,26 @@
-use math::interp;
+use math::interpolate;
 use noise_fns::NoiseFn;
 use utils::noise_map::NoiseMap;
 
 pub trait NoiseMapBuilder<'a> {
     fn set_size(self, width: usize, height: usize) -> Self;
 
-    fn set_source_module(self, source_module: &'a NoiseFn<[f64; 3]>) -> Self;
+    fn set_source_module(self, source_module: &'a dyn NoiseFn<[f64; 3]>) -> Self;
 
     fn size(&self) -> (usize, usize);
 
-    fn build(&mut self) -> NoiseMap;
+    fn build(&self) -> NoiseMap;
 }
 
 pub struct CylinderMapBuilder<'a> {
     angle_bounds: (f64, f64),
     height_bounds: (f64, f64),
     size: (usize, usize),
-    source_module: &'a NoiseFn<[f64; 3]>,
+    source_module: &'a dyn NoiseFn<[f64; 3]>,
 }
 
 impl<'a> CylinderMapBuilder<'a> {
-    pub fn new(source_module: &'a NoiseFn<[f64; 3]>) -> Self {
+    pub fn new(source_module: &'a dyn NoiseFn<[f64; 3]>) -> Self {
         CylinderMapBuilder {
             angle_bounds: (-90.0, 90.0),
             height_bounds: (-1.0, 1.0),
@@ -80,7 +80,7 @@ impl<'a> NoiseMapBuilder<'a> for CylinderMapBuilder<'a> {
         }
     }
 
-    fn set_source_module(self, source_module: &'a NoiseFn<[f64; 3]>) -> Self {
+    fn set_source_module(self, source_module: &'a dyn NoiseFn<[f64; 3]>) -> Self {
         CylinderMapBuilder {
             source_module,
             ..self
@@ -91,7 +91,7 @@ impl<'a> NoiseMapBuilder<'a> for CylinderMapBuilder<'a> {
         self.size
     }
 
-    fn build(&mut self) -> NoiseMap {
+    fn build(&self) -> NoiseMap {
         let mut result_map = NoiseMap::new(self.size.0, self.size.1);
 
         let (width, height) = self.size;
@@ -131,11 +131,11 @@ pub struct PlaneMapBuilder<'a> {
     x_bounds: (f64, f64),
     y_bounds: (f64, f64),
     size: (usize, usize),
-    source_module: &'a NoiseFn<[f64; 3]>,
+    source_module: &'a dyn NoiseFn<[f64; 3]>,
 }
 
 impl<'a> PlaneMapBuilder<'a> {
-    pub fn new(source_module: &'a NoiseFn<[f64; 3]>) -> Self {
+    pub fn new(source_module: &'a dyn NoiseFn<[f64; 3]>) -> Self {
         PlaneMapBuilder {
             is_seamless: false,
             x_bounds: (-1.0, 1.0),
@@ -183,7 +183,7 @@ impl<'a> NoiseMapBuilder<'a> for PlaneMapBuilder<'a> {
         }
     }
 
-    fn set_source_module(self, source_module: &'a NoiseFn<[f64; 3]>) -> Self {
+    fn set_source_module(self, source_module: &'a dyn NoiseFn<[f64; 3]>) -> Self {
         PlaneMapBuilder {
             source_module,
             ..self
@@ -194,7 +194,7 @@ impl<'a> NoiseMapBuilder<'a> for PlaneMapBuilder<'a> {
         self.size
     }
 
-    fn build(&mut self) -> NoiseMap {
+    fn build(&self) -> NoiseMap {
         let (width, height) = self.size;
 
         let mut result_map = NoiseMap::new(width, height);
@@ -213,9 +213,11 @@ impl<'a> NoiseMapBuilder<'a> for PlaneMapBuilder<'a> {
 
                 let final_value = if self.is_seamless {
                     let sw_value = self.source_module.get([current_x, current_y, 0.0]);
-                    let se_value = self.source_module
+                    let se_value = self
+                        .source_module
                         .get([current_x + x_extent, current_y, 0.0]);
-                    let nw_value = self.source_module
+                    let nw_value = self
+                        .source_module
                         .get([current_x, current_y + y_extent, 0.0]);
                     let ne_value =
                         self.source_module
@@ -224,10 +226,10 @@ impl<'a> NoiseMapBuilder<'a> for PlaneMapBuilder<'a> {
                     let x_blend = 1.0 - ((current_x - self.x_bounds.0) / x_extent);
                     let y_blend = 1.0 - ((current_y - self.y_bounds.0) / y_extent);
 
-                    let y0 = interp::linear(sw_value, se_value, x_blend);
-                    let y1 = interp::linear(nw_value, ne_value, x_blend);
+                    let y0 = interpolate::linear(sw_value, se_value, x_blend);
+                    let y1 = interpolate::linear(nw_value, ne_value, x_blend);
 
-                    interp::linear(y0, y1, y_blend)
+                    interpolate::linear(y0, y1, y_blend)
                 } else {
                     self.source_module.get([current_x, current_y, 0.0])
                 };
@@ -244,11 +246,11 @@ pub struct SphereMapBuilder<'a> {
     latitude_bounds: (f64, f64),
     longitude_bounds: (f64, f64),
     size: (usize, usize),
-    source_module: &'a NoiseFn<[f64; 3]>,
+    source_module: &'a dyn NoiseFn<[f64; 3]>,
 }
 
 impl<'a> SphereMapBuilder<'a> {
-    pub fn new(source_module: &'a NoiseFn<[f64; 3]>) -> Self {
+    pub fn new(source_module: &'a dyn NoiseFn<[f64; 3]>) -> Self {
         SphereMapBuilder {
             latitude_bounds: (-1.0, 1.0),
             longitude_bounds: (-1.0, 1.0),
@@ -302,7 +304,7 @@ impl<'a> NoiseMapBuilder<'a> for SphereMapBuilder<'a> {
         }
     }
 
-    fn set_source_module(self, source_module: &'a NoiseFn<[f64; 3]>) -> Self {
+    fn set_source_module(self, source_module: &'a dyn NoiseFn<[f64; 3]>) -> Self {
         SphereMapBuilder {
             source_module,
             ..self
@@ -313,7 +315,7 @@ impl<'a> NoiseMapBuilder<'a> for SphereMapBuilder<'a> {
         self.size
     }
 
-    fn build(&mut self) -> NoiseMap {
+    fn build(&self) -> NoiseMap {
         let (width, height) = self.size;
 
         let mut result_map = NoiseMap::new(width, height);

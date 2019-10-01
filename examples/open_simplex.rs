@@ -2,8 +2,8 @@
 
 extern crate noise;
 
-use noise::{OpenSimplex, Seedable};
 use noise::utils::*;
+use noise::{OpenSimplex, Seedable};
 
 fn main() {
     let open_simplex = OpenSimplex::new();

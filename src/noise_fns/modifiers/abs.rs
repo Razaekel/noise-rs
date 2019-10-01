@@ -4,12 +4,12 @@ use noise_fns::NoiseFn;
 /// source function.
 pub struct Abs<'a, T: 'a> {
     /// Outputs a value.
-    pub source: &'a NoiseFn<T>,
+    pub source: &'a dyn NoiseFn<T>,
 }
 
 impl<'a, T> Abs<'a, T> {
-    pub fn new(source: &'a NoiseFn<T>) -> Self {
-        Abs { source }
+    pub fn new(source: &'a dyn NoiseFn<T>) -> Self {
+        Self { source }
     }
 }
 

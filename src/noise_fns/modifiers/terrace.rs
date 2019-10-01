@@ -1,4 +1,4 @@
-use math::{clamp, interp};
+use math::{clamp, interpolate};
 use noise_fns::NoiseFn;
 use std;
 
@@ -27,7 +27,7 @@ use std;
 /// stereotypical desert canyon.
 pub struct Terrace<'a, T: 'a> {
     /// Outputs a value.
-    pub source: &'a NoiseFn<T>,
+    pub source: &'a dyn NoiseFn<T>,
 
     /// Determines if the terrace-forming curve between all control points is
     /// inverted.
@@ -38,7 +38,7 @@ pub struct Terrace<'a, T: 'a> {
 }
 
 impl<'a, T> Terrace<'a, T> {
-    pub fn new(source: &'a NoiseFn<T>) -> Self {
+    pub fn new(source: &'a dyn NoiseFn<T>) -> Self {
         Terrace {
             source,
             invert_terraces: false,
@@ -55,13 +55,15 @@ impl<'a, T> Terrace<'a, T> {
     /// It does not matter which order these points are added in.
     pub fn add_control_point(mut self, control_point: f64) -> Self {
         // check to see if the vector already contains the input point.
-        if !self.control_points
+        if !self
+            .control_points
             .iter()
             .any(|&x| (x - control_point).abs() < std::f64::EPSILON)
         {
             // it doesn't, so find the correct position to insert the new
             // control point.
-            let insertion_point = self.control_points
+            let insertion_point = self
+                .control_points
                 .iter()
                 .position(|&x| x >= control_point)
                 .unwrap_or_else(|| self.control_points.len());
@@ -94,7 +96,8 @@ impl<'a, T> NoiseFn<T> for Terrace<'a, T> {
 
         // Find the first element in the control point array that has a input
         // value larger than the output value from the source function
-        let index_pos = self.control_points
+        let index_pos = self
+            .control_points
             .iter()
             .position(|&x| x >= source_value)
             .unwrap_or_else(|| self.control_points.len());
@@ -126,7 +129,7 @@ impl<'a, T> NoiseFn<T> for Terrace<'a, T> {
         alpha *= alpha;
 
         // Now perform the cubic interpolation and return.
-        interp::linear(input0, input1, alpha)
+        interpolate::linear(input0, input1, alpha)
     }
 }
 

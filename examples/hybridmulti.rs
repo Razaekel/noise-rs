@@ -2,8 +2,8 @@
 
 extern crate noise;
 
-use noise::HybridMulti;
 use noise::utils::*;
+use noise::HybridMulti;
 
 fn main() {
     let hybrid_multi = HybridMulti::new();

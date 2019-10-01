@@ -9,9 +9,9 @@ use noise_fns::NoiseFn;
 ///
 /// The coordinate system of the input value is assumed to be "right-handed"
 /// (_x_ increases to the right, _y_ increases upward, and _z_ increases inward).
-pub struct RotatePoint<'a, Source: 'a> {
+pub struct RotatePoint<Source> {
     /// Source function that outputs a value
-    pub source: &'a Source,
+    pub source: Source,
 
     /// _x_ rotation angle applied to the input value, in degrees. The
     /// default angle is set to 0.0 degrees.
@@ -30,9 +30,9 @@ pub struct RotatePoint<'a, Source: 'a> {
     pub u_angle: f64,
 }
 
-impl<'a, Source> RotatePoint<'a, Source> {
-    pub fn new(source: &'a Source) -> Self {
-        RotatePoint {
+impl<Source> RotatePoint<Source> {
+    pub fn new(source: Source) -> Self {
+        Self {
             source,
             x_angle: 0.0,
             y_angle: 0.0,
@@ -44,31 +44,31 @@ impl<'a, Source> RotatePoint<'a, Source> {
     /// Sets the rotation angle around the _x_ axis to apply to the input
     /// value.
     pub fn set_x_angle(self, x_angle: f64) -> Self {
-        RotatePoint { x_angle, ..self }
+        Self { x_angle, ..self }
     }
 
     /// Sets the rotation angle around the _y_ axis to apply to the input
     /// value.
     pub fn set_y_angle(self, y_angle: f64) -> Self {
-        RotatePoint { y_angle, ..self }
+        Self { y_angle, ..self }
     }
 
     /// Sets the rotation angle around the _z_ axis to apply to the input
     /// value.
     pub fn set_z_angle(self, z_angle: f64) -> Self {
-        RotatePoint { z_angle, ..self }
+        Self { z_angle, ..self }
     }
 
     /// Sets the rotation angle around the _u_ axis to apply to the input
     /// value.
     pub fn set_u_angle(self, u_angle: f64) -> Self {
-        RotatePoint { u_angle, ..self }
+        Self { u_angle, ..self }
     }
 
     /// Sets the rotation angles around all of the axes to apply to the input
     /// value.
     pub fn set_angles(self, x_angle: f64, y_angle: f64, z_angle: f64, u_angle: f64) -> Self {
-        RotatePoint {
+        Self {
             x_angle,
             y_angle,
             z_angle,
@@ -78,7 +78,7 @@ impl<'a, Source> RotatePoint<'a, Source> {
     }
 }
 
-impl<'a, Source> NoiseFn<Point2<f64>> for RotatePoint<'a, Source>
+impl<Source> NoiseFn<Point2<f64>> for RotatePoint<Source>
 where
     Source: NoiseFn<Point2<f64>>,
 {
@@ -98,7 +98,7 @@ where
     }
 }
 
-impl<'a, Source> NoiseFn<Point3<f64>> for RotatePoint<'a, Source>
+impl<Source> NoiseFn<Point3<f64>> for RotatePoint<Source>
 where
     Source: NoiseFn<Point3<f64>>,
 {
@@ -132,7 +132,7 @@ where
     }
 }
 
-impl<'a, Source> NoiseFn<Point4<f64>> for RotatePoint<'a, Source>
+impl<Source> NoiseFn<Point4<f64>> for RotatePoint<Source>
 where
     Source: NoiseFn<Point4<f64>>,
 {

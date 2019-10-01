@@ -6,9 +6,9 @@ use noise_fns::NoiseFn;
 ///
 /// The get() method moves the coordinates of the input value by a translation
 /// amount before returning the output value from the source function.
-pub struct TranslatePoint<'a, Source: 'a> {
+pub struct TranslatePoint<Source> {
     /// Source function that outputs a value
-    pub source: &'a Source,
+    pub source: Source,
 
     /// Translation amount applied to the _x_ coordinate of the input value.
     /// The default translation amount is set to 0.0.
@@ -27,9 +27,9 @@ pub struct TranslatePoint<'a, Source: 'a> {
     pub u_translation: f64,
 }
 
-impl<'a, Source> TranslatePoint<'a, Source> {
-    pub fn new(source: &'a Source) -> Self {
-        TranslatePoint {
+impl<Source> TranslatePoint<Source> {
+    pub fn new(source: Source) -> Self {
+        Self {
             source,
             x_translation: 0.0,
             y_translation: 0.0,
@@ -41,7 +41,7 @@ impl<'a, Source> TranslatePoint<'a, Source> {
     /// Sets the scaling factor to apply to the _x_ coordinate of the input
     /// value.
     pub fn set_x_translation(self, x_translation: f64) -> Self {
-        TranslatePoint {
+        Self {
             x_translation,
             ..self
         }
@@ -50,7 +50,7 @@ impl<'a, Source> TranslatePoint<'a, Source> {
     /// Sets the scaling factor to apply to the _y_ coordinate of the input
     /// value.
     pub fn set_y_translation(self, y_translation: f64) -> Self {
-        TranslatePoint {
+        Self {
             y_translation,
             ..self
         }
@@ -59,7 +59,7 @@ impl<'a, Source> TranslatePoint<'a, Source> {
     /// Sets the scaling factor to apply to the _z_ coordinate of the input
     /// value.
     pub fn set_z_translation(self, z_translation: f64) -> Self {
-        TranslatePoint {
+        Self {
             z_translation,
             ..self
         }
@@ -68,7 +68,7 @@ impl<'a, Source> TranslatePoint<'a, Source> {
     /// Sets the scaling factor to apply to the _u_ coordinate of the input
     /// value.
     pub fn set_u_translation(self, u_translation: f64) -> Self {
-        TranslatePoint {
+        Self {
             u_translation,
             ..self
         }
@@ -76,7 +76,7 @@ impl<'a, Source> TranslatePoint<'a, Source> {
 
     /// Sets the translation amount to apply to all coordinates of the input value.
     pub fn set_translation(self, scale: f64) -> Self {
-        TranslatePoint {
+        Self {
             x_translation: scale,
             y_translation: scale,
             z_translation: scale,
@@ -94,7 +94,7 @@ impl<'a, Source> TranslatePoint<'a, Source> {
         z_translation: f64,
         u_translation: f64,
     ) -> Self {
-        TranslatePoint {
+        Self {
             x_translation,
             y_translation,
             z_translation,
@@ -104,7 +104,7 @@ impl<'a, Source> TranslatePoint<'a, Source> {
     }
 }
 
-impl<'a, Source> NoiseFn<Point2<f64>> for TranslatePoint<'a, Source>
+impl<Source> NoiseFn<Point2<f64>> for TranslatePoint<Source>
 where
     Source: NoiseFn<Point2<f64>>,
 {
@@ -114,7 +114,7 @@ where
     }
 }
 
-impl<'a, Source> NoiseFn<Point3<f64>> for TranslatePoint<'a, Source>
+impl<Source> NoiseFn<Point3<f64>> for TranslatePoint<Source>
 where
     Source: NoiseFn<Point3<f64>>,
 {
@@ -127,7 +127,7 @@ where
     }
 }
 
-impl<'a, Source> NoiseFn<Point4<f64>> for TranslatePoint<'a, Source>
+impl<Source> NoiseFn<Point4<f64>> for TranslatePoint<Source>
 where
     Source: NoiseFn<Point4<f64>>,
 {

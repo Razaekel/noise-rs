@@ -52,7 +52,7 @@ impl Billow {
     pub const MAX_OCTAVES: usize = 32;
 
     pub fn new() -> Self {
-        Billow {
+        Self {
             seed: Self::DEFAULT_SEED,
             octaves: Self::DEFAULT_OCTAVE_COUNT,
             frequency: Self::DEFAULT_FREQUENCY,
@@ -76,7 +76,7 @@ impl MultiFractal for Billow {
         }
 
         octaves = math::clamp(octaves, 1, Self::MAX_OCTAVES);
-        Billow {
+        Self {
             octaves,
             sources: super::build_sources(self.seed, octaves),
             ..self
@@ -84,15 +84,15 @@ impl MultiFractal for Billow {
     }
 
     fn set_frequency(self, frequency: f64) -> Self {
-        Billow { frequency, ..self }
+        Self { frequency, ..self }
     }
 
     fn set_lacunarity(self, lacunarity: f64) -> Self {
-        Billow { lacunarity, ..self }
+        Self { lacunarity, ..self }
     }
 
     fn set_persistence(self, persistence: f64) -> Self {
-        Billow {
+        Self {
             persistence,
             ..self
         }
@@ -105,7 +105,7 @@ impl Seedable for Billow {
             return self;
         }
 
-        Billow {
+        Self {
             seed,
             sources: super::build_sources(seed, self.octaves),
             ..self

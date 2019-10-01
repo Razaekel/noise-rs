@@ -279,19 +279,21 @@ where
     map4(x, cast)
 }
 
-// f64 doesn't implement From<isize>
+/// f64 doesn't implement From<isize>
 #[inline]
-pub fn to_f642(x: Point2<isize>) -> Point2<f64> {
+pub fn to_f64_2(x: Point2<isize>) -> Point2<f64> {
     [x[0] as f64, x[1] as f64]
 }
 
+/// f64 doesn't implement From<isize>
 #[inline]
-pub fn to_f643(x: Point3<isize>) -> Point3<f64> {
+pub fn to_f64_3(x: Point3<isize>) -> Point3<f64> {
     [x[0] as f64, x[1] as f64, x[2] as f64]
 }
 
+/// f64 doesn't implement From<isize>
 #[inline]
-pub fn to_f644(x: Point4<isize>) -> Point4<f64> {
+pub fn to_f64_4(x: Point4<isize>) -> Point4<f64> {
     [x[0] as f64, x[1] as f64, x[2] as f64, x[3] as f64]
 }
 
@@ -323,15 +325,15 @@ pub fn to_isize4(x: Point4<f64>) -> Point4<isize> {
     [x[0] as isize, x[1] as isize, x[2] as isize, x[3] as isize]
 }
 
-pub mod interp {
-    /// Performs linear interploation between two values.
+pub mod interpolate {
+    /// Performs linear interpolation between two values.
     #[cfg(not(target_os = "emscripten"))]
     #[inline]
     pub fn linear(a: f64, b: f64, x: f64) -> f64 {
         x.mul_add(b - a, a)
     }
 
-    /// Performs linear interploation between two values.
+    /// Performs linear interpolation between two values.
     #[cfg(target_os = "emscripten")]
     #[inline]
     pub fn linear(a: f64, b: f64, x: f64) -> f64 {
@@ -345,18 +347,18 @@ pub mod interp {
     /// - n1 - The first value.
     /// - n2 - The second value.
     /// - n3 - The value after the second value.
-    /// - x - The alpha value.
+    /// - alpha - The alpha value.
     ///
     /// The alpha value should range from 0.0 to 1.0. If the alpha value is
     /// 0.0, this function returns _n1_. If the alpha value is 1.0, this
     /// function returns _n2_.
     #[inline]
-    pub fn cubic(n0: f64, n1: f64, n2: f64, n3: f64, x: f64) -> f64 {
+    pub fn cubic(n0: f64, n1: f64, n2: f64, n3: f64, alpha: f64) -> f64 {
         let p = (n3 - n2) - (n0 - n1);
         let q = (n0 - n1) - p;
         let r = n2 - n0;
         let s = n1;
-        p * x * x * x + q * x * x + r * x + s
+        p * alpha * alpha * alpha + q * alpha * alpha + r * alpha + s
     }
 
     /// Maps a value onto a cubic S-curve.
@@ -368,6 +370,6 @@ pub mod interp {
     /// Maps a value onto a quintic S-curve.
     #[inline]
     pub fn s_curve5(x: f64) -> f64 {
-        x * x * x * (x * (x * 6.0 - 15.0 + 10.0))
+        x * x * x * (x * (x * 6.0 - 15.0) + 10.0)
     }
 }

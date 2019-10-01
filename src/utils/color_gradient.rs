@@ -15,8 +15,8 @@ pub struct ColorGradient {
 }
 
 impl ColorGradient {
-    pub fn new() -> ColorGradient {
-        let gradient = ColorGradient {
+    pub fn new() -> Self {
+        let gradient = Self {
             gradient_points: Vec::new(),
         };
 
@@ -25,7 +25,8 @@ impl ColorGradient {
 
     pub fn add_gradient_point(mut self, pos: f64, color: Color) -> Self {
         // check to see if the vector already contains the input point.
-        if !self.gradient_points
+        if !self
+            .gradient_points
             .iter()
             .any(|&x| (x.pos - pos).abs() < std::f64::EPSILON)
         {
@@ -97,7 +98,8 @@ impl ColorGradient {
 
         // Find the first element in the control point array that has a input
         // value larger than the output value from the source module
-        let index = self.gradient_points
+        let index = self
+            .gradient_points
             .iter()
             .position(|&x| (x.pos > clamped_pos))
             .unwrap_or_else(|| self.gradient_points.len());
@@ -137,8 +139,8 @@ impl ColorGradient {
 }
 
 fn blend_channels(channel0: u8, channel1: u8, alpha: f64) -> u8 {
-    let c0 = (channel0 as f64) / 255.0;
-    let c1 = (channel1 as f64) / 255.0;
+    let c0 = (f64::from(channel0)) / 255.0;
+    let c1 = (f64::from(channel1)) / 255.0;
 
     (((c1 * alpha) + (c0 * (1.0 - alpha))) * 255.0) as u8
 }
@@ -205,5 +207,4 @@ mod tests {
 
         assert_eq!([127, 127, 127, 127], gradient.get_color(0.5));
     }
-
 }
