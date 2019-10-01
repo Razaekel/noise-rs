@@ -9,7 +9,6 @@
 //! let val = perlin.get([42.4, 37.7, 2.8]);
 //! ```
 
-#![warn(clippy::all)]
 #![deny(missing_copy_implementations)]
 
 #[cfg(feature = "image")]
