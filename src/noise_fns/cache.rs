@@ -51,7 +51,7 @@ where
                 cached_point.extend_from_slice(&point);
 
                 value
-            },
+            }
         }
     }
 }
@@ -72,7 +72,7 @@ where
                 cached_point.extend_from_slice(&point);
 
                 value
-            },
+            }
         }
     }
 }
@@ -93,7 +93,7 @@ where
                 cached_point.extend_from_slice(&point);
 
                 value
-            },
+            }
         }
     }
 }

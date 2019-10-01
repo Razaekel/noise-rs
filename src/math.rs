@@ -294,12 +294,7 @@ pub fn to_f64_3(x: Point3<isize>) -> Point3<f64> {
 /// f64 doesn't implement From<isize>
 #[inline]
 pub fn to_f64_4(x: Point4<isize>) -> Point4<f64> {
-    [
-        x[0] as f64,
-        x[1] as f64,
-        x[2] as f64,
-        x[3] as f64,
-    ]
+    [x[0] as f64, x[1] as f64, x[2] as f64, x[3] as f64]
 }
 
 // isize doesn't implement From<f64>
