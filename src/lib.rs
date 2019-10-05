@@ -14,6 +14,7 @@
 #[cfg(feature = "image")]
 extern crate image;
 extern crate rand;
+extern crate rayon;
 
 pub use crate::noise_fns::*;
 
