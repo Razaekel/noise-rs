@@ -1,5 +1,6 @@
 use crate::math::interpolate;
 use crate::noise_fns::NoiseFn;
+use rayon::prelude::*;
 
 /// Noise function that outputs a weighted blend of the output values from two
 /// source functions given the output value supplied by a control function.
@@ -38,11 +39,13 @@ impl<'a, T> NoiseFn<T> for Blend<'a, T>
 where
     T: Copy,
 {
-    fn get(&self, point: T) -> f64 {
-        let lower = self.source1.get(point);
-        let upper = self.source2.get(point);
-        let control = self.control.get(point);
-
-        interpolate::linear(lower, upper, control)
+    fn generate(&self, points: &[T]) -> Vec<f64> {
+        self.source1
+            .generate(points)
+            .par_iter()
+            .zip(self.source2.generate(points))
+            .zip(self.control.generate(points))
+            .map(|((lower, upper), control)| interpolate::linear(*lower, upper, control))
+            .collect()
     }
 }

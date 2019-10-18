@@ -1,4 +1,5 @@
 use crate::noise_fns::NoiseFn;
+use rayon::prelude::*;
 
 /// Noise function that rotates the input value around the origin before
 /// returning the output value from the source function.
@@ -81,19 +82,27 @@ impl<Source> NoiseFn<[f64; 2]> for RotatePoint<Source>
 where
     Source: NoiseFn<[f64; 2]>,
 {
-    fn get(&self, point: [f64; 2]) -> f64 {
-        // In two dimensions, the plane is _xy_, and we rotate around the
-        // z-axis.
-        let x = point[0];
-        let y = point[1];
+    fn generate(&self, points: &[[f64; 2]]) -> Vec<f64> {
         let theta = self.z_angle.to_radians();
-
-        let x2 = x * theta.cos() - y * theta.sin();
-        let y2 = x * theta.sin() + y * theta.cos();
 
         // get the output value using the offset input value instead of the
         // original input value.
-        self.source.get([x2, y2])
+        self.source.generate(
+            &points
+                .par_iter()
+                .map(|point| {
+                    // In two dimensions, the plane is _xy_, and we rotate around the
+                    // z-axis.
+                    let x = point[0];
+                    let y = point[1];
+
+                    let x2 = x * theta.cos() - y * theta.sin();
+                    let y2 = x * theta.sin() + y * theta.cos();
+
+                    [x2, y2]
+                })
+                .collect::<Vec<_>>(),
+        )
     }
 }
 
@@ -101,7 +110,7 @@ impl<Source> NoiseFn<[f64; 3]> for RotatePoint<Source>
 where
     Source: NoiseFn<[f64; 3]>,
 {
-    fn get(&self, point: [f64; 3]) -> f64 {
+    fn generate(&self, points: &[[f64; 3]]) -> Vec<f64> {
         // In three dimensions, we could rotate around any of the x, y, or z
         // axes. Need a more complicated function to handle this case.
         let x_cos = self.x_angle.to_radians().cos();
@@ -121,13 +130,20 @@ where
         let y3 = x_sin;
         let z3 = y_cos * x_cos;
 
-        let x = (x1 * point[0]) + (y1 * point[1]) + (z1 * point[2]);
-        let y = (x2 * point[0]) + (y2 * point[1]) + (z2 * point[2]);
-        let z = (x3 * point[0]) + (y3 * point[1]) + (z3 * point[2]);
-
         // get the output value using the offset input value instead of the
         // original input value.
-        self.source.get([x, y, z])
+        self.source.generate(
+            &points
+                .par_iter()
+                .map(|point| {
+                    let x = (x1 * point[0]) + (y1 * point[1]) + (z1 * point[2]);
+                    let y = (x2 * point[0]) + (y2 * point[1]) + (z2 * point[2]);
+                    let z = (x3 * point[0]) + (y3 * point[1]) + (z3 * point[2]);
+
+                    [x, y, z]
+                })
+                .collect::<Vec<_>>(),
+        )
     }
 }
 
@@ -135,7 +151,7 @@ impl<Source> NoiseFn<[f64; 4]> for RotatePoint<Source>
 where
     Source: NoiseFn<[f64; 4]>,
 {
-    fn get(&self, _point: [f64; 4]) -> f64 {
+    fn generate(&self, _points: &[[f64; 4]]) -> Vec<f64> {
         // 4d rotations are hard.
         unimplemented!();
     }

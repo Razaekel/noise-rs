@@ -1,4 +1,5 @@
 use crate::noise_fns::NoiseFn;
+use rayon::prelude::*;
 
 /// Noise function that scales the coordinates of the input value before
 /// returning the output value from the source function.
@@ -89,9 +90,16 @@ impl<Source> NoiseFn<[f64; 2]> for ScalePoint<Source>
 where
     Source: NoiseFn<[f64; 2]>,
 {
-    fn get(&self, point: [f64; 2]) -> f64 {
-        self.source
-            .get([point[0] * self.x_scale, point[1] * self.y_scale])
+    fn generate(&self, points: &[[f64; 2]]) -> Vec<f64> {
+        let x_scale = self.x_scale;
+        let y_scale = self.y_scale;
+
+        self.source.generate(
+            &points
+                .par_iter()
+                .map(|point| [point[0] * x_scale, point[1] * y_scale])
+                .collect::<Vec<_>>(),
+        )
     }
 }
 
@@ -99,12 +107,17 @@ impl<Source> NoiseFn<[f64; 3]> for ScalePoint<Source>
 where
     Source: NoiseFn<[f64; 3]>,
 {
-    fn get(&self, point: [f64; 3]) -> f64 {
-        self.source.get([
-            point[0] * self.x_scale,
-            point[1] * self.y_scale,
-            point[2] * self.z_scale,
-        ])
+    fn generate(&self, points: &[[f64; 3]]) -> Vec<f64> {
+        let x_scale = self.x_scale;
+        let y_scale = self.y_scale;
+        let z_scale = self.z_scale;
+
+        self.source.generate(
+            &points
+                .par_iter()
+                .map(|point| [point[0] * x_scale, point[1] * y_scale, point[2] * z_scale])
+                .collect::<Vec<_>>(),
+        )
     }
 }
 
@@ -112,13 +125,25 @@ impl<Source> NoiseFn<[f64; 4]> for ScalePoint<Source>
 where
     Source: NoiseFn<[f64; 4]>,
 {
-    fn get(&self, point: [f64; 4]) -> f64 {
-        self.source.get([
-            point[0] * self.x_scale,
-            point[1] * self.y_scale,
-            point[2] * self.z_scale,
-            point[3] * self.u_scale,
-        ])
+    fn generate(&self, points: &[[f64; 4]]) -> Vec<f64> {
+        let x_scale = self.x_scale;
+        let y_scale = self.y_scale;
+        let z_scale = self.z_scale;
+        let u_scale = self.u_scale;
+
+        self.source.generate(
+            &points
+                .par_iter()
+                .map(|point| {
+                    [
+                        point[0] * x_scale,
+                        point[1] * y_scale,
+                        point[2] * z_scale,
+                        point[3] * u_scale,
+                    ]
+                })
+                .collect::<Vec<_>>(),
+        )
     }
 }
 
@@ -147,13 +172,15 @@ mod tests {
                             (z as f64) / 10.0,
                             (u as f64) / 10.0,
                         ];
-                        let source_value = source.get(point);
-                        let transform_value = transformed_by_ref.get(point);
+                        let source_value = source.generate(&[point]);
+                        let transform_value = transformed_by_ref.generate(&[point]);
 
-                        if source_value != 0.0 {
-                            assert_ne!(source_value, transform_value);
-                        } else {
-                            zero_count += 1;
+                        for i in 0..source_value.len() {
+                            if source_value[i] != 0.0 {
+                                assert_ne!(source_value[i], transform_value[i]);
+                            } else {
+                                zero_count += 1;
+                            }
                         }
                     }
                 }

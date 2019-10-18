@@ -1,4 +1,5 @@
 use crate::noise_fns::NoiseFn;
+use rayon::prelude::*;
 
 /// Noise function that raises the output value from the first source function
 /// to the power of the output value of the second source function.
@@ -20,7 +21,12 @@ impl<'a, T> NoiseFn<T> for Power<'a, T>
 where
     T: Copy,
 {
-    fn get(&self, point: T) -> f64 {
-        (self.source1.get(point)).powf(self.source2.get(point))
+    fn generate(&self, points: &[T]) -> Vec<f64> {
+        self.source1
+            .generate(points)
+            .par_iter()
+            .zip(self.source2.generate(points))
+            .map(|(value1, value2)| value1.powf(value2))
+            .collect()
     }
 }

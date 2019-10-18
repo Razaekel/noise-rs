@@ -1,4 +1,5 @@
 use crate::noise_fns::NoiseFn;
+use rayon::prelude::*;
 
 /// Noise function that outputs concentric cylinders.
 ///
@@ -32,20 +33,29 @@ impl Default for Cylinders {
 }
 
 impl NoiseFn<[f64; 2]> for Cylinders {
-    fn get(&self, point: [f64; 2]) -> f64 {
-        calculate_cylinders(&point, self.frequency)
+    fn generate(&self, points: &[[f64; 2]]) -> Vec<f64> {
+        points
+            .par_iter()
+            .map(|point| calculate_cylinders(point, self.frequency))
+            .collect()
     }
 }
 
 impl NoiseFn<[f64; 3]> for Cylinders {
-    fn get(&self, point: [f64; 3]) -> f64 {
-        calculate_cylinders(&point, self.frequency)
+    fn generate(&self, points: &[[f64; 3]]) -> Vec<f64> {
+        points
+            .par_iter()
+            .map(|point| calculate_cylinders(point, self.frequency))
+            .collect()
     }
 }
 
 impl NoiseFn<[f64; 4]> for Cylinders {
-    fn get(&self, point: [f64; 4]) -> f64 {
-        calculate_cylinders(&point, self.frequency)
+    fn generate(&self, points: &[[f64; 4]]) -> Vec<f64> {
+        points
+            .par_iter()
+            .map(|point| calculate_cylinders(point, self.frequency))
+            .collect()
     }
 }
 

@@ -1,4 +1,5 @@
 use crate::noise_fns::NoiseFn;
+use rayon::prelude::*;
 
 /// Noise function that outputs a checkerboard pattern.
 ///
@@ -45,20 +46,29 @@ impl Default for Checkerboard {
 // These impl's should be made generic over Point, but there is no higher Point
 // type. Keep the code the same anyway.
 impl NoiseFn<[f64; 2]> for Checkerboard {
-    fn get(&self, point: [f64; 2]) -> f64 {
-        calculate_checkerboard(&point, self.size)
+    fn generate(&self, points: &[[f64; 2]]) -> Vec<f64> {
+        points
+            .par_iter()
+            .map(|point| calculate_checkerboard(point, self.size))
+            .collect()
     }
 }
 
 impl NoiseFn<[f64; 3]> for Checkerboard {
-    fn get(&self, point: [f64; 3]) -> f64 {
-        calculate_checkerboard(&point, self.size)
+    fn generate(&self, points: &[[f64; 3]]) -> Vec<f64> {
+        points
+            .par_iter()
+            .map(|point| calculate_checkerboard(point, self.size))
+            .collect()
     }
 }
 
 impl NoiseFn<[f64; 4]> for Checkerboard {
-    fn get(&self, point: [f64; 4]) -> f64 {
-        calculate_checkerboard(&point, self.size)
+    fn generate(&self, points: &[[f64; 4]]) -> Vec<f64> {
+        points
+            .par_iter()
+            .map(|point| calculate_checkerboard(point, self.size))
+            .collect()
     }
 }
 

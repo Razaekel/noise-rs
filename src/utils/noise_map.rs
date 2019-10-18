@@ -76,6 +76,10 @@ impl NoiseMap {
         }
     }
 
+    pub fn set_values(&mut self, values: Vec<f64>) {
+        self.map = values;
+    }
+
     pub fn get_value(&self, x: usize, y: usize) -> f64 {
         let (width, height) = self.size;
 

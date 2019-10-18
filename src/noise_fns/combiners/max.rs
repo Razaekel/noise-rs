@@ -1,4 +1,5 @@
 use crate::noise_fns::NoiseFn;
+use rayon::prelude::*;
 
 /// Noise function that outputs the larger of the two output values from two source
 /// functions.
@@ -20,7 +21,12 @@ impl<'a, T> NoiseFn<T> for Max<'a, T>
 where
     T: Copy,
 {
-    fn get(&self, point: T) -> f64 {
-        (self.source1.get(point)).max(self.source2.get(point))
+    fn generate(&self, points: &[T]) -> Vec<f64> {
+        self.source1
+            .generate(points)
+            .par_iter()
+            .zip(self.source2.generate(points))
+            .map(|(value1, value2)| value1.max(value2))
+            .collect()
     }
 }

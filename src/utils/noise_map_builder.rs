@@ -24,7 +24,7 @@ impl<'a> CylinderMapBuilder<'a> {
         CylinderMapBuilder {
             angle_bounds: (-90.0, 90.0),
             height_bounds: (-1.0, 1.0),
-            size: (100, 100),
+            size: (256, 256),
             source_module,
         }
     }
@@ -92,8 +92,6 @@ impl<'a> NoiseMapBuilder<'a> for CylinderMapBuilder<'a> {
     }
 
     fn build(&self) -> NoiseMap {
-        let mut result_map = NoiseMap::new(self.size.0, self.size.1);
-
         let (width, height) = self.size;
 
         let angle_extent = self.angle_bounds.1 - self.angle_bounds.0;
@@ -101,6 +99,8 @@ impl<'a> NoiseMapBuilder<'a> for CylinderMapBuilder<'a> {
 
         let x_step = angle_extent / width as f64;
         let y_step = height_extent / height as f64;
+
+        let mut points = vec![[0f64; 3]; height * width];
 
         for y in 0..height {
             let current_height = self.height_bounds.0 + y_step * y as f64;
@@ -111,16 +111,13 @@ impl<'a> NoiseMapBuilder<'a> for CylinderMapBuilder<'a> {
                 let point_x = current_angle.to_radians().cos();
                 let point_z = current_angle.to_radians().sin();
 
-                let value = self.source_module.get([point_x, current_height, point_z]);
-
-                println!(
-                    "calculated value {} at {}, {}, {}",
-                    value, point_x, current_height, point_z
-                );
-
-                result_map.set_value(x, y, value);
+                points[(height * y) + x] = [point_x, current_height, point_z];
             }
         }
+
+        let mut result_map = NoiseMap::new(width, height);
+
+        result_map.set_values(self.source_module.generate(&points[..]));
 
         result_map
     }
@@ -140,7 +137,7 @@ impl<'a> PlaneMapBuilder<'a> {
             is_seamless: false,
             x_bounds: (-1.0, 1.0),
             y_bounds: (-1.0, 1.0),
-            size: (100, 100),
+            size: (256, 256),
             source_module,
         }
     }
@@ -197,13 +194,13 @@ impl<'a> NoiseMapBuilder<'a> for PlaneMapBuilder<'a> {
     fn build(&self) -> NoiseMap {
         let (width, height) = self.size;
 
-        let mut result_map = NoiseMap::new(width, height);
-
         let x_extent = self.x_bounds.1 - self.x_bounds.0;
         let y_extent = self.y_bounds.1 - self.y_bounds.0;
 
         let x_step = x_extent / width as f64;
         let y_step = y_extent / height as f64;
+
+        let mut points = vec![[0f64; 3]; height * width];
 
         for y in 0..height {
             let current_y = self.y_bounds.0 + y_step * y as f64;
@@ -211,32 +208,13 @@ impl<'a> NoiseMapBuilder<'a> for PlaneMapBuilder<'a> {
             for x in 0..width {
                 let current_x = self.x_bounds.0 + x_step * x as f64;
 
-                let final_value = if self.is_seamless {
-                    let sw_value = self.source_module.get([current_x, current_y, 0.0]);
-                    let se_value = self
-                        .source_module
-                        .get([current_x + x_extent, current_y, 0.0]);
-                    let nw_value = self
-                        .source_module
-                        .get([current_x, current_y + y_extent, 0.0]);
-                    let ne_value =
-                        self.source_module
-                            .get([current_x + x_extent, current_y + y_extent, 0.0]);
-
-                    let x_blend = 1.0 - ((current_x - self.x_bounds.0) / x_extent);
-                    let y_blend = 1.0 - ((current_y - self.y_bounds.0) / y_extent);
-
-                    let y0 = interpolate::linear(sw_value, se_value, x_blend);
-                    let y1 = interpolate::linear(nw_value, ne_value, x_blend);
-
-                    interpolate::linear(y0, y1, y_blend)
-                } else {
-                    self.source_module.get([current_x, current_y, 0.0])
-                };
-
-                result_map.set_value(x, y, final_value);
+                points[(height * y) + x] = [current_x, current_y, 0.5];
             }
         }
+
+        let mut result_map = NoiseMap::new(width, height);
+
+        result_map.set_values(self.source_module.generate(&points[..]));
 
         result_map
     }
@@ -254,7 +232,7 @@ impl<'a> SphereMapBuilder<'a> {
         SphereMapBuilder {
             latitude_bounds: (-1.0, 1.0),
             longitude_bounds: (-1.0, 1.0),
-            size: (100, 100),
+            size: (256, 256),
             source_module,
         }
     }
@@ -318,13 +296,13 @@ impl<'a> NoiseMapBuilder<'a> for SphereMapBuilder<'a> {
     fn build(&self) -> NoiseMap {
         let (width, height) = self.size;
 
-        let mut result_map = NoiseMap::new(width, height);
-
         let lon_extent = self.longitude_bounds.1 - self.longitude_bounds.0;
         let lat_extent = self.latitude_bounds.1 - self.latitude_bounds.0;
 
         let x_step = lon_extent / width as f64;
         let y_step = lat_extent / height as f64;
+
+        let mut points = vec![[0f64; 3]; height * width];
 
         for y in 0..height {
             let current_lat = self.latitude_bounds.0 + y_step * y as f64;
@@ -332,11 +310,13 @@ impl<'a> NoiseMapBuilder<'a> for SphereMapBuilder<'a> {
             for x in 0..width {
                 let current_lon = self.longitude_bounds.0 + x_step * x as f64;
 
-                let point = lat_lon_to_xyz(current_lat, current_lon);
-
-                result_map.set_value(x, y, self.source_module.get(point));
+                points[(height * y) + x] = lat_lon_to_xyz(current_lat, current_lon);
             }
         }
+
+        let mut result_map = NoiseMap::new(width, height);
+
+        result_map.set_values(self.source_module.generate(&points[..]));
 
         result_map
     }

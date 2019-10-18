@@ -1,4 +1,5 @@
 use crate::noise_fns::NoiseFn;
+use rayon::prelude::*;
 
 /// Noise function that applies a scaling factor and a bias to the output value
 /// from the source function.
@@ -38,12 +39,26 @@ impl<'a, T> ScaleBias<'a, T> {
 
 impl<'a, T> NoiseFn<T> for ScaleBias<'a, T> {
     #[cfg(not(target_os = "emscripten"))]
-    fn get(&self, point: T) -> f64 {
-        (self.source.get(point)).mul_add(self.scale, self.bias)
+    fn generate(&self, points: &[T]) -> Vec<f64> {
+        let scale = self.scale;
+        let bias = self.bias;
+
+        self.source
+            .generate(points)
+            .par_iter()
+            .map(|value| value.mul_add(scale, bias))
+            .collect()
     }
 
     #[cfg(target_os = "emscripten")]
-    fn get(&self, point: T) -> f64 {
-        (self.source.get(point) * self.scale) + self.bias
+    fn generate(&self, points: &[T]) -> Vec<f64> {
+        let scale = self.scale;
+        let bias = self.bias;
+
+        self.source
+            .generate(points)
+            .par_iter()
+            .map(|value| (value * scale) + bias)
+            .collect()
     }
 }

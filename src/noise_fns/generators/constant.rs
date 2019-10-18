@@ -20,7 +20,7 @@ impl Constant {
 }
 
 impl<T: Copy> NoiseFn<T> for Constant {
-    fn get(&self, _point: T) -> f64 {
-        self.value
+    fn generate(&self, points: &[T]) -> Vec<f64> {
+        vec![self.value; points.len()]
     }
 }

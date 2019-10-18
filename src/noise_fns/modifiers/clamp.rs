@@ -1,5 +1,6 @@
 use crate::math;
 use crate::noise_fns::NoiseFn;
+use rayon::prelude::*;
 
 /// Noise function that clamps the output value from the source function to a
 /// range of values.
@@ -42,9 +43,13 @@ impl<'a, T> Clamp<'a, T> {
 }
 
 impl<'a, T> NoiseFn<T> for Clamp<'a, T> {
-    fn get(&self, point: T) -> f64 {
-        let value = self.source.get(point);
+    fn generate(&self, points: &[T]) -> Vec<f64> {
+        let (min, max) = self.bounds;
 
-        math::clamp(value, self.bounds.0, self.bounds.1)
+        self.source
+            .generate(points)
+            .par_iter()
+            .map(|value| clamp(*value, min, max))
+            .collect()
     }
 }

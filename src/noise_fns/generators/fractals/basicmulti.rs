@@ -1,6 +1,6 @@
 use crate::math;
-
 use crate::noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
+use rayon::prelude::*;
 use std;
 
 /// Noise function that outputs heterogenous Multifractal noise.
@@ -123,90 +123,119 @@ impl Seedable for BasicMulti {
 
 /// 2-dimensional `BasicMulti` noise
 impl NoiseFn<[f64; 2]> for BasicMulti {
-    fn get(&self, mut point: [f64; 2]) -> f64 {
+    fn generate(&self, points: &[[f64; 2]]) -> Vec<f64> {
+        let frequency = self.frequency;
+        let lacunarity = self.lacunarity;
+        let persistence = self.persistence;
+
         // First unscaled octave of function; later octaves are scaled.
-        point = math::mul2(point, self.frequency);
-        let mut result = self.sources[0].get(point);
+        let mut points = points
+            .par_iter()
+            .map(|point| math::mul2(*point, frequency))
+            .collect::<Vec<_>>();
+
+        let mut results = self.sources[0].generate(&points);
 
         // Spectral construction inner loop, where the fractal is built.
         for x in 1..self.octaves {
             // Raise the spatial frequency.
-            point = math::mul2(point, self.lacunarity);
+            points = points
+                .par_iter()
+                .map(|point| math::mul2(*point, lacunarity))
+                .collect();
 
-            // Get noise value.
-            let mut signal = self.sources[x].get(point);
-
-            // Scale the amplitude appropriately for this frequency.
-            signal *= self.persistence.powi(x as i32);
-
-            // Scale the signal by the current 'altitude' of the function.
-            signal *= result;
-
+            // Get the signal and scale signal appropriately for this frequency,
+            // and then scale the signal by the current 'altitude' of the function.
             // Add signal to result.
-            result += signal;
+            results = self.sources[x]
+                .generate(&points)
+                .par_iter()
+                .map(|signal| signal * persistence.powi(x as i32))
+                .zip(&results)
+                .map(|(signal, result)| (1.0 + signal) * result)
+                .collect();
         }
 
         // Scale the result to the [-1,1] range.
-        result * 0.5
+        results.par_iter().map(|result| result * 0.5).collect()
     }
 }
 
 /// 3-dimensional `BasicMulti` noise
 impl NoiseFn<[f64; 3]> for BasicMulti {
-    fn get(&self, mut point: [f64; 3]) -> f64 {
+    fn generate(&self, points: &[[f64; 3]]) -> Vec<f64> {
+        let frequency = self.frequency;
+        let lacunarity = self.lacunarity;
+        let persistence = self.persistence;
+
         // First unscaled octave of function; later octaves are scaled.
-        point = math::mul3(point, self.frequency);
-        let mut result = self.sources[0].get(point);
+        let mut points = points
+            .par_iter()
+            .map(|point| math::mul3(*point, frequency))
+            .collect::<Vec<_>>();
+
+        let mut results = self.sources[0].generate(&points);
 
         // Spectral construction inner loop, where the fractal is built.
         for x in 1..self.octaves {
             // Raise the spatial frequency.
-            point = math::mul3(point, self.lacunarity);
+            points = points
+                .par_iter()
+                .map(|point| math::mul3(*point, lacunarity))
+                .collect();
 
-            // Get noise value.
-            let mut signal = self.sources[x].get(point);
-
-            // Scale the amplitude appropriately for this frequency.
-            signal *= self.persistence.powi(x as i32);
-
-            // Scale the signal by the current 'altitude' of the function.
-            signal *= result;
-
+            // Get the signal and scale signal appropriately for this frequency,
+            // and then scale the signal by the current 'altitude' of the function.
             // Add signal to result.
-            result += signal;
+            results = self.sources[x]
+                .generate(&points)
+                .par_iter()
+                .map(|signal| signal * persistence.powi(x as i32))
+                .zip(&results)
+                .map(|(signal, result)| (1.0 + signal) * result)
+                .collect();
         }
 
         // Scale the result to the [-1,1] range.
-        result * 0.5
+        results.par_iter().map(|result| result * 0.5).collect()
     }
 }
 
 /// 4-dimensional `BasicMulti` noise
 impl NoiseFn<[f64; 4]> for BasicMulti {
-    fn get(&self, mut point: [f64; 4]) -> f64 {
-        // First unscaled octave of function; later octaves are scaled.
-        point = math::mul4(point, self.frequency);
-        let mut result = self.sources[0].get(point);
+    fn generate(&self, points: &[[f64; 4]]) -> Vec<f64> {
+        let frequency = self.frequency;
+        let lacunarity = self.lacunarity;
+        let persistence = self.persistence;
+
+        let mut points = points
+            .par_iter()
+            .map(|point| math::mul4(*point, frequency))
+            .collect::<Vec<_>>();
+
+        let mut results = self.sources[0].generate(&points);
 
         // Spectral construction inner loop, where the fractal is built.
         for x in 1..self.octaves {
             // Raise the spatial frequency.
-            point = math::mul4(point, self.lacunarity);
+            points = points
+                .par_iter()
+                .map(|point| math::mul4(*point, lacunarity))
+                .collect();
 
-            // Get noise value.
-            let mut signal = self.sources[x].get(point);
-
-            // Scale the amplitude appropriately for this frequency.
-            signal *= self.persistence.powi(x as i32);
-
-            // Scale the signal by the current 'altitude' of the function.
-            signal *= result;
-
+            // Get the signal and scale signal appropriately for this frequency,
+            // and then scale the signal by the current 'altitude' of the function.
             // Add signal to result.
-            result += signal;
+            results = self.sources[x]
+                .generate(&points)
+                .par_iter()
+                .map(|signal| signal * persistence.powi(x as i32))
+                .zip(&results)
+                .map(|(signal, result)| (1.0 + signal) * result)
+                .collect();
         }
 
         // Scale the result to the [-1,1] range.
-        result * 0.5
+        results.par_iter().map(|result| result * 0.5).collect()
     }
 }

@@ -17,7 +17,7 @@ name = "noise"
 rand = "0.7"
 rand_xorshift = "0.2"
 image = { version = "0.18", optional = true }
-rayon = "1.2"
+rayon = "1.1"
 
 [features]
 default = ["image"]

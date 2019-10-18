@@ -1,6 +1,7 @@
 use crate::noise_fns::NoiseFn;
 
 use crate::math::scale_shift;
+use rayon::prelude::*;
 
 /// Noise function that maps the output value from the source function onto an
 /// exponential curve.
@@ -32,11 +33,13 @@ impl<'a, T> Exponent<'a, T> {
 }
 
 impl<'a, T> NoiseFn<T> for Exponent<'a, T> {
-    fn get(&self, point: T) -> f64 {
-        let mut value = self.source.get(point);
-        value = (value + 1.0) / 2.0;
-        value = value.abs();
-        value = value.powf(self.exponent);
-        scale_shift(value, 2.0)
+    fn generate(&self, points: &[T]) -> Vec<f64> {
+        let exponent = self.exponent;
+
+        self.source
+            .generate(points)
+            .par_iter()
+            .map(|value| scale_shift(((*value + 1.0) / 2.0).abs().powf(exponent), 2.0))
+            .collect()
     }
 }

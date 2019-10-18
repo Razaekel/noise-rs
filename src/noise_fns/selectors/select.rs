@@ -1,5 +1,6 @@
 use crate::math::interpolate;
 use crate::noise_fns::NoiseFn;
+use rayon::prelude::*;
 
 /// Noise function that outputs the value selected from one of two source
 /// functions chosen by the output value from a control function.
@@ -54,38 +55,60 @@ impl<'a, T> NoiseFn<T> for Select<'a, T>
 where
     T: Copy,
 {
-    fn get(&self, point: T) -> f64 {
-        let control_value = self.control.get(point);
+    fn generate(&self, points: &[T]) -> Vec<f64> {
+        let source1 = self.source1.generate(points);
+        let source2 = self.source2.generate(points);
+        let control = self.control.generate(points);
+
         let (lower, upper) = self.bounds;
+        let falloff = self.falloff;
 
-        if self.falloff > 0.0 {
-            match () {
-                _ if control_value < (lower - self.falloff) => self.source1.get(point),
-                _ if control_value < (lower + self.falloff) => {
-                    let lower_curve = lower - self.falloff;
-                    let upper_curve = lower + self.falloff;
-                    let alpha = interpolate::s_curve3(
-                        (control_value - lower_curve) / (upper_curve - lower_curve),
-                    );
+        source1
+            .par_iter()
+            .zip(source2)
+            .zip(control)
+            .map(|((value1, value2), control_value)| {
+                apply_select(*value1, value2, control_value, lower, upper, falloff)
+            })
+            .collect()
+    }
+}
 
-                    interpolate::linear(self.source1.get(point), self.source2.get(point), alpha)
-                }
-                _ if control_value < (upper - self.falloff) => self.source2.get(point),
-                _ if control_value < (upper + self.falloff) => {
-                    let lower_curve = upper - self.falloff;
-                    let upper_curve = upper + self.falloff;
-                    let alpha = interpolate::s_curve3(
-                        (control_value - lower_curve) / (upper_curve - lower_curve),
-                    );
+fn apply_select(
+    value1: f64,
+    value2: f64,
+    control_value: f64,
+    lower: f64,
+    upper: f64,
+    falloff: f64,
+) -> f64 {
+    if falloff > 0.0 {
+        match () {
+            _ if control_value < (lower - falloff) => value1,
+            _ if control_value < (lower + falloff) => {
+                let lower_curve = lower - falloff;
+                let upper_curve = lower + falloff;
+                let alpha = interpolate::s_curve3(
+                    (control_value - lower_curve) / (upper_curve - lower_curve),
+                );
 
-                    interpolate::linear(self.source2.get(point), self.source1.get(point), alpha)
-                }
-                _ => self.source1.get(point),
+                interpolate::linear(value1, value2, alpha)
             }
-        } else if control_value < lower || control_value > upper {
-            self.source1.get(point)
-        } else {
-            self.source2.get(point)
+            _ if control_value < (upper - falloff) => value2,
+            _ if control_value < (upper + falloff) => {
+                let lower_curve = upper - falloff;
+                let upper_curve = upper + falloff;
+                let alpha = interpolate::s_curve3(
+                    (control_value - lower_curve) / (upper_curve - lower_curve),
+                );
+
+                interpolate::linear(value2, value1, alpha)
+            }
+            _ => value1,
         }
+    } else if control_value < lower || control_value > upper {
+        value1
+    } else {
+        value2
     }
 }

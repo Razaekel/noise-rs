@@ -1,5 +1,6 @@
 use crate::math::{self, scale_shift};
 use crate::noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
+use rayon::prelude::*;
 use std;
 
 /// Noise function that outputs ridged-multifractal noise.
@@ -143,138 +144,213 @@ impl Seedable for RidgedMulti {
 
 /// 2-dimensional `RidgedMulti` noise
 impl NoiseFn<[f64; 2]> for RidgedMulti {
-    fn get(&self, mut point: [f64; 2]) -> f64 {
-        let mut result = 0.0;
-        let mut weight = 1.0;
+    fn generate(&self, points: &[[f64; 2]]) -> Vec<f64> {
+        let frequency = self.frequency;
+        let lacunarity = self.lacunarity;
+        let persistence = self.persistence;
+        let attenuation = self.attenuation;
 
-        point = math::mul2(point, self.frequency);
+        let mut results = vec![0.0; points.len()];
+        let mut weights = vec![1.0; points.len()];
+
+        let mut points = points
+            .par_iter()
+            .map(|point| math::mul2(*point, frequency))
+            .collect::<Vec<_>>();
 
         for x in 0..self.octaves {
             // Get the value.
-            let mut signal = self.sources[x].get(point);
-
-            // Make the ridges.
-            signal = signal.abs();
-            signal = 1.0 - signal;
-
-            // Square the signal to increase the sharpness of the ridges.
-            signal *= signal;
-
-            // Apply the weighting from the previous octave to the signal.
-            // Larger values have higher weights, producing sharp points along
-            // the ridges.
-            signal *= weight;
+            let mut signals = self.sources[x]
+                .generate(&points)
+                .par_iter()
+                // Make the ridges.
+                .map(|signal| signal.abs())
+                .map(|signal| 1.0 - signal)
+                // Square the signal to increase the sharpness of the ridges.
+                .map(|signal| signal * signal)
+                // Apply the weighting from the previous octave to the signal.
+                // Larger values have higher weights, producing sharp points along
+                // the ridges.
+                .zip(&weights)
+                .map(|(signal, weight)| signal * weight)
+                .collect::<Vec<_>>();
 
             // Weight successive contributions by the previous signal.
-            weight = signal / self.attenuation;
-
-            // Clamp the weight to [0,1] to prevent the result from diverging.
-            weight = math::clamp(weight, 0.0, 1.0);
+            weights = signals
+                .par_iter()
+                .map(|signal| signal / attenuation)
+                // Clamp the weight to [0,1] to prevent the result from diverging.
+                .map(|weight| math::clamp(weight, 0.0, 1.0))
+                .collect();
 
             // Scale the amplitude appropriately for this frequency.
-            signal *= self.persistence.powi(x as i32);
+            signals = signals
+                .par_iter()
+                .map(|signal| signal * persistence.powi(x as i32))
+                .collect();
 
             // Add the signal to the result.
-            result += signal;
+            results = results
+                .par_iter()
+                .zip(&signals)
+                .map(|(result, signal)| result + signal)
+                .collect();
 
             // Increase the frequency.
-            point = math::mul2(point, self.lacunarity);
+            points = points
+                .par_iter()
+                .map(|point| math::mul2(*point, lacunarity))
+                .collect();
         }
 
         // Scale and shift the result into the [-1,1] range
         let scale = 2.0 - 0.5_f64.powi(self.octaves as i32 - 1);
-        scale_shift(result, 2.0 / scale)
+
+        results
+            .par_iter()
+            .map(|result| scale_shift(*result, 2.0 / scale))
+            .collect()
     }
 }
 
 /// 3-dimensional `RidgedMulti` noise
 impl NoiseFn<[f64; 3]> for RidgedMulti {
-    fn get(&self, mut point: [f64; 3]) -> f64 {
-        let mut result = 0.0;
-        let mut weight = 1.0;
+    fn generate(&self, points: &[[f64; 3]]) -> Vec<f64> {
+        let frequency = self.frequency;
+        let lacunarity = self.lacunarity;
+        let persistence = self.persistence;
+        let attenuation = self.attenuation;
 
-        point = math::mul3(point, self.frequency);
+        let mut results = vec![0.0; points.len()];
+        let mut weights = vec![1.0; points.len()];
+
+        let mut points = points
+            .par_iter()
+            .map(|point| math::mul3(*point, frequency))
+            .collect::<Vec<_>>();
 
         for x in 0..self.octaves {
             // Get the value.
-            let mut signal = self.sources[x].get(point);
-
-            // Make the ridges.
-            signal = signal.abs();
-            signal = 1.0 - signal;
-
-            // Square the signal to increase the sharpness of the ridges.
-            signal *= signal;
-
-            // Apply the weighting from the previous octave to the signal.
-            // Larger values have higher weights, producing sharp points along
-            // the ridges.
-            signal *= weight;
+            let mut signals = self.sources[x]
+                .generate(&points)
+                .par_iter()
+                // Make the ridges.
+                .map(|signal| signal.abs())
+                .map(|signal| 1.0 - signal)
+                // Square the signal to increase the sharpness of the ridges.
+                .map(|signal| signal * signal)
+                // Apply the weighting from the previous octave to the signal.
+                // Larger values have higher weights, producing sharp points along
+                // the ridges.
+                .zip(&weights)
+                .map(|(signal, weight)| signal * weight)
+                .collect::<Vec<_>>();
 
             // Weight successive contributions by the previous signal.
-            weight = signal / self.attenuation;
-
-            // Clamp the weight to [0,1] to prevent the result from diverging.
-            weight = math::clamp(weight, 0.0, 1.0);
+            weights = signals
+                .par_iter()
+                .map(|signal| signal / attenuation)
+                // Clamp the weight to [0,1] to prevent the result from diverging.
+                .map(|weight| math::clamp(weight, 0.0, 1.0))
+                .collect();
 
             // Scale the amplitude appropriately for this frequency.
-            signal *= self.persistence.powi(x as i32);
+            signals = signals
+                .par_iter()
+                .map(|signal| signal * persistence.powi(x as i32))
+                .collect();
 
             // Add the signal to the result.
-            result += signal;
+            results = results
+                .par_iter()
+                .zip(&signals)
+                .map(|(result, signal)| result + signal)
+                .collect();
 
             // Increase the frequency.
-            point = math::mul3(point, self.lacunarity);
+            points = points
+                .par_iter()
+                .map(|point| math::mul3(*point, lacunarity))
+                .collect();
         }
 
         // Scale and shift the result into the [-1,1] range
         let scale = 2.0 - 0.5_f64.powi(self.octaves as i32 - 1);
-        scale_shift(result, 2.0 / scale)
+
+        results
+            .par_iter()
+            .map(|result| scale_shift(*result, 2.0 / scale))
+            .collect()
     }
 }
 
 /// 4-dimensional `RidgedMulti` noise
 impl NoiseFn<[f64; 4]> for RidgedMulti {
-    fn get(&self, mut point: [f64; 4]) -> f64 {
-        let mut result = 0.0;
-        let mut weight = 1.0;
+    fn generate(&self, points: &[[f64; 4]]) -> Vec<f64> {
+        let frequency = self.frequency;
+        let lacunarity = self.lacunarity;
+        let persistence = self.persistence;
+        let attenuation = self.attenuation;
 
-        point = math::mul4(point, self.frequency);
+        let mut results = vec![0.0; points.len()];
+        let mut weights = vec![1.0; points.len()];
+
+        let mut points = points
+            .par_iter()
+            .map(|point| math::mul4(*point, frequency))
+            .collect::<Vec<_>>();
 
         for x in 0..self.octaves {
             // Get the value.
-            let mut signal = self.sources[x].get(point);
-
-            // Make the ridges.
-            signal = signal.abs();
-            signal = 1.0 - signal;
-
-            // Square the signal to increase the sharpness of the ridges.
-            signal *= signal;
-
-            // Apply the weighting from the previous octave to the signal.
-            // Larger values have higher weights, producing sharp points along
-            // the ridges.
-            signal *= weight;
+            let mut signals = self.sources[x]
+                .generate(&points)
+                .par_iter()
+                // Make the ridges.
+                .map(|signal| signal.abs())
+                .map(|signal| 1.0 - signal)
+                // Square the signal to increase the sharpness of the ridges.
+                .map(|signal| signal * signal)
+                // Apply the weighting from the previous octave to the signal.
+                // Larger values have higher weights, producing sharp points along
+                // the ridges.
+                .zip(&weights)
+                .map(|(signal, weight)| signal * weight)
+                .collect::<Vec<_>>();
 
             // Weight successive contributions by the previous signal.
-            weight = signal * self.attenuation;
-
-            // Clamp the weight to [0,1] to prevent the result from diverging.
-            weight = math::clamp(weight, 0.0, 1.0);
+            weights = signals
+                .par_iter()
+                .map(|signal| signal / attenuation)
+                // Clamp the weight to [0,1] to prevent the result from diverging.
+                .map(|weight| math::clamp(weight, 0.0, 1.0))
+                .collect();
 
             // Scale the amplitude appropriately for this frequency.
-            signal *= self.persistence.powi(x as i32);
+            signals = signals
+                .par_iter()
+                .map(|signal| signal * persistence.powi(x as i32))
+                .collect();
 
             // Add the signal to the result.
-            result += signal;
+            results = results
+                .par_iter()
+                .zip(&signals)
+                .map(|(result, signal)| result + signal)
+                .collect();
 
             // Increase the frequency.
-            point = math::mul4(point, self.lacunarity);
+            points = points
+                .par_iter()
+                .map(|point| math::mul4(*point, lacunarity))
+                .collect();
         }
 
         // Scale and shift the result into the [-1,1] range
         let scale = 2.0 - 0.5_f64.powi(self.octaves as i32 - 1);
-        scale_shift(result, 2.0 / scale)
+
+        results
+            .par_iter()
+            .map(|result| scale_shift(*result, 2.0 / scale))
+            .collect()
     }
 }

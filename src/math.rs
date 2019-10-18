@@ -284,6 +284,16 @@ pub fn to_isize2(x: [f64; 2]) -> [isize; 2] {
     [x[0] as isize, x[1] as isize]
 }
 
+#[inline]
+pub fn to_isize3(x: [f64; 3]) -> [isize; 3] {
+    [x[0] as isize, x[1] as isize, x[2] as isize]
+}
+
+#[inline]
+pub fn to_isize4(x: [f64; 4]) -> [isize; 4] {
+    [x[0] as isize, x[1] as isize, x[2] as isize, x[3] as isize]
+}
+
 #[cfg(not(target_os = "emscripten"))]
 #[inline]
 pub fn scale_shift(value: f64, n: f64) -> f64 {
@@ -294,16 +304,6 @@ pub fn scale_shift(value: f64, n: f64) -> f64 {
 #[inline]
 pub fn scale_shift(value: f64, n: f64) -> f64 {
     (value.abs() * n) + -1.0_f64
-}
-
-#[inline]
-pub fn to_isize3(x: [f64; 3]) -> [isize; 3] {
-    [x[0] as isize, x[1] as isize, x[2] as isize]
-}
-
-#[inline]
-pub fn to_isize4(x: [f64; 4]) -> [isize; 4] {
-    [x[0] as isize, x[1] as isize, x[2] as isize, x[3] as isize]
 }
 
 pub mod interpolate {

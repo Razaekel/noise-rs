@@ -9,8 +9,8 @@ criterion_group!(perlin, bench_perlin2, bench_perlin3, bench_perlin4);
 criterion_group!(
     perlin_64x64,
     bench_perlin2_64x64,
-//    bench_perlin3_64x64,
-//    bench_perlin4_64x64,
+    //    bench_perlin3_64x64,
+    //    bench_perlin4_64x64,
     bench_perlin2_basic_64x64,
     bench_perlin2_point_64x64,
     bench_perlin2_iterator_64x64,
@@ -57,7 +57,10 @@ fn bench_perlin2_64x64(c: &mut Criterion) {
     }
 
     c.bench_function("perlin 2d (64x64)", |b| {
-        b.iter(|| { for i in &points { black_box(perlin.get(*i)); }
+        b.iter(|| {
+            for i in &points {
+                black_box(perlin.get(*i));
+            }
         })
     });
 }
@@ -83,7 +86,10 @@ fn bench_perlin3_64x64(c: &mut Criterion) {
     }
 
     c.bench_function("perlin 3d (64x64)", |b| {
-        b.iter(|| { for i in &points {black_box(perlin.get(*i)); }
+        b.iter(|| {
+            for i in &points {
+                black_box(perlin.get(*i));
+            }
         })
     });
 }
@@ -113,7 +119,10 @@ fn bench_perlin4_64x64(c: &mut Criterion) {
     }
 
     c.bench_function("perlin 4d (64x64)", |b| {
-        b.iter(|| { for i in &points { black_box(perlin.get(*i)); }
+        b.iter(|| {
+            for i in &points {
+                black_box(perlin.get(*i));
+            }
         })
     });
 }
@@ -135,7 +144,10 @@ fn bench_perlin2_basic_64x64(c: &mut Criterion) {
     }
 
     c.bench_function("perlin basic 2d (64x64)", |b| {
-        b.iter(|| { for i in &points { black_box(noise::perlin_2d_basic(i[0], i[1], &perlin.perm_table)); }
+        b.iter(|| {
+            for i in &points {
+                black_box(noise::perlin_2d_basic(i[0], i[1], &perlin.perm_table));
+            }
         })
     });
 }
@@ -157,7 +169,10 @@ fn bench_perlin2_point_64x64(c: &mut Criterion) {
     }
 
     c.bench_function("perlin point 2d (64x64)", |b| {
-        b.iter(|| { for i in &points { black_box(noise::perlin_2d_point(*i, &perlin.perm_table)); }
+        b.iter(|| {
+            for i in &points {
+                black_box(noise::perlin_2d_point(*i, &perlin.perm_table));
+            }
         })
     });
 }
@@ -179,8 +194,7 @@ fn bench_perlin2_iterator_64x64(c: &mut Criterion) {
     }
 
     c.bench_function("perlin iter 2d (64x64)", |b| {
-        b.iter(|| { black_box(noise::perlin_2d_iter(&points, &perlin.perm_table))
-        })
+        b.iter(|| black_box(noise::perlin_2d_iter(&points, &perlin.perm_table)))
     });
 }
 
@@ -201,8 +215,7 @@ fn bench_perlin2_alt_iter_64x64(c: &mut Criterion) {
     }
 
     c.bench_function("perlin alt_iter 2d (64x64)", |b| {
-        b.iter(|| { black_box(noise::perlin_2d_alt_iter(&points, &perlin.perm_table))
-        })
+        b.iter(|| black_box(noise::perlin_2d_alt_iter(&points, &perlin.perm_table)))
     });
 }
 
@@ -223,7 +236,6 @@ fn bench_perlin2_par_iter_64x64(c: &mut Criterion) {
     }
 
     c.bench_function("perlin par_iter 2d (64x64)", |b| {
-        b.iter(|| { black_box(noise::perlin_2d_par_iter(&points, &perlin.perm_table))
-        })
+        b.iter(|| black_box(noise::perlin_2d_par_iter(&points, &perlin.perm_table)))
     });
 }

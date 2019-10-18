@@ -1,4 +1,5 @@
 use crate::noise_fns::NoiseFn;
+use rayon::prelude::*;
 
 /// Noise function that moves the coordinates of the input value before
 /// returning the output value from the source function.
@@ -107,9 +108,16 @@ impl<Source> NoiseFn<[f64; 2]> for TranslatePoint<Source>
 where
     Source: NoiseFn<[f64; 2]>,
 {
-    fn get(&self, point: [f64; 2]) -> f64 {
-        self.source
-            .get([point[0] + self.x_translation, point[1] + self.y_translation])
+    fn generate(&self, points: &[[f64; 2]]) -> Vec<f64> {
+        let x_translation = self.x_translation;
+        let y_translation = self.y_translation;
+
+        self.source.generate(
+            &points
+                .par_iter()
+                .map(|point| [point[0] + x_translation, point[1] + y_translation])
+                .collect::<Vec<_>>(),
+        )
     }
 }
 
@@ -117,12 +125,23 @@ impl<Source> NoiseFn<[f64; 3]> for TranslatePoint<Source>
 where
     Source: NoiseFn<[f64; 3]>,
 {
-    fn get(&self, point: [f64; 3]) -> f64 {
-        self.source.get([
-            point[0] + self.x_translation,
-            point[1] + self.y_translation,
-            point[2] + self.z_translation,
-        ])
+    fn generate(&self, points: &[[f64; 3]]) -> Vec<f64> {
+        let x_translation = self.x_translation;
+        let y_translation = self.y_translation;
+        let z_translation = self.z_translation;
+
+        self.source.generate(
+            &points
+                .par_iter()
+                .map(|point| {
+                    [
+                        point[0] + x_translation,
+                        point[1] + y_translation,
+                        point[2] + z_translation,
+                    ]
+                })
+                .collect::<Vec<_>>(),
+        )
     }
 }
 
@@ -130,12 +149,24 @@ impl<Source> NoiseFn<[f64; 4]> for TranslatePoint<Source>
 where
     Source: NoiseFn<[f64; 4]>,
 {
-    fn get(&self, point: [f64; 4]) -> f64 {
-        self.source.get([
-            point[0] + self.x_translation,
-            point[1] + self.y_translation,
-            point[2] + self.z_translation,
-            point[3] + self.u_translation,
-        ])
+    fn generate(&self, points: &[[f64; 4]]) -> Vec<f64> {
+        let x_translation = self.x_translation;
+        let y_translation = self.y_translation;
+        let z_translation = self.z_translation;
+        let u_translation = self.u_translation;
+
+        self.source.generate(
+            &points
+                .par_iter()
+                .map(|point| {
+                    [
+                        point[0] + x_translation,
+                        point[1] + y_translation,
+                        point[2] + z_translation,
+                        point[3] + u_translation,
+                    ]
+                })
+                .collect::<Vec<_>>(),
+        )
     }
 }

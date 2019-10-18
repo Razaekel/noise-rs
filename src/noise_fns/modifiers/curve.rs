@@ -1,5 +1,6 @@
 use crate::math::{self, interpolate};
 use crate::noise_fns::NoiseFn;
+use rayon::prelude::*;
 use std;
 
 /// Noise function that maps the output value from the source function onto an
@@ -67,58 +68,64 @@ impl<'a, T> Curve<'a, T> {
 }
 
 impl<'a, T> NoiseFn<T> for Curve<'a, T> {
-    fn get(&self, point: T) -> f64 {
+    fn generate(&self, points: &[T]) -> Vec<f64> {
         // confirm that there's at least 4 control points in the vector.
         assert!(self.control_points.len() >= 4);
 
-        // get output value from the source function
-        let source_value = self.source.get(point);
+        let control_points = &self.control_points;
 
-        // Find the first element in the control point array that has a input
-        // value larger than the output value from the source function
-        let index_pos = self
-            .control_points
-            .iter()
-            .position(|x| x.input > source_value)
-            .unwrap_or_else(|| self.control_points.len());
-
-        if index_pos < 2 {
-            println!(
-                "index_pos in curve was less than 2! source value was {}",
-                source_value
-            );
-        }
-
-        // ensure that the index is at least 2 and less than control_points.len()
-        let index_pos = math::clamp(index_pos, 2, self.control_points.len());
-
-        // Find the four nearest control points so that we can perform cubic
-        // interpolation.
-        let index0 = math::clamp(index_pos - 2, 0, self.control_points.len() - 1);
-        let index1 = math::clamp(index_pos - 1, 0, self.control_points.len() - 1);
-        let index2 = math::clamp(index_pos, 0, self.control_points.len() - 1);
-        let index3 = math::clamp(index_pos + 1, 0, self.control_points.len() - 1);
-
-        // If some control points are missing (which occurs if the value from
-        // the source function is greater than the largest input value or less
-        // than the smallest input value of the control point array), get the
-        // corresponding output value of the nearest control point and exit.
-        if index1 == index2 {
-            return self.control_points[index1].output;
-        }
-
-        // Compute the alpha value used for cubic interpolation
-        let input0 = self.control_points[index1].input;
-        let input1 = self.control_points[index2].input;
-        let alpha = (source_value - input0) / (input1 - input0);
-
-        // Now perform the cubic interpolation and return.
-        interpolate::cubic(
-            self.control_points[index0].output,
-            self.control_points[index1].output,
-            self.control_points[index2].output,
-            self.control_points[index3].output,
-            alpha,
-        )
+        self.source
+            .generate(points)
+            .par_iter()
+            .map(|value| apply_curve(*value, control_points))
+            .collect()
     }
+}
+
+fn apply_curve(value: f64, control_points: &[ControlPoint<f64>]) -> f64 {
+    // Find the first element in the control point array that has a input
+    // value larger than the output value from the source function
+    let index_pos = control_points
+        .iter()
+        .position(|x| x.input > value)
+        .unwrap_or_else(|| control_points.len());
+
+    if index_pos < 2 {
+        println!(
+            "index_pos in curve was less than 2! source value was {}",
+            value
+        );
+    }
+
+    // ensure that the index is at least 2 and less than control_points.len()
+    let index_pos = math::clamp(index_pos, 2, control_points.len());
+
+    // Find the four nearest control points so that we can perform cubic
+    // interpolation.
+    let index0 = math::clamp(index_pos - 2, 0, control_points.len() - 1);
+    let index1 = math::clamp(index_pos - 1, 0, control_points.len() - 1);
+    let index2 = math::clamp(index_pos, 0, control_points.len() - 1);
+    let index3 = math::clamp(index_pos + 1, 0, control_points.len() - 1);
+
+    // If some control points are missing (which occurs if the value from
+    // the source function is greater than the largest input value or less
+    // than the smallest input value of the control point array), get the
+    // corresponding output value of the nearest control point and exit.
+    if index1 == index2 {
+        return control_points[index1].output;
+    }
+
+    // Compute the alpha value used for cubic interpolation
+    let input0 = control_points[index1].input;
+    let input1 = control_points[index2].input;
+    let alpha = (value - input0) / (input1 - input0);
+
+    // Now perform the cubic interpolation and return.
+    interpolate::cubic(
+        control_points[index0].output,
+        control_points[index1].output,
+        control_points[index2].output,
+        control_points[index3].output,
+        alpha,
+    )
 }

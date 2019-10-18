@@ -1,4 +1,5 @@
 use crate::noise_fns::NoiseFn;
+use rayon::prelude::*;
 
 /// Noise function that uses multiple source functions to displace each coordinate
 /// of the input value before returning the output value from the `source` function.
@@ -50,16 +51,23 @@ where
     XDisplace: NoiseFn<[f64; 2]>,
     YDisplace: NoiseFn<[f64; 2]>,
 {
-    fn get(&self, point: [f64; 2]) -> f64 {
+    fn generate(&self, points: &[[f64; 2]]) -> Vec<f64> {
         // Get the output values from the displacement functions and add them to
         // the corresponding coordinate in the input value. Since this is a 2d
         // function, we only need the x_displace and y_displace functions.
-        let x = point[0] + self.x_displace.get(point);
-        let y = point[1] + self.y_displace.get(point);
+        let x_points = self.x_displace.generate(points);
+        let y_points = self.y_displace.generate(points);
 
         // get the output value using the offset input value instead of the
         // original input value.
-        self.source.get([x, y])
+        self.source.generate(
+            &points
+                .par_iter()
+                .zip(x_points)
+                .zip(y_points)
+                .map(|((point, x_value), y_value)| [point[0] + x_value, point[1] + y_value])
+                .collect::<Vec<_>>(),
+        )
     }
 }
 
@@ -71,18 +79,27 @@ where
     YDisplace: NoiseFn<[f64; 3]>,
     ZDisplace: NoiseFn<[f64; 3]>,
 {
-    fn get(&self, point: [f64; 3]) -> f64 {
+    fn generate(&self, points: &[[f64; 3]]) -> Vec<f64> {
         // Get the output values from the displacement functions and add them to
-        // the corresponding coordinate in the input value. Since this is a 3d
-        // function, we only need the x_displace, y_displace, and z_displace
-        // functions. Also, panic if there is no z_displace function defined.
-        let x = point[0] + self.x_displace.get(point);
-        let y = point[1] + self.y_displace.get(point);
-        let z = point[2] + self.z_displace.get(point);
+        // the corresponding coordinate in the input value. Since this is a 2d
+        // function, we only need the x_displace and y_displace functions.
+        let x_points = self.x_displace.generate(points);
+        let y_points = self.y_displace.generate(points);
+        let z_points = self.z_displace.generate(points);
 
         // get the output value using the offset input value instead of the
         // original input value.
-        self.source.get([x, y, z])
+        self.source.generate(
+            &points
+                .par_iter()
+                .zip(x_points)
+                .zip(y_points)
+                .zip(z_points)
+                .map(|(((point, x_value), y_value), z_value)| {
+                    [point[0] + x_value, point[1] + y_value, point[2] + z_value]
+                })
+                .collect::<Vec<_>>(),
+        )
     }
 }
 
@@ -95,18 +112,33 @@ where
     ZDisplace: NoiseFn<[f64; 4]>,
     UDisplace: NoiseFn<[f64; 4]>,
 {
-    fn get(&self, point: [f64; 4]) -> f64 {
+    fn generate(&self, points: &[[f64; 4]]) -> Vec<f64> {
         // Get the output values from the displacement functions and add them to
-        // the corresponding coordinate in the input value. Since this is a 4d
-        // function, we need all of the displace functions. Panic if there is no z-
-        // or u-displace function defined.
-        let x = point[0] + self.x_displace.get(point);
-        let y = point[1] + self.y_displace.get(point);
-        let z = point[2] + self.z_displace.get(point);
-        let u = point[3] + self.u_displace.get(point);
+        // the corresponding coordinate in the input value. Since this is a 2d
+        // function, we only need the x_displace and y_displace functions.
+        let x_points = self.x_displace.generate(points);
+        let y_points = self.y_displace.generate(points);
+        let z_points = self.z_displace.generate(points);
+        let u_points = self.u_displace.generate(points);
 
         // get the output value using the offset input value instead of the
         // original input value.
-        self.source.get([x, y, z, u])
+        self.source.generate(
+            &points
+                .par_iter()
+                .zip(x_points)
+                .zip(y_points)
+                .zip(z_points)
+                .zip(u_points)
+                .map(|((((point, x_value), y_value), z_value), u_value)| {
+                    [
+                        point[0] + x_value,
+                        point[1] + y_value,
+                        point[2] + z_value,
+                        point[3] + u_value,
+                    ]
+                })
+                .collect::<Vec<_>>(),
+        )
     }
 }

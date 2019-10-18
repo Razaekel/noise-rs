@@ -1,5 +1,6 @@
 use crate::math::{self, scale_shift};
 use crate::noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
+use rayon::prelude::*;
 use std;
 
 /// Noise function that outputs "billowy" noise.
@@ -119,90 +120,121 @@ impl Seedable for Billow {
 
 /// 2-dimensional Billow noise
 impl NoiseFn<[f64; 2]> for Billow {
-    fn get(&self, mut point: [f64; 2]) -> f64 {
-        let mut result = 0.0;
+    fn generate(&self, points: &[[f64; 2]]) -> Vec<f64> {
+        let frequency = self.frequency;
+        let lacunarity = self.lacunarity;
+        let persistence = self.persistence;
 
-        point = math::mul2(point, self.frequency);
+        let mut results = vec![0.0; points.len()];
+
+        let mut points = points
+            .par_iter()
+            .map(|point| math::mul2(*point, frequency))
+            .collect::<Vec<_>>();
 
         for x in 0..self.octaves {
             // Get the signal.
-            let mut signal = self.sources[x].get(point);
-
             // Take the abs of the signal, then scale and shift back to
             // the [-1,1] range.
-            signal = scale_shift(signal, 2.0);
-
             // Scale the amplitude appropriately for this frequency.
-            signal *= self.persistence.powi(x as i32);
-
-            // Add the signal to the result.
-            result += signal;
+            results = self.sources[x]
+                .generate(&points)
+                .par_iter()
+                .map(|signal| (scale_shift(*signal, 2.0)) * persistence.powi(x as i32))
+                .zip(&results)
+                // Add the signal to the result.
+                .map(|(signal, result)| signal + result)
+                .collect();
 
             // Increase the frequency for the next octave.
-            point = math::mul2(point, self.lacunarity);
+            points = points
+                .par_iter()
+                .map(|point| math::mul2(*point, lacunarity))
+                .collect();
         }
 
         // Scale the result to the [-1,1] range.
-        result * 0.5
+        //        result * 0.5
+        results.par_iter().map(|result| result * 0.5).collect()
     }
 }
 
 /// 3-dimensional Billow noise
 impl NoiseFn<[f64; 3]> for Billow {
-    fn get(&self, mut point: [f64; 3]) -> f64 {
-        let mut result = 0.0;
+    fn generate(&self, points: &[[f64; 3]]) -> Vec<f64> {
+        let frequency = self.frequency;
+        let lacunarity = self.lacunarity;
+        let persistence = self.persistence;
 
-        point = math::mul3(point, self.frequency);
+        let mut results = vec![0.0; points.len()];
+
+        let mut points = points
+            .par_iter()
+            .map(|point| math::mul3(*point, frequency))
+            .collect::<Vec<_>>();
 
         for x in 0..self.octaves {
             // Get the signal.
-            let mut signal = self.sources[x].get(point);
-
             // Take the abs of the signal, then scale and shift back to
             // the [-1,1] range.
-            signal = scale_shift(signal, 2.0);
-
             // Scale the amplitude appropriately for this frequency.
-            signal *= self.persistence.powi(x as i32);
-
-            // Add the signal to the result.
-            result += signal;
+            results = self.sources[x]
+                .generate(&points)
+                .par_iter()
+                .map(|signal| (scale_shift(*signal, 2.0)) * persistence.powi(x as i32))
+                .zip(&results)
+                // Add the signal to the result.
+                .map(|(signal, result)| signal + result)
+                .collect();
 
             // Increase the frequency for the next octave.
-            point = math::mul3(point, self.lacunarity);
+            points = points
+                .par_iter()
+                .map(|point| math::mul3(*point, lacunarity))
+                .collect();
         }
 
         // Scale the result to the [-1,1] range.
-        result * 0.5
+        results.par_iter().map(|result| result * 0.5).collect()
     }
 }
 
 /// 4-dimensional Billow noise
 impl NoiseFn<[f64; 4]> for Billow {
-    fn get(&self, mut point: [f64; 4]) -> f64 {
-        let mut result = 0.0;
+    fn generate(&self, points: &[[f64; 4]]) -> Vec<f64> {
+        let frequency = self.frequency;
+        let lacunarity = self.lacunarity;
+        let persistence = self.persistence;
 
-        point = math::mul4(point, self.frequency);
+        let mut results = vec![0.0; points.len()];
+
+        let mut points = points
+            .par_iter()
+            .map(|point| math::mul4(*point, frequency))
+            .collect::<Vec<_>>();
 
         for x in 0..self.octaves {
             // Get the signal.
-            let mut signal = self.sources[x].get(point);
-
             // Take the abs of the signal, then scale and shift back to
             // the [-1,1] range.
-            signal = scale_shift(signal, 2.0);
-
             // Scale the amplitude appropriately for this frequency.
-            signal *= self.persistence.powi(x as i32);
-
-            // Add the signal to the output value.
-            result += signal;
+            results = self.sources[x]
+                .generate(&points)
+                .par_iter()
+                .map(|signal| (scale_shift(*signal, 2.0)) * persistence.powi(x as i32))
+                .zip(&results)
+                // Add the signal to the result.
+                .map(|(signal, result)| signal + result)
+                .collect();
 
             // Increase the frequency for the next octave.
-            point = math::mul4(point, self.lacunarity);
+            points = points
+                .par_iter()
+                .map(|point| math::mul4(*point, lacunarity))
+                .collect();
         }
 
         // Scale the result to the [-1,1] range.
-        result * 0.5
+        results.par_iter().map(|result| result * 0.5).collect()
     }
 }

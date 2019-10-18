@@ -1,5 +1,6 @@
 use crate::math::{clamp, interpolate};
 use crate::noise_fns::NoiseFn;
+use rayon::prelude::*;
 use std;
 
 /// Noise function that maps the output value from the source function onto a
@@ -87,52 +88,59 @@ impl<'a, T> Terrace<'a, T> {
 }
 
 impl<'a, T> NoiseFn<T> for Terrace<'a, T> {
-    fn get(&self, point: T) -> f64 {
+    fn generate(&self, points: &[T]) -> Vec<f64> {
         // confirm that there's at least 2 control points in the vector.
         assert!(self.control_points.len() >= 2);
 
-        // get output value from the source function
-        let source_value = self.source.get(point);
+        let control_points = &self.control_points;
+        let invert_terraces = self.invert_terraces;
 
-        // Find the first element in the control point array that has a input
-        // value larger than the output value from the source function
-        let index_pos = self
-            .control_points
-            .iter()
-            .position(|&x| x >= source_value)
-            .unwrap_or_else(|| self.control_points.len());
-
-        // Find the two nearest control points so that we can map their values
-        // onto a quadratic curve.
-        let index0 = clamp_index(index_pos as isize - 1, 0, self.control_points.len() - 1);
-        let index1 = clamp_index(index_pos as isize, 0, self.control_points.len() - 1);
-
-        // If some control points are missing (which occurs if the value from
-        // the source function is greater than the largest input value or less
-        // than the smallest input value of the control point array), get the
-        // corresponding output value of the nearest control point and exit.
-        if index0 == index1 {
-            return self.control_points[index1];
-        }
-
-        // Compute the alpha value used for cubic interpolation
-        let mut input0 = self.control_points[index0];
-        let mut input1 = self.control_points[index1];
-        let mut alpha = (source_value - input0) / (input1 - input0);
-
-        if self.invert_terraces {
-            alpha = 1.0 - alpha;
-            std::mem::swap(&mut input0, &mut input1);
-        }
-
-        // Squaring the alpha produces the terrace effect.
-        alpha *= alpha;
-
-        // Now perform the cubic interpolation and return.
-        interpolate::linear(input0, input1, alpha)
+        self.source
+            .generate(points)
+            .par_iter()
+            .map(|value| apply_terrace(*value, control_points, invert_terraces))
+            .collect()
     }
 }
 
 fn clamp_index(index: isize, min: usize, max: usize) -> usize {
     clamp(index, min as isize, max as isize) as usize
+}
+
+fn apply_terrace(value: f64, control_points: &[f64], invert_terraces: bool) -> f64 {
+    // Find the first element in the control point array that has a input
+    // value larger than the output value from the source function
+    let index_pos = control_points
+        .iter()
+        .position(|&x| x >= value)
+        .unwrap_or_else(|| control_points.len());
+
+    // Find the two nearest control points so that we can map their values
+    // onto a quadratic curve.
+    let index0 = clamp_index(index_pos as isize - 1, 0, control_points.len() - 1);
+    let index1 = clamp_index(index_pos as isize, 0, control_points.len() - 1);
+
+    // If some control points are missing (which occurs if the value from
+    // the source function is greater than the largest input value or less
+    // than the smallest input value of the control point array), get the
+    // corresponding output value of the nearest control point and exit.
+    if index0 == index1 {
+        return control_points[index1];
+    }
+
+    // Compute the alpha value used for cubic interpolation
+    let mut input0 = control_points[index0];
+    let mut input1 = control_points[index1];
+    let mut alpha = (value - input0) / (input1 - input0);
+
+    if invert_terraces {
+        alpha = 1.0 - alpha;
+        std::mem::swap(&mut input0, &mut input1);
+    }
+
+    // Squaring the alpha produces the terrace effect.
+    alpha *= alpha;
+
+    // Now perform the cubic interpolation and return.
+    interpolate::linear(input0, input1, alpha)
 }
