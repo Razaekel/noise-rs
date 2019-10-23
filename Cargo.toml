@@ -95,7 +95,7 @@ name = "exponent"
 required-features = ["image"]
 
 [[example]]
-name = "invert"
+name = "negate"
 required-features = ["image"]
 
 [[example]]
