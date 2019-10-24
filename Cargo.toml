@@ -9,12 +9,16 @@ license = "Apache-2.0/MIT"
 keywords = ["math", "random"]
 authors = ["The Noise-rs Developers."]
 
+[profile.release]
+debug = true
+
 [lib]
 name = "noise"
 
 [dependencies]
 rand = "0.5"
 image = { version = "0.18", optional = true }
+rayon = "1.2.0"
 
 [features]
 default = ["image"]
