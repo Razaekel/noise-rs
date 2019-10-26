@@ -10,7 +10,7 @@ mod fbm;
 mod hybridmulti;
 mod ridgedmulti;
 
-use noise_fns::{Perlin, Seedable};
+use crate::noise_fns::{Perlin, Seedable};
 
 /// Trait for `MultiFractal` functions
 pub trait MultiFractal {

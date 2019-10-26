@@ -15,7 +15,7 @@
 extern crate image;
 extern crate rand;
 
-pub use noise_fns::*;
+pub use crate::noise_fns::*;
 
 mod gradient;
 mod math;

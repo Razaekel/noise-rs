@@ -1,4 +1,4 @@
-use noise_fns::NoiseFn;
+use crate::noise_fns::NoiseFn;
 
 /// Noise function that negates the output value from the source function.
 pub struct Negate<'a, T: 'a> {

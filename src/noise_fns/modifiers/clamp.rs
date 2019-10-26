@@ -1,5 +1,5 @@
-use math;
-use noise_fns::NoiseFn;
+use crate::math;
+use crate::noise_fns::NoiseFn;
 
 /// Noise function that clamps the output value from the source function to a
 /// range of values.

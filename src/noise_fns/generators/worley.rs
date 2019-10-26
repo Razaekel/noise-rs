@@ -1,7 +1,7 @@
-use math;
+use crate::math;
 
-use noise_fns::{NoiseFn, Seedable};
-use permutationtable::PermutationTable;
+use crate::noise_fns::{NoiseFn, Seedable};
+use crate::permutationtable::PermutationTable;
 use std;
 
 /// Noise function that outputs Worley noise.
