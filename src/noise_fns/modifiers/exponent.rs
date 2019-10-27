@@ -1,6 +1,6 @@
-use noise_fns::NoiseFn;
+use crate::noise_fns::NoiseFn;
 
-use math::scale_shift;
+use crate::math::scale_shift;
 
 /// Noise function that maps the output value from the source function onto an
 /// exponential curve.

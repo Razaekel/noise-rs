@@ -1,6 +1,6 @@
-use math::{self, interpolate};
-use noise_fns::{NoiseFn, Seedable};
-use permutationtable::PermutationTable;
+use crate::math::{self, interpolate};
+use crate::noise_fns::{NoiseFn, Seedable};
+use crate::permutationtable::PermutationTable;
 
 /// Noise function that outputs 2/3/4-dimensional Value noise.
 #[derive(Clone, Copy, Debug)]

@@ -1,6 +1,6 @@
-use noise_fns::{NoiseFn, Seedable};
-use permutationtable::PermutationTable;
-use {gradient, math};
+use crate::noise_fns::{NoiseFn, Seedable};
+use crate::permutationtable::PermutationTable;
+use crate::{gradient, math};
 
 /// Noise function that outputs 2/3/4-dimensional Perlin noise.
 #[derive(Clone, Copy, Debug)]

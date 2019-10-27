@@ -1,4 +1,4 @@
-use noise_fns::NoiseFn;
+use crate::noise_fns::NoiseFn;
 
 /// Noise function that outputs the absolute value of the output value from the
 /// source function.

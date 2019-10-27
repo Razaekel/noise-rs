@@ -4,7 +4,7 @@ use image;
 use std;
 #[cfg(feature = "image")]
 use std::path::Path;
-use utils::color_gradient::Color;
+use crate::utils::color_gradient::Color;
 
 const RASTER_MAX_WIDTH: u16 = 32_767;
 const RASTER_MAX_HEIGHT: u16 = 32_767;

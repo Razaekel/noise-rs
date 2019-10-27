@@ -1,4 +1,4 @@
-use noise_fns::{Fbm, MultiFractal, NoiseFn, Seedable};
+use crate::noise_fns::{Fbm, MultiFractal, NoiseFn, Seedable};
 
 /// Noise function that randomly displaces the input value before returning the
 /// output value from the source function.

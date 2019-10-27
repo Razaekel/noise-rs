@@ -1,5 +1,5 @@
-use math::{self, interpolate};
-use noise_fns::NoiseFn;
+use crate::math::{self, interpolate};
+use crate::noise_fns::NoiseFn;
 use std;
 
 /// Noise function that maps the output value from the source function onto an

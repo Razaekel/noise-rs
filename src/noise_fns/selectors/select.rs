@@ -1,5 +1,5 @@
-use math::interpolate;
-use noise_fns::NoiseFn;
+use crate::math::interpolate;
+use crate::noise_fns::NoiseFn;
 
 /// Noise function that outputs the value selected from one of two source
 /// functions chosen by the output value from a control function.

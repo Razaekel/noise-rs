@@ -1,4 +1,4 @@
-use math::interpolate;
+use crate::math::interpolate;
 use std;
 use std::f64::consts::SQRT_2;
 

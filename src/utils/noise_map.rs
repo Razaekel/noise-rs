@@ -1,7 +1,7 @@
 #[cfg(feature = "image")]
 use image;
 #[cfg(feature = "image")]
-use math;
+use crate::math;
 #[cfg(feature = "image")]
 use std;
 #[cfg(feature = "image")]

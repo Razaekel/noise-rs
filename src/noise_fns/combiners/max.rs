@@ -1,4 +1,4 @@
-use noise_fns::NoiseFn;
+use crate::noise_fns::NoiseFn;
 
 /// Noise function that outputs the larger of the two output values from two source
 /// functions.

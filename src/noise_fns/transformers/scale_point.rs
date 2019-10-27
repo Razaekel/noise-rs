@@ -1,4 +1,4 @@
-use noise_fns::NoiseFn;
+use crate::noise_fns::NoiseFn;
 
 /// Noise function that scales the coordinates of the input value before
 /// returning the output value from the source function.
