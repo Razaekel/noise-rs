@@ -17,21 +17,21 @@ criterion_main!(perlin, perlin_64x64);
 fn bench_perlin2(c: &mut Criterion) {
     let perlin = Perlin::new();
     c.bench_function("perlin 2d", |b| {
-        b.iter(|| perlin.get(black_box([42.0f64, 37.0])))
+        b.iter(|| perlin.get(black_box([42.0_f64, 37.0])))
     });
 }
 
 fn bench_perlin3(c: &mut Criterion) {
     let perlin = Perlin::new();
     c.bench_function("perlin 3d", |b| {
-        b.iter(|| perlin.get(black_box([42.0f64, 37.0, 26.0])))
+        b.iter(|| perlin.get(black_box([42.0_f64, 37.0, 26.0])))
     });
 }
 
 fn bench_perlin4(c: &mut Criterion) {
     let perlin = Perlin::new();
     c.bench_function("perlin 4d", |b| {
-        b.iter(|| perlin.get(black_box([42.0f64, 37.0, 26.0, 128.0])))
+        b.iter(|| perlin.get(black_box([42.0_f64, 37.0, 26.0, 128.0])))
     });
 }
 

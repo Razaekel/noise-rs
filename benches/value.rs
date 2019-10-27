@@ -17,21 +17,21 @@ criterion_main!(value, value_64x64);
 fn bench_value2(c: &mut Criterion) {
     let value = Value::new();
     c.bench_function("super simplex 4d", |b| {
-        b.iter(|| value.get(black_box([42.0f64, 37.0])))
+        b.iter(|| value.get(black_box([42.0_f64, 37.0])))
     });
 }
 
 fn bench_value3(c: &mut Criterion) {
     let value = Value::new();
     c.bench_function("value 3d", |b| {
-        b.iter(|| value.get(black_box([42.0f64, 37.0, 26.0])))
+        b.iter(|| value.get(black_box([42.0_f64, 37.0, 26.0])))
     });
 }
 
 fn bench_value4(c: &mut Criterion) {
     let value = Value::new();
     c.bench_function("value 4d", |b| {
-        b.iter(|| value.get(black_box([42.0f64, 37.0, 26.0, 128.0])))
+        b.iter(|| value.get(black_box([42.0_f64, 37.0, 26.0, 128.0])))
     });
 }
 

@@ -39,42 +39,42 @@ criterion_main!(
 fn bench_worley2_range(c: &mut Criterion) {
     let worley = Worley::new().enable_range(true);
     c.bench_function("worley 2d - range", |b| {
-        b.iter(|| worley.get(black_box([42.0f64, 37.0])))
+        b.iter(|| worley.get(black_box([42.0_f64, 37.0])))
     });
 }
 
 fn bench_worley3_range(c: &mut Criterion) {
     let worley = Worley::new().enable_range(true);
     c.bench_function("worley 3d - range", |b| {
-        b.iter(|| worley.get(black_box([42.0f64, 37.0, 26.0])))
+        b.iter(|| worley.get(black_box([42.0_f64, 37.0, 26.0])))
     });
 }
 
 fn bench_worley4_range(c: &mut Criterion) {
     let worley = Worley::new().enable_range(true);
     c.bench_function("worley 4d - range", |b| {
-        b.iter(|| worley.get(black_box([42.0f64, 37.0, 26.0, 128.0])))
+        b.iter(|| worley.get(black_box([42.0_f64, 37.0, 26.0, 128.0])))
     });
 }
 
 fn bench_worley2_value(c: &mut Criterion) {
     let worley = Worley::new();
     c.bench_function("worley 2d - value", |b| {
-        b.iter(|| worley.get(black_box([42.0f64, 37.0])))
+        b.iter(|| worley.get(black_box([42.0_f64, 37.0])))
     });
 }
 
 fn bench_worley3_value(c: &mut Criterion) {
     let worley = Worley::new();
     c.bench_function("worley 3d - value", |b| {
-        b.iter(|| worley.get(black_box([42.0f64, 37.0, 26.0])))
+        b.iter(|| worley.get(black_box([42.0_f64, 37.0, 26.0])))
     });
 }
 
 fn bench_worley4_value(c: &mut Criterion) {
     let worley = Worley::new();
     c.bench_function("worley 4d - value", |b| {
-        b.iter(|| worley.get(black_box([42.0f64, 37.0, 26.0, 128.0])))
+        b.iter(|| worley.get(black_box([42.0_f64, 37.0, 26.0, 128.0])))
     });
 }
 
