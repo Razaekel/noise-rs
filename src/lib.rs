@@ -11,10 +11,6 @@
 
 #![deny(missing_copy_implementations)]
 
-#[cfg(feature = "image")]
-extern crate image;
-extern crate rand;
-
 pub use crate::noise_fns::*;
 
 mod gradient;
