@@ -27,7 +27,7 @@ use std;
 ///
 /// This noise function is often used to generate terrain features such as the
 /// stereotypical desert canyon.
-pub struct Terrace<'a, T: 'a> {
+pub struct Terrace<'a, T> {
     /// Outputs a value.
     pub source: &'a dyn NoiseFn<T>,
 

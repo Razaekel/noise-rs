@@ -7,7 +7,7 @@ use crate::{math::scale_shift, noise_fns::NoiseFn};
 /// this noise function first normalizes the output value (the range becomes 0.0
 /// to 1.0), maps that value onto an exponential curve, then rescales that
 /// value back to the original range.
-pub struct Exponent<'a, T: 'a> {
+pub struct Exponent<'a, T> {
     /// Outputs a value.
     pub source: &'a dyn NoiseFn<T>,
 

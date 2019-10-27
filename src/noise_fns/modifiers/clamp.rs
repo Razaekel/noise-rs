@@ -2,7 +2,7 @@ use crate::{math, noise_fns::NoiseFn};
 
 /// Noise function that clamps the output value from the source function to a
 /// range of values.
-pub struct Clamp<'a, T: 'a> {
+pub struct Clamp<'a, T> {
     /// Outputs a value.
     pub source: &'a dyn NoiseFn<T>,
 

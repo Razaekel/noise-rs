@@ -5,7 +5,7 @@ use crate::{math::interpolate, noise_fns::NoiseFn};
 ///
 /// This noise function uses linear interpolation to perform the blending
 /// operation.
-pub struct Blend<'a, T: 'a> {
+pub struct Blend<'a, T> {
     /// Outputs one of the values to blend.
     pub source1: &'a dyn NoiseFn<T>,
 

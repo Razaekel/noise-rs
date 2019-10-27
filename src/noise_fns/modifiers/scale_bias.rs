@@ -5,7 +5,7 @@ use crate::noise_fns::NoiseFn;
 ///
 /// The function retrieves the output value from the source function, multiplies
 /// it with the scaling factor, adds the bias to it, then outputs the value.
-pub struct ScaleBias<'a, T: 'a> {
+pub struct ScaleBias<'a, T> {
     /// Outputs a value.
     pub source: &'a dyn NoiseFn<T>,
 
