@@ -1,4 +1,4 @@
-use crate::math;
+use crate::math::clamp;
 use crate::noise_fns::NoiseFn;
 use rayon::prelude::*;
 

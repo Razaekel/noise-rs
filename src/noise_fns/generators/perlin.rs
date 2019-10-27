@@ -1,7 +1,7 @@
 use crate::noise_fns::{NoiseFn, Seedable};
 use crate::permutationtable::PermutationTable;
 use rayon::prelude::*;
-use {math, math::interpolate};
+use crate::{math, math::interpolate};
 
 /// Noise function that outputs 2/3/4-dimensional Perlin noise.
 #[derive(Clone, Copy, Debug)]
@@ -229,7 +229,7 @@ impl NoiseFn<[f64; 3]> for Perlin {
 
 /// 4-dimensional perlin noise
 impl NoiseFn<[f64; 4]> for Perlin {
-    fn generate(&self, point: &[[f64; 4]]) -> Vec<f64> {
+    fn generate(&self, _point: &[[f64; 4]]) -> Vec<f64> {
         unimplemented!();
     }
 

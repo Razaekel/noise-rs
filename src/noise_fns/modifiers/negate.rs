@@ -1,6 +1,7 @@
 use crate::noise_fns::NoiseFn;
+use rayon::prelude::*;
 
-/// Noise function that negates the output value from the source function.
+/// Noise function that inverts the output value from the source function.
 pub struct Negate<'a, T: 'a> {
     /// Outputs a value.
     pub source: &'a dyn NoiseFn<T>,
@@ -13,7 +14,11 @@ impl<'a, T> Negate<'a, T> {
 }
 
 impl<'a, T> NoiseFn<T> for Negate<'a, T> {
-    fn get(&self, point: T) -> f64 {
-        -self.source.get(point)
+    fn generate(&self, points: &[T]) -> Vec<f64> {
+        self.source
+            .generate(points)
+            .par_iter()
+            .map(|value| -value)
+            .collect()
     }
 }

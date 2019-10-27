@@ -1,4 +1,3 @@
-use crate::math::interpolate;
 use crate::noise_fns::NoiseFn;
 use crate::utils::noise_map::NoiseMap;
 
