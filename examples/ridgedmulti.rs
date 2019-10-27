@@ -2,8 +2,7 @@
 
 extern crate noise;
 
-use noise::utils::*;
-use noise::RidgedMulti;
+use noise::{utils::*, RidgedMulti};
 
 fn main() {
     let ridged_multi = RidgedMulti::new();

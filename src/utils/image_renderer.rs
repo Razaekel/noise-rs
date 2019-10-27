@@ -1,10 +1,7 @@
 use crate::math::interpolate;
-use std;
-use std::f64::consts::SQRT_2;
+use std::{self, f64::consts::SQRT_2};
 
-use super::color_gradient::*;
-use super::noise_image::*;
-use super::noise_map::*;
+use super::{color_gradient::*, noise_image::*, noise_map::*};
 
 pub struct ImageRenderer {
     // The color gradient used to specify the image colors.

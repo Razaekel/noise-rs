@@ -1,7 +1,6 @@
 extern crate noise;
 
-use noise::utils::*;
-use noise::{Cylinders, RotatePoint};
+use noise::{utils::*, Cylinders, RotatePoint};
 
 fn main() {
     let cylinders = Cylinders::new();
