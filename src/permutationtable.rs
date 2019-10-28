@@ -1,7 +1,9 @@
+use rand_xorshift::XorShiftRng;
 use rand::{
     distributions::{Distribution, Standard},
-    Rng, SeedableRng, XorShiftRng,
+    Rng, SeedableRng,
 };
+use rand::seq::SliceRandom;
 use std::fmt;
 
 const TABLE_SIZE: usize = 256;
@@ -19,7 +21,7 @@ impl Distribution<PermutationTable> for Standard {
     /// Generates a PermutationTable using a random seed.
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> PermutationTable {
         let mut seq: Vec<u8> = (0..TABLE_SIZE).map(|x| x as u8).collect();
-        rng.shuffle(&mut *seq);
+        seq.shuffle(rng);
 
         // It's unfortunate that this double-initializes the array, but Rust
         // doesn't currently provide a clean way to do this in one pass. Hopefully
