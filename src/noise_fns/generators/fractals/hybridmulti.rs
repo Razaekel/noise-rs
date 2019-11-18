@@ -1,7 +1,7 @@
-use crate::math;
-
-use crate::noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
-use std;
+use crate::{
+    math,
+    noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable},
+};
 
 /// Noise function that outputs hybrid Multifractal noise.
 ///
@@ -44,8 +44,8 @@ pub struct HybridMulti {
 impl HybridMulti {
     pub const DEFAULT_SEED: u32 = 0;
     pub const DEFAULT_OCTAVES: usize = 6;
-    pub const DEFAULT_FREQUENCY: f64 = 2.0;
-    pub const DEFAULT_LACUNARITY: f64 = std::f64::consts::PI * 2.0 / 3.0;
+    pub const DEFAULT_FREQUENCY: f64 = 1.0;
+    pub const DEFAULT_LACUNARITY: f64 = 2.0;
     pub const DEFAULT_PERSISTENCE: f64 = 0.25;
     pub const MAX_OCTAVES: usize = 32;
 
@@ -126,7 +126,7 @@ impl NoiseFn<[f64; 2]> for HybridMulti {
         // Spectral construction inner loop, where the fractal is built.
         for x in 1..self.octaves {
             // Prevent divergence.
-            weight = weight.max(1.0);
+            weight = weight.min(1.0);
 
             // Raise the spatial frequency.
             point = math::mul2(point, self.lacunarity);
@@ -152,34 +152,66 @@ impl NoiseFn<[f64; 2]> for HybridMulti {
 /// 3-dimensional `HybridMulti` noise
 impl NoiseFn<[f64; 3]> for HybridMulti {
     fn get(&self, mut point: [f64; 3]) -> f64 {
-        // First unscaled octave of function; later octaves are scaled.
-        point = math::mul3(point, self.frequency);
-        let mut result = self.sources[0].get(point) * self.persistence;
-        let mut weight = result;
+        //        // First unscaled octave of function; later octaves are scaled.
+        //        point = math::mul3(point, self.frequency);
+        //        let mut result = self.sources[0].get(point) * self.persistence;
+        //        let mut weight = result;
+        //
+        //        // Spectral construction inner loop, where the fractal is built.
+        //        for x in 1..self.octaves {
+        //            // Prevent divergence.
+        //            weight = weight.max(1.0);
+        //
+        //            // Raise the spatial frequency.
+        //            point = math::mul3(point, self.lacunarity);
+        //
+        //            // Get noise value.
+        //            let mut signal = self.sources[x].get(point);
+        //
+        //            // Scale the amplitude appropriately for this frequency.
+        //            signal *= self.persistence.powi(x as i32);
+        //
+        //            // Add it in, weighted by previous octave's noise value.
+        //            result += weight * signal;
+        //
+        //            // Update the weighting value.
+        //            weight *= signal;
+        //        }
+        //
+        //        // Scale the result to the [-1,1] range
+        //        result * 3.0
 
-        // Spectral construction inner loop, where the fractal is built.
-        for x in 1..self.octaves {
-            // Prevent divergence.
-            weight = weight.max(1.0);
+        let h = 0.25;
+        let lacunarity = 2.0;
+        let offset = 0.0;
 
-            // Raise the spatial frequency.
-            point = math::mul3(point, self.lacunarity);
+        let mut frequency: f64 = 1.0;
+        let mut _remainder: f64;
 
-            // Get noise value.
-            let mut signal = self.sources[x].get(point);
+        let mut exponent_array = vec![0.0; self.octaves];
 
-            // Scale the amplitude appropriately for this frequency.
-            signal *= self.persistence.powi(x as i32);
-
-            // Add it in, weighted by previous octave's noise value.
-            result += weight * signal;
-
-            // Update the weighting value.
-            weight *= signal;
+        for i in 0..self.octaves {
+            exponent_array[i] = frequency.powf(-h);
+            frequency *= lacunarity;
         }
 
-        // Scale the result to the [-1,1] range
-        result * 3.0
+        let mut result = (self.sources[0].get(point) + offset) * exponent_array[0];
+        let mut weight = result;
+        point = math::mul3(point, lacunarity);
+
+        for i in 1..self.octaves {
+            weight = weight.min(1.0);
+
+            let signal = (self.sources[i].get(point) + offset) * exponent_array[i];
+
+            result += weight * signal;
+
+            weight *= signal;
+
+            point = math::mul3(point, lacunarity);
+        }
+
+        result
     }
 }
 
