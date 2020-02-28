@@ -16,7 +16,7 @@ name = "noise"
 [dependencies]
 rand = "0.7"
 rand_xorshift = "0.2"
-image = { version = "0.18", optional = true }
+image = { version = "0.23", optional = true }
 
 [features]
 default = ["image"]
