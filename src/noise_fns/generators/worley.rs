@@ -3,7 +3,6 @@ use crate::{
     noise_fns::{NoiseFn, Seedable},
     permutationtable::PermutationTable,
 };
-use std;
 
 /// Noise function that outputs Worley noise.
 #[derive(Clone, Copy, Debug)]
@@ -376,6 +375,7 @@ fn get_vec3(index: usize) -> [f64; 3] {
     }
 }
 
+#[allow(clippy::cognitive_complexity)]
 impl NoiseFn<[f64; 4]> for Worley {
     fn get(&self, point: [f64; 4]) -> f64 {
         fn get_point(perm_table: &PermutationTable, whole: [isize; 4]) -> [f64; 4] {

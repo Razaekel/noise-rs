@@ -1,6 +1,5 @@
 use crate::math::{self, scale_shift};
 use crate::noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
-use std;
 
 /// Noise function that outputs ridged-multifractal noise.
 ///

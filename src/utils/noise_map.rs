@@ -1,8 +1,6 @@
 #[cfg(feature = "image")]
 use crate::math;
 #[cfg(feature = "image")]
-use image;
-#[cfg(feature = "image")]
 use std::{self, path::Path};
 
 const RASTER_MAX_WIDTH: u16 = 32_767;

@@ -1,5 +1,3 @@
-use std;
-
 #[inline(always)]
 #[rustfmt::skip]
 pub(crate) fn get2(index: usize) -> [f64; 2] {

@@ -2,7 +2,6 @@ use crate::{
     math::{self, interpolate},
     noise_fns::NoiseFn,
 };
-use std;
 
 /// Noise function that maps the output value from the source function onto an
 /// arbitrary function curve.
