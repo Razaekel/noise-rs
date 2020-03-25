@@ -22,21 +22,21 @@ criterion_main!(open_simplex, open_simplex_64x64);
 fn bench_open_simplex2(c: &mut Criterion) {
     let open_simplex = OpenSimplex::new();
     c.bench_function("open simplex 2d", |b| {
-        b.iter(|| open_simplex.get(black_box([42.0f64, 37.0])))
+        b.iter(|| open_simplex.get(black_box([42.0_f64, 37.0])))
     });
 }
 
 fn bench_open_simplex3(c: &mut Criterion) {
     let open_simplex = OpenSimplex::new();
     c.bench_function("open simplex 3d", |b| {
-        b.iter(|| open_simplex.get(black_box([42.0f64, 37.0, 26.0])))
+        b.iter(|| open_simplex.get(black_box([42.0_f64, 37.0, 26.0])))
     });
 }
 
 fn bench_open_simplex4(c: &mut Criterion) {
     let open_simplex = OpenSimplex::new();
     c.bench_function("open simplex 4d", |b| {
-        b.iter(|| open_simplex.get(black_box([42.0f64, 37.0, 26.0, 128.0])))
+        b.iter(|| open_simplex.get(black_box([42.0_f64, 37.0, 26.0, 128.0])))
     });
 }
 

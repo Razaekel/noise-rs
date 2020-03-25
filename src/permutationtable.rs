@@ -13,7 +13,7 @@ const TABLE_SIZE: usize = 256;
 /// Table creation is expensive, so in most circumstances you'll only want to
 /// create one of these per generator.
 #[derive(Copy, Clone)]
-pub struct PermutationTable {
+pub(crate) struct PermutationTable {
     values: [u8; TABLE_SIZE],
 }
 
@@ -84,8 +84,8 @@ impl fmt::Debug for PermutationTable {
 
 #[cfg(test)]
 mod tests {
-    use rand::random;
     use crate::{NoiseFn, Perlin, Seedable};
+    use rand::random;
 
     #[test]
     fn test_random_seed() {

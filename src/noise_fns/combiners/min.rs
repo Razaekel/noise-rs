@@ -2,7 +2,7 @@ use crate::noise_fns::NoiseFn;
 
 /// Noise function that outputs the smaller of the two output values from two source
 /// functions.
-pub struct Min<'a, T: 'a> {
+pub struct Min<'a, T> {
     /// Outputs a value.
     pub source1: &'a dyn NoiseFn<T>,
 

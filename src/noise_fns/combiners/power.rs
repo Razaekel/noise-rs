@@ -2,7 +2,7 @@ use crate::noise_fns::NoiseFn;
 
 /// Noise function that raises the output value from the first source function
 /// to the power of the output value of the second source function.
-pub struct Power<'a, T: 'a> {
+pub struct Power<'a, T> {
     /// Outputs a value.
     pub source1: &'a dyn NoiseFn<T>,
 
