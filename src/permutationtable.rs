@@ -1,9 +1,9 @@
-use rand_xorshift::XorShiftRng;
+use rand::seq::SliceRandom;
 use rand::{
     distributions::{Distribution, Standard},
     Rng, SeedableRng,
 };
-use rand::seq::SliceRandom;
+use rand_xorshift::XorShiftRng;
 use std::fmt;
 
 const TABLE_SIZE: usize = 256;
