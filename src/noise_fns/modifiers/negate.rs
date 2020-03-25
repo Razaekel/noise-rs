@@ -1,7 +1,7 @@
 use crate::noise_fns::NoiseFn;
 
 /// Noise function that negates the output value from the source function.
-pub struct Negate<'a, T: 'a> {
+pub struct Negate<'a, T> {
     /// Outputs a value.
     pub source: &'a dyn NoiseFn<T>,
 }

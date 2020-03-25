@@ -2,10 +2,12 @@
 //! Instead, these functions use the `OpenSimplex` algorithm, as detailed here:
 //! <http://uniblock.tumblr.com/post/97868843242/noise>
 
-use crate::noise_fns::{NoiseFn, Seedable};
-use crate::permutationtable::PermutationTable;
+use crate::{
+    gradient, math,
+    noise_fns::{NoiseFn, Seedable},
+    permutationtable::PermutationTable,
+};
 use std::ops::Add;
-use crate::{gradient, math};
 
 const STRETCH_CONSTANT_2D: f64 = -0.211_324_865_405_187; //(1/sqrt(2+1)-1)/2;
 const SQUISH_CONSTANT_2D: f64 = 0.366_025_403_784_439; //(sqrt(2+1)-1)/2;

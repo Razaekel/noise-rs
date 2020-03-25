@@ -1,7 +1,6 @@
 extern crate noise;
 
-use noise::utils::*;
-use noise::*;
+use noise::{*, utils::*};
 
 fn main() {
     // Large slime bubble texture.

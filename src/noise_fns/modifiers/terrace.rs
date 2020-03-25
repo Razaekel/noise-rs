@@ -1,5 +1,7 @@
-use crate::math::{clamp, interpolate};
-use crate::noise_fns::NoiseFn;
+use crate::{
+    math::{clamp, interpolate},
+    noise_fns::NoiseFn,
+};
 use std;
 
 /// Noise function that maps the output value from the source function onto a
@@ -25,7 +27,7 @@ use std;
 ///
 /// This noise function is often used to generate terrain features such as the
 /// stereotypical desert canyon.
-pub struct Terrace<'a, T: 'a> {
+pub struct Terrace<'a, T> {
     /// Outputs a value.
     pub source: &'a dyn NoiseFn<T>,
 

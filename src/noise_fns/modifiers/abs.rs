@@ -2,7 +2,7 @@ use crate::noise_fns::NoiseFn;
 
 /// Noise function that outputs the absolute value of the output value from the
 /// source function.
-pub struct Abs<'a, T: 'a> {
+pub struct Abs<'a, T> {
     /// Outputs a value.
     pub source: &'a dyn NoiseFn<T>,
 }

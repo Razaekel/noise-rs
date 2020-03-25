@@ -2,7 +2,7 @@ use crate::noise_fns::NoiseFn;
 
 /// Noise function that outputs the product of the two output values from two source
 /// functions.
-pub struct Multiply<'a, T: 'a> {
+pub struct Multiply<'a, T> {
     /// Outputs a value.
     pub source1: &'a dyn NoiseFn<T>,
 

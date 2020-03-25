@@ -1,10 +1,7 @@
 use crate::math::interpolate;
-use std;
-use std::f64::consts::SQRT_2;
+use std::{self, f64::consts::SQRT_2};
 
-use super::color_gradient::*;
-use super::noise_image::*;
-use super::noise_map::*;
+use super::{color_gradient::*, noise_image::*, noise_map::*};
 
 pub struct ImageRenderer {
     // The color gradient used to specify the image colors.
@@ -408,10 +405,10 @@ impl LightSource {
             contrast: 1.0,
             elevation: 45.0,
             intensity: 1.0,
-            azimuth_cosine: 45.0f64.to_radians().cos(),
-            azimuth_sine: 45.0f64.to_radians().sin(),
-            elevation_cosine: 45.0f64.to_radians().cos(),
-            elevation_sine: 45.0f64.to_radians().sin(),
+            azimuth_cosine: 45.0_f64.to_radians().cos(),
+            azimuth_sine: 45.0_f64.to_radians().sin(),
+            elevation_cosine: 45.0_f64.to_radians().cos(),
+            elevation_sine: 45.0_f64.to_radians().sin(),
             recalculate_light_values: false,
         }
     }

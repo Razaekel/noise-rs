@@ -2,7 +2,7 @@ use std;
 
 #[inline(always)]
 #[rustfmt::skip]
-pub fn get2(index: usize) -> [f64; 2] {
+pub(crate) fn get2(index: usize) -> [f64; 2] {
     // Vectors are combinations of -1, 0, and 1
     // Precompute the normalized element
     const DIAG : f64 = std::f64::consts::FRAC_1_SQRT_2;
@@ -22,7 +22,7 @@ pub fn get2(index: usize) -> [f64; 2] {
 
 #[inline(always)]
 #[rustfmt::skip]
-pub fn get3(index: usize) -> [f64; 3] {
+pub(crate) fn get3(index: usize) -> [f64; 3] {
     // Vectors are combinations of -1, 0, and 1
     // Precompute the normalized elements
     const DIAG : f64 = std::f64::consts::FRAC_1_SQRT_2;
@@ -56,7 +56,7 @@ pub fn get3(index: usize) -> [f64; 3] {
 
 #[inline(always)]
 #[rustfmt::skip]
-pub fn get4(index: usize) -> [f64; 4] {
+pub(crate) fn get4(index: usize) -> [f64; 4] {
     // Vectors are combinations of -1, 0, and 1
     // Precompute the normalized elements
     const DIAG : f64 = 0.577_350_269_189_625_8;
