@@ -1,11 +1,11 @@
-//pub use self::cache::*;
+pub use self::cache::*;
 pub use self::combiners::*;
 pub use self::generators::*;
 pub use self::modifiers::*;
 pub use self::selectors::*;
 pub use self::transformers::*;
 
-//mod cache;
+mod cache;
 mod combiners;
 mod generators;
 mod modifiers;
