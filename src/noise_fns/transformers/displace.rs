@@ -46,9 +46,11 @@ impl<Source, XDisplace, YDisplace, ZDisplace, UDisplace>
 impl<Source, XDisplace, YDisplace, ZDisplace, UDisplace> NoiseFn<[f64; 2]>
     for Displace<Source, XDisplace, YDisplace, ZDisplace, UDisplace>
 where
-    Source: NoiseFn<[f64; 2]>,
-    XDisplace: NoiseFn<[f64; 2]>,
-    YDisplace: NoiseFn<[f64; 2]>,
+    Source: NoiseFn<[f64; 2]> + Send + Sync,
+    XDisplace: NoiseFn<[f64; 2]> + Send + Sync,
+    YDisplace: NoiseFn<[f64; 2]> + Send + Sync,
+    ZDisplace: Send + Sync,
+    UDisplace: Send + Sync,
 {
     fn get(&self, point: [f64; 2]) -> f64 {
         // Get the output values from the displacement functions and add them to
@@ -66,10 +68,11 @@ where
 impl<Source, XDisplace, YDisplace, ZDisplace, UDisplace> NoiseFn<[f64; 3]>
     for Displace<Source, XDisplace, YDisplace, ZDisplace, UDisplace>
 where
-    Source: NoiseFn<[f64; 3]>,
-    XDisplace: NoiseFn<[f64; 3]>,
-    YDisplace: NoiseFn<[f64; 3]>,
-    ZDisplace: NoiseFn<[f64; 3]>,
+    Source: NoiseFn<[f64; 3]> + Send + Sync,
+    XDisplace: NoiseFn<[f64; 3]> + Send + Sync,
+    YDisplace: NoiseFn<[f64; 3]> + Send + Sync,
+    ZDisplace: NoiseFn<[f64; 3]> + Send + Sync,
+    UDisplace: Send + Sync,
 {
     fn get(&self, point: [f64; 3]) -> f64 {
         // Get the output values from the displacement functions and add them to
@@ -89,11 +92,11 @@ where
 impl<Source, XDisplace, YDisplace, ZDisplace, UDisplace> NoiseFn<[f64; 4]>
     for Displace<Source, XDisplace, YDisplace, ZDisplace, UDisplace>
 where
-    Source: NoiseFn<[f64; 4]>,
-    XDisplace: NoiseFn<[f64; 4]>,
-    YDisplace: NoiseFn<[f64; 4]>,
-    ZDisplace: NoiseFn<[f64; 4]>,
-    UDisplace: NoiseFn<[f64; 4]>,
+    Source: NoiseFn<[f64; 4]> + Send + Sync,
+    XDisplace: NoiseFn<[f64; 4]> + Send + Sync,
+    YDisplace: NoiseFn<[f64; 4]> + Send + Sync,
+    ZDisplace: NoiseFn<[f64; 4]> + Send + Sync,
+    UDisplace: NoiseFn<[f64; 4]> + Send + Sync,
 {
     fn get(&self, point: [f64; 4]) -> f64 {
         // Get the output values from the displacement functions and add them to

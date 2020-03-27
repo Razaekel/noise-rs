@@ -397,3 +397,15 @@ impl NoiseFn<[f64; 4]> for Perlin {
         )
     }
 }
+
+#[test]
+fn test_send() {
+    fn assert_send<T: Send>() {}
+    assert_send::<Perlin>();
+}
+
+#[test]
+fn test_sync() {
+    fn assert_sync<T: Sync>() {}
+    assert_sync::<Perlin>();
+}

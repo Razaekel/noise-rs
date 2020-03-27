@@ -10,6 +10,9 @@ keywords = ["math", "random"]
 authors = ["The Noise-rs Developers."]
 edition = "2018"
 
+[profile.release]
+debug = true
+
 [lib]
 name = "noise"
 
@@ -17,6 +20,7 @@ name = "noise"
 rand = "0.7"
 rand_xorshift = "0.2"
 image = { version = "0.23", optional = true }
+rayon = "1.2.0"
 
 [features]
 default = ["image"]
@@ -148,9 +152,9 @@ required-features = ["image"]
 name = "hybridmulti"
 required-features = ["image"]
 
-[[example]]
-name = "cache"
-required-features = ["image"]
+# [[example]]
+# name = "cache"
+# required-features = ["image"]
 
 [[example]]
 name = "worley"
@@ -192,6 +196,6 @@ required-features = ["image"]
 name = "textureslime"
 required-features = ["image"]
 
-[[example]]
-name = "complexplanet"
-required-features = ["image"]
+# [[example]]
+# name = "complexplanet"
+# required-features = ["image"]

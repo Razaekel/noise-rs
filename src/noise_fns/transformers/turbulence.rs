@@ -192,3 +192,15 @@ where
             .get([x_distort, y_distort, z_distort, u_distort])
     }
 }
+
+#[test]
+fn test_send() {
+    fn assert_send<T: Send>() {}
+    assert_send::<Turbulence<&dyn NoiseFn<[f64; 2]>>>();
+}
+
+#[test]
+fn test_sync() {
+    fn assert_sync<T: Sync>() {}
+    assert_sync::<Turbulence<&dyn NoiseFn<[f64; 2]>>>();
+}
