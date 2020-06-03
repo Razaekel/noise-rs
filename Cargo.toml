@@ -22,7 +22,7 @@ image = { version = "0.23", optional = true }
 default = ["image"]
 
 [dev-dependencies]
-criterion = "0.1.2"
+criterion = "0.3"
 
 [[bench]]
 name = "open_simplex"
