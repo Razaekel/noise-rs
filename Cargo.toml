@@ -33,6 +33,10 @@ name = "perlin"
 harness = false
 
 [[bench]]
+name = "simplex"
+harness = false
+
+[[bench]]
 name = "super_simplex"
 harness = false
 
@@ -194,4 +198,8 @@ required-features = ["image"]
 
 [[example]]
 name = "complexplanet"
+required-features = ["image"]
+
+[[example]]
+name = "simplex"
 required-features = ["image"]
