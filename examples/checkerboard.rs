@@ -5,7 +5,7 @@ extern crate noise;
 use noise::{utils::*, Checkerboard};
 
 fn main() {
-    let checker = Checkerboard::new();
+    let checker = Checkerboard::default();
 
     PlaneMapBuilder::new(&checker)
         .build()
