@@ -11,11 +11,7 @@ use crate::noise_fns::NoiseFn;
 #[derive(Clone, Copy, Debug)]
 pub struct Checkerboard {
     /// Controls the size of the block in 2^(size).
-    pub size: usize,
-
-    // Dummy field to prevent struct initialization except through the
-    // new() constructor.
-    _dummy: (),
+    size: usize,
 }
 
 impl Checkerboard {
@@ -24,14 +20,12 @@ impl Checkerboard {
     pub fn new() -> Self {
         Self {
             size: 1 << Self::DEFAULT_SIZE,
-            _dummy: (),
         }
     }
 
     pub fn set_size(self, size: usize) -> Self {
         Self {
             size: 1 << size,
-            ..self
         }
     }
 }

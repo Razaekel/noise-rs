@@ -40,7 +40,7 @@ where
 {
     fn get(&self, point: [f64; 2]) -> f64 {
         match self.value.get() {
-            Some(value) if *self.point.borrow() == point => value,
+            Some(value) if quick_eq(&*self.point.borrow(), &point) => value,
             Some(_) | None => {
                 let value = self.source.get(point);
                 self.value.set(Some(value));
@@ -61,7 +61,7 @@ where
 {
     fn get(&self, point: [f64; 3]) -> f64 {
         match self.value.get() {
-            Some(value) if *self.point.borrow() == point => value,
+            Some(value) if quick_eq(&*self.point.borrow(), &point) => value,
             Some(_) | None => {
                 let value = self.source.get(point);
                 self.value.set(Some(value));
@@ -82,7 +82,7 @@ where
 {
     fn get(&self, point: [f64; 4]) -> f64 {
         match self.value.get() {
-            Some(value) if *self.point.borrow() == point => value,
+            Some(value) if quick_eq(&*self.point.borrow(), &point) => value,
             Some(_) | None => {
                 let value = self.source.get(point);
                 self.value.set(Some(value));
@@ -95,4 +95,10 @@ where
             }
         }
     }
+}
+
+fn quick_eq(a: &[f64], b: &[f64]) -> bool {
+    assert_eq!(a.len(), b.len());
+
+    a.iter().eq(b)
 }
