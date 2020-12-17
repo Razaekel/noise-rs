@@ -1,5 +1,4 @@
-use math;
-use std;
+use crate::math;
 
 pub type Color = [u8; 4];
 

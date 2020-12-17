@@ -1,8 +1,9 @@
-use math::{Point2, Point3, Point4};
+use rand::seq::SliceRandom;
 use rand::{
     distributions::{Distribution, Standard},
-    Rng, SeedableRng, XorShiftRng,
+    Rng, SeedableRng,
 };
+use rand_xorshift::XorShiftRng;
 use std::fmt;
 
 const TABLE_SIZE: usize = 256;
@@ -12,7 +13,7 @@ const TABLE_SIZE: usize = 256;
 /// Table creation is expensive, so in most circumstances you'll only want to
 /// create one of these per generator.
 #[derive(Copy, Clone)]
-pub struct PermutationTable {
+pub(crate) struct PermutationTable {
     values: [u8; TABLE_SIZE],
 }
 
@@ -20,7 +21,7 @@ impl Distribution<PermutationTable> for Standard {
     /// Generates a PermutationTable using a random seed.
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> PermutationTable {
         let mut seq: Vec<u8> = (0..TABLE_SIZE).map(|x| x as u8).collect();
-        rng.shuffle(&mut *seq);
+        seq.shuffle(rng);
 
         // It's unfortunate that this double-initializes the array, but Rust
         // doesn't currently provide a clean way to do this in one pass. Hopefully
@@ -59,17 +60,17 @@ impl PermutationTable {
         self.values[x] as usize
     }
 
-    pub fn get2(&self, pos: Point2<isize>) -> usize {
+    pub fn get2(&self, pos: [isize; 2]) -> usize {
         let y = (pos[1] & 0xff) as usize;
         self.values[self.get1(pos[0]) ^ y] as usize
     }
 
-    pub fn get3(&self, pos: Point3<isize>) -> usize {
+    pub fn get3(&self, pos: [isize; 3]) -> usize {
         let z = (pos[2] & 0xff) as usize;
         self.values[self.get2([pos[0], pos[1]]) ^ z] as usize
     }
 
-    pub fn get4(&self, pos: Point4<isize>) -> usize {
+    pub fn get4(&self, pos: [isize; 4]) -> usize {
         let w = (pos[3] & 0xff) as usize;
         self.values[self.get3([pos[0], pos[1], pos[2]]) ^ w] as usize
     }
@@ -83,8 +84,8 @@ impl fmt::Debug for PermutationTable {
 
 #[cfg(test)]
 mod tests {
+    use crate::{NoiseFn, Perlin, Seedable};
     use rand::random;
-    use {NoiseFn, Perlin, Seedable};
 
     #[test]
     fn test_random_seed() {

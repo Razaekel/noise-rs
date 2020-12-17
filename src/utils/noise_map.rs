@@ -1,11 +1,7 @@
 #[cfg(feature = "image")]
-use image;
+use crate::math;
 #[cfg(feature = "image")]
-use math;
-#[cfg(feature = "image")]
-use std;
-#[cfg(feature = "image")]
-use std::path::*;
+use std::{self, path::Path};
 
 const RASTER_MAX_WIDTH: u16 = 32_767;
 const RASTER_MAX_HEIGHT: u16 = 32_767;
@@ -112,7 +108,7 @@ impl NoiseMap {
             &*pixels,
             self.size.0 as u32,
             self.size.1 as u32,
-            image::ColorType::Gray(8),
+            image::ColorType::L8,
         );
 
         println!("\nFinished generating {}", filename);

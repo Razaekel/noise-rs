@@ -1,10 +1,9 @@
 extern crate noise;
 
-use noise::utils::*;
-use noise::{Checkerboard, ScalePoint};
+use noise::{utils::*, Checkerboard, ScalePoint};
 
 fn main() {
-    let cboard = Checkerboard::new();
+    let cboard = Checkerboard::default();
     let scale_point = ScalePoint::new(cboard).set_all_scales(1.0, 2.0, 3.0, 1.0);
 
     PlaneMapBuilder::new(&scale_point)

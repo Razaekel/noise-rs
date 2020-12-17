@@ -1,7 +1,6 @@
-use math;
-use math::{Point2, Point3, Point4};
-use noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
-use std;
+use crate::math;
+
+use crate::noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
 
 /// Noise function that outputs fBm (fractal Brownian motion) noise.
 ///
@@ -128,8 +127,8 @@ impl Seedable for Fbm {
 }
 
 /// 2-dimensional Fbm noise
-impl NoiseFn<Point2<f64>> for Fbm {
-    fn get(&self, mut point: Point2<f64>) -> f64 {
+impl NoiseFn<[f64; 2]> for Fbm {
+    fn get(&self, mut point: [f64; 2]) -> f64 {
         let mut result = 0.0;
 
         point = math::mul2(point, self.frequency);
@@ -155,8 +154,8 @@ impl NoiseFn<Point2<f64>> for Fbm {
 }
 
 /// 3-dimensional Fbm noise
-impl NoiseFn<Point3<f64>> for Fbm {
-    fn get(&self, mut point: Point3<f64>) -> f64 {
+impl NoiseFn<[f64; 3]> for Fbm {
+    fn get(&self, mut point: [f64; 3]) -> f64 {
         let mut result = 0.0;
 
         point = math::mul3(point, self.frequency);
@@ -182,8 +181,8 @@ impl NoiseFn<Point3<f64>> for Fbm {
 }
 
 /// 4-dimensional Fbm noise
-impl NoiseFn<Point4<f64>> for Fbm {
-    fn get(&self, mut point: Point4<f64>) -> f64 {
+impl NoiseFn<[f64; 4]> for Fbm {
+    fn get(&self, mut point: [f64; 4]) -> f64 {
         let mut result = 0.0;
 
         point = math::mul4(point, self.frequency);

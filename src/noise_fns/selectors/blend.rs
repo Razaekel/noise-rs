@@ -1,12 +1,11 @@
-use math::interpolate;
-use noise_fns::NoiseFn;
+use crate::{math::interpolate, noise_fns::NoiseFn};
 
 /// Noise function that outputs a weighted blend of the output values from two
 /// source functions given the output value supplied by a control function.
 ///
 /// This noise function uses linear interpolation to perform the blending
 /// operation.
-pub struct Blend<'a, T: 'a> {
+pub struct Blend<'a, T> {
     /// Outputs one of the values to blend.
     pub source1: &'a dyn NoiseFn<T>,
 

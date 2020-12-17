@@ -1,10 +1,9 @@
 extern crate noise;
 
-use noise::utils::*;
-use noise::{Cache, Checkerboard};
+use noise::{utils::*, Cache, Checkerboard};
 
 fn main() {
-    let cboard = Checkerboard::new();
+    let cboard = Checkerboard::default();
     let cache = Cache::new(&cboard);
 
     PlaneMapBuilder::new(&cache)

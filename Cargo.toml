@@ -4,23 +4,25 @@ description = "Procedural noise generation library."
 homepage = "https://github.com/razaekel/noise-rs"
 repository = "https://github.com/razaekel/noise-rs"
 documentation = "https://docs.rs/noise/"
-version = "0.6.0"
+version = "0.7.0"
 license = "Apache-2.0/MIT"
 keywords = ["math", "random"]
 authors = ["The Noise-rs Developers."]
+edition = "2018"
 
 [lib]
 name = "noise"
 
 [dependencies]
-rand = "0.5"
-image = { version = "0.18", optional = true }
+rand = "0.7"
+rand_xorshift = "0.2"
+image = { version = "0.23", optional = true }
 
 [features]
 default = ["image"]
 
 [dev-dependencies]
-criterion = "0.1.2"
+criterion = "0.3"
 
 [[bench]]
 name = "open_simplex"
@@ -95,7 +97,7 @@ name = "exponent"
 required-features = ["image"]
 
 [[example]]
-name = "invert"
+name = "negate"
 required-features = ["image"]
 
 [[example]]

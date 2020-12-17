@@ -1,10 +1,6 @@
+use crate::utils::color_gradient::Color;
 #[cfg(feature = "image")]
-use image;
-#[cfg(feature = "image")]
-use std;
-#[cfg(feature = "image")]
-use std::path::Path;
-use utils::color_gradient::Color;
+use std::{self, path::Path};
 
 const RASTER_MAX_WIDTH: u16 = 32_767;
 const RASTER_MAX_HEIGHT: u16 = 32_767;
@@ -121,7 +117,7 @@ impl NoiseImage {
             &*result,
             self.size.0 as u32,
             self.size.1 as u32,
-            image::ColorType::RGBA(8),
+            image::ColorType::Rgba8,
         );
 
         println!("\nFinished generating {}", filename);

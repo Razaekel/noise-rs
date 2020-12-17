@@ -11,12 +11,7 @@
 
 #![deny(missing_copy_implementations)]
 
-#[cfg(feature = "image")]
-extern crate image;
-extern crate rand;
-
-pub use math::{Point2, Point3, Point4};
-pub use noise_fns::*;
+pub use crate::noise_fns::*;
 
 mod gradient;
 mod math;

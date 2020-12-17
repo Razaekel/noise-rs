@@ -1,10 +1,9 @@
 extern crate noise;
 
-use noise::utils::*;
-use noise::{Checkerboard, Constant, Cylinders, Displace, Perlin};
+use noise::{utils::*, Checkerboard, Constant, Cylinders, Displace, Perlin};
 
 fn main() {
-    let cboard = Checkerboard::new();
+    let cboard = Checkerboard::default();
     let constant = Constant::new(0.0);
     let cylinders = Cylinders::new();
     let perlin = Perlin::new();

@@ -1,5 +1,4 @@
-use math::{Point2, Point3, Point4};
-use noise_fns::{Fbm, MultiFractal, NoiseFn, Seedable};
+use crate::noise_fns::{Fbm, MultiFractal, NoiseFn, Seedable};
 
 /// Noise function that randomly displaces the input value before returning the
 /// output value from the source function.
@@ -107,11 +106,11 @@ impl<Source> Seedable for Turbulence<Source> {
     }
 }
 
-impl<Source> NoiseFn<Point2<f64>> for Turbulence<Source>
+impl<Source> NoiseFn<[f64; 2]> for Turbulence<Source>
 where
-    Source: NoiseFn<Point2<f64>>,
+    Source: NoiseFn<[f64; 2]>,
 {
-    fn get(&self, point: Point2<f64>) -> f64 {
+    fn get(&self, point: [f64; 2]) -> f64 {
         // First, create offsets based on the input values to keep the sampled
         // points from being near a integer boundary. This is a result of
         // using perlin noise, which returns zero at integer boundaries.
@@ -128,11 +127,11 @@ where
     }
 }
 
-impl<Source> NoiseFn<Point3<f64>> for Turbulence<Source>
+impl<Source> NoiseFn<[f64; 3]> for Turbulence<Source>
 where
-    Source: NoiseFn<Point3<f64>>,
+    Source: NoiseFn<[f64; 3]>,
 {
-    fn get(&self, point: Point3<f64>) -> f64 {
+    fn get(&self, point: [f64; 3]) -> f64 {
         // First, create offsets based on the input values to keep the sampled
         // points from being near a integer boundary. This is a result of
         // using perlin noise, which returns zero at integer boundaries.
@@ -156,11 +155,11 @@ where
     }
 }
 
-impl<Source> NoiseFn<Point4<f64>> for Turbulence<Source>
+impl<Source> NoiseFn<[f64; 4]> for Turbulence<Source>
 where
-    Source: NoiseFn<Point4<f64>>,
+    Source: NoiseFn<[f64; 4]>,
 {
-    fn get(&self, point: Point4<f64>) -> f64 {
+    fn get(&self, point: [f64; 4]) -> f64 {
         // First, create offsets based on the input values to keep the sampled
         // points from being near a integer boundary. This is a result of
         // using perlin noise, which returns zero at integer boundaries.

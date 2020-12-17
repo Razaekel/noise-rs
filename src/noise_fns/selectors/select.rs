@@ -1,9 +1,8 @@
-use math::interpolate;
-use noise_fns::NoiseFn;
+use crate::{math::interpolate, noise_fns::NoiseFn};
 
 /// Noise function that outputs the value selected from one of two source
 /// functions chosen by the output value from a control function.
-pub struct Select<'a, T: 'a> {
+pub struct Select<'a, T> {
     /// Outputs a value.
     pub source1: &'a dyn NoiseFn<T>,
 

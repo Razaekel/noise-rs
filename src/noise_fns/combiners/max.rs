@@ -1,8 +1,8 @@
-use noise_fns::NoiseFn;
+use crate::noise_fns::NoiseFn;
 
 /// Noise function that outputs the larger of the two output values from two source
 /// functions.
-pub struct Max<'a, T: 'a> {
+pub struct Max<'a, T> {
     /// Outputs a value.
     pub source1: &'a dyn NoiseFn<T>,
 

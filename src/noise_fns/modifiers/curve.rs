@@ -1,7 +1,7 @@
-use math;
-use math::interpolate;
-use noise_fns::NoiseFn;
-use std;
+use crate::{
+    math::{self, interpolate},
+    noise_fns::NoiseFn,
+};
 
 /// Noise function that maps the output value from the source function onto an
 /// arbitrary function curve.
@@ -17,7 +17,7 @@ use std;
 /// four control points to the curve. If there is less than four control
 /// points, the get() method panics. Each control point can have any input
 /// and output value, although no two control points can have the same input.
-pub struct Curve<'a, T: 'a> {
+pub struct Curve<'a, T> {
     /// Outputs a value.
     pub source: &'a dyn NoiseFn<T>,
 

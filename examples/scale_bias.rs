@@ -1,7 +1,6 @@
 extern crate noise;
 
-use noise::utils::*;
-use noise::{Perlin, ScaleBias};
+use noise::{utils::*, Perlin, ScaleBias};
 
 fn main() {
     let perlin = Perlin::new();

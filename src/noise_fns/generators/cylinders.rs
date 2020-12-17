@@ -1,5 +1,4 @@
-use math::{Point2, Point3, Point4};
-use noise_fns::NoiseFn;
+use crate::noise_fns::NoiseFn;
 
 /// Noise function that outputs concentric cylinders.
 ///
@@ -32,20 +31,20 @@ impl Default for Cylinders {
     }
 }
 
-impl NoiseFn<Point2<f64>> for Cylinders {
-    fn get(&self, point: Point2<f64>) -> f64 {
+impl NoiseFn<[f64; 2]> for Cylinders {
+    fn get(&self, point: [f64; 2]) -> f64 {
         calculate_cylinders(&point, self.frequency)
     }
 }
 
-impl NoiseFn<Point3<f64>> for Cylinders {
-    fn get(&self, point: Point3<f64>) -> f64 {
+impl NoiseFn<[f64; 3]> for Cylinders {
+    fn get(&self, point: [f64; 3]) -> f64 {
         calculate_cylinders(&point, self.frequency)
     }
 }
 
-impl NoiseFn<Point4<f64>> for Cylinders {
-    fn get(&self, point: Point4<f64>) -> f64 {
+impl NoiseFn<[f64; 4]> for Cylinders {
+    fn get(&self, point: [f64; 4]) -> f64 {
         calculate_cylinders(&point, self.frequency)
     }
 }

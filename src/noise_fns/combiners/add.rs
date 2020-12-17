@@ -1,8 +1,8 @@
-use noise_fns::NoiseFn;
+use crate::noise_fns::NoiseFn;
 
 /// Noise function that outputs the sum of the two output values from two source
 /// functions.
-pub struct Add<'a, T: 'a> {
+pub struct Add<'a, T> {
     /// Outputs a value.
     pub source1: &'a dyn NoiseFn<T>,
 

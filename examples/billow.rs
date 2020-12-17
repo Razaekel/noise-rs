@@ -2,8 +2,7 @@
 
 extern crate noise;
 
-use noise::utils::*;
-use noise::Billow;
+use noise::{utils::*, Billow};
 
 fn main() {
     PlaneMapBuilder::new(&Billow::new())

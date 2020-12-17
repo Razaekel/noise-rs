@@ -1,5 +1,4 @@
-use math::{Point2, Point3, Point4};
-use noise_fns::NoiseFn;
+use crate::noise_fns::NoiseFn;
 
 /// Noise function that outputs a checkerboard pattern.
 ///
@@ -12,53 +11,49 @@ use noise_fns::NoiseFn;
 #[derive(Clone, Copy, Debug)]
 pub struct Checkerboard {
     /// Controls the size of the block in 2^(size).
-    pub size: usize,
-
-    // Dummy field to prevent struct initialization except through the
-    // new() constructor.
-    _dummy: (),
+    size: usize,
 }
 
 impl Checkerboard {
     const DEFAULT_SIZE: usize = 0;
 
-    pub fn new() -> Self {
-        Self {
-            size: 1 << Self::DEFAULT_SIZE,
-            _dummy: (),
-        }
+    pub fn new(size: usize) -> Self {
+        Self { size: 1 << size }
     }
 
     pub fn set_size(self, size: usize) -> Self {
-        Self {
-            size: 1 << size,
-            ..self
-        }
+        Self { size: 1 << size }
+    }
+
+    pub fn size(self) -> usize {
+        self.size
     }
 }
 
 impl Default for Checkerboard {
     fn default() -> Self {
-        Self::new()
+        Self {
+            size: 1 << Checkerboard::DEFAULT_SIZE,
+        }
     }
 }
 
 // These impl's should be made generic over Point, but there is no higher Point
 // type. Keep the code the same anyway.
-impl NoiseFn<Point2<f64>> for Checkerboard {
-    fn get(&self, point: Point2<f64>) -> f64 {
+impl NoiseFn<[f64; 2]> for Checkerboard {
+    fn get(&self, point: [f64; 2]) -> f64 {
         calculate_checkerboard(&point, self.size)
     }
 }
 
-impl NoiseFn<Point3<f64>> for Checkerboard {
-    fn get(&self, point: Point3<f64>) -> f64 {
+impl NoiseFn<[f64; 3]> for Checkerboard {
+    fn get(&self, point: [f64; 3]) -> f64 {
         calculate_checkerboard(&point, self.size)
     }
 }
 
-impl NoiseFn<Point4<f64>> for Checkerboard {
-    fn get(&self, point: Point4<f64>) -> f64 {
+impl NoiseFn<[f64; 4]> for Checkerboard {
+    fn get(&self, point: [f64; 4]) -> f64 {
         calculate_checkerboard(&point, self.size)
     }
 }
