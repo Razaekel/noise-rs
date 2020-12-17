@@ -1,5 +1,4 @@
-pub use self::blend::*;
-pub use self::select::*;
+pub use self::{blend::*, select::*};
 
 mod blend;
 mod select;

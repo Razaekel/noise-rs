@@ -1,9 +1,6 @@
-pub use self::cache::*;
-pub use self::combiners::*;
-pub use self::generators::*;
-pub use self::modifiers::*;
-pub use self::selectors::*;
-pub use self::transformers::*;
+pub use self::{
+    cache::*, combiners::*, generators::*, modifiers::*, selectors::*, transformers::*,
+};
 
 mod cache;
 mod combiners;

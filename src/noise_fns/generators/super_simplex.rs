@@ -1,6 +1,8 @@
-use crate::noise_fns::{NoiseFn, Seedable};
-use crate::permutationtable::PermutationTable;
-use crate::{gradient, math};
+use crate::{
+    gradient, math,
+    noise_fns::{NoiseFn, Seedable},
+    permutationtable::PermutationTable,
+};
 use std::ops::Add;
 
 const TO_REAL_CONSTANT_2D: f64 = -0.211_324_865_405_187; // (1 / sqrt(2 + 1) - 1) / 2
