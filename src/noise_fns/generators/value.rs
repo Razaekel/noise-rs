@@ -49,7 +49,7 @@ impl Seedable for Value {
 }
 
 /// 2-dimensional value noise
-impl NoiseFn<[f64; 2]> for Value {
+impl NoiseFn<f64, 2> for Value {
     fn get(&self, point: [f64; 2]) -> f64 {
         fn get(perm_table: &PermutationTable, corner: [isize; 2]) -> f64 {
             perm_table.hash(&corner) as f64 / 255.0
@@ -74,7 +74,7 @@ impl NoiseFn<[f64; 2]> for Value {
 }
 
 /// 3-dimensional value noise
-impl NoiseFn<[f64; 3]> for Value {
+impl NoiseFn<f64, 3> for Value {
     fn get(&self, point: [f64; 3]) -> f64 {
         fn get(perm_table: &PermutationTable, corner: [isize; 3]) -> f64 {
             perm_table.hash(&corner) as f64 / 255.0
@@ -131,7 +131,7 @@ impl NoiseFn<[f64; 3]> for Value {
 }
 
 /// 4-dimensional value noise
-impl NoiseFn<[f64; 4]> for Value {
+impl NoiseFn<f64, 4> for Value {
     fn get(&self, point: [f64; 4]) -> f64 {
         fn get(perm_table: &PermutationTable, corner: [isize; 4]) -> f64 {
             perm_table.hash(&corner) as f64 / 255.0

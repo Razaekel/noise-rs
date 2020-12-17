@@ -127,7 +127,7 @@ impl Seedable for Billow {
 }
 
 /// 2-dimensional Billow noise
-impl NoiseFn<[f64; 2]> for Billow {
+impl NoiseFn<f64, 2> for Billow {
     fn get(&self, mut point: [f64; 2]) -> f64 {
         let mut result = 0.0;
 
@@ -157,7 +157,7 @@ impl NoiseFn<[f64; 2]> for Billow {
 }
 
 /// 3-dimensional Billow noise
-impl NoiseFn<[f64; 3]> for Billow {
+impl NoiseFn<f64, 3> for Billow {
     fn get(&self, mut point: [f64; 3]) -> f64 {
         let mut result = 0.0;
 
@@ -187,7 +187,7 @@ impl NoiseFn<[f64; 3]> for Billow {
 }
 
 /// 4-dimensional Billow noise
-impl NoiseFn<[f64; 4]> for Billow {
+impl NoiseFn<f64, 4> for Billow {
     fn get(&self, mut point: [f64; 4]) -> f64 {
         let mut result = 0.0;
 

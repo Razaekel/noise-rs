@@ -106,9 +106,9 @@ impl<Source> Seedable for Turbulence<Source> {
     }
 }
 
-impl<Source> NoiseFn<[f64; 2]> for Turbulence<Source>
+impl<Source> NoiseFn<f64, 2> for Turbulence<Source>
 where
-    Source: NoiseFn<[f64; 2]>,
+    Source: NoiseFn<f64, 2>,
 {
     fn get(&self, point: [f64; 2]) -> f64 {
         // First, create offsets based on the input values to keep the sampled
@@ -127,9 +127,9 @@ where
     }
 }
 
-impl<Source> NoiseFn<[f64; 3]> for Turbulence<Source>
+impl<Source> NoiseFn<f64, 3> for Turbulence<Source>
 where
-    Source: NoiseFn<[f64; 3]>,
+    Source: NoiseFn<f64, 3>,
 {
     fn get(&self, point: [f64; 3]) -> f64 {
         // First, create offsets based on the input values to keep the sampled
@@ -155,9 +155,9 @@ where
     }
 }
 
-impl<Source> NoiseFn<[f64; 4]> for Turbulence<Source>
+impl<Source> NoiseFn<f64, 4> for Turbulence<Source>
 where
-    Source: NoiseFn<[f64; 4]>,
+    Source: NoiseFn<f64, 4>,
 {
     fn get(&self, point: [f64; 4]) -> f64 {
         // First, create offsets based on the input values to keep the sampled

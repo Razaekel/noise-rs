@@ -2,18 +2,18 @@ use crate::{math::interpolate, noise_fns::NoiseFn};
 
 /// Noise function that outputs the value selected from one of two source
 /// functions chosen by the output value from a control function.
-pub struct Select<'a, T> {
+pub struct Select<'a, T, const N: usize> {
     /// Outputs a value.
-    pub source1: &'a dyn NoiseFn<T>,
+    pub source1: &'a dyn NoiseFn<T, N>,
 
     /// Outputs a value.
-    pub source2: &'a dyn NoiseFn<T>,
+    pub source2: &'a dyn NoiseFn<T, N>,
 
     /// Determines the value to select. If the output value from
     /// the control function is within a range of values know as the _selection
     /// range_, this noise function outputs the value from `source2`.
     /// Otherwise, this noise function outputs the value from `source1`.
-    pub control: &'a dyn NoiseFn<T>,
+    pub control: &'a dyn NoiseFn<T, N>,
 
     /// Bounds of the selection range. Default is 0.0 to 1.0.
     pub bounds: (f64, f64),
@@ -22,11 +22,11 @@ pub struct Select<'a, T> {
     pub falloff: f64,
 }
 
-impl<'a, T> Select<'a, T> {
+impl<'a, T, const N: usize> Select<'a, T, N> {
     pub fn new(
-        source1: &'a dyn NoiseFn<T>,
-        source2: &'a dyn NoiseFn<T>,
-        control: &'a dyn NoiseFn<T>,
+        source1: &'a dyn NoiseFn<T, N>,
+        source2: &'a dyn NoiseFn<T, N>,
+        control: &'a dyn NoiseFn<T, N>,
     ) -> Self {
         Select {
             source1,
@@ -49,11 +49,11 @@ impl<'a, T> Select<'a, T> {
     }
 }
 
-impl<'a, T> NoiseFn<T> for Select<'a, T>
+impl<'a, T, const N: usize> NoiseFn<T, N> for Select<'a, T, N>
 where
     T: Copy,
 {
-    fn get(&self, point: T) -> f64 {
+    fn get(&self, point: [T; N]) -> f64 {
         let control_value = self.control.get(point);
         let (lower, upper) = self.bounds;
 

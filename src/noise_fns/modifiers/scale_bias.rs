@@ -5,9 +5,9 @@ use crate::noise_fns::NoiseFn;
 ///
 /// The function retrieves the output value from the source function, multiplies
 /// it with the scaling factor, adds the bias to it, then outputs the value.
-pub struct ScaleBias<'a, T> {
+pub struct ScaleBias<'a, T, const N: usize> {
     /// Outputs a value.
-    pub source: &'a dyn NoiseFn<T>,
+    pub source: &'a dyn NoiseFn<T, N>,
 
     /// Scaling factor to apply to the output value from the source function.
     /// The default value is 1.0.
@@ -18,8 +18,8 @@ pub struct ScaleBias<'a, T> {
     pub bias: f64,
 }
 
-impl<'a, T> ScaleBias<'a, T> {
-    pub fn new(source: &'a dyn NoiseFn<T>) -> Self {
+impl<'a, T, const N: usize> ScaleBias<'a, T, N> {
+    pub fn new(source: &'a dyn NoiseFn<T, N>) -> Self {
         Self {
             source,
             scale: 1.0,
@@ -36,9 +36,9 @@ impl<'a, T> ScaleBias<'a, T> {
     }
 }
 
-impl<'a, T> NoiseFn<T> for ScaleBias<'a, T> {
+impl<'a, T, const N: usize> NoiseFn<T, N> for ScaleBias<'a, T, N> {
     #[cfg(not(target_os = "emscripten"))]
-    fn get(&self, point: T) -> f64 {
+    fn get(&self, point: [T; N]) -> f64 {
         (self.source.get(point)).mul_add(self.scale, self.bias)
     }
 

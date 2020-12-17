@@ -2,16 +2,16 @@ use crate::noise_fns::NoiseFn;
 
 /// Noise function that clamps the output value from the source function to a
 /// range of values.
-pub struct Clamp<'a, T> {
+pub struct Clamp<'a, T, const N: usize> {
     /// Outputs a value.
-    pub source: &'a dyn NoiseFn<T>,
+    pub source: &'a dyn NoiseFn<T, N>,
 
     /// Bound of the clamping range. Default is -1.0 to 1.0.
     pub bounds: (f64, f64),
 }
 
-impl<'a, T> Clamp<'a, T> {
-    pub fn new(source: &'a dyn NoiseFn<T>) -> Self {
+impl<'a, T, const N: usize> Clamp<'a, T, N> {
+    pub fn new(source: &'a dyn NoiseFn<T, N>) -> Self {
         Self {
             source,
             bounds: (-1.0, 1.0),
@@ -40,8 +40,8 @@ impl<'a, T> Clamp<'a, T> {
     }
 }
 
-impl<'a, T> NoiseFn<T> for Clamp<'a, T> {
-    fn get(&self, point: T) -> f64 {
+impl<'a, T, const N: usize> NoiseFn<T, N> for Clamp<'a, T, N> {
+    fn get(&self, point: [T; N]) -> f64 {
         let value = self.source.get(point);
 
         value.clamp(self.bounds.0, self.bounds.1)

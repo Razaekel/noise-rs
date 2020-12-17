@@ -49,7 +49,7 @@ impl Seedable for Perlin {
 }
 
 /// 2-dimensional perlin noise
-impl NoiseFn<[f64; 2]> for Perlin {
+impl NoiseFn<f64, 2> for Perlin {
     fn get(&self, point: [f64; 2]) -> f64 {
         perlin_2d(&self.perm_table, point)
     }
@@ -119,7 +119,7 @@ fn bilinear_interpolation(u: f64, v: f64, g00: f64, g01: f64, g10: f64, g11: f64
 }
 
 /// 3-dimensional perlin noise
-impl NoiseFn<[f64; 3]> for Perlin {
+impl NoiseFn<f64, 3> for Perlin {
     fn get(&self, point: [f64; 3]) -> f64 {
         perlin_3d(&self.perm_table, point)
     }
@@ -218,7 +218,7 @@ pub(crate) fn perlin_3d(hasher: &dyn NoiseHasher, point: [f64; 3]) -> f64 {
 }
 
 /// 4-dimensional perlin noise
-impl NoiseFn<[f64; 4]> for Perlin {
+impl NoiseFn<f64, 4> for Perlin {
     fn get(&self, point: [f64; 4]) -> f64 {
         perlin_4d(&self.perm_table, point)
     }

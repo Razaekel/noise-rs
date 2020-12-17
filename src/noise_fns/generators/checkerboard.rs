@@ -39,36 +39,17 @@ impl Default for Checkerboard {
     }
 }
 
-// These impl's should be made generic over Point, but there is no higher Point
-// type. Keep the code the same anyway.
-// TODO: Deduplicate when const generics are stabilized.
-impl NoiseFn<[f64; 2]> for Checkerboard {
-    fn get(&self, point: [f64; 2]) -> f64 {
-        calculate_checkerboard(&point, self.size)
-    }
-}
+impl<const N: usize> NoiseFn<f64, N> for Checkerboard {
+    fn get(&self, point: [f64; N]) -> f64 {
+        let result = point
+            .iter()
+            .map(|&a| a.floor() as usize)
+            .fold(0, |a, b| (a & self.size) ^ (b & self.size));
 
-impl NoiseFn<[f64; 3]> for Checkerboard {
-    fn get(&self, point: [f64; 3]) -> f64 {
-        calculate_checkerboard(&point, self.size)
-    }
-}
-
-impl NoiseFn<[f64; 4]> for Checkerboard {
-    fn get(&self, point: [f64; 4]) -> f64 {
-        calculate_checkerboard(&point, self.size)
-    }
-}
-
-fn calculate_checkerboard(point: &[f64], size: usize) -> f64 {
-    let result = point
-        .iter()
-        .map(|&a| a.floor() as usize)
-        .fold(0, |a, b| (a & size) ^ (b & size));
-
-    if result > 0 {
-        -1.0
-    } else {
-        1.0
+        if result > 0 {
+            -1.0
+        } else {
+            1.0
+        }
     }
 }
