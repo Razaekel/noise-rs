@@ -5,7 +5,7 @@ use rand::{
 };
 use rand_xorshift::XorShiftRng;
 use reduce::Reduce;
-use std::{convert::TryInto, fmt};
+use std::fmt;
 
 const TABLE_SIZE: usize = 256;
 
@@ -85,10 +85,8 @@ impl NoiseHasher<isize> for PermutationTable {
     fn hash(&self, to_hash: &[isize]) -> usize {
         let index: usize = to_hash
             .iter()
-            .map(|&a| a & 0xff)
-            .reduce(|a, b| (self.values[a as usize] as isize ^ b as isize))
-            .unwrap()
-            .try_into()
+            .map(|&a| (a & 0xff) as usize)
+            .reduce(|a, b| (self.values[a] as usize ^ b))
             .unwrap();
         self.values[index] as usize
     }
