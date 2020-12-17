@@ -1,7 +1,7 @@
 use crate::{
     math::{self, interpolate},
     noise_fns::{NoiseFn, Seedable},
-    permutationtable::PermutationTable,
+    permutationtable::{NoiseHasher, PermutationTable},
 };
 
 /// Noise function that outputs 2/3/4-dimensional Perlin noise.
@@ -85,22 +85,22 @@ pub(crate) fn perlin_2d(perm_table: PermutationTable, x: f64, y: f64) -> f64 {
     let far_distance = math::sub2(near_distance, [1.0; 2]);
 
     let g00 = gradient_dot_v(
-        perm_table.get2(near_corner),
+        perm_table.hash(&near_corner),
         near_distance[0],
         near_distance[1],
     );
     let g10 = gradient_dot_v(
-        perm_table.get2([far_corner[0], near_corner[1]]),
+        perm_table.hash(&[far_corner[0], near_corner[1]]),
         far_distance[0],
         near_distance[1],
     );
     let g01 = gradient_dot_v(
-        perm_table.get2([near_corner[0], far_corner[1]]),
+        perm_table.hash(&[near_corner[0], far_corner[1]]),
         near_distance[0],
         far_distance[1],
     );
     let g11 = gradient_dot_v(
-        perm_table.get2(far_corner),
+        perm_table.hash(&far_corner),
         far_distance[0],
         far_distance[1],
     );
@@ -185,32 +185,32 @@ pub(crate) fn perlin_3d(perm_table: PermutationTable, x: f64, y: f64, z: f64) ->
     let near_distance = math::sub3(point, floored);
     let far_distance = math::sub3(near_distance, [1.0; 3]);
 
-    let g000 = gradient_dot_v(perm_table.get3(near_corner), near_distance);
+    let g000 = gradient_dot_v(perm_table.hash(&near_corner), near_distance);
     let g100 = gradient_dot_v(
-        perm_table.get3([far_corner[0], near_corner[1], near_corner[2]]),
+        perm_table.hash(&[far_corner[0], near_corner[1], near_corner[2]]),
         [far_distance[0], near_distance[1], near_distance[2]],
     );
     let g010 = gradient_dot_v(
-        perm_table.get3([near_corner[0], far_corner[1], near_corner[2]]),
+        perm_table.hash(&[near_corner[0], far_corner[1], near_corner[2]]),
         [near_distance[0], far_distance[1], near_distance[2]],
     );
     let g110 = gradient_dot_v(
-        perm_table.get3([far_corner[0], far_corner[1], near_corner[2]]),
+        perm_table.hash(&[far_corner[0], far_corner[1], near_corner[2]]),
         [far_distance[0], far_distance[1], near_distance[2]],
     );
     let g001 = gradient_dot_v(
-        perm_table.get3([near_corner[0], near_corner[1], far_corner[2]]),
+        perm_table.hash(&[near_corner[0], near_corner[1], far_corner[2]]),
         [near_distance[0], near_distance[1], far_distance[2]],
     );
     let g101 = gradient_dot_v(
-        perm_table.get3([far_corner[0], near_corner[1], far_corner[2]]),
+        perm_table.hash(&[far_corner[0], near_corner[1], far_corner[2]]),
         [far_distance[0], near_distance[1], far_distance[2]],
     );
     let g011 = gradient_dot_v(
-        perm_table.get3([near_corner[0], far_corner[1], far_corner[2]]),
+        perm_table.hash(&[near_corner[0], far_corner[1], far_corner[2]]),
         [near_distance[0], far_distance[1], far_distance[2]],
     );
-    let g111 = gradient_dot_v(perm_table.get3(far_corner), far_distance);
+    let g111 = gradient_dot_v(perm_table.hash(&far_corner), far_distance);
 
     let a = interpolate::s_curve5(near_distance[0]);
     let b = interpolate::s_curve5(near_distance[1]);
@@ -301,14 +301,14 @@ pub(crate) fn perlin_4d(perm_table: PermutationTable, x: f64, y: f64, z: f64, w:
     let far_distance = math::sub4(near_distance, [1.0; 4]);
 
     let g0000 = gradient_dot_v(
-        perm_table.get4(near_corner),
+        perm_table.hash(&near_corner),
         near_distance[0],
         near_distance[1],
         near_distance[2],
         near_distance[3],
     );
     let g1000 = gradient_dot_v(
-        perm_table.get4([
+        perm_table.hash(&[
             far_corner[0],
             near_corner[1],
             near_corner[2],
@@ -320,7 +320,7 @@ pub(crate) fn perlin_4d(perm_table: PermutationTable, x: f64, y: f64, z: f64, w:
         near_distance[3],
     );
     let g0100 = gradient_dot_v(
-        perm_table.get4([
+        perm_table.hash(&[
             near_corner[0],
             far_corner[1],
             near_corner[2],
@@ -332,7 +332,7 @@ pub(crate) fn perlin_4d(perm_table: PermutationTable, x: f64, y: f64, z: f64, w:
         near_distance[3],
     );
     let g1100 = gradient_dot_v(
-        perm_table.get4([
+        perm_table.hash(&[
             far_corner[0],
             far_corner[1],
             near_corner[2],
@@ -344,7 +344,7 @@ pub(crate) fn perlin_4d(perm_table: PermutationTable, x: f64, y: f64, z: f64, w:
         near_distance[3],
     );
     let g0010 = gradient_dot_v(
-        perm_table.get4([
+        perm_table.hash(&[
             near_corner[0],
             near_corner[1],
             far_corner[2],
@@ -356,7 +356,7 @@ pub(crate) fn perlin_4d(perm_table: PermutationTable, x: f64, y: f64, z: f64, w:
         near_distance[3],
     );
     let g1010 = gradient_dot_v(
-        perm_table.get4([
+        perm_table.hash(&[
             far_corner[0],
             near_corner[1],
             far_corner[2],
@@ -368,7 +368,7 @@ pub(crate) fn perlin_4d(perm_table: PermutationTable, x: f64, y: f64, z: f64, w:
         near_distance[3],
     );
     let g0110 = gradient_dot_v(
-        perm_table.get4([
+        perm_table.hash(&[
             near_corner[0],
             far_corner[1],
             far_corner[2],
@@ -380,7 +380,7 @@ pub(crate) fn perlin_4d(perm_table: PermutationTable, x: f64, y: f64, z: f64, w:
         near_distance[3],
     );
     let g1110 = gradient_dot_v(
-        perm_table.get4([
+        perm_table.hash(&[
             far_corner[0],
             far_corner[1],
             far_corner[2],
@@ -392,7 +392,7 @@ pub(crate) fn perlin_4d(perm_table: PermutationTable, x: f64, y: f64, z: f64, w:
         near_distance[3],
     );
     let g0001 = gradient_dot_v(
-        perm_table.get4([
+        perm_table.hash(&[
             near_corner[0],
             near_corner[1],
             near_corner[2],
@@ -404,7 +404,7 @@ pub(crate) fn perlin_4d(perm_table: PermutationTable, x: f64, y: f64, z: f64, w:
         far_distance[3],
     );
     let g1001 = gradient_dot_v(
-        perm_table.get4([
+        perm_table.hash(&[
             far_corner[0],
             near_corner[1],
             near_corner[2],
@@ -416,7 +416,7 @@ pub(crate) fn perlin_4d(perm_table: PermutationTable, x: f64, y: f64, z: f64, w:
         far_distance[3],
     );
     let g0101 = gradient_dot_v(
-        perm_table.get4([
+        perm_table.hash(&[
             near_corner[0],
             far_corner[1],
             near_corner[2],
@@ -428,7 +428,7 @@ pub(crate) fn perlin_4d(perm_table: PermutationTable, x: f64, y: f64, z: f64, w:
         far_distance[3],
     );
     let g1101 = gradient_dot_v(
-        perm_table.get4([
+        perm_table.hash(&[
             far_corner[0],
             far_corner[1],
             near_corner[2],
@@ -440,7 +440,7 @@ pub(crate) fn perlin_4d(perm_table: PermutationTable, x: f64, y: f64, z: f64, w:
         far_distance[3],
     );
     let g0011 = gradient_dot_v(
-        perm_table.get4([
+        perm_table.hash(&[
             near_corner[0],
             near_corner[1],
             far_corner[2],
@@ -452,7 +452,7 @@ pub(crate) fn perlin_4d(perm_table: PermutationTable, x: f64, y: f64, z: f64, w:
         far_distance[3],
     );
     let g1011 = gradient_dot_v(
-        perm_table.get4([
+        perm_table.hash(&[
             far_corner[0],
             near_corner[1],
             far_corner[2],
@@ -464,7 +464,7 @@ pub(crate) fn perlin_4d(perm_table: PermutationTable, x: f64, y: f64, z: f64, w:
         far_distance[3],
     );
     let g0111 = gradient_dot_v(
-        perm_table.get4([
+        perm_table.hash(&[
             near_corner[0],
             far_corner[1],
             far_corner[2],
@@ -476,7 +476,7 @@ pub(crate) fn perlin_4d(perm_table: PermutationTable, x: f64, y: f64, z: f64, w:
         far_distance[3],
     );
     let g1111 = gradient_dot_v(
-        perm_table.get4(far_corner),
+        perm_table.hash(&far_corner),
         far_distance[0],
         far_distance[1],
         far_distance[2],
