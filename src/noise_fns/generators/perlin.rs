@@ -57,6 +57,13 @@ impl NoiseFn<[f64; 2]> for Perlin {
 
 #[inline(always)]
 pub(crate) fn perlin_2d(perm_table: PermutationTable, x: f64, y: f64) -> f64 {
+    // Unscaled range of linearly interpolated perlin noise should be (-sqrt(N)/2, sqrt(N)/2).
+    // Need to invert this value and multiply the unscaled result by the value to get a scaled
+    // range of (-1, 1).
+    //
+    // 1/(sqrt(N)/2), N=2 -> sqrt(2)
+    const SCALE_FACTOR: f64 = std::f64::consts::SQRT_2;
+
     #[inline(always)]
     #[rustfmt::skip]
     fn gradient_dot_v(perm: usize, x: f64, y: f64) -> f64 {
@@ -70,11 +77,6 @@ pub(crate) fn perlin_2d(perm_table: PermutationTable, x: f64, y: f64) -> f64 {
     }
 
     let point = [x, y];
-
-    // Unscaled range of linearly interpolated perlin noise should be (-sqrt(N)/2, sqrt(N)/2).
-    // Need to invert this value and multiply the unscaled result by the value to get a scaled
-    // range of (-1, 1).
-    let scale_factor = (2.0_f64).sqrt(); // 1/(sqrt(N)/2), N=2 -> sqrt(2)
 
     let floored = math::map2(point, f64::floor);
     let near_corner = math::to_isize2(floored);
@@ -108,7 +110,7 @@ pub(crate) fn perlin_2d(perm_table: PermutationTable, x: f64, y: f64) -> f64 {
 
     let unscaled_result = bilinear_interpolation(u, v, g00, g01, g10, g11);
 
-    let scaled_result = unscaled_result * scale_factor;
+    let scaled_result = unscaled_result * SCALE_FACTOR;
 
     // At this point, we should be really damn close to the (-1, 1) range, but some float errors
     // could have accumulated, so let's just clamp the results to (-1, 1) to cut off any
@@ -137,6 +139,16 @@ impl NoiseFn<[f64; 3]> for Perlin {
 #[inline(always)]
 #[allow(clippy::many_single_char_names)]
 pub(crate) fn perlin_3d(perm_table: PermutationTable, x: f64, y: f64, z: f64) -> f64 {
+    // Unscaled range of linearly interpolated perlin noise should be (-sqrt(N)/2, sqrt(N)/2).
+    // Need to invert this value and multiply the unscaled result by the value to get a scaled
+    // range of (-1, 1).
+    //
+    // 1/(sqrt(N)/2), N=3 -> 2/sqrt(3)
+    // sqrt() is not a const function, so use a high-precision value instead.
+    // TODO: Replace fixed const values with const fn if sqrt() ever becomes a const function.
+    // 2/sqrt(3) = 1.1547005383792515290182975610039149112952035025402537520372046529
+    const SCALE_FACTOR: f64 = 1.154_700_538_379_251_5;
+
     #[inline(always)]
     #[rustfmt::skip]
     fn gradient_dot_v(perm: usize, point: [f64; 3]) -> f64 {
@@ -166,11 +178,6 @@ pub(crate) fn perlin_3d(perm_table: PermutationTable, x: f64, y: f64, z: f64) ->
     }
 
     let point = [x, y, z];
-
-    // Unscaled range of linearly interpolated perlin noise should be (-sqrt(N)/2, sqrt(N)/2).
-    // Need to invert this value and multiply the unscaled result by the value to get a scaled
-    // range of (-1, 1).
-    let scale_factor = 2.0_f64 / ((3.0_f64).sqrt()); // 1/(sqrt(N)/2), N=3 -> 2/sqrt(3)
 
     let floored = math::map3(point, f64::floor);
     let near_corner = math::to_isize3(floored);
@@ -221,7 +228,7 @@ pub(crate) fn perlin_3d(perm_table: PermutationTable, x: f64, y: f64, z: f64) ->
     let unscaled_result =
         k0 + k1 * a + k2 * b + k3 * c + k4 * a * b + k5 * a * c + k6 * b * c + k7 * a * b * c;
 
-    let scaled_result = unscaled_result * scale_factor;
+    let scaled_result = unscaled_result * SCALE_FACTOR;
 
     // At this point, we should be really damn close to the (-1, 1) range, but some float errors
     // could have accumulated, so let's just clamp the results to (-1, 1) to cut off any
@@ -241,6 +248,11 @@ impl NoiseFn<[f64; 4]> for Perlin {
 #[rustfmt::skip]
 #[allow(clippy::many_single_char_names)]
 pub(crate) fn perlin_4d(perm_table: PermutationTable, x: f64, y: f64, z: f64, w: f64) -> f64 {
+    // Unscaled range of linearly interpolated perlin noise should be (-sqrt(N)/2, sqrt(N)/2).
+    // Need to invert this value and multiply the unscaled result by the value to get a scaled
+    // range of (-1, 1).
+    const SCALE_FACTOR: f64 = 1.0; // 1/(sqrt(N)/2), N=4 -> 2/sqrt(4) -> 2/2 -> 1
+
     #[inline(always)]
     fn gradient_dot_v(perm: usize, x: f64, y: f64, z: f64, w: f64) -> f64 {
         match perm & 0b11111 {
@@ -281,11 +293,6 @@ pub(crate) fn perlin_4d(perm_table: PermutationTable, x: f64, y: f64, z: f64, w:
     }
 
     let point = [x, y, z, w];
-
-    // Unscaled range of linearly interpolated perlin noise should be (-sqrt(N)/2, sqrt(N)/2).
-    // Need to invert this value and multiply the unscaled result by the value to get a scaled
-    // range of (-1, 1).
-    let scale_factor = 1.0; // 1/(sqrt(N)/2), N=4 -> 2/sqrt(4) -> 2/2 -> 1
 
     let floored = math::map4(point, f64::floor);
     let near_corner = math::to_isize4(floored);
@@ -516,7 +523,7 @@ pub(crate) fn perlin_4d(perm_table: PermutationTable, x: f64, y: f64, z: f64, w:
         + k15 * a * b * c * d;
 
 
-    let scaled_result = unscaled_result * scale_factor;
+    let scaled_result = unscaled_result * SCALE_FACTOR;
 
     // At this point, we should be really damn close to the (-1, 1) range, but some float errors
     // could have accumulated, so let's just clamp the results to (-1, 1) to cut off any
