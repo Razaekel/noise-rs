@@ -5,7 +5,7 @@
 use crate::{
     gradient, math,
     noise_fns::{NoiseFn, Seedable},
-    permutationtable::PermutationTable,
+    permutationtable::{NoiseHasher, PermutationTable},
 };
 use std::ops::Add;
 
@@ -72,7 +72,7 @@ impl NoiseFn<[f64; 2]> for OpenSimplex {
         fn gradient(perm_table: &PermutationTable, vertex: [f64; 2], pos: [f64; 2]) -> f64 {
             let attn = 2.0 - math::dot2(pos, pos);
             if attn > 0.0 {
-                let index = perm_table.get2(math::to_isize2(vertex));
+                let index = perm_table.hash(&math::to_isize2(vertex));
                 let vec = gradient::get2(index);
                 attn.powi(4) * math::dot2(pos, vec)
             } else {
@@ -153,7 +153,7 @@ impl NoiseFn<[f64; 3]> for OpenSimplex {
         fn gradient(perm_table: &PermutationTable, vertex: [f64; 3], pos: [f64; 3]) -> f64 {
             let attn = 2.0 - math::dot3(pos, pos);
             if attn > 0.0 {
-                let index = perm_table.get3(math::to_isize3(vertex));
+                let index = perm_table.hash(&math::to_isize3(vertex));
                 let vec = gradient::get3(index);
                 attn.powi(4) * math::dot3(pos, vec)
             } else {
@@ -288,7 +288,7 @@ impl NoiseFn<[f64; 4]> for OpenSimplex {
         fn gradient(perm_table: &PermutationTable, vertex: [f64; 4], pos: [f64; 4]) -> f64 {
             let attn = 2.0 - math::dot4(pos, pos);
             if attn > 0.0 {
-                let index = perm_table.get4(math::to_isize4(vertex));
+                let index = perm_table.hash(&math::to_isize4(vertex));
                 let vec = gradient::get4(index);
                 attn.powi(4) * math::dot4(pos, vec)
             } else {
