@@ -4,16 +4,21 @@ use rand::{
     Rng, SeedableRng,
 };
 use rand_xorshift::XorShiftRng;
+use reduce::Reduce;
 use std::fmt;
 
 const TABLE_SIZE: usize = 256;
+
+pub trait NoiseHasher: Send + Sync {
+    fn hash(&self, to_hash: &[isize]) -> usize;
+}
 
 /// A seed table, required by all noise functions.
 ///
 /// Table creation is expensive, so in most circumstances you'll only want to
 /// create one of these per generator.
 #[derive(Copy, Clone)]
-pub(crate) struct PermutationTable {
+pub struct PermutationTable {
     values: [u8; TABLE_SIZE],
 }
 
@@ -54,25 +59,16 @@ impl PermutationTable {
         let mut rng: XorShiftRng = SeedableRng::from_seed(real);
         rng.gen()
     }
+}
 
-    pub fn get1(&self, x: isize) -> usize {
-        let x = (x & 0xff) as usize;
-        self.values[x] as usize
-    }
-
-    pub fn get2(&self, pos: [isize; 2]) -> usize {
-        let y = (pos[1] & 0xff) as usize;
-        self.values[self.get1(pos[0]) ^ y] as usize
-    }
-
-    pub fn get3(&self, pos: [isize; 3]) -> usize {
-        let z = (pos[2] & 0xff) as usize;
-        self.values[self.get2([pos[0], pos[1]]) ^ z] as usize
-    }
-
-    pub fn get4(&self, pos: [isize; 4]) -> usize {
-        let w = (pos[3] & 0xff) as usize;
-        self.values[self.get3([pos[0], pos[1], pos[2]]) ^ w] as usize
+impl NoiseHasher for PermutationTable {
+    fn hash(&self, to_hash: &[isize]) -> usize {
+        let index: usize = to_hash
+            .iter()
+            .map(|&a| (a & 0xff) as usize)
+            .reduce(|a, b| (self.values[a] as usize ^ b))
+            .unwrap();
+        self.values[index] as usize
     }
 }
 

@@ -1,7 +1,7 @@
 use crate::{
     math,
     noise_fns::{NoiseFn, Seedable},
-    permutationtable::PermutationTable,
+    permutationtable::{NoiseHasher, PermutationTable},
 };
 
 /// Noise function that outputs Worley noise.
@@ -190,7 +190,7 @@ fn range_quadratic(p1: &[f64], p2: &[f64]) -> f64 {
 impl NoiseFn<[f64; 2]> for Worley {
     fn get(&self, point: [f64; 2]) -> f64 {
         fn get_point(perm_table: &PermutationTable, whole: [isize; 2]) -> [f64; 2] {
-            math::add2(get_vec2(perm_table.get2(whole)), math::to_f64_2(whole))
+            math::add2(get_vec2(perm_table.hash(&whole)), math::to_f64_2(whole))
         }
 
         let point = &math::mul2(point, self.frequency);
@@ -240,7 +240,7 @@ impl NoiseFn<[f64; 2]> for Worley {
         let value = if self.enable_range {
             range
         } else {
-            self.displacement * self.perm_table.get2(seed_cell) as f64 / 255.0
+            self.displacement * self.perm_table.hash(&seed_cell) as f64 / 255.0
         };
 
         value * 2.0 - 1.0
@@ -268,7 +268,7 @@ fn get_vec2(index: usize) -> [f64; 2] {
 impl NoiseFn<[f64; 3]> for Worley {
     fn get(&self, point: [f64; 3]) -> f64 {
         fn get_point(perm_table: &PermutationTable, whole: [isize; 3]) -> [f64; 3] {
-            math::add3(get_vec3(perm_table.get3(whole)), math::to_f64_3(whole))
+            math::add3(get_vec3(perm_table.hash(&whole)), math::to_f64_3(whole))
         }
 
         let point = &math::mul3(point, self.frequency);
@@ -340,7 +340,7 @@ impl NoiseFn<[f64; 3]> for Worley {
         let value = if self.enable_range {
             range
         } else {
-            self.displacement * self.perm_table.get3(seed_cell) as f64 / 255.0
+            self.displacement * self.perm_table.hash(&seed_cell) as f64 / 255.0
         };
 
         value * 2.0 - 1.0
@@ -379,7 +379,7 @@ fn get_vec3(index: usize) -> [f64; 3] {
 impl NoiseFn<[f64; 4]> for Worley {
     fn get(&self, point: [f64; 4]) -> f64 {
         fn get_point(perm_table: &PermutationTable, whole: [isize; 4]) -> [f64; 4] {
-            math::add4(get_vec4(perm_table.get4(whole)), math::to_f64_4(whole))
+            math::add4(get_vec4(perm_table.hash(&whole)), math::to_f64_4(whole))
         }
 
         let point = &math::mul4(point, self.frequency);
@@ -480,7 +480,7 @@ impl NoiseFn<[f64; 4]> for Worley {
         let value = if self.enable_range {
             range
         } else {
-            self.displacement * self.perm_table.get4(seed_cell) as f64 / 255.0
+            self.displacement * self.perm_table.hash(&seed_cell) as f64 / 255.0
         };
 
         value * 2.0 - 1.0
