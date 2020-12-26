@@ -71,10 +71,10 @@ pub(crate) fn perlin_2d(perm_table: PermutationTable, x: f64, y: f64) -> f64 {
 
     let point = [x, y];
 
-    // Unscaled range of linearly interpolated perlin noise should be (-sqrt(N/4), sqrt(N/4)).
+    // Unscaled range of linearly interpolated perlin noise should be (-sqrt(N)/2, sqrt(N)/2).
     // Need to invert this value and multiply the unscaled result by the value to get a scaled
     // range of (-1, 1).
-    let scale_factor = (2.0_f64).sqrt(); // 1/sqrt(N/4), N=2 -> 1/sqrt(1/2) -> sqrt(2)
+    let scale_factor = (2.0_f64).sqrt(); // 1/(sqrt(N)/2), N=2 -> sqrt(2)
 
     let floored = math::map2(point, f64::floor);
     let near_corner = math::to_isize2(floored);
@@ -167,10 +167,10 @@ pub(crate) fn perlin_3d(perm_table: PermutationTable, x: f64, y: f64, z: f64) ->
 
     let point = [x, y, z];
 
-    // Unscaled range of linearly interpolated perlin noise should be (-sqrt(N/4), sqrt(N/4)).
+    // Unscaled range of linearly interpolated perlin noise should be (-sqrt(N)/2, sqrt(N)/2).
     // Need to invert this value and multiply the unscaled result by the value to get a scaled
     // range of (-1, 1).
-    let scale_factor = 2.0_f64 / ((3.0_f64).sqrt()); // 1/sqrt(N/4), N=3 -> 1/sqrt(3/4) -> 2/sqrt(3)
+    let scale_factor = 2.0_f64 / ((3.0_f64).sqrt()); // 1/(sqrt(N)/2), N=3 -> 2/sqrt(3)
 
     let floored = math::map3(point, f64::floor);
     let near_corner = math::to_isize3(floored);
@@ -282,10 +282,10 @@ pub(crate) fn perlin_4d(perm_table: PermutationTable, x: f64, y: f64, z: f64, w:
 
     let point = [x, y, z, w];
 
-    // Unscaled range of linearly interpolated perlin noise should be (-sqrt(N/4), sqrt(N/4)).
+    // Unscaled range of linearly interpolated perlin noise should be (-sqrt(N)/2, sqrt(N)/2).
     // Need to invert this value and multiply the unscaled result by the value to get a scaled
     // range of (-1, 1).
-    let scale_factor = 2.0; // 1/sqrt(N/4), N=4 -> 1/sqrt(4/4) -> 2/sqrt(1)
+    let scale_factor = 1.0; // 1/(sqrt(N)/2), N=4 -> 2/sqrt(4) -> 2/2 -> 1
 
     let floored = math::map4(point, f64::floor);
     let near_corner = math::to_isize4(floored);
