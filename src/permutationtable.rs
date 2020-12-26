@@ -9,8 +9,8 @@ use std::fmt;
 
 const TABLE_SIZE: usize = 256;
 
-pub trait NoiseHasher<T>: Send + Sync {
-    fn hash(&self, to_hash: &[T]) -> usize;
+pub trait NoiseHasher: Send + Sync {
+    fn hash(&self, to_hash: &[isize]) -> usize;
 }
 
 /// A seed table, required by all noise functions.
@@ -81,7 +81,7 @@ impl PermutationTable {
     }
 }
 
-impl NoiseHasher<isize> for PermutationTable {
+impl NoiseHasher for PermutationTable {
     fn hash(&self, to_hash: &[isize]) -> usize {
         let index: usize = to_hash
             .iter()
