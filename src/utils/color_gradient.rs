@@ -60,17 +60,20 @@ impl ColorGradient {
             .add_gradient_point(1.0, [255, 255, 255, 255])
     }
 
+    #[rustfmt::skip]
     pub fn build_terrain_gradient(self) -> Self {
         self.clear_gradient()
-            .add_gradient_point(-1.00, [0, 0, 128, 255])
-            .add_gradient_point(-0.20, [32, 64, 128, 255])
-            .add_gradient_point(-0.04, [64, 96, 192, 255])
-            .add_gradient_point(-0.02, [192, 192, 128, 255])
-            .add_gradient_point(0.00, [0, 192, 0, 255])
-            .add_gradient_point(0.25, [192, 192, 0, 255])
-            .add_gradient_point(0.50, [160, 96, 64, 255])
-            .add_gradient_point(0.75, [128, 255, 255, 255])
-            .add_gradient_point(1.00, [255, 255, 255, 255])
+            .add_gradient_point(-1.00,              [  0,   0,   0, 255])
+            .add_gradient_point(-256.0 / 16384.0,   [  6,  58, 127, 255])
+            .add_gradient_point(-1.0 / 16384.0,     [ 14, 112, 192, 255])
+            .add_gradient_point(0.0,                [ 70, 120,  60, 255])
+            .add_gradient_point(1024.0 / 16384.0,   [110, 140,  75, 255])
+            .add_gradient_point(2048.0 / 16384.0,   [160, 140, 111, 255])
+            .add_gradient_point(3072.0 / 16384.0,   [184, 163, 141, 255])
+            .add_gradient_point(4096.0 / 16384.0,   [128, 128, 128, 255])
+            .add_gradient_point(5632.0 / 16384.0,   [128, 128, 128, 255])
+            .add_gradient_point(6144.0 / 16384.0,   [250, 250, 250, 255])
+            .add_gradient_point(1.0,                [255, 255, 255, 255])
     }
 
     pub fn build_rainbow_gradient(self) -> Self {

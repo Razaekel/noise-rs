@@ -155,7 +155,7 @@ impl NoiseFn<[f64; 2]> for Fbm {
             point = math::mul2(point, self.lacunarity);
         }
 
-        // Scale and shift the result into the [-1,1] range
+        // Scale the result into the [-1,1] range
         result / self.scale_factor
     }
 }
@@ -181,7 +181,7 @@ impl NoiseFn<[f64; 3]> for Fbm {
             point = math::mul3(point, self.lacunarity);
         }
 
-        // Scale and shift the result into the [-1,1] range
+        // Scale the result into the [-1,1] range
         result / self.scale_factor
     }
 }
@@ -207,7 +207,7 @@ impl NoiseFn<[f64; 4]> for Fbm {
             point = math::mul4(point, self.lacunarity);
         }
 
-        // Scale and shift the result into the [-1,1] range
+        // Scale the result into the [-1,1] range
         result / self.scale_factor
     }
 }

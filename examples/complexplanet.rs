@@ -1750,4 +1750,26 @@ fn main() {
         .set_gradient(ColorGradient::new().build_terrain_gradient())
         .render(&noise_map)
         .write_to_file("unscaledFinalPlanet.png");
+
+    let noise_map = PlaneMapBuilder::new(&unscaledFinalPlanet)
+        .set_size(1024, 1024)
+        .set_x_bounds(-0.5, 0.5)
+        .set_y_bounds(-0.5, 0.5)
+        .build();
+
+    ImageRenderer::new()
+        .set_gradient(ColorGradient::new().build_terrain_gradient())
+        .render(&noise_map)
+        .write_to_file("unscaledFinalPlanet_4x_zoom.png");
+
+    let noise_map = PlaneMapBuilder::new(&unscaledFinalPlanet)
+        .set_size(1024, 1024)
+        .set_x_bounds(-0.0, 0.25)
+        .set_y_bounds(-0.125, 0.125)
+        .build();
+
+    ImageRenderer::new()
+        .set_gradient(ColorGradient::new().build_terrain_gradient())
+        .render(&noise_map)
+        .write_to_file("unscaledFinalPlanet_16x_zoom.png");
 }
