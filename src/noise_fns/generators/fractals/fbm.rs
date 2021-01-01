@@ -50,6 +50,11 @@ pub struct Fbm {
 
     seed: u32,
     sources: Vec<Perlin>,
+    scale_factor: f64,
+}
+
+fn calc_scale_factor(persistence: f64, octaves: usize) -> f64 {
+    1.0 - persistence.powi(octaves as i32)
 }
 
 impl Fbm {
@@ -68,6 +73,7 @@ impl Fbm {
             lacunarity: Self::DEFAULT_LACUNARITY,
             persistence: Self::DEFAULT_PERSISTENCE,
             sources: super::build_sources(Self::DEFAULT_SEED, Self::DEFAULT_OCTAVE_COUNT),
+            scale_factor: calc_scale_factor(Self::DEFAULT_PERSISTENCE, Self::DEFAULT_OCTAVE_COUNT),
         }
     }
 }
@@ -88,6 +94,7 @@ impl MultiFractal for Fbm {
         Self {
             octaves,
             sources: super::build_sources(self.seed, octaves),
+            scale_factor: calc_scale_factor(self.persistence, octaves),
             ..self
         }
     }
@@ -103,6 +110,7 @@ impl MultiFractal for Fbm {
     fn set_persistence(self, persistence: f64) -> Self {
         Self {
             persistence,
+            scale_factor: calc_scale_factor(persistence, self.octaves),
             ..self
         }
     }
@@ -148,8 +156,7 @@ impl NoiseFn<[f64; 2]> for Fbm {
         }
 
         // Scale and shift the result into the [-1,1] range
-        let scale = 2.0 - self.persistence.powi(self.octaves as i32 - 1);
-        result / scale
+        result / self.scale_factor
     }
 }
 
@@ -175,8 +182,7 @@ impl NoiseFn<[f64; 3]> for Fbm {
         }
 
         // Scale and shift the result into the [-1,1] range
-        let scale = 2.0 - self.persistence.powi(self.octaves as i32 - 1);
-        result / scale
+        result / self.scale_factor
     }
 }
 
@@ -202,7 +208,6 @@ impl NoiseFn<[f64; 4]> for Fbm {
         }
 
         // Scale and shift the result into the [-1,1] range
-        let scale = 2.0 - self.persistence.powi(self.octaves as i32 - 1);
-        result / scale
+        result / self.scale_factor
     }
 }
