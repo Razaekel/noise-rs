@@ -4,7 +4,7 @@ use noise::{utils::*, Add, Cylinders, Perlin};
 
 fn main() {
     let cyl = Cylinders::new();
-    let perlin = Perlin::new();
+    let perlin = Perlin::default();
 
     let add = Add::new(&cyl, &perlin);
 

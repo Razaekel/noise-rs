@@ -5,7 +5,7 @@ extern crate noise;
 use noise::{utils::*, Perlin, Seedable};
 
 fn main() {
-    let perlin = Perlin::new();
+    let perlin = Perlin::default();
 
     PlaneMapBuilder::new(&perlin)
         .set_size(1024, 1024)

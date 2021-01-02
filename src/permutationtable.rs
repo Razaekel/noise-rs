@@ -85,13 +85,13 @@ mod tests {
 
     #[test]
     fn test_random_seed() {
-        let perlin = Perlin::new().set_seed(random());
+        let perlin = Perlin::default().set_seed(random());
         let _ = perlin.get([1.0, 2.0, 3.0]);
     }
 
     #[test]
     fn test_negative_params() {
-        let perlin = Perlin::new();
+        let perlin = Perlin::default();
         let _ = perlin.get([-1.0, 2.0, 3.0]);
     }
 }

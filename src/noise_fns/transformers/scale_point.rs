@@ -128,7 +128,7 @@ mod tests {
 
     #[test]
     fn test_pass_by_ref() {
-        let source = Perlin::new();
+        let source = Perlin::default();
         let transformed_by_ref = ScalePoint::new(&source)
             .set_x_scale(0.8)
             .set_y_scale(0.1)

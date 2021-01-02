@@ -10,13 +10,14 @@ use crate::noise_fns::NoiseFn;
 /// debugging purposes.
 #[derive(Clone, Copy, Debug)]
 pub struct Checkerboard {
-    /// Controls the size of the block in 2^(size).
+    // Controls the size of the block in 2^(size).
     size: usize,
 }
 
 impl Checkerboard {
     const DEFAULT_SIZE: usize = 0;
 
+    /// Controls the size of the block in 2^(size) units.
     pub fn new(size: usize) -> Self {
         Self { size: 1 << size }
     }
@@ -40,6 +41,7 @@ impl Default for Checkerboard {
 
 // These impl's should be made generic over Point, but there is no higher Point
 // type. Keep the code the same anyway.
+// TODO: Deduplicate when const generics are stabilized.
 impl NoiseFn<[f64; 2]> for Checkerboard {
     fn get(&self, point: [f64; 2]) -> f64 {
         calculate_checkerboard(&point, self.size)

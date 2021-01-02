@@ -3,7 +3,7 @@ extern crate noise;
 use noise::{utils::*, Blend, Fbm, Perlin, RidgedMulti};
 
 fn main() {
-    let perlin = Perlin::new();
+    let perlin = Perlin::default();
     let ridged = RidgedMulti::new();
     let fbm = Fbm::new();
     let blend = Blend::new(&perlin, &ridged, &fbm);

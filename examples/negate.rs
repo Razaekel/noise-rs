@@ -3,7 +3,7 @@ extern crate noise;
 use noise::{utils::*, Abs, Negate, Perlin};
 
 fn main() {
-    let perlin = Perlin::new();
+    let perlin = Perlin::default();
     let abs = Abs::new(&perlin);
 
     PlaneMapBuilder::new(&Negate::new(&abs))

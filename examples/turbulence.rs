@@ -3,7 +3,7 @@ extern crate noise;
 use noise::{utils::*, Perlin, Turbulence};
 
 fn main() {
-    let perlin = Perlin::new();
+    let perlin = Perlin::default();
     let turbulence = Turbulence::new(&perlin);
 
     PlaneMapBuilder::new(&turbulence)

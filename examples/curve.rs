@@ -3,7 +3,7 @@ extern crate noise;
 use noise::{utils::*, Curve, Perlin};
 
 fn main() {
-    let perlin = Perlin::new();
+    let perlin = Perlin::default();
     let curve = Curve::new(&perlin)
         .add_control_point(-2.0, -2.0)
         .add_control_point(-1.0, -1.25)

@@ -5,6 +5,9 @@ use crate::{
 };
 
 /// Noise function that outputs 2/3/4-dimensional Perlin noise.
+///
+/// THis is a variant of original perlin noise, based on the principles of simplex noise to
+/// calculate the values at a point using wavelets instead of interpolated gradients.
 #[derive(Clone, Copy, Debug)]
 pub struct Perlin {
     seed: u32,
