@@ -1,45 +1,45 @@
 extern crate noise;
 
-use noise::{utils::*, RangeFunction, Worley};
+use noise::{distance_functions::*, utils::*, ReturnType, Worley};
 
 fn main() {
-    PlaneMapBuilder::new(&Worley::new())
+    PlaneMapBuilder::new(&Worley::default())
         .build()
         .write_to_file("worley.png");
 
-    PlaneMapBuilder::new(&Worley::new().enable_range(true))
+    PlaneMapBuilder::new(&Worley::default().set_return_type(ReturnType::Distance))
         .build()
-        .write_to_file("worley_range.png");
+        .write_to_file("worley_distance.png");
 
-    PlaneMapBuilder::new(&Worley::new().set_range_function(RangeFunction::EuclideanSquared))
+    PlaneMapBuilder::new(&Worley::default().set_distance_function(euclidean_squared))
         .build()
         .write_to_file("worley_squared.png");
 
     PlaneMapBuilder::new(
-        &Worley::new()
-            .enable_range(true)
-            .set_range_function(RangeFunction::EuclideanSquared),
+        &Worley::default()
+            .set_return_type(ReturnType::Distance)
+            .set_distance_function(euclidean_squared),
     )
     .build()
-    .write_to_file("worley_squared_range.png");
+    .write_to_file("worley_squared_distance.png");
 
-    PlaneMapBuilder::new(&Worley::new().set_range_function(RangeFunction::Manhattan))
+    PlaneMapBuilder::new(&Worley::default().set_distance_function(manhattan))
         .build()
         .write_to_file("worley_manhattan.png");
 
-    PlaneMapBuilder::new(&Worley::new().enable_range(true))
+    PlaneMapBuilder::new(&Worley::default().set_return_type(ReturnType::Distance))
         .build()
-        .write_to_file("worley_manhattan_range.png");
+        .write_to_file("worley_manhattan_distance.png");
 
-    PlaneMapBuilder::new(&Worley::new().set_range_function(RangeFunction::Chebyshev))
+    PlaneMapBuilder::new(&Worley::default().set_distance_function(chebyshev))
         .build()
         .write_to_file("worley_chebyshev.png");
 
     PlaneMapBuilder::new(
-        &Worley::new()
-            .enable_range(true)
-            .set_range_function(RangeFunction::Chebyshev),
+        &Worley::default()
+            .set_return_type(ReturnType::Distance)
+            .set_distance_function(chebyshev),
     )
     .build()
-    .write_to_file("worley_chebyshev_range.png");
+    .write_to_file("worley_chebyshev_distance.png");
 }

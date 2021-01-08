@@ -860,11 +860,9 @@ fn main() {
     // generate the detail to add to the dunes. By enabling the distance
     // algorithm, small polygonal pits are generated; the edges of the pits
     // are joined to the edges of nearby pits.
-    let badlandsSand_wo = Worley::new()
-        .set_seed(CURRENT_SEED + 81)
+    let badlandsSand_wo = Worley::new(CURRENT_SEED + 81)
         .set_frequency(16183.25)
-        .set_displacement(0.0)
-        .enable_range(true);
+        .set_return_type(ReturnType::Distance);
 
     // 4: [Scaled-dune-detail module]: This scale/bias module shrinks the dune
     // details by a large amount. This is necessary so that the subsequent
