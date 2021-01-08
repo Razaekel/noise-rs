@@ -362,7 +362,6 @@ fn get_vec3(index: usize) -> [f64; 3] {
     }
 }
 
-#[allow(clippy::cognitive_complexity)]
 impl NoiseFn<[f64; 4]> for Worley {
     fn get(&self, point: [f64; 4]) -> f64 {
         worley_4d(
@@ -375,6 +374,7 @@ impl NoiseFn<[f64; 4]> for Worley {
 }
 
 #[inline]
+#[allow(clippy::cognitive_complexity)]
 fn worley_4d<F>(
     hasher: &dyn NoiseHasher,
     distance_function: F,
