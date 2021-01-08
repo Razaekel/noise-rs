@@ -13,10 +13,9 @@ fn main() {
         .set_octaves(6);
 
     // Use Worley polygons to produce the small grains for the granite texture.
-    let base_grains = Worley::new()
-        .set_seed(1)
+    let base_grains = Worley::new(1)
         .set_frequency(16.0)
-        .enable_range(true);
+        .set_return_type(ReturnType::Distance);
 
     // Scale the small grain values so that they can be added to the base
     // granite texture. Worley polygons normally generate pits, so apply a

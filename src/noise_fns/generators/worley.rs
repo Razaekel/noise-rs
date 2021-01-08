@@ -5,26 +5,17 @@ use crate::{
 };
 
 /// Noise function that outputs Worley noise.
-#[derive(Clone, Copy, Debug)]
 pub struct Worley {
-    /// Specifies the range function to use when calculating the boundaries of
+    /// Specifies the distance function to use when calculating the boundaries of
     /// the cell.
-    pub range_function: RangeFunction,
+    pub distance_function: Box<dyn Fn(&[f64], &[f64]) -> f64>,
 
-    /// Determines if the distance from the nearest seed point is applied to
-    /// the output value.
-    pub enable_range: bool,
+    /// Signifies whether the distance from the borders of the cell should be returned, or the
+    /// value for the cell.
+    pub return_type: ReturnType,
 
     /// Frequency of the seed points.
     pub frequency: f64,
-
-    /// Scale of the random displacement to apply to each cell.
-    ///
-    /// The noise function assigns each Worley cell a random constant value from
-    /// a value noise function. The `displacement` _value_ controls the range
-    /// random values to assign to each cell. The range of random values is +/-
-    /// the displacement value.
-    pub displacement: f64,
 
     seed: u32,
     perm_table: PermutationTable,
@@ -32,34 +23,34 @@ pub struct Worley {
 
 impl Worley {
     pub const DEFAULT_SEED: u32 = 0;
-    pub const DEFAULT_RANGEFUNCTION: RangeFunction = RangeFunction::Euclidean;
     pub const DEFAULT_FREQUENCY: f64 = 1.0;
-    pub const DEFAULT_DISPLACEMENT: f64 = 1.0;
 
-    pub fn new() -> Self {
+    pub fn new(seed: u32) -> Self {
         Self {
-            perm_table: PermutationTable::new(Self::DEFAULT_SEED),
-            seed: Self::DEFAULT_SEED,
-            range_function: Self::DEFAULT_RANGEFUNCTION,
-            enable_range: false,
+            perm_table: PermutationTable::new(seed),
+            seed,
+            distance_function: Box::new(distance_functions::euclidean),
+            return_type: ReturnType::Value,
             frequency: Self::DEFAULT_FREQUENCY,
-            displacement: Self::DEFAULT_DISPLACEMENT,
         }
     }
 
-    /// Sets the range function used by the Worley cells.
-    pub fn set_range_function(self, range_function: RangeFunction) -> Self {
+    /// Sets the distance function used by the Worley cells.
+    pub fn set_distance_function<F>(self, function: F) -> Self
+    where
+        F: Fn(&[f64], &[f64]) -> f64 + 'static,
+    {
         Self {
-            range_function,
+            distance_function: Box::new(function),
             ..self
         }
     }
 
     /// Enables or disables applying the distance from the nearest seed point
     /// to the output value.
-    pub fn enable_range(self, enable_range: bool) -> Self {
+    pub fn set_return_type(self, return_type: ReturnType) -> Self {
         Self {
-            enable_range,
+            return_type,
             ..self
         }
     }
@@ -68,18 +59,11 @@ impl Worley {
     pub fn set_frequency(self, frequency: f64) -> Self {
         Self { frequency, ..self }
     }
-
-    pub fn set_displacement(self, displacement: f64) -> Self {
-        Self {
-            displacement,
-            ..self
-        }
-    }
 }
 
 impl Default for Worley {
     fn default() -> Self {
-        Self::new()
+        Self::new(0)
     }
 }
 
@@ -104,147 +88,135 @@ impl Seedable for Worley {
     }
 }
 
-/// Set of distance functions that can be used in the Worley noise function.
 #[derive(Clone, Copy, Debug)]
-pub enum RangeFunction {
-    /// The standard linear distance. Expensive to compute because it requires
-    /// square root calculations.
-    Euclidean,
-
-    /// Same as Euclidean, but without the square root calculations. Distance
-    /// results will be smaller, however, but hash patterns will be the same.
-    EuclideanSquared,
-
-    /// Measured by only moving in straight lines along the axes. Diagonal
-    /// movement is not allowed, which leads to increased distances.
-    Manhattan,
-
-    /// Measured by taking the largest distance along any axis as the total
-    /// distance. Since this eliminates all but one dimension, it results in
-    /// significantly shorter distances and produces regions where the
-    /// distances are uniform.
-    Chebyshev,
-
-    /// Experimental function where all values are multiplied together and then
-    /// added up like a quadratic equation.
-    Quadratic,
+pub enum ReturnType {
+    Distance,
+    Value,
 }
 
-fn calculate_range(range_function: RangeFunction, p1: &[f64], p2: &[f64]) -> f64 {
-    match range_function {
-        RangeFunction::Euclidean => range_euclidean(p1, p2),
-        RangeFunction::EuclideanSquared => range_euclidean_squared(p1, p2),
-        RangeFunction::Manhattan => range_manhattan(p1, p2),
-        RangeFunction::Chebyshev => range_chebyshev(p1, p2),
-        RangeFunction::Quadratic => range_quadratic(p1, p2),
+pub mod distance_functions {
+    pub fn euclidean(p1: &[f64], p2: &[f64]) -> f64 {
+        p1.iter()
+            .zip(p2)
+            .map(|(a, b)| *a - *b)
+            .map(|a| a * a)
+            .fold(0.0, |acc, x| acc + x)
+            .sqrt()
     }
-}
 
-fn range_euclidean(p1: &[f64], p2: &[f64]) -> f64 {
-    p1.iter()
-        .zip(p2.iter())
-        .map(|(a, b)| *a - *b)
-        .map(|a| a * a)
-        .fold(0.0, |acc, x| acc + x)
-        .sqrt()
-}
+    pub fn euclidean_squared(p1: &[f64], p2: &[f64]) -> f64 {
+        p1.iter()
+            .zip(p2)
+            .map(|(a, b)| *a - *b)
+            .map(|a| a * a)
+            .fold(0.0, |acc, x| acc + x)
+    }
 
-fn range_euclidean_squared(p1: &[f64], p2: &[f64]) -> f64 {
-    p1.iter()
-        .zip(p2.iter())
-        .map(|(a, b)| *a - *b)
-        .map(|a| a * a)
-        .fold(0.0, |acc, x| acc + x)
-}
+    pub fn manhattan(p1: &[f64], p2: &[f64]) -> f64 {
+        p1.iter()
+            .zip(p2)
+            .map(|(a, b)| *a - *b)
+            .map(|a| a.abs())
+            .fold(0.0, |acc, x| acc + x)
+    }
 
-fn range_manhattan(p1: &[f64], p2: &[f64]) -> f64 {
-    p1.iter()
-        .zip(p2.iter())
-        .map(|(a, b)| *a - *b)
-        .map(|a| a.abs())
-        .fold(0.0, |acc, x| acc + x)
-}
+    pub fn chebyshev(p1: &[f64], p2: &[f64]) -> f64 {
+        p1.iter()
+            .zip(p2)
+            .map(|(a, b)| *a - *b)
+            .map(|a| a.abs())
+            .fold(std::f64::MIN, |a, b| a.max(b))
+    }
 
-fn range_chebyshev(p1: &[f64], p2: &[f64]) -> f64 {
-    p1.iter()
-        .zip(p2.iter())
-        .map(|(a, b)| *a - *b)
-        .map(|a| a.abs())
-        .fold(std::f64::MIN, |a, b| a.max(b))
-}
+    pub fn quadratic(p1: &[f64], p2: &[f64]) -> f64 {
+        let temp: Vec<f64> = p1.iter().zip(p2).map(|(a, b)| *a - *b).collect();
 
-fn range_quadratic(p1: &[f64], p2: &[f64]) -> f64 {
-    let temp: Vec<f64> = p1.iter().zip(p2.iter()).map(|(a, b)| *a - *b).collect();
+        let mut result = 0.0;
 
-    let mut result = 0.0;
-
-    for i in &temp {
-        for j in &temp {
-            result += *i * *j;
+        for i in &temp {
+            for j in &temp {
+                result += *i * *j;
+            }
         }
-    }
 
-    result
+        result
+    }
 }
 
 impl NoiseFn<[f64; 2]> for Worley {
     fn get(&self, point: [f64; 2]) -> f64 {
-        fn get_point(perm_table: &PermutationTable, whole: [isize; 2]) -> [f64; 2] {
-            math::add2(get_vec2(perm_table.hash(&whole)), math::to_f64_2(whole))
-        }
+        worley_2d(
+            &self.perm_table,
+            &self.distance_function,
+            self.return_type,
+            math::mul2(point, self.frequency),
+        )
+    }
+}
 
-        let point = &math::mul2(point, self.frequency);
+#[inline]
+fn worley_2d<F>(
+    hasher: &dyn NoiseHasher,
+    distance_function: F,
+    return_type: ReturnType,
+    point: [f64; 2],
+) -> f64
+where
+    F: Fn(&[f64], &[f64]) -> f64,
+{
+    #[inline]
+    fn get_point(hasher: &dyn NoiseHasher, whole: [isize; 2]) -> [f64; 2] {
+        math::add2(get_vec2(hasher.hash(&whole)), math::to_f64_2(whole))
+    }
 
-        let cell = math::map2(*point, f64::floor);
-        let whole = math::to_isize2(cell);
-        let frac = math::sub2(*point, cell);
+    let cell = math::map2(point, f64::floor);
+    let whole = math::to_isize2(cell);
+    let frac = math::sub2(point, cell);
 
-        let x_half = frac[0] > 0.5;
-        let y_half = frac[1] > 0.5;
+    let x_half = frac[0] > 0.5;
+    let y_half = frac[1] > 0.5;
 
-        let near = [whole[0] + (x_half as isize), whole[1] + (y_half as isize)];
-        let far = [whole[0] + (!x_half as isize), whole[1] + (!y_half as isize)];
+    let near = [whole[0] + (x_half as isize), whole[1] + (y_half as isize)];
+    let far = [whole[0] + (!x_half as isize), whole[1] + (!y_half as isize)];
 
-        let mut seed_cell = near;
-        let seed_point = get_point(&self.perm_table, near);
-        let mut range = calculate_range(self.range_function, point, &seed_point);
+    let mut seed_cell = near;
+    let seed_point = get_point(hasher, near);
+    let mut distance = distance_function(&point, &seed_point);
 
-        let x_range = (0.5 - frac[0]) * (0.5 - frac[0]); // x-distance squared to center line
-        let y_range = (0.5 - frac[1]) * (0.5 - frac[1]); // y-distance squared to center line
+    let x_distance = (0.5 - frac[0]) * (0.5 - frac[0]); // x-distance squared to center line
+    let y_distance = (0.5 - frac[1]) * (0.5 - frac[1]); // y-distance squared to center line
 
-        macro_rules! test_point(
+    macro_rules! test_point(
             [$x:expr, $y:expr] => {
                 {
-                    let cur_point = get_point(&self.perm_table, [$x, $y]);
-                    let cur_range = calculate_range(self.range_function, point, &cur_point);
-                    if cur_range < range {
-                        range = cur_range;
+                    let cur_point = get_point(hasher, [$x, $y]);
+                    let cur_distance = distance_function(&point, &cur_point);
+                    if cur_distance < distance {
+                        distance = cur_distance;
                         seed_cell = [$x, $y];
                     }
                 }
             }
         );
 
-        if x_range < range {
-            test_point![far[0], near[1]];
-        }
-
-        if y_range < range {
-            test_point![near[0], far[1]];
-        }
-
-        if x_range < range && y_range < range {
-            test_point![far[0], far[1]];
-        }
-
-        let value = if self.enable_range {
-            range
-        } else {
-            self.displacement * self.perm_table.hash(&seed_cell) as f64 / 255.0
-        };
-
-        value * 2.0 - 1.0
+    if x_distance < distance {
+        test_point![far[0], near[1]];
     }
+
+    if y_distance < distance {
+        test_point![near[0], far[1]];
+    }
+
+    if x_distance < distance && y_distance < distance {
+        test_point![far[0], far[1]];
+    }
+
+    let value = match return_type {
+        ReturnType::Distance => distance,
+        ReturnType::Value => hasher.hash(&seed_cell) as f64 / 255.0,
+    };
+
+    value * 2.0 - 1.0
 }
 
 #[rustfmt::skip]
@@ -267,84 +239,99 @@ fn get_vec2(index: usize) -> [f64; 2] {
 
 impl NoiseFn<[f64; 3]> for Worley {
     fn get(&self, point: [f64; 3]) -> f64 {
-        fn get_point(perm_table: &PermutationTable, whole: [isize; 3]) -> [f64; 3] {
-            math::add3(get_vec3(perm_table.hash(&whole)), math::to_f64_3(whole))
-        }
+        worley_3d(
+            &self.perm_table,
+            &self.distance_function,
+            self.return_type,
+            math::mul3(point, self.frequency),
+        )
+    }
+}
 
-        let point = &math::mul3(point, self.frequency);
+#[inline]
+fn worley_3d<F>(
+    hasher: &dyn NoiseHasher,
+    distance_function: F,
+    return_type: ReturnType,
+    point: [f64; 3],
+) -> f64
+where
+    F: Fn(&[f64], &[f64]) -> f64,
+{
+    fn get_point(hasher: &dyn NoiseHasher, whole: [isize; 3]) -> [f64; 3] {
+        math::add3(get_vec3(hasher.hash(&whole)), math::to_f64_3(whole))
+    }
 
-        let cell = math::map3(*point, f64::floor);
-        let whole = math::to_isize3(cell);
-        let frac = math::sub3(*point, cell);
+    let cell = math::map3(point, f64::floor);
+    let whole = math::to_isize3(cell);
+    let frac = math::sub3(point, cell);
 
-        let x_half = frac[0] > 0.5;
-        let y_half = frac[1] > 0.5;
-        let z_half = frac[2] > 0.5;
+    let x_half = frac[0] > 0.5;
+    let y_half = frac[1] > 0.5;
+    let z_half = frac[2] > 0.5;
 
-        let near = [
-            whole[0] + (x_half as isize),
-            whole[1] + (y_half as isize),
-            whole[2] + (z_half as isize),
-        ];
-        let far = [
-            whole[0] + (!x_half as isize),
-            whole[1] + (!y_half as isize),
-            whole[2] + (!z_half as isize),
-        ];
+    let near = [
+        whole[0] + (x_half as isize),
+        whole[1] + (y_half as isize),
+        whole[2] + (z_half as isize),
+    ];
+    let far = [
+        whole[0] + (!x_half as isize),
+        whole[1] + (!y_half as isize),
+        whole[2] + (!z_half as isize),
+    ];
 
-        let mut seed_cell = near;
-        let seed_point = get_point(&self.perm_table, near);
-        let mut range = calculate_range(self.range_function, point, &seed_point);
+    let mut seed_cell = near;
+    let seed_point = get_point(hasher, near);
+    let mut distance = distance_function(&point, &seed_point);
 
-        let x_range = (0.5 - frac[0]) * (0.5 - frac[0]); // x-distance squared to center line
-        let y_range = (0.5 - frac[1]) * (0.5 - frac[1]); // y-distance squared to center line
-        let z_range = (0.5 - frac[2]) * (0.5 - frac[2]); // z-distance squared to center line
+    let x_distance = (0.5 - frac[0]) * (0.5 - frac[0]); // x-distance squared to center line
+    let y_distance = (0.5 - frac[1]) * (0.5 - frac[1]); // y-distance squared to center line
+    let z_distance = (0.5 - frac[2]) * (0.5 - frac[2]); // z-distance squared to center line
 
-        macro_rules! test_point(
+    macro_rules! test_point(
             [$x:expr, $y:expr, $z:expr] => {
                 {
-                    let cur_point = get_point(&self.perm_table, [$x, $y, $z]);
-                    let cur_range = calculate_range(self.range_function, point, &cur_point);
-                    if cur_range < range {
-                        range = cur_range;
+                    let cur_point = get_point(hasher, [$x, $y, $z]);
+                    let cur_distance = distance_function(&point, &cur_point);
+                    if cur_distance < distance {
+                        distance = cur_distance;
                         seed_cell = [$x, $y, $z];
                     }
                 }
             }
         );
 
-        if x_range < range {
-            test_point![far[0], near[1], near[2]];
-        }
-        if y_range < range {
-            test_point![near[0], far[1], near[2]];
-        }
-        if z_range < range {
-            test_point![near[0], near[1], far[2]];
-        }
-
-        if x_range < range && y_range < range {
-            test_point![far[0], far[1], near[2]];
-        }
-        if x_range < range && z_range < range {
-            test_point![far[0], near[1], far[2]];
-        }
-        if y_range < range && z_range < range {
-            test_point![near[0], far[1], far[2]];
-        }
-
-        if x_range < range && y_range < range && z_range < range {
-            test_point![far[0], far[1], far[2]];
-        }
-
-        let value = if self.enable_range {
-            range
-        } else {
-            self.displacement * self.perm_table.hash(&seed_cell) as f64 / 255.0
-        };
-
-        value * 2.0 - 1.0
+    if x_distance < distance {
+        test_point![far[0], near[1], near[2]];
     }
+    if y_distance < distance {
+        test_point![near[0], far[1], near[2]];
+    }
+    if z_distance < distance {
+        test_point![near[0], near[1], far[2]];
+    }
+
+    if x_distance < distance && y_distance < distance {
+        test_point![far[0], far[1], near[2]];
+    }
+    if x_distance < distance && z_distance < distance {
+        test_point![far[0], near[1], far[2]];
+    }
+    if y_distance < distance && z_distance < distance {
+        test_point![near[0], far[1], far[2]];
+    }
+
+    if x_distance < distance && y_distance < distance && z_distance < distance {
+        test_point![far[0], far[1], far[2]];
+    }
+
+    let value = match return_type {
+        ReturnType::Distance => distance,
+        ReturnType::Value => hasher.hash(&seed_cell) as f64 / 255.0,
+    };
+
+    value * 2.0 - 1.0
 }
 
 #[rustfmt::skip]
@@ -378,113 +365,142 @@ fn get_vec3(index: usize) -> [f64; 3] {
 #[allow(clippy::cognitive_complexity)]
 impl NoiseFn<[f64; 4]> for Worley {
     fn get(&self, point: [f64; 4]) -> f64 {
-        fn get_point(perm_table: &PermutationTable, whole: [isize; 4]) -> [f64; 4] {
-            math::add4(get_vec4(perm_table.hash(&whole)), math::to_f64_4(whole))
-        }
+        worley_4d(
+            &self.perm_table,
+            &self.distance_function,
+            self.return_type,
+            math::mul4(point, self.frequency),
+        )
+    }
+}
 
-        let point = &math::mul4(point, self.frequency);
+#[inline]
+fn worley_4d<F>(
+    hasher: &dyn NoiseHasher,
+    distance_function: F,
+    return_type: ReturnType,
+    point: [f64; 4],
+) -> f64
+where
+    F: Fn(&[f64], &[f64]) -> f64,
+{
+    fn get_point(hasher: &dyn NoiseHasher, whole: [isize; 4]) -> [f64; 4] {
+        math::add4(get_vec4(hasher.hash(&whole)), math::to_f64_4(whole))
+    }
 
-        let cell = math::map4(*point, f64::floor);
-        let whole = math::to_isize4(cell);
-        let frac = math::sub4(*point, cell);
+    let cell = math::map4(point, f64::floor);
+    let whole = math::to_isize4(cell);
+    let frac = math::sub4(point, cell);
 
-        let x_half = frac[0] > 0.5;
-        let y_half = frac[1] > 0.5;
-        let z_half = frac[2] > 0.5;
-        let w_half = frac[3] > 0.5;
+    let half: Vec<bool> = frac.iter().map(|a| *a > 0.5).collect();
 
-        let near = [
-            whole[0] + (x_half as isize),
-            whole[1] + (y_half as isize),
-            whole[2] + (z_half as isize),
-            whole[3] + (w_half as isize),
-        ];
-        let far = [
-            whole[0] + (!x_half as isize),
-            whole[1] + (!y_half as isize),
-            whole[2] + (!z_half as isize),
-            whole[3] + (!w_half as isize),
-        ];
+    let near = [
+        whole[0] + (half[0] as isize),
+        whole[1] + (half[1] as isize),
+        whole[2] + (half[2] as isize),
+        whole[3] + (half[3] as isize),
+    ];
+    let far = [
+        whole[0] + (!half[0] as isize),
+        whole[1] + (!half[0] as isize),
+        whole[2] + (!half[0] as isize),
+        whole[3] + (!half[0] as isize),
+    ];
 
-        let mut seed_cell = near;
-        let seed_point = get_point(&self.perm_table, near);
-        let mut range = calculate_range(self.range_function, point, &seed_point);
+    let mut seed_cell = near;
+    let seed_point = get_point(hasher, near);
+    let mut distance = distance_function(&point, &seed_point);
 
-        let x_range = (0.5 - frac[0]) * (0.5 - frac[0]); // x-distance squared to center line
-        let y_range = (0.5 - frac[1]) * (0.5 - frac[1]); // y-distance squared to center line
-        let z_range = (0.5 - frac[2]) * (0.5 - frac[2]); // z-distance squared to center line
-        let w_range = (0.5 - frac[3]) * (0.5 - frac[3]); // w-distance squared to center line
+    // get distance squared to center line for each axis
+    let center_distance = frac
+        .iter()
+        .map(|a| (0.5 - a).powf(2.0))
+        .collect::<Vec<f64>>();
 
-        macro_rules! test_point(
+    macro_rules! test_point(
             [$x:expr, $y:expr, $z:expr, $w:expr] => {
                 {
-                    let cur_point = get_point(&self.perm_table, [$x, $y, $z, $w]);
-                    let cur_range = calculate_range(self.range_function, point, &cur_point);
-                    if cur_range < range {
-                        range = cur_range;
+                    let cur_point = get_point(hasher, [$x, $y, $z, $w]);
+                    let cur_distance = distance_function(&point, &cur_point);
+                    if cur_distance < distance {
+                        distance = cur_distance;
                         seed_cell = [$x, $y, $z, $w];
                     }
                 }
             }
         );
 
-        if x_range < range {
-            test_point![far[0], near[1], near[2], near[3]];
-        }
-        if y_range < range {
-            test_point![near[0], far[1], near[2], near[3]];
-        }
-        if z_range < range {
-            test_point![near[0], near[1], far[2], near[3]];
-        }
-        if w_range < range {
-            test_point![near[0], near[1], near[2], far[3]];
-        }
-
-        if x_range < range && y_range < range {
-            test_point![far[0], far[1], near[2], near[3]];
-        }
-        if x_range < range && z_range < range {
-            test_point![far[0], near[1], far[2], near[3]];
-        }
-        if x_range < range && w_range < range {
-            test_point![far[0], near[1], near[2], far[3]];
-        }
-        if y_range < range && z_range < range {
-            test_point![near[0], far[1], far[2], near[3]];
-        }
-        if y_range < range && w_range < range {
-            test_point![near[0], far[1], near[2], far[3]];
-        }
-        if z_range < range && w_range < range {
-            test_point![near[0], near[1], far[2], far[3]];
-        }
-
-        if x_range < range && y_range < range && z_range < range {
-            test_point![far[0], far[1], far[2], near[3]];
-        }
-        if x_range < range && y_range < range && w_range < range {
-            test_point![far[0], far[1], near[2], far[3]];
-        }
-        if x_range < range && z_range < range && w_range < range {
-            test_point![far[0], near[1], far[2], far[3]];
-        }
-        if y_range < range && z_range < range && w_range < range {
-            test_point![near[0], far[1], far[2], far[3]];
-        }
-
-        if x_range < range && y_range < range && z_range < range && w_range < range {
-            test_point![far[0], far[1], far[2], far[3]];
-        }
-
-        let value = if self.enable_range {
-            range
-        } else {
-            self.displacement * self.perm_table.hash(&seed_cell) as f64 / 255.0
-        };
-
-        value * 2.0 - 1.0
+    if center_distance[0] < distance {
+        test_point![far[0], near[1], near[2], near[3]];
     }
+    if center_distance[1] < distance {
+        test_point![near[0], far[1], near[2], near[3]];
+    }
+    if center_distance[2] < distance {
+        test_point![near[0], near[1], far[2], near[3]];
+    }
+    if center_distance[3] < distance {
+        test_point![near[0], near[1], near[2], far[3]];
+    }
+
+    if center_distance[0] < distance && center_distance[1] < distance {
+        test_point![far[0], far[1], near[2], near[3]];
+    }
+    if center_distance[0] < distance && center_distance[2] < distance {
+        test_point![far[0], near[1], far[2], near[3]];
+    }
+    if center_distance[0] < distance && center_distance[3] < distance {
+        test_point![far[0], near[1], near[2], far[3]];
+    }
+    if center_distance[1] < distance && center_distance[2] < distance {
+        test_point![near[0], far[1], far[2], near[3]];
+    }
+    if center_distance[1] < distance && center_distance[3] < distance {
+        test_point![near[0], far[1], near[2], far[3]];
+    }
+    if center_distance[2] < distance && center_distance[3] < distance {
+        test_point![near[0], near[1], far[2], far[3]];
+    }
+
+    if center_distance[0] < distance
+        && center_distance[1] < distance
+        && center_distance[2] < distance
+    {
+        test_point![far[0], far[1], far[2], near[3]];
+    }
+    if center_distance[0] < distance
+        && center_distance[1] < distance
+        && center_distance[3] < distance
+    {
+        test_point![far[0], far[1], near[2], far[3]];
+    }
+    if center_distance[0] < distance
+        && center_distance[2] < distance
+        && center_distance[3] < distance
+    {
+        test_point![far[0], near[1], far[2], far[3]];
+    }
+    if center_distance[1] < distance
+        && center_distance[2] < distance
+        && center_distance[3] < distance
+    {
+        test_point![near[0], far[1], far[2], far[3]];
+    }
+
+    if center_distance[0] < distance
+        && center_distance[1] < distance
+        && center_distance[2] < distance
+        && center_distance[3] < distance
+    {
+        test_point![far[0], far[1], far[2], far[3]];
+    }
+
+    let value = match return_type {
+        ReturnType::Distance => distance,
+        ReturnType::Value => hasher.hash(&seed_cell) as f64 / 255.0,
+    };
+
+    value * 2.0 - 1.0
 }
 
 #[rustfmt::skip]

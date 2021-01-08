@@ -24,6 +24,7 @@ default = ["image"]
 
 [dev-dependencies]
 criterion = "0.3"
+rand_pcg = "0.2"
 
 [[bench]]
 name = "open_simplex"
