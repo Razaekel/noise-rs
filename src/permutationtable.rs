@@ -63,11 +63,10 @@ impl PermutationTable {
 
 impl NoiseHasher for PermutationTable {
     fn hash(&self, to_hash: &[isize]) -> usize {
-        let index: usize = to_hash
-            .iter()
-            .map(|&a| (a & 0xff) as usize)
-            .reduce(|a, b| (self.values[a] as usize ^ b))
-            .unwrap();
+        let index: usize = Reduce::reduce(to_hash.iter().map(|&a| (a & 0xff) as usize), |a, b| {
+            self.values[a] as usize ^ b
+        })
+        .unwrap();
         self.values[index] as usize
     }
 }
