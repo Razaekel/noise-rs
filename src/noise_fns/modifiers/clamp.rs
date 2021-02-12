@@ -1,4 +1,4 @@
-use crate::{math, noise_fns::NoiseFn};
+use crate::noise_fns::NoiseFn;
 
 /// Noise function that clamps the output value from the source function to a
 /// range of values.
@@ -44,6 +44,6 @@ impl<'a, T> NoiseFn<T> for Clamp<'a, T> {
     fn get(&self, point: T) -> f64 {
         let value = self.source.get(point);
 
-        math::clamp(value, self.bounds.0, self.bounds.1)
+        value.clamp(self.bounds.0, self.bounds.1)
     }
 }

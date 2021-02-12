@@ -1,5 +1,5 @@
 use crate::{
-    math::{self, interpolate},
+    math::interpolate,
     noise_fns::NoiseFn,
 };
 
@@ -91,14 +91,14 @@ impl<'a, T> NoiseFn<T> for Curve<'a, T> {
         // }
 
         // ensure that the index is at least 2 and less than control_points.len()
-        let index_pos = math::clamp(index_pos, 2, self.control_points.len());
+        let index_pos = index_pos.clamp(2, self.control_points.len());
 
         // Find the four nearest control points so that we can perform cubic
         // interpolation.
-        let index0 = math::clamp(index_pos - 2, 0, self.control_points.len() - 1);
-        let index1 = math::clamp(index_pos - 1, 0, self.control_points.len() - 1);
-        let index2 = math::clamp(index_pos, 0, self.control_points.len() - 1);
-        let index3 = math::clamp(index_pos + 1, 0, self.control_points.len() - 1);
+        let index0 = (index_pos - 2).clamp(0, self.control_points.len() - 1);
+        let index1 = (index_pos - 1).clamp(0, self.control_points.len() - 1);
+        let index2 = index_pos.clamp(0, self.control_points.len() - 1);
+        let index3 = (index_pos + 1).clamp(0, self.control_points.len() - 1);
 
         // If some control points are missing (which occurs if the value from
         // the source function is greater than the largest input value or less

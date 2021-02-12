@@ -11,16 +11,6 @@ pub(crate) fn cast<T, U: From<T>>(x: T) -> U {
 }
 
 #[inline]
-pub(crate) fn clamp<T: PartialOrd>(val: T, min: T, max: T) -> T {
-    assert!(max >= min);
-    match () {
-        _ if val < min => min,
-        _ if val > max => max,
-        _ => val,
-    }
-}
-
-#[inline]
 pub(crate) fn map2<T, U, F>(a: [T; 2], f: F) -> [U; 2]
 where
     T: Copy,

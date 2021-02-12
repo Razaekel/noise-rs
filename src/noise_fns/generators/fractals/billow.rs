@@ -82,7 +82,7 @@ impl MultiFractal for Billow {
             return self;
         }
 
-        octaves = math::clamp(octaves, 1, Self::MAX_OCTAVES);
+        octaves = octaves.clamp(1, Self::MAX_OCTAVES);
         Self {
             octaves,
             sources: super::build_sources(self.seed, octaves),

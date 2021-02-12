@@ -1,5 +1,5 @@
 use crate::{
-    math::{clamp, interpolate},
+    math::interpolate,
     noise_fns::NoiseFn,
 };
 
@@ -135,5 +135,5 @@ impl<'a, T> NoiseFn<T> for Terrace<'a, T> {
 }
 
 fn clamp_index(index: isize, min: usize, max: usize) -> usize {
-    clamp(index, min as isize, max as isize) as usize
+    index.clamp(min as isize, max as isize) as usize
 }
