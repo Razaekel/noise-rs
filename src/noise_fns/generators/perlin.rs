@@ -105,7 +105,7 @@ pub(crate) fn perlin_2d(hasher: &dyn NoiseHasher, point: [f64; 2]) -> f64 {
     // At this point, we should be really damn close to the (-1, 1) range, but some float errors
     // could have accumulated, so let's just clamp the results to (-1, 1) to cut off any
     // outliers and return it.
-    math::clamp(scaled_result, -1.0, 1.0)
+    scaled_result.clamp(-1.0, 1.0)
 }
 
 #[inline(always)]
@@ -214,7 +214,7 @@ pub(crate) fn perlin_3d(hasher: &dyn NoiseHasher, point: [f64; 3]) -> f64 {
     // At this point, we should be really damn close to the (-1, 1) range, but some float errors
     // could have accumulated, so let's just clamp the results to (-1, 1) to cut off any
     // outliers and return it.
-    math::clamp(scaled_result, -1.0, 1.0)
+    scaled_result.clamp(-1.0, 1.0)
 }
 
 /// 4-dimensional perlin noise
@@ -500,5 +500,5 @@ pub(crate) fn perlin_4d(hasher: &dyn NoiseHasher, point: [f64; 4]) -> f64 {
     // At this point, we should be really damn close to the (-1, 1) range, but some float errors
     // could have accumulated, so let's just clamp the results to (-1, 1) to cut off any
     // outliers and return it.
-    math::clamp(scaled_result, -1.0, 1.0)
+    scaled_result.clamp(-1.0, 1.0)
 }

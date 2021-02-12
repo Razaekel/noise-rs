@@ -1,6 +1,4 @@
 #[cfg(feature = "image")]
-use crate::math;
-#[cfg(feature = "image")]
 use std::{self, path::Path};
 
 const RASTER_MAX_WIDTH: u16 = 32_767;
@@ -100,7 +98,7 @@ impl NoiseMap {
         let mut pixels: Vec<u8> = Vec::with_capacity(width * height);
 
         for i in &self.map {
-            pixels.push((math::clamp(i * 0.5 + 0.5, 0.0, 1.0) * 255.0) as u8);
+            pixels.push(((i * 0.5 + 0.5).clamp(0.0, 1.0) * 255.0) as u8);
         }
 
         let _ = image::save_buffer(

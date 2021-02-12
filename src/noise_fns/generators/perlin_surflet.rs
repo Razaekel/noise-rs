@@ -94,7 +94,7 @@ impl NoiseFn<[f64; 2]> for Perlin {
         );
 
         // Multiply by arbitrary value to scale to -1..1
-        math::clamp((f00 + f10 + f01 + f11) * SCALE_FACTOR, -1.0, 1.0)
+        ((f00 + f10 + f01 + f11) * SCALE_FACTOR).clamp(-1.0, 1.0)
     }
 }
 
@@ -161,11 +161,7 @@ impl NoiseFn<[f64; 3]> for Perlin {
         );
 
         // Multiply by arbitrary value to scale to -1..1
-        math::clamp(
-            (f000 + f100 + f010 + f110 + f001 + f101 + f011 + f111) * SCALE_FACTOR,
-            -1.0,
-            1.0,
-        )
+        ((f000 + f100 + f010 + f110 + f001 + f101 + f011 + f111) * SCALE_FACTOR).clamp(-1.0, 1.0)
     }
 }
 
@@ -377,26 +373,23 @@ impl NoiseFn<[f64; 4]> for Perlin {
         );
 
         // Multiply by arbitrary value to scale to -1..1
-        math::clamp(
-            (f0000
-                + f1000
-                + f0100
-                + f1100
-                + f0010
-                + f1010
-                + f0110
-                + f1110
-                + f0001
-                + f1001
-                + f0101
-                + f1101
-                + f0011
-                + f1011
-                + f0111
-                + f1111)
-                * SCALE_FACTOR,
-            -1.0,
-            1.0,
-        )
+        ((f0000
+            + f1000
+            + f0100
+            + f1100
+            + f0010
+            + f1010
+            + f0110
+            + f1110
+            + f0001
+            + f1001
+            + f0101
+            + f1101
+            + f0011
+            + f1011
+            + f0111
+            + f1111)
+            * SCALE_FACTOR)
+            .clamp(-1.0, 1.0)
     }
 }

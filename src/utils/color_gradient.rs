@@ -1,5 +1,3 @@
-use crate::math;
-
 pub type Color = [u8; 4];
 
 #[derive(Clone, Copy, Debug, Default)]
@@ -92,8 +90,7 @@ impl ColorGradient {
         assert!(self.gradient_points.len() >= 2);
 
         // we need to clamp the value to the range of pos in the gradient.
-        let clamped_pos = math::clamp(
-            pos,
+        let clamped_pos = pos.clamp(
             self.gradient_points[0].pos,
             self.gradient_points[self.gradient_points.len() - 1].pos,
         );
@@ -115,8 +112,8 @@ impl ColorGradient {
 
         // Find the two nearest control points so that we can perform linear
         // interpolation.
-        let index1 = math::clamp(index - 1, 0, self.gradient_points.len() - 1);
-        let index2 = math::clamp(index, 0, self.gradient_points.len() - 1);
+        let index1 = (index - 1).clamp(0, self.gradient_points.len() - 1);
+        let index2 = index.clamp(0, self.gradient_points.len() - 1);
 
         // If some control points are missing (which occurs if the value from
         // the source module is greater than the largest input value or less

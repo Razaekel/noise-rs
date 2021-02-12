@@ -100,7 +100,7 @@ impl MultiFractal for RidgedMulti {
             return self;
         }
 
-        octaves = math::clamp(octaves, 1, Self::MAX_OCTAVES);
+        octaves = octaves.clamp(1, Self::MAX_OCTAVES);
         Self {
             octaves,
             sources: super::build_sources(self.seed, octaves),
@@ -170,7 +170,7 @@ impl NoiseFn<[f64; 2]> for RidgedMulti {
             weight = signal / self.attenuation;
 
             // Clamp the weight to [0,1] to prevent the result from diverging.
-            weight = math::clamp(weight, 0.0, 1.0);
+            weight = weight.clamp(0.0, 1.0);
 
             // Scale the amplitude appropriately for this frequency.
             signal *= self.persistence.powi(x as i32);
@@ -216,7 +216,7 @@ impl NoiseFn<[f64; 3]> for RidgedMulti {
             weight = signal / self.attenuation;
 
             // Clamp the weight to [0,1] to prevent the result from diverging.
-            weight = math::clamp(weight, 0.0, 1.0);
+            weight = weight.clamp(0.0, 1.0);
 
             // Scale the amplitude appropriately for this frequency.
             signal *= self.persistence.powi(x as i32);
@@ -262,7 +262,7 @@ impl NoiseFn<[f64; 4]> for RidgedMulti {
             weight = signal * self.attenuation;
 
             // Clamp the weight to [0,1] to prevent the result from diverging.
-            weight = math::clamp(weight, 0.0, 1.0);
+            weight = weight.clamp(0.0, 1.0);
 
             // Scale the amplitude appropriately for this frequency.
             signal *= self.persistence.powi(x as i32);
