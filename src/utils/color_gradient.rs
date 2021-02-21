@@ -6,34 +6,69 @@ struct GradientPoint {
     color: Color,
 }
 
+#[derive(Clone, Copy, Debug, Default)]
+struct GradientDomain {
+    min: f64,
+    max: f64,
+}
+
+impl GradientDomain {
+    pub fn new(min: f64, max: f64) -> Self {
+        Self { min, max }
+    }
+
+    pub fn set_min(&mut self, min: f64) {
+        self.min = min;
+    }
+
+    pub fn set_max(&mut self, max: f64) {
+        self.max = max;
+    }
+}
+
 #[derive(Clone, Debug, Default)]
 pub struct ColorGradient {
     gradient_points: Vec<GradientPoint>,
+    domain: GradientDomain,
 }
 
 impl ColorGradient {
     pub fn new() -> Self {
         let gradient = Self {
             gradient_points: Vec::new(),
+            domain: GradientDomain::new(0.0, 1.0),
         };
 
         gradient.build_grayscale_gradient()
     }
 
     pub fn add_gradient_point(mut self, pos: f64, color: Color) -> Self {
-        // check to see if the vector already contains the input point.
-        if !self
+        let new_point = GradientPoint { pos, color };
+
+        // first check to see if the position is within the domain of the gradient. if the position
+        // is not within the domain, expand the domain and add the GradientPoint
+        if self.domain.min > pos {
+            self.domain.set_min(pos);
+            // since the new position is the smallest value, insert it at the beginning of the
+            // gradient
+            self.gradient_points.insert(0, new_point);
+        } else if self.domain.max < pos {
+            self.domain.set_max(pos);
+
+            // since the new position is at the largest value, insert it at the end of the gradient
+            self.gradient_points.push(new_point)
+        } else if !self // new point must be somewhere inside the existing domain. Check to see if
+            // it doesn't exist already
             .gradient_points
             .iter()
-            .any(|&x| (x.pos - pos).abs() < std::f64::EPSILON)
+            .any(|&x| (x.pos - pos).abs() < f64::EPSILON)
         {
             // it doesn't, so find the correct position to insert the new
             // control point.
             let insertion_point = self.find_insertion_point(pos);
 
             // add the new control point at the correct position.
-            self.gradient_points
-                .insert(insertion_point, GradientPoint { pos, color });
+            self.gradient_points.insert(insertion_point, new_point);
         }
 
         self
@@ -86,54 +121,25 @@ impl ColorGradient {
     }
 
     pub fn get_color(&self, pos: f64) -> Color {
-        // confirm that there's at least 2 control points in the vector.
-        assert!(self.gradient_points.len() >= 2);
+        let mut color = [0; 4];
 
-        // we need to clamp the value to the range of pos in the gradient.
-        let clamped_pos = pos.clamp(
-            self.gradient_points[0].pos,
-            self.gradient_points[self.gradient_points.len() - 1].pos,
-        );
+        if pos < self.domain.min {
+            color = self.gradient_points.first().unwrap().color
+        } else if pos > self.domain.max {
+            color = self.gradient_points.last().unwrap().color
+        } else {
+            for points in self.gradient_points.windows(2) {
+                if (points[0].pos <= pos) && (points[1].pos > pos) {
+                    // Compute the alpha value used for linear interpolation
+                    let alpha = (pos - points[0].pos) / (points[1].pos - points[0].pos);
 
-        // Find the first element in the control point array that has a input
-        // value larger than the output value from the source module
-        let index = self
-            .gradient_points
-            .iter()
-            .position(|&x| (x.pos > clamped_pos))
-            .unwrap_or_else(|| self.gradient_points.len());
+                    // Now perform the linear interpolation and return.
+                    color = linerp_color(points[0].color, points[1].color, alpha)
+                }
+            }
+        };
 
-        if index < 1 {
-            println!(
-                "index_pos in curve was less than 1! source value was {}",
-                pos
-            );
-        }
-
-        // Find the two nearest control points so that we can perform linear
-        // interpolation.
-        let index1 = (index - 1).clamp(0, self.gradient_points.len() - 1);
-        let index2 = index.clamp(0, self.gradient_points.len() - 1);
-
-        // If some control points are missing (which occurs if the value from
-        // the source module is greater than the largest input value or less
-        // than the smallest input value of the control point array), get the
-        // corresponding output value of the nearest control point and exit.
-        if index1 == index2 {
-            return self.gradient_points[index1].color;
-        }
-
-        // Compute the alpha value used for linear interpolation
-        let input0 = self.gradient_points[index1].pos;
-        let input1 = self.gradient_points[index2].pos;
-        let alpha = (pos - input0) / (input1 - input0);
-
-        // Now perform the linear interpolation and return.
-        linerp_color(
-            self.gradient_points[index1].color,
-            self.gradient_points[index2].color,
-            alpha,
-        )
+        color
     }
 }
 
