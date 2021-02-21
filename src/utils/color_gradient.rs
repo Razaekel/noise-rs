@@ -83,6 +83,7 @@ impl ColorGradient {
 
     pub fn clear_gradient(mut self) -> Self {
         self.gradient_points.clear();
+        self.domain = GradientDomain::new(0.0, 0.0);
 
         self
     }
@@ -109,54 +110,61 @@ impl ColorGradient {
             .add_gradient_point(1.0,                [255, 255, 255, 255])
     }
 
+    #[rustfmt::skip]
     pub fn build_rainbow_gradient(self) -> Self {
         self.clear_gradient()
-            .add_gradient_point(-1.0, [255, 0, 0, 255])
-            .add_gradient_point(-0.7, [255, 255, 0, 255])
-            .add_gradient_point(-0.4, [0, 255, 0, 255])
-            .add_gradient_point(0.0, [0, 255, 255, 255])
-            .add_gradient_point(0.3, [0, 0, 255, 255])
-            .add_gradient_point(0.6, [255, 0, 255, 255])
-            .add_gradient_point(1.0, [255, 0, 0, 255])
+            .add_gradient_point(-1.0, [255,   0,   0, 255])
+            .add_gradient_point(-0.7, [255, 255,   0, 255])
+            .add_gradient_point(-0.4, [  0, 255,   0, 255])
+            .add_gradient_point( 0.0, [  0, 255, 255, 255])
+            .add_gradient_point( 0.3, [  0,   0, 255, 255])
+            .add_gradient_point( 0.6, [255,   0, 255, 255])
+            .add_gradient_point( 1.0, [255,   0,   0, 255])
     }
 
     pub fn get_color(&self, pos: f64) -> Color {
-        let mut color = [0; 4];
+        let mut color = Color::default();
 
-        if pos < self.domain.min {
-            color = self.gradient_points.first().unwrap().color
-        } else if pos > self.domain.max {
-            color = self.gradient_points.last().unwrap().color
+        // If there are no colors in the gradient, return black
+        return if self.gradient_points.is_empty() {
+            color
         } else {
-            for points in self.gradient_points.windows(2) {
-                if (points[0].pos <= pos) && (points[1].pos > pos) {
-                    // Compute the alpha value used for linear interpolation
-                    let alpha = (pos - points[0].pos) / (points[1].pos - points[0].pos);
+            match () {
+                _ if pos < self.domain.min => color = self.gradient_points.first().unwrap().color,
+                _ if pos > self.domain.max => color = self.gradient_points.last().unwrap().color,
+                _ => {
+                    for points in self.gradient_points.windows(2) {
+                        if (points[0].pos <= pos) && (points[1].pos > pos) {
+                            // Compute the alpha value used for linear interpolation
+                            let alpha = (pos - points[0].pos) / (points[1].pos - points[0].pos);
 
-                    // Now perform the linear interpolation and return.
-                    color = linerp_color(points[0].color, points[1].color, alpha)
+                            // Now perform the interpolation and return.
+                            color = interpolate_color(points[0].color, points[1].color, alpha)
+                        }
+                    }
                 }
-            }
-        };
+            };
 
-        color
+            color
+        };
     }
 }
 
-fn blend_channels(channel0: u8, channel1: u8, alpha: f64) -> u8 {
-    let c0 = (f64::from(channel0)) / 255.0;
-    let c1 = (f64::from(channel1)) / 255.0;
+fn interpolate_color(color0: Color, color1: Color, alpha: f64) -> Color {
+    fn blend_channel(channel0: u8, channel1: u8, alpha: f64) -> u8 {
+        let c0 = (f64::from(channel0)) / 255.0;
+        let c1 = (f64::from(channel1)) / 255.0;
 
-    (((c1 * alpha) + (c0 * (1.0 - alpha))) * 255.0) as u8
-}
+        ((c1 - c0).mul_add(alpha, c0) * 255.0) as u8
+    }
 
-fn linerp_color(color0: Color, color1: Color, alpha: f64) -> Color {
-    let r = blend_channels(color0[0], color1[0], alpha);
-    let g = blend_channels(color0[1], color1[1], alpha);
-    let b = blend_channels(color0[2], color1[2], alpha);
-    let a = blend_channels(color0[3], color1[3], alpha);
+    let mut color = Color::default();
 
-    [r, g, b, a]
+    for i in 0..color.len() {
+        color[i] = blend_channel(color0[i], color1[i], alpha);
+    }
+
+    color
 }
 
 #[cfg(test)]
@@ -164,40 +172,10 @@ mod tests {
     use super::*;
 
     #[test]
-    fn blend_channels_min() {
-        let result = blend_channels(0, 255, 0.0);
-        assert_eq!(
-            0, result,
-            "blend_channels should've created 0, produced `{}` instead",
-            result
-        );
-    }
-
-    #[test]
-    fn blend_channels_mid() {
-        let result = blend_channels(0, 255, 0.5);
-        assert_eq!(
-            127, result,
-            "blend_channels should've created 127, produced `{}` instead",
-            result
-        );
-    }
-
-    #[test]
-    fn blend_channels_max() {
-        let result = blend_channels(0, 255, 1.0);
-        assert_eq!(
-            255, result,
-            "blend_channels should've created 255, produced `{}` instead",
-            result
-        );
-    }
-
-    #[test]
     fn linerp_color_1() {
         assert_eq!(
             [0, 127, 255, 0],
-            linerp_color([0, 0, 255, 0], [0, 255, 255, 0], 0.5)
+            interpolate_color([0, 0, 255, 0], [0, 255, 255, 0], 0.5)
         );
     }
 
