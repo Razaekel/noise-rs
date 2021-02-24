@@ -2,7 +2,10 @@
 
 extern crate noise;
 
-use noise::{utils::*, Fbm};
+use noise::{
+    utils::*,
+    Fbm,
+};
 
 fn main() {
     let fbm = Fbm::new();

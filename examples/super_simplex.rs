@@ -2,7 +2,11 @@
 
 extern crate noise;
 
-use noise::{utils::*, Seedable, SuperSimplex};
+use noise::{
+    utils::*,
+    Seedable,
+    SuperSimplex,
+};
 
 fn main() {
     let mut lookup_2d: [([i8; 2], [f64; 2]); 8 * 4] = [([0; 2], [0.0; 2]); 8 * 4];

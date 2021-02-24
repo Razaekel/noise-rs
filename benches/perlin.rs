@@ -2,8 +2,14 @@
 extern crate criterion;
 extern crate noise;
 
-use criterion::{black_box, Criterion};
-use noise::{NoiseFn, Perlin};
+use criterion::{
+    black_box,
+    Criterion,
+};
+use noise::{
+    NoiseFn,
+    Perlin,
+};
 
 criterion_group!(perlin, bench_perlin2, bench_perlin3, bench_perlin4);
 criterion_group!(

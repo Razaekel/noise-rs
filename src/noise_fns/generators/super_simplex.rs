@@ -1,9 +1,17 @@
-use crate::{
-    gradient, math,
-    noise_fns::{NoiseFn, Seedable},
-    permutationtable::{NoiseHasher, PermutationTable},
-};
 use std::ops::Add;
+
+use crate::{
+    gradient,
+    math,
+    noise_fns::{
+        NoiseFn,
+        Seedable,
+    },
+    permutationtable::{
+        NoiseHasher,
+        PermutationTable,
+    },
+};
 
 const TO_REAL_CONSTANT_2D: f64 = -0.211_324_865_405_187; // (1 / sqrt(2 + 1) - 1) / 2
 const TO_SIMPLEX_CONSTANT_2D: f64 = 0.366_025_403_784_439; // (sqrt(2 + 1) - 1) / 2

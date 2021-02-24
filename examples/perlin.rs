@@ -2,7 +2,11 @@
 
 extern crate noise;
 
-use noise::{utils::*, Perlin, Seedable};
+use noise::{
+    utils::*,
+    Perlin,
+    Seedable,
+};
 
 fn main() {
     let perlin = Perlin::default();

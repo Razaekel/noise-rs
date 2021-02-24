@@ -2,8 +2,14 @@
 extern crate criterion;
 extern crate noise;
 
-use criterion::{black_box, Criterion};
-use noise::{NoiseFn, SuperSimplex};
+use criterion::{
+    black_box,
+    Criterion,
+};
+use noise::{
+    NoiseFn,
+    SuperSimplex,
+};
 
 criterion_group!(super_simplex, bench_super_simplex2, bench_super_simplex3);
 criterion_group!(

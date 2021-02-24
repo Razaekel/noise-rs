@@ -1,7 +1,16 @@
 use crate::{
-    math::{self, interpolate},
-    noise_fns::{NoiseFn, Seedable},
-    permutationtable::{NoiseHasher, PermutationTable},
+    math::{
+        self,
+        interpolate,
+    },
+    noise_fns::{
+        NoiseFn,
+        Seedable,
+    },
+    permutationtable::{
+        NoiseHasher,
+        PermutationTable,
+    },
 };
 
 /// Noise function that outputs 2/3/4-dimensional Perlin noise.

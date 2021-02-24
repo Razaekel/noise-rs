@@ -1,6 +1,10 @@
 extern crate noise;
 
-use noise::{utils::*, Perlin, Power};
+use noise::{
+    utils::*,
+    Perlin,
+    Power,
+};
 
 fn main() {
     let perlin1 = Perlin::default();

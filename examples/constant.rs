@@ -2,7 +2,10 @@
 
 extern crate noise;
 
-use noise::{utils::*, Constant};
+use noise::{
+    utils::*,
+    Constant,
+};
 
 fn main() {
     PlaneMapBuilder::new(&Constant::new(-1.0))

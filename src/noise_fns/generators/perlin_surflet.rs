@@ -1,7 +1,14 @@
 use crate::{
-    gradient, math,
-    noise_fns::{NoiseFn, Seedable},
-    permutationtable::{NoiseHasher, PermutationTable},
+    gradient,
+    math,
+    noise_fns::{
+        NoiseFn,
+        Seedable,
+    },
+    permutationtable::{
+        NoiseHasher,
+        PermutationTable,
+    },
 };
 
 /// Noise function that outputs 2/3/4-dimensional Perlin noise.

@@ -1,4 +1,8 @@
-use crate::{math::interpolate, noise_fns::NoiseFn, utils::noise_map::NoiseMap};
+use crate::{
+    math::interpolate,
+    noise_fns::NoiseFn,
+    utils::noise_map::NoiseMap,
+};
 
 pub trait NoiseMapBuilder<'a> {
     fn set_size(self, width: usize, height: usize) -> Self;

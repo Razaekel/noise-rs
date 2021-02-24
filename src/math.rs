@@ -1,7 +1,11 @@
 //! An ultra-light private math library to make our short lives easier as we
 //! implement super-complex noise stuff.
 
-use std::ops::{Add, Mul, Sub};
+use std::ops::{
+    Add,
+    Mul,
+    Sub,
+};
 
 /// Cast a numeric type without having to unwrap - we don't expect any overflow
 /// errors...

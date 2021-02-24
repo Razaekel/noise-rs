@@ -1,4 +1,12 @@
-pub use self::{abs::*, clamp::*, curve::*, exponent::*, negate::*, scale_bias::*, terrace::*};
+pub use self::{
+    abs::*,
+    clamp::*,
+    curve::*,
+    exponent::*,
+    negate::*,
+    scale_bias::*,
+    terrace::*,
+};
 
 mod abs;
 mod clamp;

@@ -1,6 +1,10 @@
 extern crate noise;
 
-use noise::{utils::*, Checkerboard, TranslatePoint};
+use noise::{
+    utils::*,
+    Checkerboard,
+    TranslatePoint,
+};
 
 fn main() {
     let cboard = Checkerboard::default();

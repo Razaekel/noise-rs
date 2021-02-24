@@ -1,6 +1,9 @@
 extern crate noise;
 
-use noise::{utils::*, Cylinders};
+use noise::{
+    utils::*,
+    Cylinders,
+};
 
 fn main() {
     PlaneMapBuilder::new(&Cylinders::new())

@@ -1,6 +1,9 @@
 extern crate noise;
 
-use noise::{utils::*, *};
+use noise::{
+    utils::*,
+    *,
+};
 
 fn main() {
     // Primary jade texture. The ridges from the ridged-multifractal function
