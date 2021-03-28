@@ -22,13 +22,13 @@ mod transformers;
 /// * Mathematically changing the output value from another noise function
 ///     in various ways.
 /// * Combining the output values from two noise functions in various ways.
-pub trait NoiseFn<T, const N: usize> {
-    fn get(&self, point: [T; N]) -> f64;
+pub trait NoiseFn<T, const DIM: usize> {
+    fn get(&self, point: [T; DIM]) -> f64;
 }
 
-impl<'a, T, M: NoiseFn<T, N>, const N: usize> NoiseFn<T, N> for &'a M {
+impl<'a, T, M: NoiseFn<T, DIM>, const DIM: usize> NoiseFn<T, DIM> for &'a M {
     #[inline]
-    fn get(&self, point: [T; N]) -> f64 {
+    fn get(&self, point: [T; DIM]) -> f64 {
         M::get(*self, point)
     }
 }
