@@ -1,19 +1,19 @@
 use crate::noise_fns::NoiseFn;
 
 /// Noise function that negates the output value from the source function.
-pub struct Negate<'a, T, const N: usize> {
+pub struct Negate<'a, T, const DIM: usize> {
     /// Outputs a value.
-    pub source: &'a dyn NoiseFn<T, N>,
+    pub source: &'a dyn NoiseFn<T, DIM>,
 }
 
-impl<'a, T, const N: usize> Negate<'a, T, N> {
-    pub fn new(source: &'a dyn NoiseFn<T, N>) -> Self {
+impl<'a, T, const DIM: usize> Negate<'a, T, DIM> {
+    pub fn new(source: &'a dyn NoiseFn<T, DIM>) -> Self {
         Negate { source }
     }
 }
 
-impl<'a, T, const N: usize> NoiseFn<T, N> for Negate<'a, T, N> {
-    fn get(&self, point: [T; N]) -> f64 {
+impl<'a, T, const DIM: usize> NoiseFn<T, DIM> for Negate<'a, T, DIM> {
+    fn get(&self, point: [T; DIM]) -> f64 {
         -self.source.get(point)
     }
 }

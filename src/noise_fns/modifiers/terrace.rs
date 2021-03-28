@@ -23,9 +23,9 @@ use crate::{math::interpolate, noise_fns::NoiseFn};
 ///
 /// This noise function is often used to generate terrain features such as the
 /// stereotypical desert canyon.
-pub struct Terrace<'a, T, const N: usize> {
+pub struct Terrace<'a, T, const DIM: usize> {
     /// Outputs a value.
-    pub source: &'a dyn NoiseFn<T, N>,
+    pub source: &'a dyn NoiseFn<T, DIM>,
 
     /// Determines if the terrace-forming curve between all control points is
     /// inverted.
@@ -35,8 +35,8 @@ pub struct Terrace<'a, T, const N: usize> {
     control_points: Vec<f64>,
 }
 
-impl<'a, T, const N: usize> Terrace<'a, T, N> {
-    pub fn new(source: &'a dyn NoiseFn<T, N>) -> Self {
+impl<'a, T, const DIM: usize> Terrace<'a, T, DIM> {
+    pub fn new(source: &'a dyn NoiseFn<T, DIM>) -> Self {
         Terrace {
             source,
             invert_terraces: false,
@@ -84,8 +84,8 @@ impl<'a, T, const N: usize> Terrace<'a, T, N> {
     }
 }
 
-impl<'a, T, const N: usize> NoiseFn<T, N> for Terrace<'a, T, N> {
-    fn get(&self, point: [T; N]) -> f64 {
+impl<'a, T, const DIM: usize> NoiseFn<T, DIM> for Terrace<'a, T, DIM> {
+    fn get(&self, point: [T; DIM]) -> f64 {
         // confirm that there's at least 2 control points in the vector.
         assert!(self.control_points.len() >= 2);
 
