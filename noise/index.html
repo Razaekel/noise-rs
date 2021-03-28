@@ -1,0 +1,71 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="A procedural noise generation library for Rust."><meta name="keywords" content="rust, rustlang, rust-lang, noise"><title>noise - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../ayu.css" disabled ><script id="default-settings"></script><script src="../storage.js"></script><script src="../crates.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="alternate icon" type="image/png" href="../favicon-16x16.png">
+<link rel="alternate icon" type="image/png" href="../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../noise/index.html'><div class='logo-container rust-logo'><img src='../rust-logo.png' alt='logo'></div></a><p class="location">Crate noise</p><div class="block version"><p>Version 0.7.0</p></div><div class="sidebar-elems"><a id="all-types" href="all.html"><p>See all noise's items</p></a><div class="block items"><ul><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#traits">Traits</a></li></ul></div><p class="location"></p><div id="sidebar-vars" data-name="noise" data-ty="mod" data-relpath="../"></div></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
+                <a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class="fqn"><span class="in-band">Crate <a class="mod" href="">noise</a></span><span class="out-of-band"><span id="render-detail"><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span><a class="srclink" href="../src/noise/lib.rs.html#1-20" title="goto source code">[src]</a></span></h1><div class="docblock"><p>A procedural noise generation library for Rust.</p>
+<h1 id="example" class="section-header"><a href="#example">Example</a></h1>
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">noise</span>::{<span class="ident">NoiseFn</span>, <span class="ident">Perlin</span>};
+
+<span class="kw">let</span> <span class="ident">perlin</span> <span class="op">=</span> <span class="ident">Perlin</span>::<span class="ident">new</span>(<span class="number">1</span>);
+<span class="kw">let</span> <span class="ident">val</span> <span class="op">=</span> <span class="ident">perlin</span>.<span class="ident">get</span>([<span class="number">42.4</span>, <span class="number">37.7</span>, <span class="number">2.8</span>]);</pre></div>
+</div><h2 id="modules" class="section-header"><a href="#modules">Modules</a></h2>
+<table><tr class="module-item"><td><a class="mod" href="distance_functions/index.html" title="noise::distance_functions mod">distance_functions</a></td><td class="docblock-short"></td></tr><tr class="module-item"><td><a class="mod" href="utils/index.html" title="noise::utils mod">utils</a></td><td class="docblock-short"></td></tr></table><h2 id="structs" class="section-header"><a href="#structs">Structs</a></h2>
+<table><tr class="module-item"><td><a class="struct" href="struct.Abs.html" title="noise::Abs struct">Abs</a></td><td class="docblock-short"><p>Noise function that outputs the absolute value of the output value from the
+source function.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.Add.html" title="noise::Add struct">Add</a></td><td class="docblock-short"><p>Noise function that outputs the sum of the two output values from two source
+functions.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.BasicMulti.html" title="noise::BasicMulti struct">BasicMulti</a></td><td class="docblock-short"><p>Noise function that outputs heterogenous Multifractal noise.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.Billow.html" title="noise::Billow struct">Billow</a></td><td class="docblock-short"><p>Noise function that outputs “billowy” noise.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.Blend.html" title="noise::Blend struct">Blend</a></td><td class="docblock-short"><p>Noise function that outputs a weighted blend of the output values from two
+source functions given the output value supplied by a control function.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.Cache.html" title="noise::Cache struct">Cache</a></td><td class="docblock-short"><p>Noise function that caches the last output value generated by the source
+function.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.Checkerboard.html" title="noise::Checkerboard struct">Checkerboard</a></td><td class="docblock-short"><p>Noise function that outputs a checkerboard pattern.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.Clamp.html" title="noise::Clamp struct">Clamp</a></td><td class="docblock-short"><p>Noise function that clamps the output value from the source function to a
+range of values.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.Constant.html" title="noise::Constant struct">Constant</a></td><td class="docblock-short"><p>Noise function that outputs a constant value.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.Curve.html" title="noise::Curve struct">Curve</a></td><td class="docblock-short"><p>Noise function that maps the output value from the source function onto an
+arbitrary function curve.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.Cylinders.html" title="noise::Cylinders struct">Cylinders</a></td><td class="docblock-short"><p>Noise function that outputs concentric cylinders.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.Displace.html" title="noise::Displace struct">Displace</a></td><td class="docblock-short"><p>Noise function that uses multiple source functions to displace each coordinate
+of the input value before returning the output value from the <code>source</code> function.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.Exponent.html" title="noise::Exponent struct">Exponent</a></td><td class="docblock-short"><p>Noise function that maps the output value from the source function onto an
+exponential curve.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.Fbm.html" title="noise::Fbm struct">Fbm</a></td><td class="docblock-short"><p>Noise function that outputs fBm (fractal Brownian motion) noise.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.HybridMulti.html" title="noise::HybridMulti struct">HybridMulti</a></td><td class="docblock-short"><p>Noise function that outputs hybrid Multifractal noise.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.Max.html" title="noise::Max struct">Max</a></td><td class="docblock-short"><p>Noise function that outputs the larger of the two output values from two source
+functions.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.Min.html" title="noise::Min struct">Min</a></td><td class="docblock-short"><p>Noise function that outputs the smaller of the two output values from two source
+functions.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.Multiply.html" title="noise::Multiply struct">Multiply</a></td><td class="docblock-short"><p>Noise function that outputs the product of the two output values from two source
+functions.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.Negate.html" title="noise::Negate struct">Negate</a></td><td class="docblock-short"><p>Noise function that negates the output value from the source function.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.OpenSimplex.html" title="noise::OpenSimplex struct">OpenSimplex</a></td><td class="docblock-short"><p>Noise function that outputs 2/3/4-dimensional Open Simplex noise.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.Perlin.html" title="noise::Perlin struct">Perlin</a></td><td class="docblock-short"><p>Noise function that outputs 2/3/4-dimensional Perlin noise.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.Power.html" title="noise::Power struct">Power</a></td><td class="docblock-short"><p>Noise function that raises the output value from the first source function
+to the power of the output value of the second source function.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.RidgedMulti.html" title="noise::RidgedMulti struct">RidgedMulti</a></td><td class="docblock-short"><p>Noise function that outputs ridged-multifractal noise.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.RotatePoint.html" title="noise::RotatePoint struct">RotatePoint</a></td><td class="docblock-short"><p>Noise function that rotates the input value around the origin before
+returning the output value from the source function.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.ScaleBias.html" title="noise::ScaleBias struct">ScaleBias</a></td><td class="docblock-short"><p>Noise function that applies a scaling factor and a bias to the output value
+from the source function.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.ScalePoint.html" title="noise::ScalePoint struct">ScalePoint</a></td><td class="docblock-short"><p>Noise function that scales the coordinates of the input value before
+returning the output value from the source function.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.Select.html" title="noise::Select struct">Select</a></td><td class="docblock-short"><p>Noise function that outputs the value selected from one of two source
+functions chosen by the output value from a control function.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.SuperSimplex.html" title="noise::SuperSimplex struct">SuperSimplex</a></td><td class="docblock-short"><p>Noise function that outputs 2/3-dimensional Super Simplex noise.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.Terrace.html" title="noise::Terrace struct">Terrace</a></td><td class="docblock-short"><p>Noise function that maps the output value from the source function onto a
+terrace-forming curve.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.TranslatePoint.html" title="noise::TranslatePoint struct">TranslatePoint</a></td><td class="docblock-short"><p>Noise function that moves the coordinates of the input value before
+returning the output value from the source function.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.Turbulence.html" title="noise::Turbulence struct">Turbulence</a></td><td class="docblock-short"><p>Noise function that randomly displaces the input value before returning the
+output value from the source function.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.Value.html" title="noise::Value struct">Value</a></td><td class="docblock-short"><p>Noise function that outputs 2/3/4-dimensional Value noise.</p>
+</td></tr><tr class="module-item"><td><a class="struct" href="struct.Worley.html" title="noise::Worley struct">Worley</a></td><td class="docblock-short"><p>Noise function that outputs Worley noise.</p>
+</td></tr></table><h2 id="enums" class="section-header"><a href="#enums">Enums</a></h2>
+<table><tr class="module-item"><td><a class="enum" href="enum.ReturnType.html" title="noise::ReturnType enum">ReturnType</a></td><td class="docblock-short"></td></tr></table><h2 id="traits" class="section-header"><a href="#traits">Traits</a></h2>
+<table><tr class="module-item"><td><a class="trait" href="trait.MultiFractal.html" title="noise::MultiFractal trait">MultiFractal</a></td><td class="docblock-short"><p>Trait for <code>MultiFractal</code> functions</p>
+</td></tr><tr class="module-item"><td><a class="trait" href="trait.NoiseFn.html" title="noise::NoiseFn trait">NoiseFn</a></td><td class="docblock-short"><p>Base trait for noise functions.</p>
+</td></tr><tr class="module-item"><td><a class="trait" href="trait.Seedable.html" title="noise::Seedable trait">Seedable</a></td><td class="docblock-short"><p>Trait for functions that require a seed before generating their values</p>
+</td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../" data-current-crate="noise" data-search-js="../search-index.js"></div>
+    <script src="../main.js"></script></body></html>
