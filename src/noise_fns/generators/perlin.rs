@@ -1,5 +1,5 @@
 use crate::{
-    math::{self, interpolate},
+    math::{self, s_curve::quintic::Quintic},
     noise_fns::{NoiseFn, Seedable},
     permutationtable::{NoiseHasher, PermutationTable},
 };
@@ -95,8 +95,7 @@ pub(crate) fn perlin_2d(hasher: &dyn NoiseHasher, point: [f64; 2]) -> f64 {
     );
     let g11 = gradient_dot_v(hasher.hash(&far_corner), far_distance);
 
-    let u = interpolate::s_curve5(distance[0]);
-    let v = interpolate::s_curve5(distance[1]);
+    let [u, v] = distance.map_quintic();
 
     let unscaled_result = bilinear_interpolation(u, v, g00, g01, g10, g11);
 
@@ -193,9 +192,7 @@ pub(crate) fn perlin_3d(hasher: &dyn NoiseHasher, point: [f64; 3]) -> f64 {
     );
     let g111 = gradient_dot_v(hasher.hash(&far_corner), far_distance);
 
-    let a = interpolate::s_curve5(distance[0]);
-    let b = interpolate::s_curve5(distance[1]);
-    let c = interpolate::s_curve5(distance[2]);
+    let [a, b, c] = distance.map_quintic();
 
     let k0 = g000;
     let k1 = g100 - g000;
@@ -456,10 +453,7 @@ pub(crate) fn perlin_4d(hasher: &dyn NoiseHasher, point: [f64; 4]) -> f64 {
         far_distance[3]],
     );
 
-    let a = interpolate::s_curve5(distance[0]);
-    let b = interpolate::s_curve5(distance[1]);
-    let c = interpolate::s_curve5(distance[2]);
-    let d = interpolate::s_curve5(distance[3]);
+    let [a, b, c, d] = distance.map_quintic();
 
     let k0 = g0000;
     let k1 = g1000 - g0000;

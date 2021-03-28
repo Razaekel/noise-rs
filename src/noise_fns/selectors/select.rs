@@ -1,4 +1,7 @@
-use crate::{math::interpolate, noise_fns::NoiseFn};
+use crate::{
+    math::{interpolate, s_curve::cubic::Cubic},
+    noise_fns::NoiseFn,
+};
 
 /// Noise function that outputs the value selected from one of two source
 /// functions chosen by the output value from a control function.
@@ -63,9 +66,8 @@ where
                 _ if control_value < (lower + self.falloff) => {
                     let lower_curve = lower - self.falloff;
                     let upper_curve = lower + self.falloff;
-                    let alpha = interpolate::s_curve3(
-                        (control_value - lower_curve) / (upper_curve - lower_curve),
-                    );
+                    let alpha =
+                        ((control_value - lower_curve) / (upper_curve - lower_curve)).map_cubic();
 
                     interpolate::linear(self.source1.get(point), self.source2.get(point), alpha)
                 }
@@ -73,9 +75,8 @@ where
                 _ if control_value < (upper + self.falloff) => {
                     let lower_curve = upper - self.falloff;
                     let upper_curve = upper + self.falloff;
-                    let alpha = interpolate::s_curve3(
-                        (control_value - lower_curve) / (upper_curve - lower_curve),
-                    );
+                    let alpha =
+                        ((control_value - lower_curve) / (upper_curve - lower_curve)).map_cubic();
 
                     interpolate::linear(self.source2.get(point), self.source1.get(point), alpha)
                 }

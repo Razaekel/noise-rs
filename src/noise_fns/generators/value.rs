@@ -1,3 +1,4 @@
+use crate::math::s_curve::quintic::Quintic;
 use crate::{
     math::{self, interpolate},
     noise_fns::{NoiseFn, Seedable},
@@ -58,7 +59,7 @@ impl NoiseFn<f64, 2> for Value {
         let floored = math::map2(point, f64::floor);
         let near_corner = math::to_isize2(floored);
         let far_corner = math::add2(near_corner, math::one2());
-        let weight = math::map2(math::sub2(point, floored), interpolate::s_curve5);
+        let weight = math::sub2(point, floored).map_quintic();
 
         let f00 = get(&self.perm_table, [near_corner[0], near_corner[1]]);
         let f10 = get(&self.perm_table, [far_corner[0], near_corner[1]]);
@@ -83,7 +84,7 @@ impl NoiseFn<f64, 3> for Value {
         let floored = math::map3(point, f64::floor);
         let near_corner = math::to_isize3(floored);
         let far_corner = math::add3(near_corner, math::one3());
-        let weight = math::map3(math::sub3(point, floored), interpolate::s_curve5);
+        let weight = math::sub3(point, floored).map_quintic();
 
         let f000 = get(
             &self.perm_table,
@@ -140,7 +141,7 @@ impl NoiseFn<f64, 4> for Value {
         let floored = math::map4(point, f64::floor);
         let near_corner = math::to_isize4(floored);
         let far_corner = math::add4(near_corner, math::one4());
-        let weight = math::map4(math::sub4(point, floored), interpolate::s_curve5);
+        let weight = math::sub4(point, floored).map_quintic();
 
         let f0000 = get(
             &self.perm_table,
