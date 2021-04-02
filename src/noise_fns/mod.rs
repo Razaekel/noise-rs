@@ -1,8 +1,8 @@
 pub use self::{
-    cache::*, combiners::*, generators::*, modifiers::*, selectors::*, transformers::*,
+    /* cache::*,*/ combiners::*, generators::*, modifiers::*, selectors::*, transformers::*,
 };
 
-mod cache;
+// mod cache;
 mod combiners;
 mod generators;
 mod modifiers;
@@ -22,7 +22,7 @@ mod transformers;
 /// * Mathematically changing the output value from another noise function
 ///     in various ways.
 /// * Combining the output values from two noise functions in various ways.
-pub trait NoiseFn<T, const DIM: usize> {
+pub trait NoiseFn<T, const DIM: usize>: Send + Sync {
     fn get(&self, point: [T; DIM]) -> f64;
 }
 

@@ -1,4 +1,6 @@
 use crate::{math::interpolate, noise_fns::NoiseFn, utils::noise_map::NoiseMap};
+use rayon::prelude::{IntoParallelIterator, ParallelIterator};
+use std::sync::RwLock;
 
 pub trait NoiseMapBuilder<'a> {
     fn set_size(self, width: usize, height: usize) -> Self;
@@ -203,36 +205,53 @@ impl<'a> NoiseMapBuilder<'a> for PlaneMapBuilder<'a> {
         let x_step = x_extent / width as f64;
         let y_step = y_extent / height as f64;
 
+        let x_bounds = self.x_bounds;
+        let y_bounds = self.y_bounds;
+        let is_seamless = self.is_seamless;
+
         for y in 0..height {
             let current_y = self.y_bounds.0 + y_step * y as f64;
+            let lock = RwLock::new(self);
+
+            let final_values: Vec<_> = (0..width)
+                .into_par_iter()
+                .map(|x| {
+                    let current_x = self.x_bounds.0 + x_step * x as f64;
+                    let readable = lock.read().unwrap();
+
+                    let final_value = if is_seamless {
+                        let sw_value = readable.source_module.get([current_x, current_y, 0.0]);
+                        let se_value =
+                            readable
+                                .source_module
+                                .get([current_x + x_extent, current_y, 0.0]);
+                        let nw_value =
+                            readable
+                                .source_module
+                                .get([current_x, current_y + y_extent, 0.0]);
+                        let ne_value = readable.source_module.get([
+                            current_x + x_extent,
+                            current_y + y_extent,
+                            0.0,
+                        ]);
+
+                        let x_blend = 1.0 - ((current_x - x_bounds.0) / x_extent);
+                        let y_blend = 1.0 - ((current_y - y_bounds.0) / y_extent);
+
+                        let y0 = interpolate::linear(sw_value, se_value, x_blend);
+                        let y1 = interpolate::linear(nw_value, ne_value, x_blend);
+
+                        interpolate::linear(y0, y1, y_blend)
+                    } else {
+                        self.source_module.get([current_x, current_y, 0.0])
+                    };
+
+                    final_value
+                })
+                .collect();
 
             for x in 0..width {
-                let current_x = self.x_bounds.0 + x_step * x as f64;
-
-                let final_value = if self.is_seamless {
-                    let sw_value = self.source_module.get([current_x, current_y, 0.0]);
-                    let se_value = self
-                        .source_module
-                        .get([current_x + x_extent, current_y, 0.0]);
-                    let nw_value = self
-                        .source_module
-                        .get([current_x, current_y + y_extent, 0.0]);
-                    let ne_value =
-                        self.source_module
-                            .get([current_x + x_extent, current_y + y_extent, 0.0]);
-
-                    let x_blend = 1.0 - ((current_x - self.x_bounds.0) / x_extent);
-                    let y_blend = 1.0 - ((current_y - self.y_bounds.0) / y_extent);
-
-                    let y0 = interpolate::linear(sw_value, se_value, x_blend);
-                    let y1 = interpolate::linear(nw_value, ne_value, x_blend);
-
-                    interpolate::linear(y0, y1, y_blend)
-                } else {
-                    self.source_module.get([current_x, current_y, 0.0])
-                };
-
-                result_map.set_value(x, y, final_value);
+                result_map.set_value(x, y, final_values[x]);
             }
         }
 

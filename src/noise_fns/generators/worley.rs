@@ -8,7 +8,7 @@ use crate::{
 pub struct Worley {
     /// Specifies the distance function to use when calculating the boundaries of
     /// the cell.
-    pub distance_function: Box<dyn Fn(&[f64], &[f64]) -> f64>,
+    pub distance_function: Box<dyn Fn(&[f64], &[f64]) -> f64 + Send + Sync>,
 
     /// Signifies whether the distance from the borders of the cell should be returned, or the
     /// value for the cell.
@@ -36,7 +36,7 @@ impl Worley {
     }
 
     /// Sets the distance function used by the Worley cells.
-    pub fn set_distance_function<F>(self, function: F) -> Self
+    pub fn set_distance_function<F: Send + Sync>(self, function: F) -> Self
     where
         F: Fn(&[f64], &[f64]) -> f64 + 'static,
     {
