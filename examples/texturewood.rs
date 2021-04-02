@@ -16,7 +16,7 @@ fn main() {
 
     // Stretch the perlin noise in the same direction as the center of the log. Should
     // produce a nice wood-grain texture.
-    let scaled_base_wood_grain = ScalePoint::new(wood_grain_noise).set_y_scale(0.25);
+    let scaled_base_wood_grain = ScalePoint::new(wood_grain_noise).set_z_scale(0.25);
 
     // Scale the wood-grain values so that they can be added to the base wood texture.
     let wood_grain = ScaleBias::new(&scaled_base_wood_grain)
