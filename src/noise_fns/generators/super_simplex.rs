@@ -165,7 +165,7 @@ impl NoiseFn<f64, 2> for SuperSimplex {
             let attn = (2.0 / 3.0) - math::dot2(dpos, dpos);
             if attn > 0.0 {
                 let lattice_point = math::add2(simplex_base_point_i, math::cast2(lattice_lookup.0));
-                let gradient = gradient::get2(self.perm_table.hash(&lattice_point));
+                let gradient = gradient::grad2(self.perm_table.hash(&lattice_point));
                 value += attn.powi(4) * math::dot2(gradient, dpos);
             }
         }
@@ -230,7 +230,7 @@ impl NoiseFn<f64, 3> for SuperSimplex {
             let attn = 0.75 - math::dot3(dpos, dpos);
             if attn > 0.0 {
                 let lattice_point = math::add3(simplex_base_point_i, math::cast3(lattice_lookup));
-                let gradient = gradient::get3(self.perm_table.hash(&lattice_point));
+                let gradient = gradient::grad3(self.perm_table.hash(&lattice_point));
                 value += attn.powi(4) * math::dot3(gradient, dpos);
             }
         }
@@ -242,7 +242,7 @@ impl NoiseFn<f64, 3> for SuperSimplex {
             if attn > 0.0 {
                 let lattice_point =
                     math::add3(second_simplex_base_point_i, math::cast3(lattice_lookup));
-                let gradient = gradient::get3(self.perm_table.hash(&lattice_point));
+                let gradient = gradient::grad3(self.perm_table.hash(&lattice_point));
                 value += attn.powi(4) * math::dot3(gradient, dpos);
             }
         }

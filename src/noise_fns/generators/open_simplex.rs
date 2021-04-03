@@ -73,7 +73,7 @@ impl NoiseFn<f64, 2> for OpenSimplex {
             let attn = 2.0 - math::dot2(pos, pos);
             if attn > 0.0 {
                 let index = perm_table.hash(&math::to_isize2(vertex));
-                let vec = gradient::get2(index);
+                let vec = gradient::grad2(index);
                 attn.powi(4) * math::dot2(pos, vec)
             } else {
                 0.0
@@ -154,7 +154,7 @@ impl NoiseFn<f64, 3> for OpenSimplex {
             let attn = 2.0 - math::dot3(pos, pos);
             if attn > 0.0 {
                 let index = perm_table.hash(&math::to_isize3(vertex));
-                let vec = gradient::get3(index);
+                let vec = gradient::grad3(index);
                 attn.powi(4) * math::dot3(pos, vec)
             } else {
                 0.0
@@ -289,7 +289,7 @@ impl NoiseFn<f64, 4> for OpenSimplex {
             let attn = 2.0 - math::dot4(pos, pos);
             if attn > 0.0 {
                 let index = perm_table.hash(&math::to_isize4(vertex));
-                let vec = gradient::get4(index);
+                let vec = gradient::grad4(index);
                 attn.powi(4) * math::dot4(pos, vec)
             } else {
                 0.0

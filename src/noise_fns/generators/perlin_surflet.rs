@@ -60,7 +60,7 @@ impl NoiseFn<f64, 2> for Perlin {
         fn surflet(perm_table: &PermutationTable, corner: [isize; 2], distance: [f64; 2]) -> f64 {
             let attn = 1.0 - math::dot2(distance, distance);
             if attn > 0.0 {
-                attn.powi(4) * math::dot2(distance, gradient::get2(perm_table.hash(&corner)))
+                attn.powi(4) * math::dot2(distance, gradient::grad2(perm_table.hash(&corner)))
             } else {
                 0.0
             }
@@ -107,7 +107,7 @@ impl NoiseFn<f64, 3> for Perlin {
         fn surflet(perm_table: &PermutationTable, corner: [isize; 3], distance: [f64; 3]) -> f64 {
             let attn = 1.0 - math::dot3(distance, distance);
             if attn > 0.0 {
-                attn.powi(4) * math::dot3(distance, gradient::get3(perm_table.hash(&corner)))
+                attn.powi(4) * math::dot3(distance, gradient::grad3(perm_table.hash(&corner)))
             } else {
                 0.0
             }
@@ -174,7 +174,7 @@ impl NoiseFn<f64, 4> for Perlin {
         fn surflet(perm_table: &PermutationTable, corner: [isize; 4], distance: [f64; 4]) -> f64 {
             let attn = 1.0 - math::dot4(distance, distance);
             if attn > 0.0 {
-                attn.powi(4) * math::dot4(distance, gradient::get4(perm_table.hash(&corner)))
+                attn.powi(4) * math::dot4(distance, gradient::grad4(perm_table.hash(&corner)))
             } else {
                 0.0
             }
