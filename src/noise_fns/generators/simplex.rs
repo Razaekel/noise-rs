@@ -459,6 +459,7 @@ pub fn simplex_3d(
     }
 }
 
+#[allow(clippy::many_single_char_names)]
 pub fn simplex_4d(
     x: f64,
     y: f64,
