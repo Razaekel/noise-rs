@@ -1,75 +1,50 @@
-#[macro_use]
 extern crate criterion;
 extern crate noise;
 
-use criterion::{black_box, Criterion};
-use noise::{NoiseFn, Perlin};
+use criterion::*;
+use noise::{NoiseFn, Simplex};
+use rand::Rng;
 
-criterion_group!(simplex, bench_simplex2, bench_simplex3, bench_simplex4);
-criterion_group!(
-    simplex_64x64,
-    bench_simplex2_64x64,
-    bench_simplex3_64x64,
-    bench_simplex4_64x64
-);
-criterion_main!(simplex, simplex_64x64);
+criterion_group!(simplex, bench_simplex);
+// criterion_group!(
+//     simplex_64x64,
+//     bench_simplex2_64x64,
+//     bench_simplex3_64x64,
+//     bench_simplex4_64x64
+// );
+criterion_main!(simplex);
 
-fn bench_simplex2(c: &mut Criterion) {
-    let simplex = Perlin::new();
-    c.bench_function("simplex 2d", |b| {
-        b.iter(|| simplex.get(black_box([42.0f64, 37.0])))
-    });
-}
+fn bench_simplex(c: &mut Criterion) {
+    let mut group = c.benchmark_group("Simplex");
 
-fn bench_simplex3(c: &mut Criterion) {
-    let simplex = Perlin::new();
-    c.bench_function("simplex 3d", |b| {
-        b.iter(|| simplex.get(black_box([42.0f64, 37.0, 26.0])))
-    });
-}
+    let plot_config = PlotConfiguration::default().summary_scale(AxisScale::Logarithmic);
 
-fn bench_simplex4(c: &mut Criterion) {
-    let simplex = Perlin::new();
-    c.bench_function("simplex 4d", |b| {
-        b.iter(|| simplex.get(black_box([42.0f64, 37.0, 26.0, 128.0])))
-    });
-}
+    group.plot_config(plot_config);
 
-fn bench_simplex2_64x64(c: &mut Criterion) {
-    let simplex = Perlin::new();
-    c.bench_function("simplex 2d (64x64)", |b| {
-        b.iter(|| {
-            for y in 0i8..64 {
-                for x in 0i8..64 {
-                    black_box(simplex.get([x as f64, y as f64]));
+    let mut rng = rand_pcg::Pcg64Mcg::new(rand::random());
+
+    let simplex = Simplex::default();
+
+    for step in 0..10 {
+        let size = 1 << step;
+
+        group.throughput(Throughput::Elements(size as u64));
+
+        // Generate input arrays
+        let input_1 = criterion::black_box((0..size).map(|_| rng.gen()).collect::<Vec<f64>>());
+        let input_2 = criterion::black_box((0..size).map(|_| rng.gen()).collect::<Vec<f64>>());
+
+        // prefill output vector with random values
+        let mut output = criterion::black_box((0..size).map(|_| rng.gen()).collect::<Vec<f64>>());
+
+        group.bench_with_input(BenchmarkId::new("2D", size), &size, |b, &size| {
+            b.iter(|| {
+                for i in 0..size {
+                    output[i] = criterion::black_box(simplex.get([input_1[i], input_2[i]]));
                 }
-            }
-        })
-    });
-}
+            })
+        });
+    }
 
-fn bench_simplex3_64x64(c: &mut Criterion) {
-    let simplex = Perlin::new();
-    c.bench_function("simplex 3d (64x64)", |b| {
-        b.iter(|| {
-            for y in 0i8..64 {
-                for x in 0i8..64 {
-                    black_box(simplex.get([x as f64, y as f64, x as f64]));
-                }
-            }
-        })
-    });
-}
-
-fn bench_simplex4_64x64(c: &mut Criterion) {
-    let simplex = Perlin::new();
-    c.bench_function("simplex 4d (64x64)", |b| {
-        b.iter(|| {
-            for y in 0i8..64 {
-                for x in 0i8..64 {
-                    black_box(simplex.get([x as f64, y as f64, x as f64, y as f64]));
-                }
-            }
-        })
-    });
+    group.finish();
 }
