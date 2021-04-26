@@ -17,9 +17,8 @@ criterion_main!(simplex);
 fn bench_simplex(c: &mut Criterion) {
     let mut group = c.benchmark_group("Simplex");
 
-    let plot_config = PlotConfiguration::default().summary_scale(AxisScale::Logarithmic);
-
-    group.plot_config(plot_config);
+    // let plot_config = PlotConfiguration::default().summary_scale(AxisScale::Logarithmic);
+    // group.plot_config(plot_config);
 
     let mut rng = rand_pcg::Pcg64Mcg::new(rand::random());
 
