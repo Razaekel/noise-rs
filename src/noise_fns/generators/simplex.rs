@@ -9,7 +9,7 @@ use crate::{
 /// The simplex noise code was adapted from code by Stefan Gustavson,
 /// http://staffwww.itn.liu.se/~stegu/aqsis/aqsis-newnoise/sdnoise1234.c
 ///
-/// This was Stefan Gustavson's original copyright notice:
+/// This is Stefan Gustavson's original copyright notice:
 ///
 /// /* sdnoise1234, Simplex noise with true analytic
 ///  * derivative in 1D to 4D.
@@ -25,7 +25,7 @@ use crate::{
 ///  *
 ///  * This library is distributed in the hope that it will be useful,
 ///  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-/// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+///  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ///  * General Public License for more details.
 ///  */
 #[derive(Clone, Copy, Debug)]
@@ -115,7 +115,16 @@ pub fn simplex_1d(x: f64, hasher: &dyn NoiseHasher) -> (f64, f64) {
     let gi0 = hasher.hash(&[cell]);
     let gi1 = hasher.hash(&[cell + 1]);
 
-    fn surflet_with_derivatives(gradient_index: usize, x: f64) -> [f64; 6] {
+    struct SurfletComponents {
+        value: f64,
+        t: f64,
+        t2: f64,
+        t4: f64,
+        gradient: f64,
+        x2: f64,
+    }
+
+    fn surflet(gradient_index: usize, x: f64) -> SurfletComponents {
         let x2 = x * x;
         let t = 1.0 - x2;
 
@@ -129,12 +138,19 @@ pub fn simplex_1d(x: f64, hasher: &dyn NoiseHasher) -> (f64, f64) {
 
         let value = t4 * gradient * x;
 
-        [value, x2, t, t2, t4, gradient]
+        SurfletComponents {
+            value,
+            t,
+            t2,
+            t4,
+            gradient,
+            x2,
+        }
     }
 
-    let [corner0, x20, t0, t20, t40, gx0] = surflet_with_derivatives(gi0, near_distance);
+    let corner0 = surflet(gi0, near_distance);
 
-    let [corner1, x21, t1, t21, t41, gx1] = surflet_with_derivatives(gi1, far_distance);
+    let corner1 = surflet(gi1, far_distance);
 
     // The maximum value of this noise is 8*(3/4)^4 = 2.53125
     // A factor of 0.395 would scale to fit exactly within [-1,1], but
@@ -143,16 +159,16 @@ pub fn simplex_1d(x: f64, hasher: &dyn NoiseHasher) -> (f64, f64) {
 
     // Since the objective of this library is to be as close to [-1, 1] as possible, we'll use the
     // 0.395 scale instead.
-    let noise = 0.395 * (corner0 + corner1);
+    let noise = 0.395 * (corner0.value + corner1.value);
 
     /* Compute derivative according to:
      *  dnoise_dx = -8.0 * t20 * t0 * x0 * (gx0 * x0) + t40 * gx0;
      *  dnoise_dx += -8.0 * t21 * t1 * x1 * (gx1 * x1) + t41 * gx1;
      */
-    let mut dnoise_dx = t20 * t0 * gx0 * x20;
-    dnoise_dx += t21 * t1 * gx1 * x21;
+    let mut dnoise_dx = corner0.t2 * corner0.t * corner0.gradient * corner0.x2;
+    dnoise_dx += corner1.t2 * corner1.t * corner1.gradient * corner1.x2;
     dnoise_dx *= -8.0;
-    dnoise_dx += t40 * gx0 + t41 * gx1;
+    dnoise_dx += corner0.t4 * corner0.gradient + corner1.t4 * corner1.gradient;
     dnoise_dx *= 0.395; /* Scale derivative to match the noise scaling */
 
     (noise, dnoise_dx)
