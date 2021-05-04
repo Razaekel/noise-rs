@@ -1,6 +1,8 @@
 #[cfg(feature = "image")]
 use std::{self, path::Path};
 
+use std::ops::{Index, IndexMut};
+
 const RASTER_MAX_WIDTH: u16 = 32_767;
 const RASTER_MAX_HEIGHT: u16 = 32_767;
 
@@ -13,6 +15,14 @@ pub struct NoiseMap {
 impl NoiseMap {
     pub fn new(width: usize, height: usize) -> Self {
         Self::initialize().set_size(width, height)
+    }
+
+    pub fn data(&self) -> &[f64] {
+        &self.map
+    }
+
+    pub fn data_mut(&mut self) -> &mut [f64] {
+        &mut self.map
     }
 
     pub fn set_size(self, width: usize, height: usize) -> Self {
@@ -124,5 +134,19 @@ impl NoiseMap {
 impl Default for NoiseMap {
     fn default() -> Self {
         Self::initialize()
+    }
+}
+
+impl Index<(usize, usize)> for NoiseMap {
+    type Output = f64;
+
+    fn index(&self, (x, y): (usize, usize)) -> &Self::Output {
+        &self.map[x + y * self.size.0]
+    }
+}
+
+impl IndexMut<(usize, usize)> for NoiseMap {
+    fn index_mut(&mut self, (x, y): (usize, usize)) -> &mut Self::Output {
+        &mut self.map[x + y * self.size.0]
     }
 }
