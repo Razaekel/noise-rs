@@ -1,3 +1,5 @@
+use std::ops::{Index, IndexMut};
+
 use crate::utils::color_gradient::Color;
 #[cfg(feature = "image")]
 use std::{self, path::Path};
@@ -14,6 +16,14 @@ pub struct NoiseImage {
 impl NoiseImage {
     pub fn new(width: usize, height: usize) -> Self {
         Self::initialize().set_size(width, height)
+    }
+
+    pub fn data(&self) -> &[Color] {
+        &self.map
+    }
+
+    pub fn data_mut(&mut self) -> &mut [Color] {
+        &mut self.map
     }
 
     pub fn set_size(self, width: usize, height: usize) -> Self {
@@ -127,5 +137,34 @@ impl NoiseImage {
 impl Default for NoiseImage {
     fn default() -> Self {
         Self::initialize()
+    }
+}
+
+impl Index<(usize, usize)> for NoiseImage {
+    type Output = Color;
+
+    fn index(&self, (x, y): (usize, usize)) -> &Self::Output {
+        let (width, height) = self.size;
+        if x < width && y < height {
+            // SAFETY: We just checked the index on the line above. This is just to avoid another bounds check.
+            unsafe { self.map.get_unchecked(x + y * self.size.0) }
+        } else {
+            &self.border_color
+        }
+    }
+}
+
+impl IndexMut<(usize, usize)> for NoiseImage {
+    fn index_mut(&mut self, (x, y): (usize, usize)) -> &mut Self::Output {
+        let (width, height) = self.size;
+        if x < width && y < height {
+            // SAFETY: We just checked the index on the line above. This is just to avoid another bounds check.
+            unsafe { self.map.get_unchecked_mut(x + y * self.size.0) }
+        } else {
+            panic!(
+                "index ({}, {}) out of bounds for NoiseImage of size ({}, {})",
+                x, y, width, height
+            )
+        }
     }
 }

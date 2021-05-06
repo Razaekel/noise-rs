@@ -125,7 +125,7 @@ impl ImageRenderer {
 
         for y in 0..height {
             for x in 0..width {
-                let point = noise_map.get_value(x, y);
+                let point = noise_map[(x, y)];
 
                 let source_color = self.gradient.get_color(point);
 
@@ -172,10 +172,10 @@ impl ImageRenderer {
                     }
 
                     let pc = point;
-                    let pl = noise_map.get_value((x as isize + x_left_offset) as usize, y);
-                    let pr = noise_map.get_value((x as isize + x_right_offset) as usize, y);
-                    let pd = noise_map.get_value(x, (y as isize + y_down_offset) as usize);
-                    let pu = noise_map.get_value(x, (y as isize + y_up_offset) as usize);
+                    let pl = noise_map[((x as isize + x_left_offset) as usize, y)];
+                    let pr = noise_map[((x as isize + x_right_offset) as usize, y)];
+                    let pd = noise_map[(x, (y as isize + y_down_offset) as usize)];
+                    let pu = noise_map[(x, (y as isize + y_up_offset) as usize)];
 
                     light_intensity = self.light_source.calc_light_intensity(pc, pl, pr, pd, pu);
                     light_intensity *= self.light_source.brightness;
@@ -185,7 +185,7 @@ impl ImageRenderer {
 
                 let destination_color = self.calc_destination_color(source_color, light_intensity);
 
-                destination_image.set_value(x, y, destination_color);
+                destination_image[(x, y)] = destination_color;
             }
         }
 
@@ -237,7 +237,7 @@ impl ImageRenderer {
 
         for y in 0..height {
             for x in 0..width {
-                let point = noise_map.get_value(x, y);
+                let point = noise_map[(x, y)];
                 let source_color = self.gradient.get_color(point);
 
                 let mut light_intensity;
@@ -283,10 +283,10 @@ impl ImageRenderer {
                     }
 
                     let pc = point;
-                    let pl = noise_map.get_value((x as isize + x_left_offset) as usize, y);
-                    let pr = noise_map.get_value((x as isize + x_right_offset) as usize, y);
-                    let pd = noise_map.get_value(x, (y as isize + y_down_offset) as usize);
-                    let pu = noise_map.get_value(x, (y as isize + y_up_offset) as usize);
+                    let pl = noise_map[((x as isize + x_left_offset) as usize, y)];
+                    let pr = noise_map[((x as isize + x_right_offset) as usize, y)];
+                    let pd = noise_map[(x, (y as isize + y_down_offset) as usize)];
+                    let pu = noise_map[(x, (y as isize + y_up_offset) as usize)];
 
                     light_intensity = self.light_source.calc_light_intensity(pc, pl, pr, pd, pu);
                     light_intensity *= self.light_source.brightness;
@@ -294,7 +294,7 @@ impl ImageRenderer {
                     light_intensity = 1.0;
                 }
 
-                let background_color = background.get_value(x, y);
+                let background_color = background[(x, y)];
 
                 let destination_color = self.calc_destination_color_with_background(
                     source_color,
@@ -302,7 +302,7 @@ impl ImageRenderer {
                     light_intensity,
                 );
 
-                destination_image.set_value(x, y, destination_color);
+                destination_image[(x, y)] = destination_color;
             }
         }
 
