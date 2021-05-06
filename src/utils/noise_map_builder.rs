@@ -116,7 +116,7 @@ impl<'a> NoiseMapBuilder<'a> for CylinderMapBuilder<'a> {
                     value, point_x, current_height, point_z
                 );
 
-                result_map.set_value(x, y, value);
+                result_map[(x, y)] = value;
             }
         }
 
@@ -232,7 +232,7 @@ impl<'a> NoiseMapBuilder<'a> for PlaneMapBuilder<'a> {
                     self.source_module.get([current_x, current_y, 0.0])
                 };
 
-                result_map.set_value(x, y, final_value);
+                result_map[(x, y)] = final_value;
             }
         }
 
@@ -332,7 +332,7 @@ impl<'a> NoiseMapBuilder<'a> for SphereMapBuilder<'a> {
 
                 let point = lat_lon_to_xyz(current_lat, current_lon);
 
-                result_map.set_value(x, y, self.source_module.get(point));
+                result_map[(x, y)] = self.source_module.get(point);
             }
         }
 
