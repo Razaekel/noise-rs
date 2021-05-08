@@ -143,8 +143,7 @@ impl Index<(usize, usize)> for NoiseMap {
     fn index(&self, (x, y): (usize, usize)) -> &Self::Output {
         let (width, height) = self.size;
         if x < width && y < height {
-            // SAFETY: We just checked the index on the line above. This is just to avoid another bounds check.
-            unsafe { self.map.get_unchecked(x + y * self.size.0) }
+            &self.map[x + y * width]
         } else {
             &self.border_value
         }
@@ -155,8 +154,7 @@ impl IndexMut<(usize, usize)> for NoiseMap {
     fn index_mut(&mut self, (x, y): (usize, usize)) -> &mut Self::Output {
         let (width, height) = self.size;
         if x < width && y < height {
-            // SAFETY: We just checked the index on the line above. This is just to avoid another bounds check.
-            unsafe { self.map.get_unchecked_mut(x + y * self.size.0) }
+            &mut self.map[x + y * width]
         } else {
             panic!(
                 "index ({}, {}) out of bounds for NoiseMap of size ({}, {})",
