@@ -1,4 +1,6 @@
 use std::ops::{Index, IndexMut};
+use std::slice::{Iter, IterMut};
+use std::vec::IntoIter;
 
 use crate::utils::color_gradient::Color;
 #[cfg(feature = "image")]
@@ -18,12 +20,12 @@ impl NoiseImage {
         Self::initialize().set_size(width, height)
     }
 
-    pub fn data(&self) -> &[Color] {
-        &self.map
+    pub fn iter(&self) -> Iter<'_, Color> {
+        self.map.iter()
     }
 
-    pub fn data_mut(&mut self) -> &mut [Color] {
-        &mut self.map
+    pub fn iter_mut(&mut self) -> IterMut<'_, Color> {
+        self.map.iter_mut()
     }
 
     pub fn set_size(self, width: usize, height: usize) -> Self {
@@ -146,8 +148,7 @@ impl Index<(usize, usize)> for NoiseImage {
     fn index(&self, (x, y): (usize, usize)) -> &Self::Output {
         let (width, height) = self.size;
         if x < width && y < height {
-            // SAFETY: We just checked the index on the line above. This is just to avoid another bounds check.
-            unsafe { self.map.get_unchecked(x + y * self.size.0) }
+            &self.map[x + y * width]
         } else {
             &self.border_color
         }
@@ -158,13 +159,42 @@ impl IndexMut<(usize, usize)> for NoiseImage {
     fn index_mut(&mut self, (x, y): (usize, usize)) -> &mut Self::Output {
         let (width, height) = self.size;
         if x < width && y < height {
-            // SAFETY: We just checked the index on the line above. This is just to avoid another bounds check.
-            unsafe { self.map.get_unchecked_mut(x + y * self.size.0) }
+            &mut self.map[x + y * width]
         } else {
             panic!(
                 "index ({}, {}) out of bounds for NoiseImage of size ({}, {})",
                 x, y, width, height
             )
         }
+    }
+}
+
+impl IntoIterator for NoiseImage {
+    type Item = Color;
+
+    type IntoIter = IntoIter<Color>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.map.into_iter()
+    }
+}
+
+impl<'a> IntoIterator for &'a NoiseImage {
+    type Item = &'a Color;
+
+    type IntoIter = Iter<'a, Color>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
+}
+
+impl<'a> IntoIterator for &'a mut NoiseImage {
+    type Item = &'a mut Color;
+
+    type IntoIter = IterMut<'a, Color>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter_mut()
     }
 }

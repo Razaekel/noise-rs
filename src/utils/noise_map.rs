@@ -1,7 +1,9 @@
+use std::ops::{Index, IndexMut};
+use std::slice::{Iter, IterMut};
+use std::vec::IntoIter;
+
 #[cfg(feature = "image")]
 use std::{self, path::Path};
-
-use std::ops::{Index, IndexMut};
 
 const RASTER_MAX_WIDTH: u16 = 32_767;
 const RASTER_MAX_HEIGHT: u16 = 32_767;
@@ -17,12 +19,12 @@ impl NoiseMap {
         Self::initialize().set_size(width, height)
     }
 
-    pub fn data(&self) -> &[f64] {
-        &self.map
+    pub fn iter(&self) -> Iter<'_, f64> {
+        self.map.iter()
     }
 
-    pub fn data_mut(&mut self) -> &mut [f64] {
-        &mut self.map
+    pub fn iter_mut(&mut self) -> IterMut<'_, f64> {
+        self.map.iter_mut()
     }
 
     pub fn set_size(self, width: usize, height: usize) -> Self {
@@ -161,5 +163,35 @@ impl IndexMut<(usize, usize)> for NoiseMap {
                 x, y, width, height
             )
         }
+    }
+}
+
+impl IntoIterator for NoiseMap {
+    type Item = f64;
+
+    type IntoIter = IntoIter<f64>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.map.into_iter()
+    }
+}
+
+impl<'a> IntoIterator for &'a NoiseMap {
+    type Item = &'a f64;
+
+    type IntoIter = Iter<'a, f64>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
+}
+
+impl<'a> IntoIterator for &'a mut NoiseMap {
+    type Item = &'a mut f64;
+
+    type IntoIter = IterMut<'a, f64>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter_mut()
     }
 }
