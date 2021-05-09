@@ -25,16 +25,6 @@ impl Worley {
     pub const DEFAULT_SEED: u32 = 0;
     pub const DEFAULT_FREQUENCY: f64 = 1.0;
 
-    pub fn new(seed: u32) -> Self {
-        Self {
-            perm_table: PermutationTable::new(seed),
-            seed,
-            distance_function: Box::new(distance_functions::euclidean),
-            return_type: ReturnType::Value,
-            frequency: Self::DEFAULT_FREQUENCY,
-        }
-    }
-
     /// Sets the distance function used by the Worley cells.
     pub fn set_distance_function<F>(self, function: F) -> Self
     where
@@ -63,11 +53,21 @@ impl Worley {
 
 impl Default for Worley {
     fn default() -> Self {
-        Self::new(0)
+        Self::new(Self::DEFAULT_SEED)
     }
 }
 
 impl Seedable for Worley {
+    fn new(seed: u32) -> Self {
+        Self {
+            perm_table: PermutationTable::new(seed),
+            seed,
+            distance_function: Box::new(distance_functions::euclidean),
+            return_type: ReturnType::Value,
+            frequency: Self::DEFAULT_FREQUENCY,
+        }
+    }
+
     /// Sets the seed value used by the Worley cells.
     fn set_seed(self, seed: u32) -> Self {
         // If the new seed is the same as the current seed, just return self.

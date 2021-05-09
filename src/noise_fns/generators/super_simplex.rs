@@ -97,22 +97,22 @@ pub struct SuperSimplex {
 
 impl SuperSimplex {
     pub const DEFAULT_SEED: u32 = 0;
-
-    pub fn new() -> Self {
-        Self {
-            seed: Self::DEFAULT_SEED,
-            perm_table: PermutationTable::new(Self::DEFAULT_SEED),
-        }
-    }
 }
 
 impl Default for SuperSimplex {
     fn default() -> Self {
-        Self::new()
+        Self::new(Self::DEFAULT_SEED)
     }
 }
 
 impl Seedable for SuperSimplex {
+    fn new(seed: u32) -> Self {
+        Self {
+            seed,
+            perm_table: PermutationTable::new(seed),
+        }
+    }
+
     /// Sets the seed value for Super Simplex noise
     fn set_seed(self, seed: u32) -> Self {
         // If the new seed is the same as the current seed, just return self.

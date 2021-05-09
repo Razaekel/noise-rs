@@ -35,6 +35,9 @@ impl<'a, T, M: NoiseFn<T, DIM>, const DIM: usize> NoiseFn<T, DIM> for &'a M {
 
 /// Trait for functions that require a seed before generating their values
 pub trait Seedable {
+    /// Function needs to be initialized with the seed
+    fn new(seed: u32) -> Self;
+
     /// Set the seed for the function implementing the `Seedable` trait
     fn set_seed(self, seed: u32) -> Self;
 
