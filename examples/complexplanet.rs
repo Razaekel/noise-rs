@@ -168,8 +168,7 @@ fn main() {
     // 1: [Continent module]: This FBM module generates the continents. This
     // noise function has a high number of octaves so that detail is visible at
     // high zoom levels.
-    let baseContinentDef_fb0 = Fbm::new()
-        .set_seed(CURRENT_SEED)
+    let baseContinentDef_fb0 = Fbm::new(CURRENT_SEED)
         .set_frequency(CONTINENT_FREQUENCY)
         .set_persistence(0.5)
         .set_lacunarity(CONTINENT_LACUNARITY)
@@ -208,8 +207,7 @@ fn main() {
     // used by subsequent noise functions to carve out chunks from the
     // mountain ranges within the continent-with-ranges module so that the
     // mountain ranges will not be completely impassible.
-    let baseContinentDef_fb1 = Fbm::new()
-        .set_seed(CURRENT_SEED + 1)
+    let baseContinentDef_fb1 = Fbm::new(CURRENT_SEED + 1)
         .set_frequency(CONTINENT_FREQUENCY * 4.34375)
         .set_persistence(0.5)
         .set_lacunarity(CONTINENT_LACUNARITY)
@@ -423,8 +421,7 @@ fn main() {
 
     // 1: [Mountain-ridge module]: This ridged-multifractal-noise function
     // generates the mountain ridges.
-    let mountainBaseDef_rm0 = RidgedMulti::new()
-        .set_seed(CURRENT_SEED + 30)
+    let mountainBaseDef_rm0 = RidgedMulti::new(CURRENT_SEED + 30)
         .set_frequency(1723.0)
         .set_lacunarity(MOUNTAIN_LACUNARITY)
         .set_octaves(4);
@@ -443,8 +440,7 @@ fn main() {
     // of the valleys. Note that this noise function generates ridged-multifractal
     // noise using only one octave; this information will be important in the
     // next step.
-    let mountainBaseDef_rm1 = RidgedMulti::new()
-        .set_seed(CURRENT_SEED + 31)
+    let mountainBaseDef_rm1 = RidgedMulti::new(CURRENT_SEED + 31)
         .set_frequency(367.0)
         .set_lacunarity(MOUNTAIN_LACUNARITY)
         .set_octaves(1);
@@ -512,8 +508,7 @@ fn main() {
     // 1: [Mountain-basis-0 module]: This ridged-multifractal-noise function,
     // along with the mountain-basis-1 module, generates the individual
     // mountains.
-    let mountainousHigh_rm0 = RidgedMulti::new()
-        .set_seed(CURRENT_SEED + 40)
+    let mountainousHigh_rm0 = RidgedMulti::new(CURRENT_SEED + 40)
         .set_frequency(2371.0)
         .set_lacunarity(MOUNTAIN_LACUNARITY)
         .set_octaves(3);
@@ -521,8 +516,7 @@ fn main() {
     // 2: [Mountain-basis-1 module]: This ridged-multifractal-noise function,
     // along with the mountain-basis-0 module, generates the individual
     // mountains.
-    let mountainousHigh_rm1 = RidgedMulti::new()
-        .set_seed(CURRENT_SEED + 41)
+    let mountainousHigh_rm1 = RidgedMulti::new(CURRENT_SEED + 41)
         .set_frequency(2341.0)
         .set_lacunarity(MOUNTAIN_LACUNARITY)
         .set_octaves(3);
@@ -559,8 +553,7 @@ fn main() {
     // 1: [Lowland-basis-0 module]: This ridged-multifractal-noise function,
     // along with the lowland-basis-1 module, produces the low mountainous
     // terrain.
-    let mountainousLow_rm0 = RidgedMulti::new()
-        .set_seed(CURRENT_SEED + 50)
+    let mountainousLow_rm0 = RidgedMulti::new(CURRENT_SEED + 50)
         .set_frequency(1381.0)
         .set_lacunarity(MOUNTAIN_LACUNARITY)
         .set_octaves(8);
@@ -568,8 +561,7 @@ fn main() {
     // 1: [Lowland-basis-1 module]: This ridged-multifractal-noise function,
     // along with the lowland-basis-0 module, produces the low mountainous
     // terrain.
-    let mountainousLow_rm1 = RidgedMulti::new()
-        .set_seed(CURRENT_SEED + 51)
+    let mountainousLow_rm1 = RidgedMulti::new(CURRENT_SEED + 51)
         .set_frequency(1427.0)
         .set_lacunarity(MOUNTAIN_LACUNARITY)
         .set_octaves(8);
@@ -673,8 +665,7 @@ fn main() {
     //
 
     // 1: [Hills module]: This billow-noise function generates the hills.
-    let hillyTerrain_bi = Billow::new()
-        .set_seed(CURRENT_SEED + 60)
+    let hillyTerrain_bi = Billow::new(CURRENT_SEED + 60)
         .set_frequency(1663.0)
         .set_persistence(0.5)
         .set_lacunarity(HILLS_LACUNARITY)
@@ -693,8 +684,7 @@ fn main() {
     // appear in between the valleys. Note that this noise function generates
     // ridged-multifractal noise using only one octave; this information will be
     // important in the next step.
-    let hillyTerrain_rm = RidgedMulti::new()
-        .set_seed(CURRENT_SEED + 61)
+    let hillyTerrain_rm = RidgedMulti::new(CURRENT_SEED + 61)
         .set_frequency(367.5)
         .set_lacunarity(HILLS_LACUNARITY)
         .set_octaves(1);
@@ -779,8 +769,7 @@ fn main() {
 
     // 1: [Plains-basis-0 module]: This billow-noise function, along with the
     // plains-basis-1 module, produces the plains.
-    let plainsTerrain_bi0 = Billow::new()
-        .set_seed(CURRENT_SEED + 70)
+    let plainsTerrain_bi0 = Billow::new(CURRENT_SEED + 70)
         .set_frequency(1097.5)
         .set_persistence(0.5)
         .set_lacunarity(PLAINS_LACUNARITY)
@@ -796,8 +785,7 @@ fn main() {
 
     // 3: [Plains-basis-1 module]: This billow-noise function, along with the
     // plains-basis-2 module, produces the plains.
-    let plainsTerrain_bi1 = Billow::new()
-        .set_seed(CURRENT_SEED + 71)
+    let plainsTerrain_bi1 = Billow::new(CURRENT_SEED + 71)
         .set_frequency(1097.5)
         .set_persistence(0.5)
         .set_lacunarity(PLAINS_LACUNARITY)
@@ -843,8 +831,7 @@ fn main() {
     // 1: [Sand-dunes module]: This ridged-multifractal-noise function generates
     // sand dunes. This ridged-multifractal noise is generated with a single
     // octave, which makes very smooth dunes.
-    let badlandsSand_rm = RidgedMulti::new()
-        .set_seed(CURRENT_SEED + 80)
+    let badlandsSand_rm = RidgedMulti::new(CURRENT_SEED + 80)
         .set_frequency(6163.5)
         .set_lacunarity(BADLANDS_LACUNARITY)
         .set_octaves(1);
@@ -891,8 +878,7 @@ fn main() {
 
     // 1: [Cliff-basis module]: This Perlin-noise function generates some coherent
     // noise that will be used to generate the cliffs.
-    let badlandsCliffs_fb = Fbm::new()
-        .set_seed(CURRENT_SEED + 90)
+    let badlandsCliffs_fb = Fbm::new(CURRENT_SEED + 90)
         .set_frequency(CONTINENT_FREQUENCY * 839.0)
         .set_persistence(0.5)
         .set_lacunarity(BADLANDS_LACUNARITY)
@@ -1004,8 +990,7 @@ fn main() {
 
     // 1: [Large-river-basis module]: This ridged-multifractal-noise function
     // creates the large, deep rivers.
-    let riverPositions_rm0 = RidgedMulti::new()
-        .set_seed(CURRENT_SEED + 100)
+    let riverPositions_rm0 = RidgedMulti::new(CURRENT_SEED + 100)
         .set_frequency(18.75)
         .set_lacunarity(CONTINENT_LACUNARITY)
         .set_octaves(1);
@@ -1025,8 +1010,7 @@ fn main() {
 
     // 3: [Small-river-basis module]: This ridged-multifractal-noise function
     // creates the small, shallow rivers.
-    let riverPositions_rm1 = RidgedMulti::new()
-        .set_seed(CURRENT_SEED + 101)
+    let riverPositions_rm1 = RidgedMulti::new(CURRENT_SEED + 101)
         .set_frequency(43.25)
         .set_lacunarity(CONTINENT_LACUNARITY)
         .set_octaves(1);
@@ -1096,8 +1080,7 @@ fn main() {
     // roughly the same elevation. This BasicMulti module generates some
     // random values that will be used by subsequent noise functions to randomly
     // change the elevations of the mountain peaks.
-    let scaledMountainousTerrain_fb = Fbm::new()
-        .set_seed(CURRENT_SEED + 110)
+    let scaledMountainousTerrain_fb = Fbm::new(CURRENT_SEED + 110)
         .set_frequency(14.5)
         .set_persistence(0.5)
         .set_lacunarity(MOUNTAIN_LACUNARITY)
@@ -1164,8 +1147,7 @@ fn main() {
     // roughly the same elevation. This BasicMulti module generates some
     // random values that will be used by subsequent noise functions to
     // randomly change the elevations of the hilltops.
-    let scaledHillyTerrain_fb = Fbm::new()
-        .set_seed(CURRENT_SEED + 120)
+    let scaledHillyTerrain_fb = Fbm::new(CURRENT_SEED + 120)
         .set_frequency(13.5)
         .set_persistence(0.5)
         .set_lacunarity(HILLS_LACUNARITY)
@@ -1320,8 +1302,7 @@ fn main() {
     // 3: [Oceanic-trench-basis module]: This ridged-multifractal-noise function
     // generates some coherent noise that will be used to generate the oceanic
     // trenches. The ridges represent the bottom of the trenches.
-    let continentalShelf_rm = RidgedMulti::new()
-        .set_seed(CURRENT_SEED + 130)
+    let continentalShelf_rm = RidgedMulti::new(CURRENT_SEED + 130)
         .set_frequency(CONTINENT_FREQUENCY * 4.375)
         .set_lacunarity(CONTINENT_LACUNARITY)
         .set_octaves(16);
@@ -1571,8 +1552,7 @@ fn main() {
     // 1: [Badlands-positions module]: This BasicMulti module generates some
     // random noise, which is used by subsequent noise functions to specify the
     // locations of the badlands.
-    let continentsWithBadlands_bm = Fbm::new()
-        .set_seed(CURRENT_SEED + 140)
+    let continentsWithBadlands_bm = Fbm::new(CURRENT_SEED + 140)
         .set_frequency(16.5)
         .set_persistence(0.5)
         .set_lacunarity(CONTINENT_LACUNARITY)

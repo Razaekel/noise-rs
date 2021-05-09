@@ -5,7 +5,7 @@ extern crate noise;
 use noise::{utils::*, Value};
 
 fn main() {
-    PlaneMapBuilder::new(&Value::new())
+    PlaneMapBuilder::new(&Value::default())
         .build()
         .write_to_file("value.png");
 }

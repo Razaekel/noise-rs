@@ -84,7 +84,7 @@ impl<Source> Turbulence<Source> {
         }
     }
 
-    fn set_seed(self, seed: u32) -> Self {
+    pub fn set_seed(self, seed: u32) -> Self {
         Self {
             seed,
             x_distort_function: self.x_distort_function.set_seed(seed),
@@ -95,27 +95,10 @@ impl<Source> Turbulence<Source> {
         }
     }
 
-    fn seed(&self) -> u32 {
+    pub fn seed(&self) -> u32 {
         self.seed
     }
 }
-
-// impl<Source> Seedable for Turbulence<Source> {
-//     fn set_seed(self, seed: u32) -> Self {
-//         Self {
-//             seed,
-//             x_distort_function: self.x_distort_function.set_seed(seed),
-//             y_distort_function: self.y_distort_function.set_seed(seed + 1),
-//             z_distort_function: self.z_distort_function.set_seed(seed + 2),
-//             u_distort_function: self.u_distort_function.set_seed(seed + 3),
-//             ..self
-//         }
-//     }
-//
-//     fn seed(&self) -> u32 {
-//         self.seed
-//     }
-// }
 
 impl<Source> NoiseFn<f64, 2> for Turbulence<Source>
 where

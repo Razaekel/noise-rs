@@ -7,8 +7,7 @@ fn main() {
     let base_wood = Cylinders::new().set_frequency(16.0);
 
     // Basic Multifractal noise to use for the wood grain.
-    let wood_grain_noise = BasicMulti::new()
-        .set_seed(0)
+    let wood_grain_noise = BasicMulti::new(0)
         .set_frequency(48.0)
         .set_persistence(0.5)
         .set_lacunarity(2.20703125)

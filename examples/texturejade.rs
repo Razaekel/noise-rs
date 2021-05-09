@@ -5,8 +5,7 @@ use noise::{utils::*, *};
 fn main() {
     // Primary jade texture. The ridges from the ridged-multifractal function
     // produces the veins.
-    let primary_jade = RidgedMulti::new()
-        .set_seed(0)
+    let primary_jade = RidgedMulti::new(0)
         .set_frequency(2.0)
         .set_lacunarity(2.20703125)
         .set_octaves(6);

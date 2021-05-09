@@ -5,7 +5,7 @@ extern crate noise;
 use noise::{utils::*, Fbm};
 
 fn main() {
-    let fbm = Fbm::new();
+    let fbm = Fbm::default();
 
     PlaneMapBuilder::new(&fbm)
         .set_size(1000, 1000)

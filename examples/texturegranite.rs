@@ -5,8 +5,7 @@ use noise::{utils::*, *};
 fn main() {
     // Primary granite texture. This generates the "roughness" of the texture
     // when lit by a light source.
-    let primary_granite = Billow::new()
-        .set_seed(0)
+    let primary_granite = Billow::new(0)
         .set_frequency(8.0)
         .set_persistence(0.625)
         .set_lacunarity(2.18359375)

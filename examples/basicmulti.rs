@@ -5,7 +5,7 @@ extern crate noise;
 use noise::{utils::*, BasicMulti};
 
 fn main() {
-    PlaneMapBuilder::new(&BasicMulti::new())
+    PlaneMapBuilder::new(&BasicMulti::default())
         .build()
         .write_to_file("basicmulti.png");
 }

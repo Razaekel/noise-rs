@@ -5,7 +5,7 @@ extern crate noise;
 use noise::{utils::*, HybridMulti};
 
 fn main() {
-    let hybrid_multi = HybridMulti::new();
+    let hybrid_multi = HybridMulti::default();
 
     PlaneMapBuilder::new(&hybrid_multi)
         .build()

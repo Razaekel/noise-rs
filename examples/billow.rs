@@ -5,7 +5,7 @@ extern crate noise;
 use noise::{utils::*, Billow};
 
 fn main() {
-    PlaneMapBuilder::new(&Billow::new())
+    PlaneMapBuilder::new(&Billow::default())
         .build()
         .write_to_file("billow.png");
 }

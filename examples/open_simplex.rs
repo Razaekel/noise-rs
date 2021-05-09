@@ -5,7 +5,7 @@ extern crate noise;
 use noise::{utils::*, OpenSimplex, Seedable};
 
 fn main() {
-    let open_simplex = OpenSimplex::new();
+    let open_simplex = OpenSimplex::default();
 
     PlaneMapBuilder::new(&open_simplex)
         .build()

@@ -5,7 +5,7 @@ extern crate noise;
 use noise::{utils::*, RidgedMulti};
 
 fn main() {
-    let ridged_multi = RidgedMulti::new();
+    let ridged_multi = RidgedMulti::default();
 
     PlaneMapBuilder::new(&ridged_multi)
         .build()

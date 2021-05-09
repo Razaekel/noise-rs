@@ -198,7 +198,7 @@ fn main() {
     // {xout, yout, zout} = P0;
     // eq3dsp[xout, yout, zout]
 
-    let super_simplex = SuperSimplex::new();
+    let super_simplex = SuperSimplex::default();
 
     PlaneMapBuilder::new(&super_simplex)
         .build()
