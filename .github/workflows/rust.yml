@@ -232,117 +232,117 @@ jobs:
             examples/target
           key: ${{ runner.os }}-examples-${{ steps.tc.outputs.rustc_hash }}-${{ hashFiles('**/Cargo.toml') }}
 
-      - name: 'Build example Abs'
+      - name: "Build example Abs"
         working-directory: examples
         run: cargo build --example abs
-      - name: 'Build example Add'
+      - name: "Build example Add"
         working-directory: examples
         run: cargo build --example add
-      - name: 'Build example BasicMulti'
+      - name: "Build example BasicMulti"
         working-directory: examples
         run: cargo build --example basicmulti
-      - name: 'Build example Billow'
+      - name: "Build example Billow"
         working-directory: examples
         run: cargo build --example billow
-      - name: 'Build example Blend'
+      - name: "Build example Blend"
         working-directory: examples
         run: cargo build --example blend
-      - name: 'Build example Cache'
+      - name: "Build example Cache"
         working-directory: examples
         run: cargo build --example cache
-      - name: 'Build example Checkerboard'
+      - name: "Build example Checkerboard"
         working-directory: examples
         run: cargo build --example checkerboard
-      - name: 'Build example Clamp'
+      - name: "Build example Clamp"
         working-directory: examples
         run: cargo build --example clamp
-      - name: 'Build example ComplexPlanet'
+      - name: "Build example ComplexPlanet"
         working-directory: examples
         run: cargo build --example complexplanet
-      - name: 'Build example Constant'
+      - name: "Build example Constant"
         working-directory: examples
         run: cargo build --example constant
-      - name: 'Build example Curve'
+      - name: "Build example Curve"
         working-directory: examples
         run: cargo build --example curve
-      - name: 'Build example Cylinders'
+      - name: "Build example Cylinders"
         working-directory: examples
         run: cargo build --example curve
-      - name: 'Build example Displace'
+      - name: "Build example Displace"
         working-directory: examples
         run: cargo build --example displace
-      - name: 'Build example Exponent'
+      - name: "Build example Exponent"
         working-directory: examples
         run: cargo build --example exponent
-      - name: 'Build example Fbm'
+      - name: "Build example Fbm"
         working-directory: examples
         run: cargo build --example fbm
-      - name: 'Build example HybridMulti'
+      - name: "Build example HybridMulti"
         working-directory: examples
         run: cargo build --example hybridmulti
-      - name: 'Build example Max'
+      - name: "Build example Max"
         working-directory: examples
         run: cargo build --example max
-      - name: 'Build example Min'
+      - name: "Build example Min"
         working-directory: examples
         run: cargo build --example min
-      - name: 'Build example Multiply'
+      - name: "Build example Multiply"
         working-directory: examples
         run: cargo build --example multiply
-      - name: 'Build example Negate'
+      - name: "Build example Negate"
         working-directory: examples
         run: cargo build --example negate
-      - name: 'Build example OpenSimplex'
+      - name: "Build example OpenSimplex"
         working-directory: examples
         run: cargo build --example open_simplex
-      - name: 'Build example Perlin'
+      - name: "Build example Perlin"
         working-directory: examples
         run: cargo build --example perlin
-      - name: 'Build example Power'
+      - name: "Build example Power"
         working-directory: examples
         run: cargo build --example power
-      - name: 'Build example RidgedMulti'
+      - name: "Build example RidgedMulti"
         working-directory: examples
         run: cargo build --example ridgedmulti
-      - name: 'Build example Rotate'
+      - name: "Build example Rotate"
         working-directory: examples
         run: cargo build --example rotate_point
-      - name: 'Build example ScaleBias'
+      - name: "Build example ScaleBias"
         working-directory: examples
         run: cargo build --example scale_bias
-      - name: 'Build example Scale'
+      - name: "Build example Scale"
         working-directory: examples
         run: cargo build --example scale_point
-      - name: 'Build example Select'
+      - name: "Build example Select"
         working-directory: examples
         run: cargo build --example select
-      - name: 'Build example SuperSimplex'
+      - name: "Build example SuperSimplex"
         working-directory: examples
         run: cargo build --example super_simplex
-      - name: 'Build example Terrace'
+      - name: "Build example Terrace"
         working-directory: examples
         run: cargo build --example terrace
-      - name: 'Build example TextureGranite'
+      - name: "Build example TextureGranite"
         working-directory: examples
         run: cargo build --example texturegranite
-      - name: 'Build example TextureJade'
+      - name: "Build example TextureJade"
         working-directory: examples
         run: cargo build --example texturejade
-      - name: 'Build example TextureSlime'
+      - name: "Build example TextureSlime"
         working-directory: examples
         run: cargo build --example textureslime
-      - name: 'Build example TextureWood'
+      - name: "Build example TextureWood"
         working-directory: examples
         run: cargo build --example texturewood
-      - name: 'Build example Translate'
+      - name: "Build example Translate"
         working-directory: examples
         run: cargo build --example translate_point
-      - name: 'Build example turbulence'
+      - name: "Build example turbulence"
         working-directory: examples
         run: cargo build --example turbulence
-      - name: 'Build example Value'
+      - name: "Build example Value"
         working-directory: examples
         run: cargo build --example value
-      - name: 'Build example Worley'
+      - name: "Build example Worley"
         working-directory: examples
         run: cargo build --example worley

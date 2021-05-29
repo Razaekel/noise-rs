@@ -1,4 +1,4 @@
-use crate::{noise_fns::NoiseFn, Seedable, MultiFractal};
+use crate::{noise_fns::NoiseFn, MultiFractal, Seedable};
 
 /// Noise function that negates the output value from the source function.
 pub struct Negate<T, const DIM: usize>
@@ -38,7 +38,10 @@ where
     }
 
     fn set_seed(self, seed: u32) -> Self {
-        Self { source: self.source.set_seed(seed), ..self }
+        Self {
+            source: self.source.set_seed(seed),
+            ..self
+        }
     }
 
     fn seed(&self) -> u32 {
@@ -66,4 +69,3 @@ where
         Self::new(self.source.set_persistence(persistence))
     }
 }
-

@@ -6,6 +6,7 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
+
 [![Github Link][github badge]][github link]
 [![CI Status][ci badge]][ci link]
 [![Documentation][docs badge]][docs link]
@@ -41,12 +42,15 @@ noise = "0.7"
 ```
 
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
+
 Noise-rs is a Rust library to generate smoothly varying noise for textural use and graphical display.
 
 Noise generators are contained in `NoiseFn` modules, and can be combined to make very complex noise results.
 
 ### Planetary Surface Example
+
 ![planet surface image]
 ![planet surface 4x]
 ![planet surface 16x]
@@ -65,6 +69,7 @@ a value. They can be chained together when declared, creating very complex noise
 See the individual function pages for their descriptions, and the [examples][examples link] for their usage.
 
 <!-- USAGE EXAMPLES -->
+
 ## Usage
 
 ```rust
@@ -82,16 +87,19 @@ fn main() {
           .write_to_file("fbm.png");
 }
 ```
+
 ![FBM Noise][fbm image]
 
 _For more examples, refer to the [Examples][examples link]_
 
 <!-- ROADMAP -->
+
 ## Roadmap
 
 See the [open issues][issues link] for a list of proposed features (and known issues).
 
 <!-- CONTRIBUTING -->
+
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -107,21 +115,25 @@ for inclusion in the work by you shall be dual licensed as below, without any
 additional terms or conditions.
 
 <!-- LICENSE -->
+
 ## License
 
 Licensed under either of
-* Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
-* MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+
+- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+- MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
 
 at your option.
 
 <!-- CONTACT -->
+
 ## Contact
 
 Project Link: [https://github.com/razaekel/noise-rs][github link]
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
 [ci link]: https://github.com/razaekel/noise-rs/actions
 [ci badge]: https://img.shields.io/github/workflow/status/razaekel/noise-rs/CI?style=for-the-badge&logo=github-actions&logoColor=white
 [crates.io link]: https://crates.io/crates/noise

@@ -24,7 +24,7 @@ where
     }
 }
 
-impl<T, U ,const DIM: usize> NoiseFn<DIM> for Power<T, U, DIM> 
+impl<T, U, const DIM: usize> NoiseFn<DIM> for Power<T, U, DIM>
 where
     T: NoiseFn<DIM>,
     U: NoiseFn<DIM>,

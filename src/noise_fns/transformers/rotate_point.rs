@@ -156,7 +156,10 @@ where
     }
 
     fn set_seed(self, seed: u32) -> Self {
-        Self {source: self.source.set_seed(seed), ..self}
+        Self {
+            source: self.source.set_seed(seed),
+            ..self
+        }
     }
 
     fn seed(&self) -> u32 {
@@ -169,18 +172,30 @@ where
     T: MultiFractal,
 {
     fn set_octaves(self, octaves: usize) -> Self {
-        Self { source: self.source.set_octaves(octaves), ..self}
+        Self {
+            source: self.source.set_octaves(octaves),
+            ..self
+        }
     }
 
     fn set_frequency(self, frequency: f64) -> Self {
-        Self { source: self.source.set_frequency(frequency), ..self }
+        Self {
+            source: self.source.set_frequency(frequency),
+            ..self
+        }
     }
 
     fn set_lacunarity(self, lacunarity: f64) -> Self {
-        Self { source: self.source.set_lacunarity(lacunarity), ..self }
+        Self {
+            source: self.source.set_lacunarity(lacunarity),
+            ..self
+        }
     }
 
     fn set_persistence(self, persistence: f64) -> Self {
-        Self { source: self.source.set_persistence(persistence), ..self }
+        Self {
+            source: self.source.set_persistence(persistence),
+            ..self
+        }
     }
 }

@@ -1,4 +1,4 @@
-use crate::{noise_fns::NoiseFn, Seedable, MultiFractal};
+use crate::{noise_fns::NoiseFn, MultiFractal};
 
 /// Noise function that uses multiple source functions to displace each coordinate
 /// of the input value before returning the output value from the `source` function.
@@ -111,24 +111,35 @@ where
     }
 }
 
-
 impl<T, X, Y, Z, U> MultiFractal for Displace<T, X, Y, Z, U>
 where
     T: MultiFractal,
 {
     fn set_octaves(self, octaves: usize) -> Self {
-        Self { source: self.source.set_octaves(octaves), ..self}
+        Self {
+            source: self.source.set_octaves(octaves),
+            ..self
+        }
     }
 
     fn set_frequency(self, frequency: f64) -> Self {
-        Self { source: self.source.set_frequency(frequency), ..self }
+        Self {
+            source: self.source.set_frequency(frequency),
+            ..self
+        }
     }
 
     fn set_lacunarity(self, lacunarity: f64) -> Self {
-        Self { source: self.source.set_lacunarity(lacunarity), ..self }
+        Self {
+            source: self.source.set_lacunarity(lacunarity),
+            ..self
+        }
     }
 
     fn set_persistence(self, persistence: f64) -> Self {
-        Self { source: self.source.set_persistence(persistence), ..self }
+        Self {
+            source: self.source.set_persistence(persistence),
+            ..self
+        }
     }
 }
