@@ -150,19 +150,19 @@ where
     T: MultiFractal,
 {
     fn set_octaves(self, octaves: usize) -> Self {
-        Self::new(self.source.set_octaves(octaves))
+        Self { source: self.source.set_octaves(octaves), ..self}
     }
 
     fn set_frequency(self, frequency: f64) -> Self {
-        Self::new(self.source.set_frequency(frequency))
+        Self { source: self.source.set_frequency(frequency), ..self }
     }
 
     fn set_lacunarity(self, lacunarity: f64) -> Self {
-        Self::new(self.source.set_lacunarity(lacunarity))
+        Self { source: self.source.set_lacunarity(lacunarity), ..self }
     }
 
     fn set_persistence(self, persistence: f64) -> Self {
-        Self::new(self.source.set_persistence(persistence))
+        Self { source: self.source.set_persistence(persistence), ..self }
     }
 }
 

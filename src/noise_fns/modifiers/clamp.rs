@@ -1,4 +1,4 @@
-use crate::{MultiFractal, Seedable, noise_fns::NoiseFn};
+use crate::{noise_fns::NoiseFn, MultiFractal, Seedable};
 
 /// Noise function that clamps the output value from the source function to a
 /// range of values.
@@ -69,7 +69,10 @@ where
     }
 
     fn set_seed(self, seed: u32) -> Self {
-        Self {source: self.source.set_seed(seed), ..self}
+        Self {
+            source: self.source.set_seed(seed),
+            ..self
+        }
     }
 
     fn seed(&self) -> u32 {
@@ -82,19 +85,30 @@ where
     T: NoiseFn<DIM> + MultiFractal,
 {
     fn set_octaves(self, octaves: usize) -> Self {
-        Self::new(self.source.set_octaves(octaves))
+        Self {
+            source: self.source.set_octaves(octaves),
+            ..self
+        }
     }
 
     fn set_frequency(self, frequency: f64) -> Self {
-        Self::new(self.source.set_frequency(frequency))
+        Self {
+            source: self.source.set_frequency(frequency),
+            ..self
+        }
     }
 
     fn set_lacunarity(self, lacunarity: f64) -> Self {
-        Self::new(self.source.set_lacunarity(lacunarity))
+        Self {
+            source: self.source.set_lacunarity(lacunarity),
+            ..self
+        }
     }
 
     fn set_persistence(self, persistence: f64) -> Self {
-        Self::new(self.source.set_persistence(persistence))
+        Self {
+            source: self.source.set_persistence(persistence),
+            ..self
+        }
     }
 }
-
