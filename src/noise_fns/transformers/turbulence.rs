@@ -58,7 +58,7 @@ impl<Source> Turbulence<Source> {
         }
     }
 
-    pub fn set_frequency(self, frequency: f64) -> Self {
+    pub fn set_distort_frequency(self, frequency: f64) -> Self {
         Self {
             frequency,
             x_distort_function: self.x_distort_function.set_frequency(frequency),
@@ -84,7 +84,7 @@ impl<Source> Turbulence<Source> {
         }
     }
 
-    pub fn set_seed(self, seed: u32) -> Self {
+    pub fn set_distort_seed(self, seed: u32) -> Self {
         Self {
             seed,
             x_distort_function: self.x_distort_function.set_seed(seed),
@@ -184,5 +184,84 @@ where
 
         self.source
             .get([x_distort, y_distort, z_distort, u_distort])
+    }
+}
+
+
+impl<T> Seedable for Turbulence<T>
+where
+    T: Seedable,
+{
+    fn new(seed: u32) -> Self {
+        Self {
+            source: T::new(seed),
+            seed: Self::DEFAULT_SEED,
+            frequency: Self::DEFAULT_FREQUENCY,
+            power: Self::DEFAULT_POWER,
+            roughness: Self::DEFAULT_ROUGHNESS,
+            x_distort_function: Fbm::new(Self::DEFAULT_SEED)
+                .set_octaves(Self::DEFAULT_ROUGHNESS)
+                .set_frequency(Self::DEFAULT_FREQUENCY),
+            y_distort_function: Fbm::new(Self::DEFAULT_SEED + 1)
+                .set_octaves(Self::DEFAULT_ROUGHNESS)
+                .set_frequency(Self::DEFAULT_FREQUENCY),
+            z_distort_function: Fbm::new(Self::DEFAULT_SEED + 2)
+                .set_octaves(Self::DEFAULT_ROUGHNESS)
+                .set_frequency(Self::DEFAULT_FREQUENCY),
+            u_distort_function: Fbm::new(Self::DEFAULT_SEED + 3)
+                .set_octaves(Self::DEFAULT_ROUGHNESS)
+                .set_frequency(Self::DEFAULT_FREQUENCY),
+        }
+    }
+
+    fn set_seed(self, seed: u32) -> Self {
+        let rp = Self {
+            source: self.source,
+            ..self
+        };
+        Self {
+            source: rp.source.set_seed(seed),
+            seed: self.seed,
+            frequency: self.frequency,
+            power: self.power,
+            roughness: self.roughness,
+            x_distort_function: Fbm::new(self.seed)
+                .set_octaves(self.roughness)
+                .set_frequency(self.frequency),
+            y_distort_function: Fbm::new(self.seed + 1)
+                .set_octaves(self.roughness)
+                .set_frequency(self.frequency),
+            z_distort_function: Fbm::new(self.seed + 2)
+                .set_octaves(self.roughness)
+                .set_frequency(self.frequency),
+            u_distort_function: Fbm::new(self.seed + 3)
+                .set_octaves(self.roughness)
+                .set_frequency(self.frequency),
+        }
+    }
+
+    fn seed(&self) -> u32 {
+        self.source.seed()
+    }
+}
+
+impl<T> MultiFractal for Turbulence<T>
+where
+    T: MultiFractal,
+{
+    fn set_octaves(self, octaves: usize) -> Self {
+        Self::new(self.source.set_octaves(octaves))
+    }
+
+    fn set_frequency(self, frequency: f64) -> Self {
+        Self::new(self.source.set_frequency(frequency))
+    }
+
+    fn set_lacunarity(self, lacunarity: f64) -> Self {
+        Self::new(self.source.set_lacunarity(lacunarity))
+    }
+
+    fn set_persistence(self, persistence: f64) -> Self {
+        Self::new(self.source.set_persistence(persistence))
     }
 }

@@ -1,23 +1,23 @@
-use crate::noise_fns::NoiseFn;
+use crate::{MultiFractal, Seedable, noise_fns::NoiseFn};
 
 /// Noise function that clamps the output value from the source function to a
 /// range of values.
-pub struct Clamp<'a, T, const DIM: usize>
+pub struct Clamp<T, const DIM: usize>
 where
     T: NoiseFn<DIM>,
 {
     /// Outputs a value.
-    pub source: &'a T,
+    pub source: T,
 
     /// Bound of the clamping range. Default is -1.0 to 1.0.
     pub bounds: (f64, f64),
 }
 
-impl<'a, T, const DIM: usize> Clamp<'a, T, DIM>
+impl<T, const DIM: usize> Clamp<T, DIM>
 where
     T: NoiseFn<DIM>,
 {
-    pub fn new(source: &'a T) -> Self {
+    pub fn new(source: T) -> Self {
         Self {
             source,
             bounds: (-1.0, 1.0),
@@ -46,7 +46,7 @@ where
     }
 }
 
-impl<'a, T, const DIM: usize> NoiseFn<DIM> for Clamp<'a, T, DIM>
+impl<T, const DIM: usize> NoiseFn<DIM> for Clamp<T, DIM>
 where
     T: NoiseFn<DIM>,
 {
@@ -56,3 +56,45 @@ where
         value.clamp(self.bounds.0, self.bounds.1)
     }
 }
+
+impl<T, const DIM: usize> Seedable for Clamp<T, DIM>
+where
+    T: NoiseFn<DIM> + Seedable,
+{
+    fn new(seed: u32) -> Self {
+        Self {
+            source: T::new(seed),
+            bounds: (-1.0, 1.0),
+        }
+    }
+
+    fn set_seed(self, seed: u32) -> Self {
+        Self::new(self.source.set_seed(seed))
+    }
+
+    fn seed(&self) -> u32 {
+        self.source.seed()
+    }
+}
+
+impl<T, const DIM: usize> MultiFractal for Clamp<T, DIM>
+where
+    T: NoiseFn<DIM> + MultiFractal,
+{
+    fn set_octaves(self, octaves: usize) -> Self {
+        Self::new(self.source.set_octaves(octaves))
+    }
+
+    fn set_frequency(self, frequency: f64) -> Self {
+        Self::new(self.source.set_frequency(frequency))
+    }
+
+    fn set_lacunarity(self, lacunarity: f64) -> Self {
+        Self::new(self.source.set_lacunarity(lacunarity))
+    }
+
+    fn set_persistence(self, persistence: f64) -> Self {
+        Self::new(self.source.set_persistence(persistence))
+    }
+}
+

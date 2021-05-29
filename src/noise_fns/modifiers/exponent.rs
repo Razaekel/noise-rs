@@ -1,4 +1,4 @@
-use crate::{math::scale_shift, noise_fns::NoiseFn};
+use crate::{math::scale_shift, noise_fns::NoiseFn, Seedable, MultiFractal};
 
 /// Noise function that maps the output value from the source function onto an
 /// exponential curve.
@@ -7,23 +7,23 @@ use crate::{math::scale_shift, noise_fns::NoiseFn};
 /// this noise function first normalizes the output value (the range becomes 0.0
 /// to 1.0), maps that value onto an exponential curve, then rescales that
 /// value back to the original range.
-pub struct Exponent<'a, T, const DIM: usize>
+pub struct Exponent<T, const DIM: usize>
 where
     T: NoiseFn<DIM>,
 {
     /// Outputs a value.
-    pub source: &'a T,
+    pub source: T,
 
     /// Exponent to apply to the output value from the source function. Default
     /// is 1.0.
     pub exponent: f64,
 }
 
-impl<'a, T, const DIM: usize> Exponent<'a, T, DIM>
+impl<T, const DIM: usize> Exponent<T, DIM>
 where
     T: NoiseFn<DIM>,
 {
-    pub fn new(source: &'a T) -> Self {
+    pub fn new(source: T) -> Self {
         Self {
             source,
             exponent: 1.0,
@@ -35,7 +35,7 @@ where
     }
 }
 
-impl<'a, T, const DIM: usize> NoiseFn<DIM> for Exponent<'a, T, DIM>
+impl<T, const DIM: usize> NoiseFn<DIM> for Exponent<T, DIM>
 where
     T: NoiseFn<DIM>,
 {
@@ -47,3 +47,45 @@ where
         scale_shift(value, 2.0)
     }
 }
+
+impl<T, const DIM: usize> Seedable for Exponent<T, DIM>
+where
+    T: NoiseFn<DIM> + Seedable,
+{
+    fn new(seed: u32) -> Self {
+        Self {
+            source: T::new(seed),
+            exponent: 1.0,
+        }
+    }
+
+    fn set_seed(self, seed: u32) -> Self {
+        Self::new(self.source.set_seed(seed))
+    }
+
+    fn seed(&self) -> u32 {
+        self.source.seed()
+    }
+}
+
+impl<T, const DIM: usize> MultiFractal for Exponent<T, DIM>
+where
+    T: NoiseFn<DIM> + MultiFractal,
+{
+    fn set_octaves(self, octaves: usize) -> Self {
+        Self::new(self.source.set_octaves(octaves))
+    }
+
+    fn set_frequency(self, frequency: f64) -> Self {
+        Self::new(self.source.set_frequency(frequency))
+    }
+
+    fn set_lacunarity(self, lacunarity: f64) -> Self {
+        Self::new(self.source.set_lacunarity(lacunarity))
+    }
+
+    fn set_persistence(self, persistence: f64) -> Self {
+        Self::new(self.source.set_persistence(persistence))
+    }
+}
+

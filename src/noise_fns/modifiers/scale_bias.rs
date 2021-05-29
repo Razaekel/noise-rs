@@ -1,16 +1,16 @@
-use crate::noise_fns::NoiseFn;
+use crate::{noise_fns::NoiseFn, Seedable, MultiFractal};
 
 /// Noise function that applies a scaling factor and a bias to the output value
 /// from the source function.
 ///
 /// The function retrieves the output value from the source function, multiplies
 /// it with the scaling factor, adds the bias to it, then outputs the value.
-pub struct ScaleBias<'a, T, const DIM: usize>
+pub struct ScaleBias<T, const DIM: usize>
 where
     T: NoiseFn<DIM>,
 {
     /// Outputs a value.
-    pub source: &'a T,
+    pub source: T,
 
     /// Scaling factor to apply to the output value from the source function.
     /// The default value is 1.0.
@@ -21,11 +21,11 @@ where
     pub bias: f64,
 }
 
-impl<'a, T, const DIM: usize> ScaleBias<'a, T, DIM>
+impl<T, const DIM: usize> ScaleBias<T, DIM>
 where
     T: NoiseFn<DIM>,
 {
-    pub fn new(source: &'a T) -> Self {
+    pub fn new(source: T) -> Self {
         Self {
             source,
             scale: 1.0,
@@ -42,7 +42,7 @@ where
     }
 }
 
-impl<'a, T, const DIM: usize> NoiseFn<DIM> for ScaleBias<'a, T, DIM>
+impl<T, const DIM: usize> NoiseFn<DIM> for ScaleBias<T, DIM>
 where
     T: NoiseFn<DIM>,
 {
@@ -56,3 +56,46 @@ where
         (self.source.get(point) * self.scale) + self.bias
     }
 }
+
+impl<T, const DIM: usize> Seedable for ScaleBias<T, DIM>
+where
+    T: NoiseFn<DIM> + Seedable,
+{
+    fn new(seed: u32) -> Self {
+        Self {
+            source: T::new(seed),
+            scale: 1.0,
+            bias: 0.0,
+        }
+    }
+
+    fn set_seed(self, seed: u32) -> Self {
+        Self::new(self.source.set_seed(seed))
+    }
+
+    fn seed(&self) -> u32 {
+        self.source.seed()
+    }
+}
+
+impl<T, const DIM: usize> MultiFractal for ScaleBias<T, DIM>
+where
+    T: NoiseFn<DIM> + MultiFractal,
+{
+    fn set_octaves(self, octaves: usize) -> Self {
+        Self::new(self.source.set_octaves(octaves))
+    }
+
+    fn set_frequency(self, frequency: f64) -> Self {
+        Self::new(self.source.set_frequency(frequency))
+    }
+
+    fn set_lacunarity(self, lacunarity: f64) -> Self {
+        Self::new(self.source.set_lacunarity(lacunarity))
+    }
+
+    fn set_persistence(self, persistence: f64) -> Self {
+        Self::new(self.source.set_persistence(persistence))
+    }
+}
+

@@ -1,4 +1,4 @@
-use crate::noise_fns::NoiseFn;
+use crate::{noise_fns::NoiseFn, MultiFractal, Seedable};
 
 /// Noise function that rotates the input value around the origin before
 /// returning the output value from the source function.
@@ -138,5 +138,56 @@ where
     fn get(&self, _point: [f64; 4]) -> f64 {
         // 4d rotations are hard.
         unimplemented!();
+    }
+}
+
+impl<T> Seedable for RotatePoint<T>
+where
+    T: Seedable,
+{
+    fn new(seed: u32) -> Self {
+        Self {
+            source: T::new(seed),
+            x_angle: 0.0,
+            y_angle: 0.0,
+            z_angle: 0.0,
+            u_angle: 0.0,
+        }
+    }
+
+    fn set_seed(self, seed: u32) -> Self {
+        let rp = Self {
+            source: self.source,
+            x_angle: self.x_angle,
+            y_angle: self.y_angle,
+            z_angle: self.z_angle,
+            u_angle: self.u_angle,
+        };
+        Self {source: rp.source.set_seed(seed), ..self}
+    }
+
+    fn seed(&self) -> u32 {
+        self.source.seed()
+    }
+}
+
+impl<T> MultiFractal for RotatePoint<T>
+where
+    T: MultiFractal,
+{
+    fn set_octaves(self, octaves: usize) -> Self {
+        Self::new(self.source.set_octaves(octaves))
+    }
+
+    fn set_frequency(self, frequency: f64) -> Self {
+        Self::new(self.source.set_frequency(frequency))
+    }
+
+    fn set_lacunarity(self, lacunarity: f64) -> Self {
+        Self::new(self.source.set_lacunarity(lacunarity))
+    }
+
+    fn set_persistence(self, persistence: f64) -> Self {
+        Self::new(self.source.set_persistence(persistence))
     }
 }

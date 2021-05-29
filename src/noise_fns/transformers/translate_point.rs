@@ -1,4 +1,4 @@
-use crate::noise_fns::NoiseFn;
+use crate::{noise_fns::NoiseFn, Seedable, MultiFractal};
 
 /// Noise function that moves the coordinates of the input value before
 /// returning the output value from the source function.
@@ -137,5 +137,57 @@ where
             point[2] + self.z_translation,
             point[3] + self.u_translation,
         ])
+    }
+}
+
+impl<T> Seedable for TranslatePoint<T>
+where
+    T: Seedable,
+{
+    fn new(seed: u32) -> Self {
+        Self {
+            source: T::new(seed),
+            x_translation: 0.0,
+            y_translation: 0.0,
+            z_translation: 0.0,
+            u_translation: 0.0,
+        }
+    }
+
+    fn set_seed(self, seed: u32) -> Self {
+        let rp = Self {
+            source: self.source,
+            ..self
+            // x_translation: self.x_translation,
+            // y_translation: self.y_translation,
+            // z_translation: self.z_translation,
+            // u_translation: self.u_translation,
+        };
+        Self {source: rp.source.set_seed(seed), ..self}
+    }
+
+    fn seed(&self) -> u32 {
+        self.source.seed()
+    }
+}
+
+impl<T> MultiFractal for TranslatePoint<T>
+where
+    T: MultiFractal,
+{
+    fn set_octaves(self, octaves: usize) -> Self {
+        Self::new(self.source.set_octaves(octaves))
+    }
+
+    fn set_frequency(self, frequency: f64) -> Self {
+        Self::new(self.source.set_frequency(frequency))
+    }
+
+    fn set_lacunarity(self, lacunarity: f64) -> Self {
+        Self::new(self.source.set_lacunarity(lacunarity))
+    }
+
+    fn set_persistence(self, persistence: f64) -> Self {
+        Self::new(self.source.set_persistence(persistence))
     }
 }

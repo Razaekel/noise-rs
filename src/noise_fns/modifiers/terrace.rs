@@ -1,4 +1,4 @@
-use crate::{math::interpolate, noise_fns::NoiseFn};
+use crate::{math::interpolate, noise_fns::NoiseFn, Seedable, MultiFractal};
 
 /// Noise function that maps the output value from the source function onto a
 /// terrace-forming curve.
@@ -23,12 +23,12 @@ use crate::{math::interpolate, noise_fns::NoiseFn};
 ///
 /// This noise function is often used to generate terrain features such as the
 /// stereotypical desert canyon.
-pub struct Terrace<'a, T, const DIM: usize>
+pub struct Terrace<T, const DIM: usize>
 where
     T: NoiseFn<DIM>,
 {
     /// Outputs a value.
-    pub source: &'a T,
+    pub source: T,
 
     /// Determines if the terrace-forming curve between all control points is
     /// inverted.
@@ -38,11 +38,11 @@ where
     control_points: Vec<f64>,
 }
 
-impl<'a, T, const DIM: usize> Terrace<'a, T, DIM>
+impl<T, const DIM: usize> Terrace<T, DIM>
 where
     T: NoiseFn<DIM>,
 {
-    pub fn new(source: &'a T) -> Self {
+    pub fn new(source: T) -> Self {
         Terrace {
             source,
             invert_terraces: false,
@@ -90,7 +90,7 @@ where
     }
 }
 
-impl<'a, T, const DIM: usize> NoiseFn<DIM> for Terrace<'a, T, DIM>
+impl<T, const DIM: usize> NoiseFn<DIM> for Terrace<T, DIM>
 where
     T: NoiseFn<DIM>,
 {
@@ -143,3 +143,46 @@ where
 fn clamp_index(index: isize, min: usize, max: usize) -> usize {
     index.clamp(min as isize, max as isize) as usize
 }
+
+impl<T, const DIM: usize> Seedable for Terrace<T, DIM>
+where
+    T: NoiseFn<DIM> + Seedable,
+{
+    fn new(seed: u32) -> Self {
+        Self {
+            source: T::new(seed),
+            invert_terraces: false,
+            control_points: Vec::with_capacity(2),
+        }
+    }
+
+    fn set_seed(self, seed: u32) -> Self {
+        Self::new(self.source.set_seed(seed))
+    }
+
+    fn seed(&self) -> u32 {
+        self.source.seed()
+    }
+}
+
+impl<T, const DIM: usize> MultiFractal for Terrace<T, DIM>
+where
+    T: NoiseFn<DIM> + MultiFractal,
+{
+    fn set_octaves(self, octaves: usize) -> Self {
+        Self::new(self.source.set_octaves(octaves))
+    }
+
+    fn set_frequency(self, frequency: f64) -> Self {
+        Self::new(self.source.set_frequency(frequency))
+    }
+
+    fn set_lacunarity(self, lacunarity: f64) -> Self {
+        Self::new(self.source.set_lacunarity(lacunarity))
+    }
+
+    fn set_persistence(self, persistence: f64) -> Self {
+        Self::new(self.source.set_persistence(persistence))
+    }
+}
+

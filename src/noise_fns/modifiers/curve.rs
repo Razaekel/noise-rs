@@ -1,4 +1,4 @@
-use crate::{math::interpolate, noise_fns::NoiseFn};
+use crate::{math::interpolate, noise_fns::NoiseFn, Seedable, MultiFractal};
 
 /// Noise function that maps the output value from the source function onto an
 /// arbitrary function curve.
@@ -14,12 +14,12 @@ use crate::{math::interpolate, noise_fns::NoiseFn};
 /// four control points to the curve. If there is less than four control
 /// points, the get() method panics. Each control point can have any input
 /// and output value, although no two control points can have the same input.
-pub struct Curve<'a, T, const DIM: usize>
+pub struct Curve<T, const DIM: usize>
 where
     T: NoiseFn<DIM>,
 {
     /// Outputs a value.
-    pub source: &'a T,
+    pub source: T,
 
     /// Vec that stores the control points.
     control_points: Vec<ControlPoint<f64>>,
@@ -30,11 +30,11 @@ struct ControlPoint<T> {
     output: T,
 }
 
-impl<'a, T, const DIM: usize> Curve<'a, T, DIM>
+impl<T, const DIM: usize> Curve<T, DIM>
 where
     T: NoiseFn<DIM>,
 {
-    pub fn new(source: &'a T) -> Self {
+    pub fn new(source: T) -> Self {
         Self {
             source,
             control_points: Vec::with_capacity(4),
@@ -70,7 +70,7 @@ where
     }
 }
 
-impl<'a, T, const DIM: usize> NoiseFn<DIM> for Curve<'a, T, DIM>
+impl<T, const DIM: usize> NoiseFn<DIM> for Curve<T, DIM>
 where
     T: NoiseFn<DIM>,
 {
@@ -129,3 +129,45 @@ where
         )
     }
 }
+
+impl<T, const DIM: usize> Seedable for Curve<T, DIM>
+where
+    T: NoiseFn<DIM> + Seedable,
+{
+    fn new(seed: u32) -> Self {
+        Self {
+            source: T::new(seed),
+            control_points: Vec::with_capacity(4),
+        }
+    }
+
+    fn set_seed(self, seed: u32) -> Self {
+        Self::new(self.source.set_seed(seed))
+    }
+
+    fn seed(&self) -> u32 {
+        self.source.seed()
+    }
+}
+
+impl<T, const DIM: usize> MultiFractal for Curve<T, DIM>
+where
+    T: NoiseFn<DIM> + MultiFractal,
+{
+    fn set_octaves(self, octaves: usize) -> Self {
+        Self::new(self.source.set_octaves(octaves))
+    }
+
+    fn set_frequency(self, frequency: f64) -> Self {
+        Self::new(self.source.set_frequency(frequency))
+    }
+
+    fn set_lacunarity(self, lacunarity: f64) -> Self {
+        Self::new(self.source.set_lacunarity(lacunarity))
+    }
+
+    fn set_persistence(self, persistence: f64) -> Self {
+        Self::new(self.source.set_persistence(persistence))
+    }
+}
+
