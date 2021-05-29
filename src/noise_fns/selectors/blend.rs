@@ -5,26 +5,32 @@ use crate::{math::interpolate, noise_fns::NoiseFn};
 ///
 /// This noise function uses linear interpolation to perform the blending
 /// operation.
-pub struct Blend<'a, T, const DIM: usize> {
+pub struct Blend<'a, T, U, V, const DIM: usize>
+where
+    T: NoiseFn<DIM>,
+    U: NoiseFn<DIM>,
+    V: NoiseFn<DIM>,
+{
     /// Outputs one of the values to blend.
-    pub source1: &'a dyn NoiseFn<T, DIM>,
+    pub source1: &'a T,
 
     /// Outputs one of the values to blend.
-    pub source2: &'a dyn NoiseFn<T, DIM>,
+    pub source2: &'a U,
 
     /// Determines the weight of the blending operation. Negative values weight
     /// the blend towards the output value from the `source1` function. Positive
     /// values weight the blend towards the output value from the `source2`
     /// function.
-    pub control: &'a dyn NoiseFn<T, DIM>,
+    pub control: &'a V,
 }
 
-impl<'a, T, const DIM: usize> Blend<'a, T, DIM> {
-    pub fn new(
-        source1: &'a dyn NoiseFn<T, DIM>,
-        source2: &'a dyn NoiseFn<T, DIM>,
-        control: &'a dyn NoiseFn<T, DIM>,
-    ) -> Self {
+impl<'a, T, U, V, const DIM: usize> Blend<'a, T, U, V, DIM>
+where
+    T: NoiseFn<DIM>,
+    U: NoiseFn<DIM>,
+    V: NoiseFn<DIM>,
+{
+    pub fn new(source1: &'a T, source2: &'a U, control: &'a V) -> Self {
         Blend {
             source1,
             source2,
@@ -33,11 +39,13 @@ impl<'a, T, const DIM: usize> Blend<'a, T, DIM> {
     }
 }
 
-impl<'a, T, const DIM: usize> NoiseFn<T, DIM> for Blend<'a, T, DIM>
+impl<'a, T, U, V, const DIM: usize> NoiseFn<DIM> for Blend<'a, T, U, V, DIM>
 where
-    T: Copy,
+    T: NoiseFn<DIM>,
+    U: NoiseFn<DIM>,
+    V: NoiseFn<DIM>,
 {
-    fn get(&self, point: [T; DIM]) -> f64 {
+    fn get(&self, point: [f64; DIM]) -> f64 {
         let lower = self.source1.get(point);
         let upper = self.source2.get(point);
         let control = self.control.get(point);

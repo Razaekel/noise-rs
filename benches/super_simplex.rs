@@ -14,21 +14,21 @@ criterion_group!(
 criterion_main!(super_simplex, super_simplex_64x64);
 
 fn bench_super_simplex2(c: &mut Criterion) {
-    let super_simplex = SuperSimplex::new();
+    let super_simplex = SuperSimplex::default();
     c.bench_function("super simplex 2d", |b| {
         b.iter(|| super_simplex.get(black_box([42.0_f64, 37.0])))
     });
 }
 
 fn bench_super_simplex3(c: &mut Criterion) {
-    let super_simplex = SuperSimplex::new();
+    let super_simplex = SuperSimplex::default();
     c.bench_function("super simplex 3d", |b| {
         b.iter(|| super_simplex.get(black_box([42.0_f64, 37.0, 26.0])))
     });
 }
 
 fn bench_super_simplex2_64x64(c: &mut Criterion) {
-    let super_simplex = SuperSimplex::new();
+    let super_simplex = SuperSimplex::default();
     c.bench_function("super simplex 2d (64x64)", |b| {
         b.iter(|| {
             for y in 0i8..64 {
@@ -41,7 +41,7 @@ fn bench_super_simplex2_64x64(c: &mut Criterion) {
 }
 
 fn bench_super_simplex3_64x64(c: &mut Criterion) {
-    let super_simplex = SuperSimplex::new();
+    let super_simplex = SuperSimplex::default();
     c.bench_function("super simplex 3d (64x64)", |b| {
         b.iter(|| {
             for y in 0i8..64 {

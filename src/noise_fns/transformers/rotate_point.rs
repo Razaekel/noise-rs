@@ -77,9 +77,9 @@ impl<Source> RotatePoint<Source> {
     }
 }
 
-impl<Source> NoiseFn<f64, 2> for RotatePoint<Source>
+impl<Source> NoiseFn<2> for RotatePoint<Source>
 where
-    Source: NoiseFn<f64, 2>,
+    Source: NoiseFn<2>,
 {
     fn get(&self, point: [f64; 2]) -> f64 {
         // In two dimensions, the plane is _xy_, and we rotate around the
@@ -97,9 +97,9 @@ where
     }
 }
 
-impl<Source> NoiseFn<f64, 3> for RotatePoint<Source>
+impl<Source> NoiseFn<3> for RotatePoint<Source>
 where
-    Source: NoiseFn<f64, 3>,
+    Source: NoiseFn<3>,
 {
     fn get(&self, point: [f64; 3]) -> f64 {
         // In three dimensions, we could rotate around any of the x, y, or z
@@ -131,9 +131,9 @@ where
     }
 }
 
-impl<Source> NoiseFn<f64, 4> for RotatePoint<Source>
+impl<Source> NoiseFn<4> for RotatePoint<Source>
 where
-    Source: NoiseFn<f64, 4>,
+    Source: NoiseFn<4>,
 {
     fn get(&self, _point: [f64; 4]) -> f64 {
         // 4d rotations are hard.

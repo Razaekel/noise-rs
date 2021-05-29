@@ -39,7 +39,7 @@ impl Default for Checkerboard {
     }
 }
 
-impl<const N: usize> NoiseFn<f64, N> for Checkerboard {
+impl<const N: usize> NoiseFn<N> for Checkerboard {
     fn get(&self, point: [f64; N]) -> f64 {
         let result = point
             .iter()

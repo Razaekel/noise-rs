@@ -143,7 +143,7 @@ impl Seedable for RidgedMulti {
 }
 
 /// 2-dimensional `RidgedMulti` noise
-impl NoiseFn<f64, 2> for RidgedMulti {
+impl NoiseFn<2> for RidgedMulti {
     fn get(&self, mut point: [f64; 2]) -> f64 {
         let mut result = 0.0;
         let mut weight = 1.0;
@@ -189,7 +189,7 @@ impl NoiseFn<f64, 2> for RidgedMulti {
 }
 
 /// 3-dimensional `RidgedMulti` noise
-impl NoiseFn<f64, 3> for RidgedMulti {
+impl NoiseFn<3> for RidgedMulti {
     fn get(&self, mut point: [f64; 3]) -> f64 {
         let mut result = 0.0;
         let mut weight = 1.0;
@@ -235,7 +235,7 @@ impl NoiseFn<f64, 3> for RidgedMulti {
 }
 
 /// 4-dimensional `RidgedMulti` noise
-impl NoiseFn<f64, 4> for RidgedMulti {
+impl NoiseFn<4> for RidgedMulti {
     fn get(&self, mut point: [f64; 4]) -> f64 {
         let mut result = 0.0;
         let mut weight = 1.0;

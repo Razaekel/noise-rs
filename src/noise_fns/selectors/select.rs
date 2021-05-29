@@ -5,18 +5,23 @@ use crate::{
 
 /// Noise function that outputs the value selected from one of two source
 /// functions chosen by the output value from a control function.
-pub struct Select<'a, T, const DIM: usize> {
+pub struct Select<'a, T, U, V, const DIM: usize>
+where
+    T: NoiseFn<DIM>,
+    U: NoiseFn<DIM>,
+    V: NoiseFn<DIM>,
+{
     /// Outputs a value.
-    pub source1: &'a dyn NoiseFn<T, DIM>,
+    pub source1: &'a T,
 
     /// Outputs a value.
-    pub source2: &'a dyn NoiseFn<T, DIM>,
+    pub source2: &'a U,
 
     /// Determines the value to select. If the output value from
     /// the control function is within a range of values know as the _selection
     /// range_, this noise function outputs the value from `source2`.
     /// Otherwise, this noise function outputs the value from `source1`.
-    pub control: &'a dyn NoiseFn<T, DIM>,
+    pub control: &'a V,
 
     /// Bounds of the selection range. Default is 0.0 to 1.0.
     pub bounds: (f64, f64),
@@ -25,12 +30,13 @@ pub struct Select<'a, T, const DIM: usize> {
     pub falloff: f64,
 }
 
-impl<'a, T, const DIM: usize> Select<'a, T, DIM> {
-    pub fn new(
-        source1: &'a dyn NoiseFn<T, DIM>,
-        source2: &'a dyn NoiseFn<T, DIM>,
-        control: &'a dyn NoiseFn<T, DIM>,
-    ) -> Self {
+impl<'a, T, U, V, const DIM: usize> Select<'a, T, U, V, DIM>
+where
+    T: NoiseFn<DIM>,
+    U: NoiseFn<DIM>,
+    V: NoiseFn<DIM>,
+{
+    pub fn new(source1: &'a T, source2: &'a U, control: &'a V) -> Self {
         Select {
             source1,
             source2,
@@ -52,11 +58,13 @@ impl<'a, T, const DIM: usize> Select<'a, T, DIM> {
     }
 }
 
-impl<'a, T, const DIM: usize> NoiseFn<T, DIM> for Select<'a, T, DIM>
+impl<'a, T, U, V, const DIM: usize> NoiseFn<DIM> for Select<'a, T, U, V, DIM>
 where
-    T: Copy,
+    T: NoiseFn<DIM>,
+    U: NoiseFn<DIM>,
+    V: NoiseFn<DIM>,
 {
-    fn get(&self, point: [T; DIM]) -> f64 {
+    fn get(&self, point: [f64; DIM]) -> f64 {
         let control_value = self.control.get(point);
         let (lower, upper) = self.bounds;
 

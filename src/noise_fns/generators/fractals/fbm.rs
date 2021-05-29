@@ -135,7 +135,7 @@ impl Seedable for Fbm {
 }
 
 /// 2-dimensional Fbm noise
-impl NoiseFn<f64, 2> for Fbm {
+impl NoiseFn<2> for Fbm {
     fn get(&self, mut point: [f64; 2]) -> f64 {
         let mut result = 0.0;
 
@@ -161,7 +161,7 @@ impl NoiseFn<f64, 2> for Fbm {
 }
 
 /// 3-dimensional Fbm noise
-impl NoiseFn<f64, 3> for Fbm {
+impl NoiseFn<3> for Fbm {
     fn get(&self, mut point: [f64; 3]) -> f64 {
         let mut result = 0.0;
 
@@ -187,7 +187,7 @@ impl NoiseFn<f64, 3> for Fbm {
 }
 
 /// 4-dimensional Fbm noise
-impl NoiseFn<f64, 4> for Fbm {
+impl NoiseFn<4> for Fbm {
     fn get(&self, mut point: [f64; 4]) -> f64 {
         let mut result = 0.0;
 

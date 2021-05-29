@@ -5,9 +5,12 @@ use crate::noise_fns::NoiseFn;
 ///
 /// The function retrieves the output value from the source function, multiplies
 /// it with the scaling factor, adds the bias to it, then outputs the value.
-pub struct ScaleBias<'a, T, const DIM: usize> {
+pub struct ScaleBias<'a, T, const DIM: usize>
+where
+    T: NoiseFn<DIM>,
+{
     /// Outputs a value.
-    pub source: &'a dyn NoiseFn<T, DIM>,
+    pub source: &'a T,
 
     /// Scaling factor to apply to the output value from the source function.
     /// The default value is 1.0.
@@ -18,8 +21,11 @@ pub struct ScaleBias<'a, T, const DIM: usize> {
     pub bias: f64,
 }
 
-impl<'a, T, const DIM: usize> ScaleBias<'a, T, DIM> {
-    pub fn new(source: &'a dyn NoiseFn<T, DIM>) -> Self {
+impl<'a, T, const DIM: usize> ScaleBias<'a, T, DIM>
+where
+    T: NoiseFn<DIM>,
+{
+    pub fn new(source: &'a T) -> Self {
         Self {
             source,
             scale: 1.0,
@@ -36,9 +42,12 @@ impl<'a, T, const DIM: usize> ScaleBias<'a, T, DIM> {
     }
 }
 
-impl<'a, T, const DIM: usize> NoiseFn<T, DIM> for ScaleBias<'a, T, DIM> {
+impl<'a, T, const DIM: usize> NoiseFn<DIM> for ScaleBias<'a, T, DIM>
+where
+    T: NoiseFn<DIM>,
+{
     #[cfg(not(target_os = "emscripten"))]
-    fn get(&self, point: [T; DIM]) -> f64 {
+    fn get(&self, point: [f64; DIM]) -> f64 {
         (self.source.get(point)).mul_add(self.scale, self.bias)
     }
 

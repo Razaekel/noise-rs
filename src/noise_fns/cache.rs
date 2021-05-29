@@ -34,9 +34,9 @@ impl<Source> Cache<Source> {
     }
 }
 
-impl<Source, const DIM: usize> NoiseFn<f64, DIM> for Cache<Source>
+impl<Source, const DIM: usize> NoiseFn<DIM> for Cache<Source>
 where
-    Source: NoiseFn<f64, DIM>,
+    Source: NoiseFn<DIM>,
 {
     fn get(&self, point: [f64; DIM]) -> f64 {
         match self.value.get() {

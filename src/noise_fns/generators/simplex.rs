@@ -775,7 +775,7 @@ const SIMPLEX: [[u8; 4]; 64] = [
 ];
 
 /// 2-dimensional Simplex noise
-impl NoiseFn<f64, 2> for Simplex {
+impl NoiseFn<2> for Simplex {
     fn get(&self, point: [f64; 2]) -> f64 {
         let (result, _) = simplex_2d(point[0], point[1], &self.hasher);
 
@@ -784,7 +784,7 @@ impl NoiseFn<f64, 2> for Simplex {
 }
 
 /// 3-dimensional Simplex noise
-impl NoiseFn<f64, 3> for Simplex {
+impl NoiseFn<3> for Simplex {
     fn get(&self, point: [f64; 3]) -> f64 {
         let (result, _) = simplex_3d(point[0], point[1], point[2], &self.hasher);
 
@@ -793,7 +793,7 @@ impl NoiseFn<f64, 3> for Simplex {
 }
 
 /// 4-dimensional Simplex noise
-impl NoiseFn<f64, 4> for Simplex {
+impl NoiseFn<4> for Simplex {
     fn get(&self, point: [f64; 4]) -> f64 {
         let (result, _) = simplex_4d(point[0], point[1], point[2], point[3], &self.hasher);
 
