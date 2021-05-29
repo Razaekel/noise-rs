@@ -27,8 +27,8 @@ fn main() {
 
     // Slightly perturb the wood to create a more realistic texture.
     let perturbed_wood = Turbulence::new(combined_wood)
-        .set_seed(1)
-        .set_frequency(4.0)
+        .set_distort_seed(1)
+        .set_distort_frequency(4.0)
         .set_power(1.0 / 256.0)
         .set_roughness(4);
 
@@ -40,8 +40,8 @@ fn main() {
 
     // Finally, perturb the wood texture again to produce the final texture.
     let final_wood = Turbulence::new(rotated_wood)
-        .set_seed(2)
-        .set_frequency(2.0)
+        .set_distort_seed(2)
+        .set_distort_frequency(2.0)
         .set_power(1.0 / 64.0)
         .set_roughness(4);
 

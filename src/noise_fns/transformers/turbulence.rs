@@ -215,29 +215,7 @@ where
     }
 
     fn set_seed(self, seed: u32) -> Self {
-        let rp = Self {
-            source: self.source,
-            ..self
-        };
-        Self {
-            source: rp.source.set_seed(seed),
-            seed: self.seed,
-            frequency: self.frequency,
-            power: self.power,
-            roughness: self.roughness,
-            x_distort_function: Fbm::new(self.seed)
-                .set_octaves(self.roughness)
-                .set_frequency(self.frequency),
-            y_distort_function: Fbm::new(self.seed + 1)
-                .set_octaves(self.roughness)
-                .set_frequency(self.frequency),
-            z_distort_function: Fbm::new(self.seed + 2)
-                .set_octaves(self.roughness)
-                .set_frequency(self.frequency),
-            u_distort_function: Fbm::new(self.seed + 3)
-                .set_octaves(self.roughness)
-                .set_frequency(self.frequency),
-        }
+        Self{ source: self.source.set_seed(seed), ..self}
     }
 
     fn seed(&self) -> u32 {

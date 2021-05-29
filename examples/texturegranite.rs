@@ -26,8 +26,8 @@ fn main() {
 
     // Finally, perturb the granite texture to add realism.
     let final_granite = Turbulence::new(combined_granite)
-        .set_seed(2)
-        .set_frequency(4.0)
+        .set_distort_seed(2)
+        .set_distort_frequency(4.0)
         .set_power(1.0 / 8.0)
         .set_roughness(6);
 

@@ -22,8 +22,8 @@ fn main() {
 
     // Slightly perturb the secondary jade texture for more realism.
     let perturbed_base_secondary_jade = Turbulence::new(rotated_base_secondary_jade)
-        .set_seed(1)
-        .set_frequency(4.0)
+        .set_distort_seed(1)
+        .set_distort_frequency(4.0)
         .set_power(1.0 / 4.0)
         .set_roughness(4);
 
@@ -41,8 +41,8 @@ fn main() {
     // Finally, perturb the combined jade texture to produce the final jade
     // texture. A low roughness produces nice veins.
     let final_jade = Turbulence::new(combined_jade)
-        .set_seed(2)
-        .set_frequency(4.0)
+        .set_distort_seed(2)
+        .set_distort_frequency(4.0)
         .set_power(1.0 / 16.0)
         .set_roughness(2);
 

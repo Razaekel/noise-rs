@@ -38,7 +38,7 @@ where
     }
 
     fn set_seed(self, seed: u32) -> Self {
-        Self::new(self.source.set_seed(seed))
+        Self { source: self.source.set_seed(seed), ..self }
     }
 
     fn seed(&self) -> u32 {

@@ -285,8 +285,8 @@ fn main() {
     // value from the base-continent-definition subgroup, adding some coarse
     // detail to it.
     let continentDef_tu0 = Turbulence::new(&baseContinentDef)
-        .set_seed(CURRENT_SEED + 10)
-        .set_frequency(CONTINENT_FREQUENCY * 15.25)
+        .set_distort_seed(CURRENT_SEED + 10)
+        .set_distort_frequency(CONTINENT_FREQUENCY * 15.25)
         .set_power(CONTINENT_FREQUENCY / 113.75)
         .set_roughness(13);
 
@@ -301,8 +301,8 @@ fn main() {
     // higher frequency, but lower power, than the coarse-turbulence module,
     // adding some intermediate detail to it.
     let continentDef_tu1 = Turbulence::new(continentDef_tu0)
-        .set_seed(CURRENT_SEED + 11)
-        .set_frequency(CONTINENT_FREQUENCY * 47.25)
+        .set_distort_seed(CURRENT_SEED + 11)
+        .set_distort_frequency(CONTINENT_FREQUENCY * 47.25)
         .set_power(CONTINENT_FREQUENCY / 433.75)
         .set_roughness(12);
 
@@ -317,8 +317,8 @@ fn main() {
     // turbulence has a higher frequency, but lower power, than the
     // intermediate-turbulence module, adding some fine detail to it.
     let continentDef_tu2 = Turbulence::new(continentDef_tu1)
-        .set_seed(CURRENT_SEED + 12)
-        .set_frequency(CONTINENT_FREQUENCY * 95.25)
+        .set_distort_seed(CURRENT_SEED + 12)
+        .set_distort_frequency(CONTINENT_FREQUENCY * 95.25)
         .set_power(CONTINENT_FREQUENCY / 1019.75)
         .set_roughness(11);
 
@@ -385,8 +385,8 @@ fn main() {
     // areas may now appear in the the ocean, creating rocky islands and
     // fjords.
     let terrainTypeDef_tu = Turbulence::new(&continentDef)
-        .set_seed(CURRENT_SEED + 20)
-        .set_frequency(CONTINENT_FREQUENCY * 18.125)
+        .set_distort_seed(CURRENT_SEED + 20)
+        .set_distort_frequency(CONTINENT_FREQUENCY * 18.125)
         .set_power(CONTINENT_FREQUENCY / 20.59375 * TERRAIN_OFFSET)
         .set_roughness(3);
 
@@ -476,8 +476,8 @@ fn main() {
     // value from the mountain-and-valleys module, adding some coarse detail to
     // it.
     let mountainBaseDef_tu0 = Turbulence::new(mountainBaseDef_bl)
-        .set_seed(CURRENT_SEED + 32)
-        .set_frequency(1337.0)
+        .set_distort_seed(CURRENT_SEED + 32)
+        .set_distort_frequency(1337.0)
         .set_power(1.0 / 6730.0 * MOUNTAINS_TWIST)
         .set_roughness(4);
 
@@ -486,8 +486,8 @@ fn main() {
     // a higher frequency, but lower power, than the coarse-turbulence module,
     // adding some fine detail to it.
     let mountainBaseDef_tu1 = Turbulence::new(mountainBaseDef_tu0)
-        .set_seed(CURRENT_SEED + 33)
-        .set_frequency(21221.0)
+        .set_distort_seed(CURRENT_SEED + 33)
+        .set_distort_frequency(21221.0)
         .set_power(1.0 / 120157.0 * MOUNTAINS_TWIST)
         .set_roughness(6);
 
@@ -531,8 +531,8 @@ fn main() {
     // 4: [Warped-high-mountains module]: This turbulence module warps the
     // output value from the high-mountains module, adding some detail to it.
     let mountainousHigh_tu = Turbulence::new(mountainousHigh_ma)
-        .set_seed(CURRENT_SEED + 42)
-        .set_frequency(31511.0)
+        .set_distort_seed(CURRENT_SEED + 42)
+        .set_distort_frequency(31511.0)
         .set_power(1.0 / 180371.0 * MOUNTAINS_TWIST)
         .set_roughness(4);
 
@@ -730,8 +730,8 @@ fn main() {
     // value from the increased-slope-hilly-terrain module, adding some
     // coarse detail to it.
     let hillyTerrain_tu0 = Turbulence::new(hillyTerrain_ex)
-        .set_seed(CURRENT_SEED + 62)
-        .set_frequency(1531.0)
+        .set_distort_seed(CURRENT_SEED + 62)
+        .set_distort_frequency(1531.0)
         .set_power(1.0 / 16921.0 * HILLS_TWIST)
         .set_roughness(4);
 
@@ -740,8 +740,8 @@ fn main() {
     // higher frequency, but lower power, than the coarse-turbulence module,
     // adding some fine detail to it.
     let hillyTerrain_tu1 = Turbulence::new(hillyTerrain_tu0)
-        .set_seed(CURRENT_SEED + 63)
-        .set_frequency(21617.0)
+        .set_distort_seed(CURRENT_SEED + 63)
+        .set_distort_frequency(21617.0)
         .set_power(1.0 / 117529.0 * HILLS_TWIST)
         .set_roughness(6);
 
@@ -917,8 +917,8 @@ fn main() {
     // 5: [Coarse-turbulence module]: This turbulence module warps the output
     // value from the terraced-cliffs module, adding some coarse detail to it.
     let badlandsCliffs_tu0 = Turbulence::new(badlandsCliffs_te)
-        .set_seed(CURRENT_SEED + 91)
-        .set_frequency(16111.0)
+        .set_distort_seed(CURRENT_SEED + 91)
+        .set_distort_frequency(16111.0)
         .set_power(1.0 / 141539.0 * BADLANDS_TWIST)
         .set_roughness(3);
 
@@ -927,8 +927,8 @@ fn main() {
     // frequency, but lower power, than the coarse-turbulence module, adding
     // some fine detail to it.
     let badlandsCliffs_tu1 = Turbulence::new(badlandsCliffs_tu0)
-        .set_seed(CURRENT_SEED + 92)
-        .set_frequency(36107.0)
+        .set_distort_seed(CURRENT_SEED + 92)
+        .set_distort_frequency(36107.0)
         .set_power(1.0 / 211543.0 * BADLANDS_TWIST)
         .set_roughness(3);
 
@@ -1038,8 +1038,8 @@ fn main() {
     //    from the combined-rivers module, which twists the rivers.  The high
     //    roughness produces less-smooth rivers.
     let riverPositions_tu = Turbulence::new(riverPositions_mi)
-        .set_seed(CURRENT_SEED + 102)
-        .set_frequency(9.25)
+        .set_distort_seed(CURRENT_SEED + 102)
+        .set_distort_frequency(9.25)
         .set_power(1.0 / 57.75)
         .set_roughness(6);
 

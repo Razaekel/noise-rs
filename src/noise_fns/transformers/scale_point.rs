@@ -122,6 +122,50 @@ where
     }
 }
 
+impl<T> Seedable for ScalePoint<T>
+where
+    T: Seedable,
+{
+    fn new(seed: u32) -> Self {
+        Self {
+            source: T::new(seed),
+            x_scale: 1.0,
+            y_scale: 1.0,
+            z_scale: 1.0,
+            u_scale: 1.0,
+        }
+    }
+
+    fn set_seed(self, seed: u32) -> Self {
+        Self {source: self.source.set_seed(seed), ..self}
+    }
+
+    fn seed(&self) -> u32 {
+        self.source.seed()
+    }
+}
+
+impl<T> MultiFractal for ScalePoint<T>
+where
+    T: MultiFractal,
+{
+    fn set_octaves(self, octaves: usize) -> Self {
+        Self::new(self.source.set_octaves(octaves))
+    }
+
+    fn set_frequency(self, frequency: f64) -> Self {
+        Self::new(self.source.set_frequency(frequency))
+    }
+
+    fn set_lacunarity(self, lacunarity: f64) -> Self {
+        Self::new(self.source.set_lacunarity(lacunarity))
+    }
+
+    fn set_persistence(self, persistence: f64) -> Self {
+        Self::new(self.source.set_persistence(persistence))
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::{super::super::Perlin, *};
@@ -160,56 +204,5 @@ mod tests {
         }
 
         assert!(zero_count < 10 * 10 * 10 * 10);
-    }
-}
-
-impl<T> Seedable for ScalePoint<T>
-where
-    T: Seedable,
-{
-    fn new(seed: u32) -> Self {
-        Self {
-            source: T::new(seed),
-            x_scale: 1.0,
-            y_scale: 1.0,
-            z_scale: 1.0,
-            u_scale: 1.0,
-        }
-    }
-
-    fn set_seed(self, seed: u32) -> Self {
-        let rp = Self {
-            source: self.source,
-            x_scale: self.x_scale,
-            y_scale: self.y_scale,
-            z_scale: self.z_scale,
-            u_scale: self.u_scale,
-        };
-        Self {source: rp.source.set_seed(seed), ..self}
-    }
-
-    fn seed(&self) -> u32 {
-        self.source.seed()
-    }
-}
-
-impl<T> MultiFractal for ScalePoint<T>
-where
-    T: MultiFractal,
-{
-    fn set_octaves(self, octaves: usize) -> Self {
-        Self::new(self.source.set_octaves(octaves))
-    }
-
-    fn set_frequency(self, frequency: f64) -> Self {
-        Self::new(self.source.set_frequency(frequency))
-    }
-
-    fn set_lacunarity(self, lacunarity: f64) -> Self {
-        Self::new(self.source.set_lacunarity(lacunarity))
-    }
-
-    fn set_persistence(self, persistence: f64) -> Self {
-        Self::new(self.source.set_persistence(persistence))
     }
 }

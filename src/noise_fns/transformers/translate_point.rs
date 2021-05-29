@@ -155,15 +155,7 @@ where
     }
 
     fn set_seed(self, seed: u32) -> Self {
-        let rp = Self {
-            source: self.source,
-            ..self
-            // x_translation: self.x_translation,
-            // y_translation: self.y_translation,
-            // z_translation: self.z_translation,
-            // u_translation: self.u_translation,
-        };
-        Self {source: rp.source.set_seed(seed), ..self}
+        Self {source: self.source.set_seed(seed), ..self}
     }
 
     fn seed(&self) -> u32 {

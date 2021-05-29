@@ -40,8 +40,8 @@ fn main() {
 
     // Finally, perturb the slime texture to add realism.
     let final_slime = Turbulence::new(slime_chooser)
-        .set_seed(3)
-        .set_frequency(8.0)
+        .set_distort_seed(3)
+        .set_distort_frequency(8.0)
         .set_power(1.0 / 32.0)
         .set_roughness(2);
 

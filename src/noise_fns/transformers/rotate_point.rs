@@ -156,14 +156,7 @@ where
     }
 
     fn set_seed(self, seed: u32) -> Self {
-        let rp = Self {
-            source: self.source,
-            x_angle: self.x_angle,
-            y_angle: self.y_angle,
-            z_angle: self.z_angle,
-            u_angle: self.u_angle,
-        };
-        Self {source: rp.source.set_seed(seed), ..self}
+        Self {source: self.source.set_seed(seed), ..self}
     }
 
     fn seed(&self) -> u32 {
