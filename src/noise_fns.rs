@@ -1,3 +1,5 @@
+use num_traits::ToPrimitive;
+
 pub use self::{
     cache::*, combiners::*, generators::*, modifiers::*, selectors::*, transformers::*,
 };
@@ -24,6 +26,15 @@ mod transformers;
 /// * Combining the output values from two noise functions in various ways.
 pub trait NoiseFn<const N: usize> {
     fn get(&self, point: [f64; N]) -> f64;
+
+    fn get_f32(&self, point: [f32; N]) -> f32 {
+        let coords = point.iter().map(|p| p.to_f64());
+        let mut a: [f64; N] = [0.0; N];
+        for (i, c) in coords.enumerate() {
+            a[i] = c.unwrap();
+        }
+        self.get(a) as f32
+    }
 }
 
 impl<'a, M: NoiseFn<N>, const N: usize> NoiseFn<N> for &'a M {
