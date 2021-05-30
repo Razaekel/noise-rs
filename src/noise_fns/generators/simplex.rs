@@ -37,7 +37,7 @@ pub struct Simplex {
 impl Simplex {
     pub const DEFAULT_SEED: u32 = 0;
 
-    fn new(seed: u32) -> Self {
+    pub fn new(seed: u32) -> Self {
         Simplex {
             seed,
             hasher: PermutationTable::new(seed),

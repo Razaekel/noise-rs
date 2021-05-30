@@ -54,7 +54,7 @@ impl BasicMulti {
     pub const DEFAULT_PERSISTENCE: f64 = 0.5;
     pub const MAX_OCTAVES: usize = 32;
 
-    fn new(seed: u32) -> Self {
+    pub fn new(seed: u32) -> Self {
         Self {
             seed,
             octaves: Self::DEFAULT_OCTAVES,

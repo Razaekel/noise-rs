@@ -30,7 +30,7 @@ pub struct OpenSimplex {
 impl OpenSimplex {
     const DEFAULT_SEED: u32 = 0;
 
-    fn new(seed: u32) -> Self {
+    pub fn new(seed: u32) -> Self {
         Self {
             seed,
             perm_table: PermutationTable::new(seed),

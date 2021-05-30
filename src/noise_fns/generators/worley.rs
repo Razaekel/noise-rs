@@ -25,7 +25,7 @@ impl Worley {
     pub const DEFAULT_SEED: u32 = 0;
     pub const DEFAULT_FREQUENCY: f64 = 1.0;
 
-    fn new(seed: u32) -> Self {
+    pub fn new(seed: u32) -> Self {
         Self {
             perm_table: PermutationTable::new(seed),
             seed,
