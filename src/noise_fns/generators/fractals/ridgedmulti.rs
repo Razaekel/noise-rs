@@ -68,6 +68,18 @@ impl RidgedMulti {
     pub const DEFAULT_ATTENUATION: f64 = 2.0;
     pub const MAX_OCTAVES: usize = 32;
 
+    fn new(seed: u32) -> Self {
+        Self {
+            seed,
+            octaves: Self::DEFAULT_OCTAVE_COUNT,
+            frequency: Self::DEFAULT_FREQUENCY,
+            lacunarity: Self::DEFAULT_LACUNARITY,
+            persistence: Self::DEFAULT_PERSISTENCE,
+            attenuation: Self::DEFAULT_ATTENUATION,
+            sources: super::build_sources(seed, Self::DEFAULT_OCTAVE_COUNT),
+        }
+    }
+
     pub fn set_attenuation(self, attenuation: f64) -> Self {
         Self {
             attenuation,
@@ -113,18 +125,6 @@ impl MultiFractal for RidgedMulti {
 }
 
 impl Seedable for RidgedMulti {
-    fn new(seed: u32) -> Self {
-        Self {
-            seed,
-            octaves: Self::DEFAULT_OCTAVE_COUNT,
-            frequency: Self::DEFAULT_FREQUENCY,
-            lacunarity: Self::DEFAULT_LACUNARITY,
-            persistence: Self::DEFAULT_PERSISTENCE,
-            attenuation: Self::DEFAULT_ATTENUATION,
-            sources: super::build_sources(seed, Self::DEFAULT_OCTAVE_COUNT),
-        }
-    }
-
     fn set_seed(self, seed: u32) -> Self {
         if self.seed == seed {
             return self;

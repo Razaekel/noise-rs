@@ -43,16 +43,19 @@ impl<Source> Turbulence<Source> {
             frequency: Self::DEFAULT_FREQUENCY,
             power: Self::DEFAULT_POWER,
             roughness: Self::DEFAULT_ROUGHNESS,
-            x_distort_function: Fbm::new(Self::DEFAULT_SEED)
+            x_distort_function: Fbm::default()
                 .set_octaves(Self::DEFAULT_ROUGHNESS)
                 .set_frequency(Self::DEFAULT_FREQUENCY),
-            y_distort_function: Fbm::new(Self::DEFAULT_SEED + 1)
+            y_distort_function: Fbm::default()
+                .set_seed(Self::DEFAULT_SEED + 1)
                 .set_octaves(Self::DEFAULT_ROUGHNESS)
                 .set_frequency(Self::DEFAULT_FREQUENCY),
-            z_distort_function: Fbm::new(Self::DEFAULT_SEED + 2)
+            z_distort_function: Fbm::default()
+                .set_seed(Self::DEFAULT_SEED + 2)
                 .set_octaves(Self::DEFAULT_ROUGHNESS)
                 .set_frequency(Self::DEFAULT_FREQUENCY),
-            u_distort_function: Fbm::new(Self::DEFAULT_SEED + 3)
+            u_distort_function: Fbm::default()
+                .set_seed(Self::DEFAULT_SEED + 3)
                 .set_octaves(Self::DEFAULT_ROUGHNESS)
                 .set_frequency(Self::DEFAULT_FREQUENCY),
         }
@@ -191,28 +194,6 @@ impl<T> Seedable for Turbulence<T>
 where
     T: Seedable,
 {
-    fn new(seed: u32) -> Self {
-        Self {
-            source: T::new(seed),
-            seed: Self::DEFAULT_SEED,
-            frequency: Self::DEFAULT_FREQUENCY,
-            power: Self::DEFAULT_POWER,
-            roughness: Self::DEFAULT_ROUGHNESS,
-            x_distort_function: Fbm::new(Self::DEFAULT_SEED)
-                .set_octaves(Self::DEFAULT_ROUGHNESS)
-                .set_frequency(Self::DEFAULT_FREQUENCY),
-            y_distort_function: Fbm::new(Self::DEFAULT_SEED + 1)
-                .set_octaves(Self::DEFAULT_ROUGHNESS)
-                .set_frequency(Self::DEFAULT_FREQUENCY),
-            z_distort_function: Fbm::new(Self::DEFAULT_SEED + 2)
-                .set_octaves(Self::DEFAULT_ROUGHNESS)
-                .set_frequency(Self::DEFAULT_FREQUENCY),
-            u_distort_function: Fbm::new(Self::DEFAULT_SEED + 3)
-                .set_octaves(Self::DEFAULT_ROUGHNESS)
-                .set_frequency(Self::DEFAULT_FREQUENCY),
-        }
-    }
-
     fn set_seed(self, seed: u32) -> Self {
         Self {
             source: self.source.set_seed(seed),

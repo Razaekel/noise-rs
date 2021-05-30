@@ -61,13 +61,6 @@ impl<T, const N: usize> Seedable for Clamp<T, N>
 where
     T: NoiseFn<N> + Seedable,
 {
-    fn new(seed: u32) -> Self {
-        Self {
-            source: T::new(seed),
-            bounds: (-1.0, 1.0),
-        }
-    }
-
     fn set_seed(self, seed: u32) -> Self {
         Self {
             source: self.source.set_seed(seed),

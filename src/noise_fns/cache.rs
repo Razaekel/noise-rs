@@ -58,14 +58,6 @@ impl<T> Seedable for Cache<T>
 where
     T: Seedable,
 {
-    fn new(seed: u32) -> Self {
-        Self {
-            source: T::new(seed),
-            value: Cell::new(None),
-            point: RefCell::new(Vec::new()),
-        }
-    }
-
     fn set_seed(self, seed: u32) -> Self {
         Self {
             source: self.source.set_seed(seed),

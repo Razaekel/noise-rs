@@ -14,6 +14,13 @@ pub struct Value {
 
 impl Value {
     pub const DEFAULT_SEED: u32 = 0;
+
+    fn new(seed: u32) -> Self {
+        Self {
+            seed,
+            perm_table: PermutationTable::new(seed),
+        }
+    }
 }
 
 impl Default for Value {
@@ -23,13 +30,6 @@ impl Default for Value {
 }
 
 impl Seedable for Value {
-    fn new(seed: u32) -> Self {
-        Self {
-            seed,
-            perm_table: PermutationTable::new(seed),
-        }
-    }
-
     /// Sets the seed value for Value noise
     fn set_seed(self, seed: u32) -> Self {
         // If the new seed is the same as the current seed, just return self.

@@ -134,13 +134,6 @@ impl<T, const N: usize> Seedable for Curve<T, N>
 where
     T: NoiseFn<N> + Seedable,
 {
-    fn new(seed: u32) -> Self {
-        Self {
-            source: T::new(seed),
-            control_points: Vec::with_capacity(4),
-        }
-    }
-
     fn set_seed(self, seed: u32) -> Self {
         Self {
             source: self.source.set_seed(seed),

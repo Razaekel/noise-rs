@@ -32,12 +32,6 @@ impl<T, const N: usize> Seedable for Abs<T, N>
 where
     T: NoiseFn<N> + Seedable,
 {
-    fn new(seed: u32) -> Self {
-        Self {
-            source: T::new(seed),
-        }
-    }
-
     fn set_seed(self, seed: u32) -> Self {
         Self::new(self.source.set_seed(seed))
     }

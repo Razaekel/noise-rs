@@ -21,11 +21,12 @@ pub trait MultiFractal {
 
 fn build_sources<Source>(seed: u32, octaves: usize) -> Vec<Source>
 where
-    Source: Seedable,
+    Source: Default + Seedable,
 {
     let mut sources = Vec::with_capacity(octaves);
     for x in 0..octaves {
-        sources.push(Source::new(seed + x as u32));
+        let source = Source::default();
+        sources.push(source.set_seed(seed + x as u32));
     }
     sources
 }

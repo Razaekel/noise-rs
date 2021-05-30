@@ -144,16 +144,6 @@ impl<T> Seedable for TranslatePoint<T>
 where
     T: Seedable,
 {
-    fn new(seed: u32) -> Self {
-        Self {
-            source: T::new(seed),
-            x_translation: 0.0,
-            y_translation: 0.0,
-            z_translation: 0.0,
-            u_translation: 0.0,
-        }
-    }
-
     fn set_seed(self, seed: u32) -> Self {
         Self {
             source: self.source.set_seed(seed),

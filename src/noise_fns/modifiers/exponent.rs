@@ -52,13 +52,6 @@ impl<T, const N: usize> Seedable for Exponent<T, N>
 where
     T: NoiseFn<N> + Seedable,
 {
-    fn new(seed: u32) -> Self {
-        Self {
-            source: T::new(seed),
-            exponent: 1.0,
-        }
-    }
-
     fn set_seed(self, seed: u32) -> Self {
         Self {
             source: self.source.set_seed(seed),

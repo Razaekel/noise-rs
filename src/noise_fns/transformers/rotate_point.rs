@@ -145,16 +145,6 @@ impl<T> Seedable for RotatePoint<T>
 where
     T: Seedable,
 {
-    fn new(seed: u32) -> Self {
-        Self {
-            source: T::new(seed),
-            x_angle: 0.0,
-            y_angle: 0.0,
-            z_angle: 0.0,
-            u_angle: 0.0,
-        }
-    }
-
     fn set_seed(self, seed: u32) -> Self {
         Self {
             source: self.source.set_seed(seed),

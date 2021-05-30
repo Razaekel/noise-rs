@@ -126,16 +126,6 @@ impl<T> Seedable for ScalePoint<T>
 where
     T: Seedable,
 {
-    fn new(seed: u32) -> Self {
-        Self {
-            source: T::new(seed),
-            x_scale: 1.0,
-            y_scale: 1.0,
-            z_scale: 1.0,
-            u_scale: 1.0,
-        }
-    }
-
     fn set_seed(self, seed: u32) -> Self {
         Self {
             source: self.source.set_seed(seed),
