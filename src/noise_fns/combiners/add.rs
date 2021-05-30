@@ -2,10 +2,10 @@ use crate::noise_fns::NoiseFn;
 
 /// Noise function that outputs the sum of the two output values from two source
 /// functions.
-pub struct Add<T, U, const DIM: usize>
+pub struct Add<T, U, const N: usize>
 where
-    T: NoiseFn<DIM>,
-    U: NoiseFn<DIM>,
+    T: NoiseFn<N>,
+    U: NoiseFn<N>,
 {
     /// Outputs a value.
     pub source1: T,
@@ -14,22 +14,22 @@ where
     pub source2: U,
 }
 
-impl<T, U, const DIM: usize> Add<T, U, DIM>
+impl<T, U, const N: usize> Add<T, U, N>
 where
-    T: NoiseFn<DIM>,
-    U: NoiseFn<DIM>,
+    T: NoiseFn<N>,
+    U: NoiseFn<N>,
 {
     pub fn new(source1: T, source2: U) -> Self {
         Self { source1, source2 }
     }
 }
 
-impl<T, U, const DIM: usize> NoiseFn<DIM> for Add<T, U, DIM>
+impl<T, U, const N: usize> NoiseFn<N> for Add<T, U, N>
 where
-    T: NoiseFn<DIM>,
-    U: NoiseFn<DIM>,
+    T: NoiseFn<N>,
+    U: NoiseFn<N>,
 {
-    fn get(&self, point: [f64; DIM]) -> f64 {
+    fn get(&self, point: [f64; N]) -> f64 {
         self.source1.get(point) + self.source2.get(point)
     }
 }

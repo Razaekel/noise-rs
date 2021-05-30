@@ -34,11 +34,11 @@ impl<Source> Cache<Source> {
     }
 }
 
-impl<Source, const DIM: usize> NoiseFn<DIM> for Cache<Source>
+impl<Source, const N: usize> NoiseFn<N> for Cache<Source>
 where
-    Source: NoiseFn<DIM>,
+    Source: NoiseFn<N>,
 {
-    fn get(&self, point: [f64; DIM]) -> f64 {
+    fn get(&self, point: [f64; N]) -> f64 {
         match self.value.get() {
             Some(value) if quick_eq(&*self.point.borrow(), &point) => value,
             Some(_) | None => {

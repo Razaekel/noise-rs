@@ -5,11 +5,11 @@ use crate::{
 
 /// Noise function that outputs the value selected from one of two source
 /// functions chosen by the output value from a control function.
-pub struct Select<'a, T, U, V, const DIM: usize>
+pub struct Select<'a, T, U, V, const N: usize>
 where
-    T: NoiseFn<DIM>,
-    U: NoiseFn<DIM>,
-    V: NoiseFn<DIM>,
+    T: NoiseFn<N>,
+    U: NoiseFn<N>,
+    V: NoiseFn<N>,
 {
     /// Outputs a value.
     pub source1: &'a T,
@@ -30,11 +30,11 @@ where
     pub falloff: f64,
 }
 
-impl<'a, T, U, V, const DIM: usize> Select<'a, T, U, V, DIM>
+impl<'a, T, U, V, const N: usize> Select<'a, T, U, V, N>
 where
-    T: NoiseFn<DIM>,
-    U: NoiseFn<DIM>,
-    V: NoiseFn<DIM>,
+    T: NoiseFn<N>,
+    U: NoiseFn<N>,
+    V: NoiseFn<N>,
 {
     pub fn new(source1: &'a T, source2: &'a U, control: &'a V) -> Self {
         Select {
@@ -58,13 +58,13 @@ where
     }
 }
 
-impl<'a, T, U, V, const DIM: usize> NoiseFn<DIM> for Select<'a, T, U, V, DIM>
+impl<'a, T, U, V, const N: usize> NoiseFn<N> for Select<'a, T, U, V, N>
 where
-    T: NoiseFn<DIM>,
-    U: NoiseFn<DIM>,
-    V: NoiseFn<DIM>,
+    T: NoiseFn<N>,
+    U: NoiseFn<N>,
+    V: NoiseFn<N>,
 {
-    fn get(&self, point: [f64; DIM]) -> f64 {
+    fn get(&self, point: [f64; N]) -> f64 {
         let control_value = self.control.get(point);
         let (lower, upper) = self.bounds;
 

@@ -5,9 +5,9 @@ use crate::{noise_fns::NoiseFn, MultiFractal, Seedable};
 ///
 /// The function retrieves the output value from the source function, multiplies
 /// it with the scaling factor, adds the bias to it, then outputs the value.
-pub struct ScaleBias<T, const DIM: usize>
+pub struct ScaleBias<T, const N: usize>
 where
-    T: NoiseFn<DIM>,
+    T: NoiseFn<N>,
 {
     /// Outputs a value.
     pub source: T,
@@ -21,9 +21,9 @@ where
     pub bias: f64,
 }
 
-impl<T, const DIM: usize> ScaleBias<T, DIM>
+impl<T, const N: usize> ScaleBias<T, N>
 where
-    T: NoiseFn<DIM>,
+    T: NoiseFn<N>,
 {
     pub fn new(source: T) -> Self {
         Self {
@@ -42,24 +42,24 @@ where
     }
 }
 
-impl<T, const DIM: usize> NoiseFn<DIM> for ScaleBias<T, DIM>
+impl<T, const N: usize> NoiseFn<N> for ScaleBias<T, N>
 where
-    T: NoiseFn<DIM>,
+    T: NoiseFn<N>,
 {
     #[cfg(not(target_os = "emscripten"))]
-    fn get(&self, point: [f64; DIM]) -> f64 {
+    fn get(&self, point: [f64; N]) -> f64 {
         (self.source.get(point)).mul_add(self.scale, self.bias)
     }
 
     #[cfg(target_os = "emscripten")]
-    fn get(&self, point: [T; DIM]) -> f64 {
+    fn get(&self, point: [T; N]) -> f64 {
         (self.source.get(point) * self.scale) + self.bias
     }
 }
 
-impl<T, const DIM: usize> Seedable for ScaleBias<T, DIM>
+impl<T, const N: usize> Seedable for ScaleBias<T, N>
 where
-    T: NoiseFn<DIM> + Seedable,
+    T: NoiseFn<N> + Seedable,
 {
     fn new(seed: u32) -> Self {
         Self {
@@ -81,9 +81,9 @@ where
     }
 }
 
-impl<T, const DIM: usize> MultiFractal for ScaleBias<T, DIM>
+impl<T, const N: usize> MultiFractal for ScaleBias<T, N>
 where
-    T: NoiseFn<DIM> + MultiFractal,
+    T: NoiseFn<N> + MultiFractal,
 {
     fn set_octaves(self, octaves: usize) -> Self {
         Self {

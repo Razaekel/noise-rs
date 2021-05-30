@@ -14,9 +14,9 @@ use crate::{math::interpolate, noise_fns::NoiseFn, MultiFractal, Seedable};
 /// four control points to the curve. If there is less than four control
 /// points, the get() method panics. Each control point can have any input
 /// and output value, although no two control points can have the same input.
-pub struct Curve<T, const DIM: usize>
+pub struct Curve<T, const N: usize>
 where
-    T: NoiseFn<DIM>,
+    T: NoiseFn<N>,
 {
     /// Outputs a value.
     pub source: T,
@@ -30,9 +30,9 @@ struct ControlPoint<T> {
     output: T,
 }
 
-impl<T, const DIM: usize> Curve<T, DIM>
+impl<T, const N: usize> Curve<T, N>
 where
-    T: NoiseFn<DIM>,
+    T: NoiseFn<N>,
 {
     pub fn new(source: T) -> Self {
         Self {
@@ -70,11 +70,11 @@ where
     }
 }
 
-impl<T, const DIM: usize> NoiseFn<DIM> for Curve<T, DIM>
+impl<T, const N: usize> NoiseFn<N> for Curve<T, N>
 where
-    T: NoiseFn<DIM>,
+    T: NoiseFn<N>,
 {
-    fn get(&self, point: [f64; DIM]) -> f64 {
+    fn get(&self, point: [f64; N]) -> f64 {
         // confirm that there's at least 4 control points in the vector.
         assert!(self.control_points.len() >= 4);
 
@@ -130,9 +130,9 @@ where
     }
 }
 
-impl<T, const DIM: usize> Seedable for Curve<T, DIM>
+impl<T, const N: usize> Seedable for Curve<T, N>
 where
-    T: NoiseFn<DIM> + Seedable,
+    T: NoiseFn<N> + Seedable,
 {
     fn new(seed: u32) -> Self {
         Self {
@@ -153,9 +153,9 @@ where
     }
 }
 
-impl<T, const DIM: usize> MultiFractal for Curve<T, DIM>
+impl<T, const N: usize> MultiFractal for Curve<T, N>
 where
-    T: NoiseFn<DIM> + MultiFractal,
+    T: NoiseFn<N> + MultiFractal,
 {
     fn set_octaves(self, octaves: usize) -> Self {
         Self {

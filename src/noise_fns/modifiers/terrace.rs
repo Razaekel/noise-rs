@@ -23,9 +23,9 @@ use crate::{math::interpolate, noise_fns::NoiseFn, MultiFractal, Seedable};
 ///
 /// This noise function is often used to generate terrain features such as the
 /// stereotypical desert canyon.
-pub struct Terrace<T, const DIM: usize>
+pub struct Terrace<T, const N: usize>
 where
-    T: NoiseFn<DIM>,
+    T: NoiseFn<N>,
 {
     /// Outputs a value.
     pub source: T,
@@ -38,9 +38,9 @@ where
     control_points: Vec<f64>,
 }
 
-impl<T, const DIM: usize> Terrace<T, DIM>
+impl<T, const N: usize> Terrace<T, N>
 where
-    T: NoiseFn<DIM>,
+    T: NoiseFn<N>,
 {
     pub fn new(source: T) -> Self {
         Terrace {
@@ -90,11 +90,11 @@ where
     }
 }
 
-impl<T, const DIM: usize> NoiseFn<DIM> for Terrace<T, DIM>
+impl<T, const N: usize> NoiseFn<N> for Terrace<T, N>
 where
-    T: NoiseFn<DIM>,
+    T: NoiseFn<N>,
 {
-    fn get(&self, point: [f64; DIM]) -> f64 {
+    fn get(&self, point: [f64; N]) -> f64 {
         // confirm that there's at least 2 control points in the vector.
         assert!(self.control_points.len() >= 2);
 
@@ -144,9 +144,9 @@ fn clamp_index(index: isize, min: usize, max: usize) -> usize {
     index.clamp(min as isize, max as isize) as usize
 }
 
-impl<T, const DIM: usize> Seedable for Terrace<T, DIM>
+impl<T, const N: usize> Seedable for Terrace<T, N>
 where
-    T: NoiseFn<DIM> + Seedable,
+    T: NoiseFn<N> + Seedable,
 {
     fn new(seed: u32) -> Self {
         Self {
@@ -168,9 +168,9 @@ where
     }
 }
 
-impl<T, const DIM: usize> MultiFractal for Terrace<T, DIM>
+impl<T, const N: usize> MultiFractal for Terrace<T, N>
 where
-    T: NoiseFn<DIM> + MultiFractal,
+    T: NoiseFn<N> + MultiFractal,
 {
     fn set_octaves(self, octaves: usize) -> Self {
         Self {

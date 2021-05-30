@@ -7,9 +7,9 @@ use crate::{math::scale_shift, noise_fns::NoiseFn, MultiFractal, Seedable};
 /// this noise function first normalizes the output value (the range becomes 0.0
 /// to 1.0), maps that value onto an exponential curve, then rescales that
 /// value back to the original range.
-pub struct Exponent<T, const DIM: usize>
+pub struct Exponent<T, const N: usize>
 where
-    T: NoiseFn<DIM>,
+    T: NoiseFn<N>,
 {
     /// Outputs a value.
     pub source: T,
@@ -19,9 +19,9 @@ where
     pub exponent: f64,
 }
 
-impl<T, const DIM: usize> Exponent<T, DIM>
+impl<T, const N: usize> Exponent<T, N>
 where
-    T: NoiseFn<DIM>,
+    T: NoiseFn<N>,
 {
     pub fn new(source: T) -> Self {
         Self {
@@ -35,11 +35,11 @@ where
     }
 }
 
-impl<T, const DIM: usize> NoiseFn<DIM> for Exponent<T, DIM>
+impl<T, const N: usize> NoiseFn<N> for Exponent<T, N>
 where
-    T: NoiseFn<DIM>,
+    T: NoiseFn<N>,
 {
-    fn get(&self, point: [f64; DIM]) -> f64 {
+    fn get(&self, point: [f64; N]) -> f64 {
         let mut value = self.source.get(point);
         value = (value + 1.0) / 2.0;
         value = value.abs();
@@ -48,9 +48,9 @@ where
     }
 }
 
-impl<T, const DIM: usize> Seedable for Exponent<T, DIM>
+impl<T, const N: usize> Seedable for Exponent<T, N>
 where
-    T: NoiseFn<DIM> + Seedable,
+    T: NoiseFn<N> + Seedable,
 {
     fn new(seed: u32) -> Self {
         Self {
@@ -71,9 +71,9 @@ where
     }
 }
 
-impl<T, const DIM: usize> MultiFractal for Exponent<T, DIM>
+impl<T, const N: usize> MultiFractal for Exponent<T, N>
 where
-    T: NoiseFn<DIM> + MultiFractal,
+    T: NoiseFn<N> + MultiFractal,
 {
     fn set_octaves(self, octaves: usize) -> Self {
         Self {

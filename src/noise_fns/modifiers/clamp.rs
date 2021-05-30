@@ -2,9 +2,9 @@ use crate::{noise_fns::NoiseFn, MultiFractal, Seedable};
 
 /// Noise function that clamps the output value from the source function to a
 /// range of values.
-pub struct Clamp<T, const DIM: usize>
+pub struct Clamp<T, const N: usize>
 where
-    T: NoiseFn<DIM>,
+    T: NoiseFn<N>,
 {
     /// Outputs a value.
     pub source: T,
@@ -13,9 +13,9 @@ where
     pub bounds: (f64, f64),
 }
 
-impl<T, const DIM: usize> Clamp<T, DIM>
+impl<T, const N: usize> Clamp<T, N>
 where
-    T: NoiseFn<DIM>,
+    T: NoiseFn<N>,
 {
     pub fn new(source: T) -> Self {
         Self {
@@ -46,20 +46,20 @@ where
     }
 }
 
-impl<T, const DIM: usize> NoiseFn<DIM> for Clamp<T, DIM>
+impl<T, const N: usize> NoiseFn<N> for Clamp<T, N>
 where
-    T: NoiseFn<DIM>,
+    T: NoiseFn<N>,
 {
-    fn get(&self, point: [f64; DIM]) -> f64 {
+    fn get(&self, point: [f64; N]) -> f64 {
         let value = self.source.get(point);
 
         value.clamp(self.bounds.0, self.bounds.1)
     }
 }
 
-impl<T, const DIM: usize> Seedable for Clamp<T, DIM>
+impl<T, const N: usize> Seedable for Clamp<T, N>
 where
-    T: NoiseFn<DIM> + Seedable,
+    T: NoiseFn<N> + Seedable,
 {
     fn new(seed: u32) -> Self {
         Self {
@@ -80,9 +80,9 @@ where
     }
 }
 
-impl<T, const DIM: usize> MultiFractal for Clamp<T, DIM>
+impl<T, const N: usize> MultiFractal for Clamp<T, N>
 where
-    T: NoiseFn<DIM> + MultiFractal,
+    T: NoiseFn<N> + MultiFractal,
 {
     fn set_octaves(self, octaves: usize) -> Self {
         Self {

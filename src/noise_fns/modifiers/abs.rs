@@ -2,35 +2,35 @@ use crate::{noise_fns::NoiseFn, MultiFractal, Seedable};
 
 /// Noise function that outputs the absolute value of the output value from the
 /// source function.
-pub struct Abs<T, const DIM: usize>
+pub struct Abs<T, const N: usize>
 where
-    T: NoiseFn<DIM>,
+    T: NoiseFn<N>,
 {
     /// Outputs a value.
     pub source: T,
 }
 
-impl<T, const DIM: usize> Abs<T, DIM>
+impl<T, const N: usize> Abs<T, N>
 where
-    T: NoiseFn<DIM>,
+    T: NoiseFn<N>,
 {
     pub fn new(source: T) -> Self {
         Self { source }
     }
 }
 
-impl<T, const DIM: usize> NoiseFn<DIM> for Abs<T, DIM>
+impl<T, const N: usize> NoiseFn<N> for Abs<T, N>
 where
-    T: NoiseFn<DIM>,
+    T: NoiseFn<N>,
 {
-    fn get(&self, point: [f64; DIM]) -> f64 {
+    fn get(&self, point: [f64; N]) -> f64 {
         (self.source.get(point)).abs()
     }
 }
 
-impl<T, const DIM: usize> Seedable for Abs<T, DIM>
+impl<T, const N: usize> Seedable for Abs<T, N>
 where
-    T: NoiseFn<DIM> + Seedable,
+    T: NoiseFn<N> + Seedable,
 {
     fn new(seed: u32) -> Self {
         Self {
@@ -47,9 +47,9 @@ where
     }
 }
 
-impl<T, const DIM: usize> MultiFractal for Abs<T, DIM>
+impl<T, const N: usize> MultiFractal for Abs<T, N>
 where
-    T: NoiseFn<DIM> + MultiFractal,
+    T: NoiseFn<N> + MultiFractal,
 {
     fn set_octaves(self, octaves: usize) -> Self {
         Self::new(self.source.set_octaves(octaves))
