@@ -58,7 +58,6 @@ impl HybridMulti {
             sources: super::build_sources(seed, Self::DEFAULT_OCTAVES),
         }
     }
-
 }
 
 impl Default for HybridMulti {

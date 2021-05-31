@@ -1,4 +1,4 @@
-use crate::noise_fns::{Fbm, MultiFractal, NoiseFn, Seedable};
+use crate::noise_fns::{Perlin, Fbm, MultiFractal, NoiseFn, Seedable};
 
 /// Noise function that randomly displaces the input value before returning the
 /// output value from the source function.
@@ -9,7 +9,10 @@ use crate::noise_fns::{Fbm, MultiFractal, NoiseFn, Seedable};
 /// turbulence, an application can modify its frequency, its power, and its
 /// roughness.
 #[derive(Clone, Debug)]
-pub struct Turbulence<Source> {
+pub struct Turbulence<Source, const N: usize>
+where
+    Source: NoiseFn<N>,
+{
     /// Source function that outputs a value.
     pub source: Source,
 
@@ -24,13 +27,16 @@ pub struct Turbulence<Source> {
     pub roughness: usize,
 
     seed: u32,
-    x_distort_function: Fbm,
-    y_distort_function: Fbm,
-    z_distort_function: Fbm,
-    u_distort_function: Fbm,
+    x_distort_function: Fbm<Perlin>,
+    y_distort_function: Fbm<Perlin>,
+    z_distort_function: Fbm<Perlin>,
+    u_distort_function: Fbm<Perlin>,
 }
 
-impl<Source> Turbulence<Source> {
+impl<Source, const N: usize> Turbulence<Source, N>
+where
+    Source: NoiseFn<N>,
+{
     pub const DEFAULT_SEED: u32 = 0;
     pub const DEFAULT_FREQUENCY: f64 = 1.0;
     pub const DEFAULT_POWER: f64 = 1.0;
@@ -103,7 +109,7 @@ impl<Source> Turbulence<Source> {
     }
 }
 
-impl<Source> NoiseFn<2> for Turbulence<Source>
+impl<Source> NoiseFn<2> for Turbulence<Source, 2>
 where
     Source: NoiseFn<2>,
 {
@@ -124,7 +130,7 @@ where
     }
 }
 
-impl<Source> NoiseFn<3> for Turbulence<Source>
+impl<Source> NoiseFn<3> for Turbulence<Source, 3>
 where
     Source: NoiseFn<3>,
 {
@@ -152,7 +158,7 @@ where
     }
 }
 
-impl<Source> NoiseFn<4> for Turbulence<Source>
+impl<Source> NoiseFn<4> for Turbulence<Source, 4>
 where
     Source: NoiseFn<4>,
 {
@@ -190,9 +196,9 @@ where
     }
 }
 
-impl<T> Seedable for Turbulence<T>
+impl<T, const N: usize> Seedable for Turbulence<T, N>
 where
-    T: Seedable,
+    T: NoiseFn<N> + Seedable,
 {
     fn set_seed(self, seed: u32) -> Self {
         Self {
@@ -206,9 +212,9 @@ where
     }
 }
 
-impl<T> MultiFractal for Turbulence<T>
+impl<T, const N: usize> MultiFractal for Turbulence<T, N>
 where
-    T: MultiFractal,
+    T: NoiseFn<N> + MultiFractal,
 {
     fn set_octaves(self, octaves: usize) -> Self {
         Self {

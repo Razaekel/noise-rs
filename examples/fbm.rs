@@ -2,10 +2,10 @@
 
 extern crate noise;
 
-use noise::{utils::*, Fbm};
+use noise::{utils::*, Fbm, OpenSimplex};
 
 fn main() {
-    let fbm = Fbm::default();
+    let fbm: Fbm<OpenSimplex> = Fbm::default();
 
     PlaneMapBuilder::new(&fbm)
         .set_size(1000, 1000)
