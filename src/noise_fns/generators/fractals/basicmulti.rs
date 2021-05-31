@@ -1,6 +1,6 @@
 use crate::math;
 
-use crate::noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
+use crate::noise_fns::{MultiFractal, NoiseFn, Seedable};
 
 /// Noise function that outputs heterogenous Multifractal noise.
 ///
@@ -13,7 +13,7 @@ use crate::noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
 /// not be as damped and thus will grow more jagged as iteration progresses.
 ///
 #[derive(Clone, Debug)]
-pub struct BasicMulti {
+pub struct BasicMulti<T> {
     /// Total number of frequency octaves to generate the noise with.
     ///
     /// The number of octaves control the _amount of detail_ in the noise
@@ -43,10 +43,13 @@ pub struct BasicMulti {
     pub persistence: f64,
 
     seed: u32,
-    sources: Vec<Perlin>,
+    sources: Vec<T>,
 }
 
-impl BasicMulti {
+impl<T> BasicMulti<T>
+where
+    T: Default + Seedable,
+{
     pub const DEFAULT_SEED: u32 = 0;
     pub const DEFAULT_OCTAVES: usize = 6;
     pub const DEFAULT_FREQUENCY: f64 = 2.0;
@@ -66,13 +69,19 @@ impl BasicMulti {
     }
 }
 
-impl Default for BasicMulti {
+impl<T> Default for BasicMulti<T>
+where
+    T: Default + Seedable,
+{
     fn default() -> Self {
         Self::new(Self::DEFAULT_SEED)
     }
 }
 
-impl MultiFractal for BasicMulti {
+impl<T> MultiFractal for BasicMulti<T>
+where
+    T: Seedable + Default,
+{
     fn set_octaves(self, mut octaves: usize) -> Self {
         if self.octaves == octaves {
             return self;
@@ -102,8 +111,10 @@ impl MultiFractal for BasicMulti {
     }
 }
 
-impl Seedable for BasicMulti {
-
+impl<T> Seedable for BasicMulti<T>
+where
+    T: Seedable + Default,
+{
     fn set_seed(self, seed: u32) -> Self {
         if self.seed == seed {
             return self;
@@ -122,7 +133,10 @@ impl Seedable for BasicMulti {
 }
 
 /// 2-dimensional `BasicMulti` noise
-impl NoiseFn<2> for BasicMulti {
+impl<T> NoiseFn<2> for BasicMulti<T>
+where
+    T: NoiseFn<2>,
+{
     fn get(&self, mut point: [f64; 2]) -> f64 {
         // First unscaled octave of function; later octaves are scaled.
         point = math::mul2(point, self.frequency);
@@ -152,7 +166,10 @@ impl NoiseFn<2> for BasicMulti {
 }
 
 /// 3-dimensional `BasicMulti` noise
-impl NoiseFn<3> for BasicMulti {
+impl<T> NoiseFn<3> for BasicMulti<T>
+where
+    T: NoiseFn<3>,
+{
     fn get(&self, mut point: [f64; 3]) -> f64 {
         // First unscaled octave of function; later octaves are scaled.
         point = math::mul3(point, self.frequency);
@@ -182,7 +199,7 @@ impl NoiseFn<3> for BasicMulti {
 }
 
 /// 4-dimensional `BasicMulti` noise
-impl NoiseFn<4> for BasicMulti {
+impl<T> NoiseFn<4> for BasicMulti<T> where T: NoiseFn<4> {
     fn get(&self, mut point: [f64; 4]) -> f64 {
         // First unscaled octave of function; later octaves are scaled.
         point = math::mul4(point, self.frequency);

@@ -2,10 +2,10 @@
 
 extern crate noise;
 
-use noise::{utils::*, HybridMulti};
+use noise::{utils::*, HybridMulti, Perlin};
 
 fn main() {
-    let hybrid_multi = HybridMulti::default();
+    let hybrid_multi : HybridMulti<Perlin>= HybridMulti::default();
 
     PlaneMapBuilder::new(&hybrid_multi)
         .build()

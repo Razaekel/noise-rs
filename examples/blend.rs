@@ -4,7 +4,7 @@ use noise::{utils::*, Blend, Fbm, Perlin, RidgedMulti};
 
 fn main() {
     let perlin = Perlin::default();
-    let ridged = RidgedMulti::default();
+    let ridged: RidgedMulti<Perlin>= RidgedMulti::default();
     let fbm :Fbm<Perlin>= Fbm::default();
     let blend = Blend::new(&perlin, &ridged, &fbm);
 

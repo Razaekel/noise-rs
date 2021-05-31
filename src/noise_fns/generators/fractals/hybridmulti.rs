@@ -1,13 +1,13 @@
 use crate::math;
 
-use crate::noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
+use crate::noise_fns::{MultiFractal, NoiseFn, Seedable};
 
 /// Noise function that outputs hybrid Multifractal noise.
 ///
 /// The result of this multifractal noise is that valleys in the noise should
 /// have smooth bottoms at all altitudes.
 #[derive(Clone, Debug)]
-pub struct HybridMulti {
+pub struct HybridMulti<T> {
     /// Total number of frequency octaves to generate the noise with.
     ///
     /// The number of octaves control the _amount of detail_ in the noise
@@ -37,10 +37,13 @@ pub struct HybridMulti {
     pub persistence: f64,
 
     seed: u32,
-    sources: Vec<Perlin>,
+    sources: Vec<T>,
 }
 
-impl HybridMulti {
+impl<T> HybridMulti<T>
+where
+    T: Seedable + Default,
+{
     pub const DEFAULT_SEED: u32 = 0;
     pub const DEFAULT_OCTAVES: usize = 6;
     pub const DEFAULT_FREQUENCY: f64 = 2.0;
@@ -60,13 +63,19 @@ impl HybridMulti {
     }
 }
 
-impl Default for HybridMulti {
+impl<T> Default for HybridMulti<T>
+where
+    T: Seedable + Default,
+{
     fn default() -> Self {
         Self::new(Self::DEFAULT_SEED)
     }
 }
 
-impl MultiFractal for HybridMulti {
+impl<T> MultiFractal for HybridMulti<T>
+where
+    T: Seedable + Default,
+{
     fn set_octaves(self, mut octaves: usize) -> Self {
         if self.octaves == octaves {
             return self;
@@ -96,7 +105,10 @@ impl MultiFractal for HybridMulti {
     }
 }
 
-impl Seedable for HybridMulti {
+impl<T> Seedable for HybridMulti<T>
+where
+    T: Seedable + Default,
+{
     fn set_seed(self, seed: u32) -> Self {
         if self.seed == seed {
             return self;
@@ -115,7 +127,10 @@ impl Seedable for HybridMulti {
 }
 
 /// 2-dimensional `HybridMulti` noise
-impl NoiseFn<2> for HybridMulti {
+impl<T> NoiseFn<2> for HybridMulti<T>
+where
+    T: NoiseFn<2>,
+{
     fn get(&self, mut point: [f64; 2]) -> f64 {
         // First unscaled octave of function; later octaves are scaled.
         point = math::mul2(point, self.frequency);
@@ -149,7 +164,10 @@ impl NoiseFn<2> for HybridMulti {
 }
 
 /// 3-dimensional `HybridMulti` noise
-impl NoiseFn<3> for HybridMulti {
+impl<T> NoiseFn<3> for HybridMulti<T>
+where
+    T: NoiseFn<3>,
+{
     fn get(&self, mut point: [f64; 3]) -> f64 {
         // First unscaled octave of function; later octaves are scaled.
         point = math::mul3(point, self.frequency);
@@ -183,7 +201,10 @@ impl NoiseFn<3> for HybridMulti {
 }
 
 /// 4-dimensional `HybridMulti` noise
-impl NoiseFn<4> for HybridMulti {
+impl<T> NoiseFn<4> for HybridMulti<T>
+where
+    T: NoiseFn<4>,
+{
     fn get(&self, mut point: [f64; 4]) -> f64 {
         // First unscaled octave of function; later octaves are scaled.
         point = math::mul4(point, self.frequency);

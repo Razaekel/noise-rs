@@ -2,10 +2,10 @@
 
 extern crate noise;
 
-use noise::{utils::*, RidgedMulti};
+use noise::{utils::*, RidgedMulti, Perlin};
 
 fn main() {
-    let ridged_multi = RidgedMulti::default();
+    let ridged_multi :RidgedMulti<Perlin> = RidgedMulti::default();
 
     PlaneMapBuilder::new(&ridged_multi)
         .build()

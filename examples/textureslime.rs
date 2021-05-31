@@ -4,14 +4,14 @@ use noise::{utils::*, *};
 
 fn main() {
     // Large slime bubble texture.
-    let large_slime = Billow::new(0)
+    let large_slime : Billow<Perlin> = Billow::new(0)
         .set_frequency(4.0)
         .set_lacunarity(2.12109375)
         .set_octaves(1);
 
     // Base of the small slime bubble texture. This texture will eventually
     // appear inside cracks in the large slime bubble texture.
-    let small_slime_base = Billow::new(1)
+    let small_slime_base: Billow<Perlin> = Billow::new(1)
         .set_frequency(24.0)
         .set_lacunarity(2.14453125)
         .set_octaves(1);
@@ -23,7 +23,7 @@ fn main() {
 
     // Create a map that specifies where the large and small slime bubble
     // textures will appear in the final texture map.
-    let slime_map = RidgedMulti::new(2)
+    let slime_map : RidgedMulti<Perlin>= RidgedMulti::new(2)
         .set_frequency(2.0)
         .set_lacunarity(2.20703125)
         .set_octaves(3);

@@ -2,10 +2,10 @@
 
 extern crate noise;
 
-use noise::{utils::*, BasicMulti};
+use noise::{utils::*, BasicMulti, Perlin};
 
 fn main() {
-    PlaneMapBuilder::new(&BasicMulti::default())
+    PlaneMapBuilder::new(&BasicMulti::<Perlin>::default())
         .build()
         .write_to_file("basicmulti.png");
 }

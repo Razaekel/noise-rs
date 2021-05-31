@@ -1,6 +1,6 @@
 use crate::{
     math::{self, scale_shift},
-    noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable},
+    noise_fns::{MultiFractal, NoiseFn, Seedable},
 };
 
 /// Noise function that outputs "billowy" noise.
@@ -11,7 +11,7 @@ use crate::{
 /// function modifies each octave with an absolute-value function. See the
 /// documentation for fBm for more information.
 #[derive(Clone, Debug)]
-pub struct Billow {
+pub struct Billow<T> {
     /// Total number of frequency octaves to generate the noise with.
     ///
     /// The number of octaves control the _amount of detail_ in the noise
@@ -41,7 +41,7 @@ pub struct Billow {
     pub persistence: f64,
 
     seed: u32,
-    sources: Vec<Perlin>,
+    sources: Vec<T>,
     scale_factor: f64,
 }
 
@@ -49,7 +49,10 @@ fn calc_scale_factor(persistence: f64, octaves: usize) -> f64 {
     1.0 - persistence.powi(octaves as i32)
 }
 
-impl Billow {
+impl<T> Billow<T>
+where
+    T: Default + Seedable,
+{
     pub const DEFAULT_SEED: u32 = 0;
     pub const DEFAULT_OCTAVE_COUNT: usize = 6;
     pub const DEFAULT_FREQUENCY: f64 = 1.0;
@@ -68,16 +71,21 @@ impl Billow {
             scale_factor: calc_scale_factor(Self::DEFAULT_PERSISTENCE, Self::DEFAULT_OCTAVE_COUNT),
         }
     }
-
 }
 
-impl Default for Billow {
+impl<T> Default for Billow<T>
+where
+    T: Seedable + Default,
+{
     fn default() -> Self {
         Self::new(Self::DEFAULT_SEED)
     }
 }
 
-impl MultiFractal for Billow {
+impl<T> MultiFractal for Billow<T>
+where
+    T: Seedable + Default,
+{
     fn set_octaves(self, mut octaves: usize) -> Self {
         if self.octaves == octaves {
             return self;
@@ -109,7 +117,10 @@ impl MultiFractal for Billow {
     }
 }
 
-impl Seedable for Billow {
+impl<T> Seedable for Billow<T>
+where
+    T: Seedable + Default,
+{
     fn set_seed(self, seed: u32) -> Self {
         if self.seed == seed {
             return self;
@@ -128,7 +139,10 @@ impl Seedable for Billow {
 }
 
 /// 2-dimensional Billow noise
-impl NoiseFn<2> for Billow {
+impl<T> NoiseFn<2> for Billow<T>
+where
+    T: NoiseFn<2>,
+{
     fn get(&self, mut point: [f64; 2]) -> f64 {
         let mut result = 0.0;
 
@@ -158,7 +172,10 @@ impl NoiseFn<2> for Billow {
 }
 
 /// 3-dimensional Billow noise
-impl NoiseFn<3> for Billow {
+impl<T> NoiseFn<3> for Billow<T>
+where
+    T: NoiseFn<3>,
+{
     fn get(&self, mut point: [f64; 3]) -> f64 {
         let mut result = 0.0;
 
@@ -188,7 +205,10 @@ impl NoiseFn<3> for Billow {
 }
 
 /// 4-dimensional Billow noise
-impl NoiseFn<4> for Billow {
+impl<T> NoiseFn<4> for Billow<T>
+where
+    T: NoiseFn<4>,
+{
     fn get(&self, mut point: [f64; 4]) -> f64 {
         let mut result = 0.0;
 
