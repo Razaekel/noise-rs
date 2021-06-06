@@ -68,6 +68,6 @@ impl NoiseFn<f64, 3> for Perlin {
 /// 4-dimensional perlin noise
 impl NoiseFn<f64, 4> for Perlin {
     fn get(&self, point: [f64; 4]) -> f64 {
-       perlin_surflet_4d(point, &self.perm_table)
+        perlin_surflet_4d(point, &self.perm_table)
     }
 }

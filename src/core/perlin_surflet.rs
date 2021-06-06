@@ -1,8 +1,4 @@
-use crate::{
-    math,
-    gradient,
-    permutationtable::NoiseHasher,
-};
+use crate::{gradient, math, permutationtable::NoiseHasher};
 
 #[inline(always)]
 pub fn perlin_surflet_2d(point: [f64; 2], hasher: &dyn NoiseHasher) -> f64 {
