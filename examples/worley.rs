@@ -1,6 +1,10 @@
 extern crate noise;
 
-use noise::{distance_functions::*, utils::*, ReturnType, Worley};
+use noise::{
+    core::worley::{distance_functions::*, ReturnType},
+    utils::*,
+    Worley,
+};
 
 fn main() {
     PlaneMapBuilder::new(&Worley::default())
