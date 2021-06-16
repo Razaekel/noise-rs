@@ -91,7 +91,7 @@ impl NoiseMap {
         }
     }
 
-    #[cfg(all(feature = "std", feature = "image"))]
+    #[cfg(feature = "images")]
     pub fn write_to_file(&self, filename: &str) {
         use std::{fs, path::Path};
 
