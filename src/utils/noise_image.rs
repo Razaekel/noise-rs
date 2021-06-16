@@ -1,9 +1,9 @@
+use crate::utils::color_gradient::Color;
 use alloc::{
     slice::{Iter, IterMut},
     vec::{IntoIter, Vec},
 };
 use core::ops::{Index, IndexMut};
-use crate::utils::color_gradient::Color;
 
 const RASTER_MAX_WIDTH: u16 = 32_767;
 const RASTER_MAX_HEIGHT: u16 = 32_767;
