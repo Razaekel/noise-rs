@@ -9,6 +9,7 @@
 //! let val = perlin.get([42.4, 37.7, 2.8]);
 //! ```
 
+#![no_std]
 #![deny(missing_copy_implementations)]
 
 pub use crate::noise_fns::*;
