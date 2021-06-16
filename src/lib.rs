@@ -9,8 +9,10 @@
 //! let val = perlin.get([42.4, 37.7, 2.8]);
 //! ```
 
-#![no_std]
+#![cfg_attr(not(feature = "std"), no_std)]
 #![deny(missing_copy_implementations)]
+
+extern crate alloc;
 
 pub use crate::noise_fns::*;
 

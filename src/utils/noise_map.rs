@@ -1,9 +1,13 @@
-use std::ops::{Index, IndexMut};
-use std::slice::{Iter, IterMut};
-use std::vec::IntoIter;
+use alloc::{
+    // borrow::ToOwned,
+    slice::{Iter, IterMut},
+    // string::String,
+    vec::{IntoIter, Vec},
+};
+use core::ops::{Index, IndexMut};
 
-#[cfg(feature = "image")]
-use std::{self, path::Path};
+// #[cfg(all(feature = "std", feature = "image"))]
+// use std::{self, path::Path};
 
 const RASTER_MAX_WIDTH: u16 = 32_767;
 const RASTER_MAX_HEIGHT: u16 = 32_767;
@@ -92,8 +96,9 @@ impl NoiseMap {
         }
     }
 
-    #[cfg(feature = "image")]
+    #[cfg(all(feature = "std", feature = "image"))]
     pub fn write_to_file(&self, filename: &str) {
+        use std::{self, path::Path};
         // Create the output directory for the images, if it doesn't already exist
         let target_dir = Path::new("example_images/");
 

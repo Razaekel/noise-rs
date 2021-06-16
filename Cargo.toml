@@ -20,7 +20,8 @@ image = { version = "0.23", optional = true }
 num-traits = "0.2"
 
 [features]
-default = ["image"]
+default = ["std", "image"]
+std = []
 
 [dev-dependencies]
 criterion = "0.3"

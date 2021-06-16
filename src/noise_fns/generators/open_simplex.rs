@@ -7,7 +7,7 @@ use crate::{
     noise_fns::{NoiseFn, Seedable},
     permutationtable::{NoiseHasher, PermutationTable},
 };
-use std::ops::Add;
+use core::ops::Add;
 
 const STRETCH_CONSTANT_2D: f64 = -0.211_324_865_405_187; //(1/sqrt(2+1)-1)/2;
 const SQUISH_CONSTANT_2D: f64 = 0.366_025_403_784_439; //(sqrt(2+1)-1)/2;

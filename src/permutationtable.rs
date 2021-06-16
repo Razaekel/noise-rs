@@ -1,10 +1,11 @@
+use alloc::vec::Vec;
+use core::fmt;
 use rand::{
     distributions::{Distribution, Standard},
     seq::SliceRandom,
     Rng, SeedableRng,
 };
 use rand_xorshift::XorShiftRng;
-use std::fmt;
 
 const TABLE_SIZE: usize = 256;
 

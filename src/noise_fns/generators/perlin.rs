@@ -62,7 +62,7 @@ pub(crate) fn perlin_2d(hasher: &dyn NoiseHasher, point: [f64; 2]) -> f64 {
     // range of (-1, 1).
     //
     // 1/(sqrt(N)/2), N=2 -> sqrt(2)
-    const SCALE_FACTOR: f64 = std::f64::consts::SQRT_2;
+    const SCALE_FACTOR: f64 = core::f64::consts::SQRT_2;
 
     #[inline(always)]
     #[rustfmt::skip]

@@ -3,6 +3,7 @@ use crate::{
     noise_fns::{NoiseFn, Seedable},
     permutationtable::{NoiseHasher, PermutationTable},
 };
+use alloc::{boxed::Box, vec::Vec};
 
 /// Noise function that outputs Worley noise.
 pub struct Worley {
@@ -95,6 +96,8 @@ pub enum ReturnType {
 }
 
 pub mod distance_functions {
+    use alloc::vec::Vec;
+
     pub fn euclidean(p1: &[f64], p2: &[f64]) -> f64 {
         p1.iter()
             .zip(p2)
@@ -125,7 +128,7 @@ pub mod distance_functions {
             .zip(p2)
             .map(|(a, b)| *a - *b)
             .map(|a| a.abs())
-            .fold(std::f64::MIN, |a, b| a.max(b))
+            .fold(f64::MIN, |a, b| a.max(b))
     }
 
     pub fn quadratic(p1: &[f64], p2: &[f64]) -> f64 {
@@ -222,7 +225,7 @@ where
 #[rustfmt::skip]
 fn get_vec2(index: usize) -> [f64; 2] {
     let length = ((index & 0xF8) >> 3) as f64 * 0.5 / 31.0;
-    let diag = length * std::f64::consts::FRAC_1_SQRT_2;
+    let diag = length * core::f64::consts::FRAC_1_SQRT_2;
 
     match index & 0x07 {
         0 => [   diag,    diag],
@@ -337,7 +340,7 @@ where
 #[rustfmt::skip]
 fn get_vec3(index: usize) -> [f64; 3] {
     let length = ((index & 0xE0) >> 5) as f64 * 0.5 / 7.0;
-    let diag = length * std::f64::consts::FRAC_1_SQRT_2;
+    let diag = length * core::f64::consts::FRAC_1_SQRT_2;
 
     match index % 18 {
         0  => [   diag,    diag,     0.0],

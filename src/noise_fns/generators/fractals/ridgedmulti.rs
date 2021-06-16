@@ -2,6 +2,7 @@ use crate::{
     math::{self, scale_shift},
     noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable},
 };
+use alloc::vec::Vec;
 
 /// Noise function that outputs ridged-multifractal noise.
 ///
@@ -63,7 +64,7 @@ impl RidgedMulti {
     pub const DEFAULT_SEED: u32 = 0;
     pub const DEFAULT_OCTAVE_COUNT: usize = 6;
     pub const DEFAULT_FREQUENCY: f64 = 1.0;
-    pub const DEFAULT_LACUNARITY: f64 = std::f64::consts::PI * 2.0 / 3.0;
+    pub const DEFAULT_LACUNARITY: f64 = core::f64::consts::PI * 2.0 / 3.0;
     pub const DEFAULT_PERSISTENCE: f64 = 1.0;
     pub const DEFAULT_ATTENUATION: f64 = 2.0;
     pub const MAX_OCTAVES: usize = 32;

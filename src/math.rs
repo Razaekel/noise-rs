@@ -1,7 +1,7 @@
 //! An ultra-light private math library to make our short lives easier as we
 //! implement super-complex noise stuff.
 
-use std::ops::{Add, Mul, Sub};
+use core::ops::{Add, Mul, Sub};
 
 pub(crate) mod interpolate;
 pub(crate) mod s_curve;

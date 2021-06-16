@@ -1,5 +1,5 @@
+use core::ops::{Add, Mul, Sub};
 use num_traits::MulAdd;
-use std::ops::{Add, Mul, Sub};
 
 /// Performs linear interpolation between two values.
 #[cfg(not(target_os = "emscripten"))]
