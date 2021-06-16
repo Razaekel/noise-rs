@@ -432,7 +432,7 @@ impl LightSource {
             self.contrast = contrast;
             self.recalculate_light_values = true;
         } else {
-            eprintln!("contrast value out of bounds: {}", contrast);
+            // eprintln!("contrast value out of bounds: {}", contrast);
         }
     }
 

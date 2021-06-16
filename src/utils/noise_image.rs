@@ -1,7 +1,5 @@
 use alloc::{
-    // borrow::ToOwned,
     slice::{Iter, IterMut},
-    // string::String,
     vec::{IntoIter, Vec},
 };
 use core::ops::{Index, IndexMut};
@@ -72,7 +70,7 @@ impl NoiseImage {
         if x < width && y < height {
             self.map[x + y * width] = value;
         } else {
-            eprintln!("input point out of bounds")
+            // eprintln!("input point out of bounds")
         }
     }
 
@@ -104,13 +102,13 @@ impl NoiseImage {
 
     #[cfg(all(feature = "std", feature = "image"))]
     pub fn write_to_file(&self, filename: &str) {
-        use std::{self, path::Path};
+        use std::{fs, path::Path};
 
         // Create the output directory for the images, if it doesn't already exist
         let target_dir = Path::new("example_images/");
 
         if !target_dir.exists() {
-            std::fs::create_dir(target_dir).expect("failed to create example_images directory");
+            fs::create_dir(target_dir).expect("failed to create example_images directory");
         }
 
         //concatenate the directory to the filename string
