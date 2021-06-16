@@ -1,3 +1,5 @@
+use alloc::vec::Vec;
+
 pub type Color = [u8; 4];
 
 #[derive(Clone, Copy, Debug, Default)]

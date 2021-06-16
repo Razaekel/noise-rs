@@ -1,4 +1,5 @@
 use crate::{math::interpolate, noise_fns::NoiseFn};
+use alloc::vec::Vec;
 
 /// Noise function that maps the output value from the source function onto a
 /// terrace-forming curve.
@@ -56,7 +57,7 @@ impl<'a, T, const DIM: usize> Terrace<'a, T, DIM> {
         if !self
             .control_points
             .iter()
-            .any(|&x| (x - control_point).abs() < std::f64::EPSILON)
+            .any(|&x| (x - control_point).abs() < f64::EPSILON)
         {
             // it doesn't, so find the correct position to insert the new
             // control point.
@@ -120,7 +121,7 @@ impl<'a, T, const DIM: usize> NoiseFn<T, DIM> for Terrace<'a, T, DIM> {
 
         if self.invert_terraces {
             alpha = 1.0 - alpha;
-            std::mem::swap(&mut input0, &mut input1);
+            core::mem::swap(&mut input0, &mut input1);
         }
 
         // Squaring the alpha produces the terrace effect.

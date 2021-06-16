@@ -1,5 +1,5 @@
 use crate::math::interpolate;
-use std::{self, f64::consts::SQRT_2};
+use core::{self, f64::consts::SQRT_2};
 
 use super::{color_gradient::*, noise_image::*, noise_map::*};
 
@@ -345,7 +345,7 @@ impl ImageRenderer {
             (red * 255.0) as u8,
             (green * 255.0) as u8,
             (blue * 255.0) as u8,
-            std::cmp::max(source_color[3], background_color[3]),
+            source_color[1].max(background_color[1]),
         ]
     }
 }

@@ -1,4 +1,5 @@
 pub use self::{basicmulti::*, billow::*, fbm::*, hybridmulti::*, ridgedmulti::*};
+use alloc::vec::Vec;
 
 mod basicmulti;
 mod billow;

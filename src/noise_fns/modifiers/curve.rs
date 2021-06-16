@@ -1,4 +1,5 @@
 use crate::{math::interpolate, noise_fns::NoiseFn};
+use alloc::vec::Vec;
 
 /// Noise function that maps the output value from the source function onto an
 /// arbitrary function curve.
@@ -40,7 +41,7 @@ impl<'a, T, const DIM: usize> Curve<'a, T, DIM> {
         if !self
             .control_points
             .iter()
-            .any(|x| (x.input - input_value).abs() < std::f64::EPSILON)
+            .any(|x| (x.input - input_value).abs() < f64::EPSILON)
         {
             // it doesn't, so find the correct position to insert the new
             // control point.
