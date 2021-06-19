@@ -47,13 +47,11 @@ jobs:
             target
           key: ${{ runner.os }}-test-${{ steps.tc.outputs.rustc_hash }}-${{ hashFiles('**/Cargo.toml') }}
 
-      - name: Build all features
-        if: matrix.features == ''
-        run: cargo build --all-features
+      - name: Build default
+        run: cargo build
 
-      - name: Test all features
-        if: matrix.features == ''
-        run: cargo test --all-features
+      - name: Test default
+        run: cargo test
 
       - name: Build some features
         if: matrix.features
@@ -62,6 +60,14 @@ jobs:
       - name: Test some features
         if: matrix.features
         run: cargo test --no-default-features --features "${{ matrix.features }}"
+
+      - name: Build all features
+        if: matrix.features == ''
+        run: cargo build --all-features
+
+      - name: Test all features
+        if: matrix.features == ''
+        run: cargo test --all-features
 
   rustfmt:
     name: Rustfmt
