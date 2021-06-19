@@ -1,13 +1,20 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+      - master
 
 env:
   minrust: 1.51.0
 
 jobs:
-  test:
-    name: Test
+  build:
+    name: Build
     runs-on: ${{ matrix.os || 'ubuntu-latest' }}
 
     strategy:
@@ -17,8 +24,6 @@ jobs:
           - stable
           - beta
           - nightly
-        features:
-          - images
 
         include:
           - name: beta
@@ -50,24 +55,47 @@ jobs:
       - name: Build default
         run: cargo build
 
-      - name: Test default
-        run: cargo test
-
       - name: Build some features
         if: matrix.features
         run: cargo build --no-default-features --features "${{ matrix.features }}"
-
-      - name: Test some features
-        if: matrix.features
-        run: cargo test --no-default-features --features "${{ matrix.features }}"
 
       - name: Build all features
         if: matrix.features == ''
         run: cargo build --all-features
 
-      - name: Test all features
-        if: matrix.features == ''
-        run: cargo test --all-features
+  test:
+    name: Test
+    runs-on: ${{ matrix.os || 'ubuntu-latest' }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        rust:
+          - stable
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Install toolchain
+        id: tc
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          profile: minimal
+          override: true
+
+      - name: Setup cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-test-${{ steps.tc.outputs.rustc_hash }}-${{ hashFiles('**/Cargo.toml') }}
+
+      - name: Test default
+        run: cargo test
 
   rustfmt:
     name: Rustfmt
