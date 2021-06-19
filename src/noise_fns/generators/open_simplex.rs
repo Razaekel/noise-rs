@@ -150,10 +150,10 @@ impl NoiseFn<f64, 2> for OpenSimplex {
 /// This is a slower but higher quality form of gradient noise than `Perlin` 3D.
 impl NoiseFn<f64, 3> for OpenSimplex {
     fn get(&self, point: [f64; 3]) -> f64 {
-        fn gradient(perm_table: &PermutationTable, vertex: [f64; 3], pos: [f64; 3]) -> f64 {
+        fn gradient(hasher: &impl NoiseHasher, vertex: [f64; 3], pos: [f64; 3]) -> f64 {
             let attn = 2.0 - math::dot3(pos, pos);
             if attn > 0.0 {
-                let index = perm_table.hash(&math::to_isize3(vertex));
+                let index = hasher.hash(&math::to_isize3(vertex));
                 let vec = gradient::grad3(index);
                 attn.powi(4) * math::dot3(pos, vec)
             } else {
@@ -185,8 +185,17 @@ impl NoiseFn<f64, 3> for OpenSimplex {
 
         let mut value = 0.0;
 
-        let mut vertex;
-        let mut dpos;
+        fn contribute(
+            hasher: &impl NoiseHasher,
+            stretched_floor: [f64; 3],
+            vertex_offset: [f64; 3],
+            pos0: [f64; 3],
+            position_offset: [f64; 3],
+        ) -> f64 {
+            let vertex = math::add3(stretched_floor, vertex_offset);
+            let dpos = math::sub3(pos0, position_offset);
+            gradient(hasher, vertex, dpos)
+        }
 
         if region_sum <= 1.0 {
             // We're inside the tetrahedron (3-Simplex) at (0, 0, 0)
@@ -194,24 +203,40 @@ impl NoiseFn<f64, 3> for OpenSimplex {
             let t1 = SQUISH_CONSTANT_2D + 1.0;
 
             // Contribution at (0, 0, 0)
-            vertex = math::add3(stretched_floor, [0.0, 0.0, 0.0]);
-            dpos = math::sub3(pos0, [0.0, 0.0, 0.0]);
-            value += gradient(&self.perm_table, vertex, dpos);
+            value += contribute(
+                &self.perm_table,
+                stretched_floor,
+                [0.0, 0.0, 0.0],
+                pos0,
+                [0.0, 0.0, 0.0],
+            );
 
             // Contribution at (1, 0, 0)
-            vertex = math::add3(stretched_floor, [1.0, 0.0, 0.0]);
-            dpos = math::sub3(pos0, [t1, t0, t0]);
-            value += gradient(&self.perm_table, vertex, dpos);
+            value += contribute(
+                &self.perm_table,
+                stretched_floor,
+                [1.0, 0.0, 0.0],
+                pos0,
+                [t1, t0, t0],
+            );
 
             // Contribution at (0, 1, 0)
-            vertex = math::add3(stretched_floor, [0.0, 1.0, 0.0]);
-            dpos = math::sub3(pos0, [t0, t1, t0]);
-            value += gradient(&self.perm_table, vertex, dpos);
+            value += contribute(
+                &self.perm_table,
+                stretched_floor,
+                [0.0, 1.0, 0.0],
+                pos0,
+                [t0, t1, t0],
+            );
 
             // Contribution at (0, 0, 1)
-            vertex = math::add3(stretched_floor, [0.0, 0.0, 1.0]);
-            dpos = math::sub3(pos0, [t0, t0, t1]);
-            value += gradient(&self.perm_table, vertex, dpos);
+            value += contribute(
+                &self.perm_table,
+                stretched_floor,
+                [0.0, 0.0, 1.0],
+                pos0,
+                [t0, t0, t1],
+            );
         } else if region_sum >= 2.0 {
             // We're inside the tetrahedron (3-Simplex) at (1, 1, 1)
             let t0 = 2.0 * SQUISH_CONSTANT_3D;
@@ -219,24 +244,40 @@ impl NoiseFn<f64, 3> for OpenSimplex {
             let t2 = t1 + SQUISH_CONSTANT_3D;
 
             // Contribution at (1, 1, 0)
-            vertex = math::add3(stretched_floor, [1.0, 1.0, 0.0]);
-            dpos = math::sub3(pos0, [t1, t1, t0]);
-            value += gradient(&self.perm_table, vertex, dpos);
+            value += contribute(
+                &self.perm_table,
+                stretched_floor,
+                [1.0, 1.0, 0.0],
+                pos0,
+                [t1, t1, t0],
+            );
 
             // Contribution at (1, 0, 1)
-            vertex = math::add3(stretched_floor, [1.0, 0.0, 1.0]);
-            dpos = math::sub3(pos0, [t1, t0, t1]);
-            value += gradient(&self.perm_table, vertex, dpos);
+            value += contribute(
+                &self.perm_table,
+                stretched_floor,
+                [1.0, 0.0, 1.0],
+                pos0,
+                [t1, t0, t1],
+            );
 
             // Contribution at (0, 1, 1)
-            vertex = math::add3(stretched_floor, [0.0, 1.0, 1.0]);
-            dpos = math::sub3(pos0, [t0, t1, t1]);
-            value += gradient(&self.perm_table, vertex, dpos);
+            value += contribute(
+                &self.perm_table,
+                stretched_floor,
+                [0.0, 1.0, 1.0],
+                pos0,
+                [t0, t1, t1],
+            );
 
             // Contribution at (1, 1, 1)
-            vertex = math::add3(stretched_floor, [1.0, 1.0, 1.0]);
-            dpos = math::sub3(pos0, [t2, t2, t2]);
-            value += gradient(&self.perm_table, vertex, dpos);
+            value += contribute(
+                &self.perm_table,
+                stretched_floor,
+                [1.0, 1.0, 1.0],
+                pos0,
+                [t2, t2, t2],
+            );
         } else {
             // We're inside the octahedron (Rectified 3-Simplex) inbetween.
             let t0 = SQUISH_CONSTANT_3D;
@@ -245,34 +286,58 @@ impl NoiseFn<f64, 3> for OpenSimplex {
             let t3 = 1.0 + 2.0 * SQUISH_CONSTANT_3D;
 
             // Contribution at (1, 0, 0)
-            vertex = math::add3(stretched_floor, [1.0, 0.0, 0.0]);
-            dpos = math::sub3(pos0, [t1, t0, t0]);
-            value += gradient(&self.perm_table, vertex, dpos);
+            value += contribute(
+                &self.perm_table,
+                stretched_floor,
+                [1.0, 0.0, 0.0],
+                pos0,
+                [t1, t0, t0],
+            );
 
             // Contribution at (0, 1, 0)
-            vertex = math::add3(stretched_floor, [0.0, 1.0, 0.0]);
-            dpos = math::sub3(pos0, [t0, t1, t0]);
-            value += gradient(&self.perm_table, vertex, dpos);
+            value += contribute(
+                &self.perm_table,
+                stretched_floor,
+                [0.0, 1.0, 0.0],
+                pos0,
+                [t0, t1, t0],
+            );
 
             // Contribution at (0, 0, 1)
-            vertex = math::add3(stretched_floor, [0.0, 0.0, 1.0]);
-            dpos = math::sub3(pos0, [t0, t0, t1]);
-            value += gradient(&self.perm_table, vertex, dpos);
+            value += contribute(
+                &self.perm_table,
+                stretched_floor,
+                [0.0, 0.0, 1.0],
+                pos0,
+                [t0, t0, t1],
+            );
 
             // Contribution at (1, 1, 0)
-            vertex = math::add3(stretched_floor, [1.0, 1.0, 0.0]);
-            dpos = math::sub3(pos0, [t3, t3, t2]);
-            value += gradient(&self.perm_table, vertex, dpos);
+            value += contribute(
+                &self.perm_table,
+                stretched_floor,
+                [1.0, 1.0, 0.0],
+                pos0,
+                [t3, t3, t2],
+            );
 
             // Contribution at (1, 0, 1)
-            vertex = math::add3(stretched_floor, [1.0, 0.0, 1.0]);
-            dpos = math::sub3(pos0, [t3, t2, t3]);
-            value += gradient(&self.perm_table, vertex, dpos);
+            value += contribute(
+                &self.perm_table,
+                stretched_floor,
+                [1.0, 0.0, 1.0],
+                pos0,
+                [t3, t2, t3],
+            );
 
             // Contribution at (0, 1, 1)
-            vertex = math::add3(stretched_floor, [0.0, 1.0, 1.0]);
-            dpos = math::sub3(pos0, [t2, t3, t3]);
-            value += gradient(&self.perm_table, vertex, dpos);
+            value += contribute(
+                &self.perm_table,
+                stretched_floor,
+                [0.0, 1.0, 1.0],
+                pos0,
+                [t2, t3, t3],
+            );
         }
 
         value * NORM_CONSTANT_3D

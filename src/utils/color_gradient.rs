@@ -128,9 +128,7 @@ impl ColorGradient {
         let mut color = Color::default();
 
         // If there are no colors in the gradient, return black
-        return if self.gradient_points.is_empty() {
-            color
-        } else {
+        if !self.gradient_points.is_empty() {
             match () {
                 _ if pos < self.domain.min => color = self.gradient_points.first().unwrap().color,
                 _ if pos > self.domain.max => color = self.gradient_points.last().unwrap().color,
@@ -146,9 +144,9 @@ impl ColorGradient {
                     }
                 }
             };
-
-            color
         };
+
+        color
     }
 }
 
