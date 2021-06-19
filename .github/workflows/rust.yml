@@ -258,7 +258,7 @@ jobs:
           - textureslime
           - texturewood
           - translate_point
-          - turbulencce
+          - turbulence
           - value
           - worley
 
