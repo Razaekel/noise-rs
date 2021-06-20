@@ -1,3 +1,4 @@
+use crate::math::vectors::*;
 use num_traits::Float;
 
 /// Quintic Interpolation Trait
@@ -68,6 +69,43 @@ where
         ]
     }
 }
+
+impl<T> Quintic for Vector2<T>
+where
+    T: Float + Quintic,
+{
+    fn map_quintic(&self) -> Self {
+        self.map(|x| x.map_quintic())
+    }
+}
+
+impl<T> Quintic for Vector3<T>
+where
+    T: Float + Quintic,
+{
+    fn map_quintic(&self) -> Self {
+        self.map(|x| x.map_quintic())
+    }
+}
+
+impl<T> Quintic for Vector4<T>
+where
+    T: Float + Quintic,
+{
+    fn map_quintic(&self) -> Self {
+        self.map(|x| x.map_quintic())
+    }
+}
+
+// impl<T, V, const DIM: usize> Quintic for V
+// where
+//     T: Float + Quintic,
+//     V: Vector<T, DIM>,
+// {
+//     fn map_quintic(&self) -> Self {
+//         self.map(|x| x.map_quintic())
+//     }
+// }
 
 // #[inline(always)]
 // pub fn quintic<F>(x: F) -> F
