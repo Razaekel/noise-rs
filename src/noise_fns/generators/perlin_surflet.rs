@@ -9,22 +9,22 @@ use crate::{
 /// THis is a variant of original perlin noise, based on the principles of simplex noise to
 /// calculate the values at a point using wavelets instead of interpolated gradients.
 #[derive(Clone, Copy, Debug)]
-pub struct Perlin {
+pub struct PerlinSurflet {
     seed: u32,
     perm_table: PermutationTable,
 }
 
-impl Perlin {
+impl PerlinSurflet {
     pub const DEFAULT_SEED: u32 = 0;
 }
 
-impl Default for Perlin {
+impl Default for PerlinSurflet {
     fn default() -> Self {
         Self::new(Self::DEFAULT_SEED)
     }
 }
 
-impl Seedable for Perlin {
+impl Seedable for PerlinSurflet {
     fn new(seed: u32) -> Self {
         Self {
             seed,
@@ -52,21 +52,21 @@ impl Seedable for Perlin {
 }
 
 /// 2-dimensional perlin noise
-impl NoiseFn<f64, 2> for Perlin {
+impl NoiseFn<f64, 2> for PerlinSurflet {
     fn get(&self, point: [f64; 2]) -> f64 {
         perlin_surflet_2d(point, &self.perm_table)
     }
 }
 
 /// 3-dimensional perlin noise
-impl NoiseFn<f64, 3> for Perlin {
+impl NoiseFn<f64, 3> for PerlinSurflet {
     fn get(&self, point: [f64; 3]) -> f64 {
         perlin_surflet_3d(point, &self.perm_table)
     }
 }
 
 /// 4-dimensional perlin noise
-impl NoiseFn<f64, 4> for Perlin {
+impl NoiseFn<f64, 4> for PerlinSurflet {
     fn get(&self, point: [f64; 4]) -> f64 {
         perlin_surflet_4d(point, &self.perm_table)
     }

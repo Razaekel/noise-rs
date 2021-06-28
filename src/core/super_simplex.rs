@@ -1,5 +1,4 @@
-use crate::{gradient, math, permutationtable::NoiseHasher};
-use core::ops::Add;
+use crate::{gradient, math::vectors::*, permutationtable::NoiseHasher};
 
 const TO_REAL_CONSTANT_2D: f64 = -0.211_324_865_405_187; // (1 / sqrt(2 + 1) - 1) / 2
 const TO_SIMPLEX_CONSTANT_2D: f64 = 0.366_025_403_784_439; // (sqrt(2 + 1) - 1) / 2
@@ -85,38 +84,41 @@ const LATTICE_LOOKUP_3D: [[i8; 3]; 4 * 16] =
      [1, 1, 1],[0, 1, 1],[1, 0, 1],[1, 1, 0]];
 
 pub fn super_simplex_2d(point: [f64; 2], hasher: &impl NoiseHasher) -> f64 {
-    let mut value = 0.0;
+    let point = Vector2::from(point);
 
     // Transform point from real space to simplex space
-    let to_simplex_offset = math::fold2(point, Add::add) * TO_SIMPLEX_CONSTANT_2D;
-    let simplex_point = math::map2(point, |v| v + to_simplex_offset);
+    let to_simplex_offset = point.sum() * TO_SIMPLEX_CONSTANT_2D;
+    let simplex_point = point.map(|v| v + to_simplex_offset);
 
     // Get base point of simplex and barycentric coordinates in simplex space
-    let simplex_base_point = math::map2(simplex_point, f64::floor);
-    let simplex_base_point_i = math::to_isize2(simplex_base_point);
-    let simplex_rel_coords = math::sub2(simplex_point, simplex_base_point);
+    let simplex_base_point = simplex_point.floor();
+    let simplex_base_point_i = simplex_base_point.numcast().unwrap();
+    let simplex_rel_coords = simplex_point - simplex_base_point;
 
     // Create index to lookup table from barycentric coordinates
-    let region_sum = math::fold2(simplex_rel_coords, Add::add).floor();
+    let region_sum = simplex_rel_coords.sum().floor();
     let index = ((region_sum >= 1.0) as usize) << 2
-        | ((simplex_rel_coords[0] - simplex_rel_coords[1] * 0.5 + 1.0 - region_sum * 0.5 >= 1.0)
+        | ((simplex_rel_coords.x - simplex_rel_coords.y * 0.5 + 1.0 - region_sum * 0.5 >= 1.0)
             as usize)
             << 3
-        | ((simplex_rel_coords[1] - simplex_rel_coords[0] * 0.5 + 1.0 - region_sum * 0.5 >= 1.0)
+        | ((simplex_rel_coords.y - simplex_rel_coords.x * 0.5 + 1.0 - region_sum * 0.5 >= 1.0)
             as usize)
             << 4;
 
     // Transform barycentric coordinates to real space
-    let to_real_offset = math::fold2(simplex_rel_coords, Add::add) * TO_REAL_CONSTANT_2D;
-    let real_rel_coords = math::map2(simplex_rel_coords, |v| v + to_real_offset);
+    let to_real_offset = simplex_rel_coords.sum() * TO_REAL_CONSTANT_2D;
+    let real_rel_coords = simplex_rel_coords.map(|v| v + to_real_offset);
+
+    let mut value = 0.0;
 
     for lattice_lookup in &LATTICE_LOOKUP_2D[index..index + 4] {
-        let dpos = math::add2(real_rel_coords, math::cast2(lattice_lookup.1));
-        let attn = (2.0 / 3.0) - math::dot2(dpos, dpos);
+        let dpos = real_rel_coords + Vector2::from(lattice_lookup.1).numcast().unwrap();
+        let attn = (2.0 / 3.0) - dpos.magnitude_squared();
         if attn > 0.0 {
-            let lattice_point = math::add2(simplex_base_point_i, math::cast2(lattice_lookup.0));
-            let gradient = gradient::grad2(hasher.hash(&lattice_point));
-            value += attn.powi(4) * math::dot2(gradient, dpos);
+            let lattice_point =
+                simplex_base_point_i + Vector2::from(lattice_lookup.0).numcast().unwrap();
+            let gradient = Vector2::from(gradient::grad2(hasher.hash(&lattice_point.into_array())));
+            value += attn.powi(4) * gradient.dot(dpos);
         }
     }
 
@@ -124,71 +126,71 @@ pub fn super_simplex_2d(point: [f64; 2], hasher: &impl NoiseHasher) -> f64 {
 }
 
 pub fn super_simplex_3d(point: [f64; 3], hasher: &impl NoiseHasher) -> f64 {
-    let mut value = 0.0;
+    let point = Vector3::from(point);
 
     // Transform point from real space to simplex space
-    let to_simplex_offset = math::fold3(point, Add::add) * TO_SIMPLEX_CONSTANT_3D;
-    let simplex_point = math::map3(point, |v| -(v + to_simplex_offset));
-    let second_simplex_point = math::map3(simplex_point, |v| v + 512.5);
+    let to_simplex_offset = point.sum() * TO_SIMPLEX_CONSTANT_3D;
+    let simplex_point = point.map(|v| -(v + to_simplex_offset));
+    let second_simplex_point = simplex_point.map(|v| v + 512.5);
 
     // Get base point of simplex and barycentric coordinates in simplex space
-    let simplex_base_point = math::map3(simplex_point, f64::floor);
-    let simplex_base_point_i = math::to_isize3(simplex_base_point);
-    let simplex_rel_coords = math::sub3(simplex_point, simplex_base_point);
-    let second_simplex_base_point = math::map3(second_simplex_point, f64::floor);
-    let second_simplex_base_point_i = math::to_isize3(second_simplex_base_point);
-    let second_simplex_rel_coords = math::sub3(second_simplex_point, second_simplex_base_point);
+    let simplex_base_point = simplex_point.floor();
+    let simplex_base_point_i = simplex_base_point.numcast().unwrap();
+    let simplex_rel_coords = simplex_point - simplex_base_point;
+    let second_simplex_base_point = second_simplex_point.floor();
+    let second_simplex_base_point_i = second_simplex_base_point.numcast().unwrap();
+    let second_simplex_rel_coords = second_simplex_point - second_simplex_base_point;
 
     // Create indices to lookup table from barycentric coordinates
-    let index = ((simplex_rel_coords[0] + simplex_rel_coords[1] + simplex_rel_coords[2] >= 1.5)
+    let index = ((simplex_rel_coords.x + simplex_rel_coords.y + simplex_rel_coords.z >= 1.5)
         as usize)
         << 2
-        | ((-simplex_rel_coords[0] + simplex_rel_coords[1] + simplex_rel_coords[2] >= 0.5)
-            as usize)
+        | ((-simplex_rel_coords.x + simplex_rel_coords.y + simplex_rel_coords.z >= 0.5) as usize)
             << 3
-        | ((simplex_rel_coords[0] - simplex_rel_coords[1] + simplex_rel_coords[2] >= 0.5) as usize)
+        | ((simplex_rel_coords.x - simplex_rel_coords.y + simplex_rel_coords.z >= 0.5) as usize)
             << 4
-        | ((simplex_rel_coords[0] + simplex_rel_coords[1] - simplex_rel_coords[2] >= 0.5) as usize)
+        | ((simplex_rel_coords.x + simplex_rel_coords.y - simplex_rel_coords.z >= 0.5) as usize)
             << 5;
-    let second_index = ((second_simplex_rel_coords[0]
-        + second_simplex_rel_coords[1]
-        + second_simplex_rel_coords[2]
+    let second_index = ((second_simplex_rel_coords.x
+        + second_simplex_rel_coords.y
+        + second_simplex_rel_coords.z
         >= 1.5) as usize)
         << 2
-        | ((-second_simplex_rel_coords[0]
-            + second_simplex_rel_coords[1]
-            + second_simplex_rel_coords[2]
+        | ((-second_simplex_rel_coords.x
+            + second_simplex_rel_coords.y
+            + second_simplex_rel_coords.z
             >= 0.5) as usize)
             << 3
-        | ((second_simplex_rel_coords[0] - second_simplex_rel_coords[1]
-            + second_simplex_rel_coords[2]
+        | ((second_simplex_rel_coords.x - second_simplex_rel_coords.y + second_simplex_rel_coords.z
             >= 0.5) as usize)
             << 4
-        | ((second_simplex_rel_coords[0] + second_simplex_rel_coords[1]
-            - second_simplex_rel_coords[2]
+        | ((second_simplex_rel_coords.x + second_simplex_rel_coords.y - second_simplex_rel_coords.z
             >= 0.5) as usize)
             << 5;
+
+    let mut value = 0.0;
 
     // Sum contributions from first lattice
     for &lattice_lookup in &LATTICE_LOOKUP_3D[index..index + 4] {
-        let dpos = math::sub3(simplex_rel_coords, math::cast3(lattice_lookup));
-        let attn = 0.75 - math::dot3(dpos, dpos);
+        let dpos = simplex_rel_coords - Vector3::from(lattice_lookup).numcast().unwrap();
+        let attn = 0.75 - dpos.magnitude_squared();
         if attn > 0.0 {
-            let lattice_point = math::add3(simplex_base_point_i, math::cast3(lattice_lookup));
-            let gradient = gradient::grad3(hasher.hash(&lattice_point));
-            value += attn.powi(4) * math::dot3(gradient, dpos);
+            let lattice_point =
+                simplex_base_point_i + Vector3::from(lattice_lookup).numcast().unwrap();
+            let gradient = Vector3::from(gradient::grad3(hasher.hash(&lattice_point.into_array())));
+            value += attn.powi(4) * gradient.dot(dpos);
         }
     }
 
     // Sum contributions from second lattice
     for &lattice_lookup in &LATTICE_LOOKUP_3D[second_index..second_index + 4] {
-        let dpos = math::sub3(second_simplex_rel_coords, math::cast3(lattice_lookup));
-        let attn = 0.75 - math::dot3(dpos, dpos);
+        let dpos = second_simplex_rel_coords - Vector3::from(lattice_lookup).numcast().unwrap();
+        let attn = 0.75 - dpos.magnitude_squared();
         if attn > 0.0 {
             let lattice_point =
-                math::add3(second_simplex_base_point_i, math::cast3(lattice_lookup));
-            let gradient = gradient::grad3(hasher.hash(&lattice_point));
-            value += attn.powi(4) * math::dot3(gradient, dpos);
+                second_simplex_base_point_i + Vector3::from(lattice_lookup).numcast().unwrap();
+            let gradient = Vector3::from(gradient::grad3(hasher.hash(&lattice_point.into_array())));
+            value += attn.powi(4) * gradient.dot(dpos);
         }
     }
 

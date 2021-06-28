@@ -1,6 +1,6 @@
 use crate::{
     core::worley::*,
-    math,
+    math::vectors::*,
     noise_fns::{NoiseFn, Seedable},
     permutationtable::PermutationTable,
 };
@@ -10,7 +10,7 @@ use alloc::boxed::Box;
 pub struct Worley {
     /// Specifies the distance function to use when calculating the boundaries of
     /// the cell.
-    pub distance_function: Box<dyn Fn(&[f64], &[f64]) -> f64>,
+    pub distance_function: Box<DistanceFunction>,
 
     /// Signifies whether the distance from the borders of the cell should be returned, or the
     /// value for the cell.
@@ -22,6 +22,8 @@ pub struct Worley {
     seed: u32,
     perm_table: PermutationTable,
 }
+
+type DistanceFunction = dyn Fn(&[f64], &[f64]) -> f64;
 
 impl Worley {
     pub const DEFAULT_SEED: u32 = 0;
@@ -96,7 +98,7 @@ impl NoiseFn<f64, 2> for Worley {
             &self.perm_table,
             &self.distance_function,
             self.return_type,
-            math::mul2(point, self.frequency),
+            (Vector2::from(point) * self.frequency).into_array(),
         )
     }
 }
@@ -107,7 +109,7 @@ impl NoiseFn<f64, 3> for Worley {
             &self.perm_table,
             &self.distance_function,
             self.return_type,
-            math::mul3(point, self.frequency),
+            (Vector3::from(point) * self.frequency).into_array(),
         )
     }
 }
@@ -119,7 +121,7 @@ impl NoiseFn<f64, 4> for Worley {
             &self.perm_table,
             &self.distance_function,
             self.return_type,
-            math::mul4(point, self.frequency),
+            (Vector4::from(point) * self.frequency).into_array(),
         )
     }
 }
