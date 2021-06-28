@@ -1,4 +1,7 @@
-use crate::{math, permutationtable::NoiseHasher};
+use crate::{
+    math::vectors::{Vector, Vector2, Vector3, Vector4, VectorMap},
+    permutationtable::NoiseHasher,
+};
 #[cfg(not(feature = "std"))]
 use alloc::vec::Vec;
 use core::f64;
@@ -70,56 +73,56 @@ pub fn worley_2d<F>(
 where
     F: Fn(&[f64], &[f64]) -> f64,
 {
+    let point = Vector2::from(point);
+
     #[inline]
-    fn get_point(hasher: &dyn NoiseHasher, whole: [isize; 2]) -> [f64; 2] {
-        math::add2(get_vec2(hasher.hash(&whole)), math::to_f64_2(whole))
+    fn get_point(hasher: &dyn NoiseHasher, whole: Vector2<isize>) -> Vector2<f64> {
+        get_vec2(hasher.hash(&whole.into_array())) + whole.numcast().unwrap()
     }
 
-    let cell = math::map2(point, f64::floor);
-    let whole = math::to_isize2(cell);
-    let frac = math::sub2(point, cell);
+    let cell = point.floor();
+    let whole = cell.numcast().unwrap();
+    let frac = point - cell;
 
-    let x_half = frac[0] > 0.5;
-    let y_half = frac[1] > 0.5;
+    let half = frac.map(|x| x > 0.5);
 
-    let near = [whole[0] + (x_half as isize), whole[1] + (y_half as isize)];
-    let far = [whole[0] + (!x_half as isize), whole[1] + (!y_half as isize)];
+    let near = whole + half.map(|x| x as isize);
+    let far = whole + half.map(|x| !x as isize);
 
     let mut seed_cell = near;
     let seed_point = get_point(hasher, near);
-    let mut distance = distance_function(&point, &seed_point);
+    let mut distance = distance_function(&point.into_array(), &seed_point.into_array());
 
-    let x_distance = (0.5 - frac[0]) * (0.5 - frac[0]); // x-distance squared to center line
-    let y_distance = (0.5 - frac[1]) * (0.5 - frac[1]); // y-distance squared to center line
+    let range = frac.map(|x| (0.5 - x).powf(2.0));
 
     macro_rules! test_point(
-            [$x:expr, $y:expr] => {
-                {
-                    let cur_point = get_point(hasher, [$x, $y]);
-                    let cur_distance = distance_function(&point, &cur_point);
-                    if cur_distance < distance {
-                        distance = cur_distance;
-                        seed_cell = [$x, $y];
-                    }
+        [$x:expr, $y:expr] => {
+            {
+                let cur_point = get_point(hasher, Vector2::from([$x, $y]));
+                let cur_distance = distance_function(&point.into_array(), &cur_point.into_array());
+                if cur_distance < distance {
+                    distance = cur_distance;
+                    seed_cell = Vector2::from([$x, $y]);
                 }
             }
-        );
+        }
+    );
 
-    if x_distance < distance {
-        test_point![far[0], near[1]];
+    if range.x < distance {
+        test_point![far.x, near.y];
     }
 
-    if y_distance < distance {
-        test_point![near[0], far[1]];
+    if range.y < distance {
+        test_point![near.x, far.y];
     }
 
-    if x_distance < distance && y_distance < distance {
-        test_point![far[0], far[1]];
+    if range.x < distance && range.y < distance {
+        test_point![far.x, far.y];
     }
 
     let value = match return_type {
         ReturnType::Distance => distance,
-        ReturnType::Value => hasher.hash(&seed_cell) as f64 / 255.0,
+        ReturnType::Value => hasher.hash(&seed_cell.into_array()) as f64 / 255.0,
     };
 
     value * 2.0 - 1.0
@@ -127,21 +130,21 @@ where
 
 #[rustfmt::skip]
 #[inline]
-fn get_vec2(index: usize) -> [f64; 2] {
-    let length: f64 = ((index & 0xF8) >> 3) as f64 * 0.5 / 31.0;
+fn get_vec2(index: usize) -> Vector2<f64> {
+    let length = ((index & 0xF8) >> 3) as f64 * 0.5 / 31.0;
     let diag = length * f64::consts::FRAC_1_SQRT_2;
 
-    match index & 0x07 {
-        0 => [diag, diag],
-        1 => [diag,   -diag],
-        2 => [  -diag, diag],
+    Vector2::from(match index & 0x07 {
+        0 => [   diag,    diag],
+        1 => [   diag,   -diag],
+        2 => [  -diag,    diag],
         3 => [  -diag,   -diag],
-        4 => [length,     0.0],
+        4 => [ length,     0.0],
         5 => [-length,     0.0],
-        6 => [    0.0, length],
+        6 => [    0.0,  length],
         7 => [    0.0, -length],
         _ => unreachable!(),
-    }
+    })
 }
 
 #[inline(always)]
@@ -154,77 +157,67 @@ pub fn worley_3d<F>(
 where
     F: Fn(&[f64], &[f64]) -> f64,
 {
-    fn get_point(hasher: &dyn NoiseHasher, whole: [isize; 3]) -> [f64; 3] {
-        math::add3(get_vec3(hasher.hash(&whole)), math::to_f64_3(whole))
+    let point = Vector3::from(point);
+
+    fn get_point(hasher: &dyn NoiseHasher, whole: Vector3<isize>) -> Vector3<f64> {
+        get_vec3(hasher.hash(&whole.into_array())) + whole.numcast().unwrap()
     }
 
-    let cell = math::map3(point, f64::floor);
-    let whole = math::to_isize3(cell);
-    let frac = math::sub3(point, cell);
+    let cell = point.floor();
+    let whole = cell.numcast().unwrap();
+    let frac = point - cell;
 
-    let x_half = frac[0] > 0.5;
-    let y_half = frac[1] > 0.5;
-    let z_half = frac[2] > 0.5;
+    let half = frac.map(|x| x > 0.5);
 
-    let near = [
-        whole[0] + (x_half as isize),
-        whole[1] + (y_half as isize),
-        whole[2] + (z_half as isize),
-    ];
-    let far = [
-        whole[0] + (!x_half as isize),
-        whole[1] + (!y_half as isize),
-        whole[2] + (!z_half as isize),
-    ];
+    let near = whole + half.map(|x| x as isize);
+    let far = whole + half.map(|x| !x as isize);
 
     let mut seed_cell = near;
     let seed_point = get_point(hasher, near);
-    let mut distance = distance_function(&point, &seed_point);
+    let mut distance = distance_function(&point.into_array(), &seed_point.into_array());
 
-    let x_distance = (0.5 - frac[0]) * (0.5 - frac[0]); // x-distance squared to center line
-    let y_distance = (0.5 - frac[1]) * (0.5 - frac[1]); // y-distance squared to center line
-    let z_distance = (0.5 - frac[2]) * (0.5 - frac[2]); // z-distance squared to center line
+    let range = frac.map(|x| (0.5 - x).powf(2.0));
 
     macro_rules! test_point(
-            [$x:expr, $y:expr, $z:expr] => {
-                {
-                    let cur_point = get_point(hasher, [$x, $y, $z]);
-                    let cur_distance = distance_function(&point, &cur_point);
-                    if cur_distance < distance {
-                        distance = cur_distance;
-                        seed_cell = [$x, $y, $z];
-                    }
+        [$x:expr, $y:expr, $z:expr] => {
+            {
+                let cur_point = get_point(hasher, Vector3::from([$x, $y, $z]));
+                let cur_distance = distance_function(&point.into_array(), &cur_point.into_array());
+                if cur_distance < distance {
+                    distance = cur_distance;
+                    seed_cell = Vector3::from([$x, $y, $z]);
                 }
             }
-        );
+        }
+    );
 
-    if x_distance < distance {
-        test_point![far[0], near[1], near[2]];
+    if range.x < distance {
+        test_point![far.x, near.y, near.z];
     }
-    if y_distance < distance {
-        test_point![near[0], far[1], near[2]];
+    if range.y < distance {
+        test_point![near.x, far.y, near.z];
     }
-    if z_distance < distance {
-        test_point![near[0], near[1], far[2]];
-    }
-
-    if x_distance < distance && y_distance < distance {
-        test_point![far[0], far[1], near[2]];
-    }
-    if x_distance < distance && z_distance < distance {
-        test_point![far[0], near[1], far[2]];
-    }
-    if y_distance < distance && z_distance < distance {
-        test_point![near[0], far[1], far[2]];
+    if range.z < distance {
+        test_point![near.x, near.y, far.z];
     }
 
-    if x_distance < distance && y_distance < distance && z_distance < distance {
-        test_point![far[0], far[1], far[2]];
+    if range.x < distance && range.y < distance {
+        test_point![far.x, far.y, near.z];
+    }
+    if range.x < distance && range.z < distance {
+        test_point![far.x, near.y, far.z];
+    }
+    if range.y < distance && range.z < distance {
+        test_point![near.x, far.y, far.z];
+    }
+
+    if range.x < distance && range.y < distance && range.z < distance {
+        test_point![far.x, far.y, far.z];
     }
 
     let value = match return_type {
         ReturnType::Distance => distance,
-        ReturnType::Value => hasher.hash(&seed_cell) as f64 / 255.0,
+        ReturnType::Value => hasher.hash(&seed_cell.into_array()) as f64 / 255.0,
     };
 
     value * 2.0 - 1.0
@@ -232,11 +225,11 @@ where
 
 #[rustfmt::skip]
 #[inline]
-fn get_vec3(index: usize) -> [f64; 3] {
+fn get_vec3(index: usize) -> Vector3<f64> {
     let length = ((index & 0xE0) >> 5) as f64 * 0.5 / 7.0;
     let diag = length * f64::consts::FRAC_1_SQRT_2;
 
-    match index % 18 {
+    Vector3::from(match index % 18 {
         0  => [   diag,    diag,     0.0],
         1  => [   diag,   -diag,     0.0],
         2  => [  -diag,    diag,     0.0],
@@ -255,8 +248,8 @@ fn get_vec3(index: usize) -> [f64; 3] {
         15 => [-length,     0.0,     0.0],
         16 => [    0.0, -length,     0.0],
         17 => [    0.0,     0.0, -length],
-        _ => panic!("Attempt to access 3D gradient {} of 18", index % 18),
-    }
+        _ => unreachable!("Attempt to access 3D gradient {} of 18", index % 18),
+    })
 }
 
 #[inline(always)]
@@ -270,120 +263,93 @@ pub fn worley_4d<F>(
 where
     F: Fn(&[f64], &[f64]) -> f64,
 {
-    fn get_point(hasher: &dyn NoiseHasher, whole: [isize; 4]) -> [f64; 4] {
-        math::add4(get_vec4(hasher.hash(&whole)), math::to_f64_4(whole))
+    let point = Vector4::from(point);
+
+    fn get_point(hasher: &dyn NoiseHasher, whole: Vector4<isize>) -> Vector4<f64> {
+        get_vec4(hasher.hash(&whole.into_array())) + whole.numcast().unwrap()
     }
 
-    let cell = math::map4(point, f64::floor);
-    let whole = math::to_isize4(cell);
-    let frac = math::sub4(point, cell);
+    let cell = point.floor();
+    let whole = cell.numcast().unwrap();
+    let frac = point - cell;
 
-    let half: Vec<bool> = frac.iter().map(|a| *a > 0.5).collect();
+    let half = frac.map(|x| x > 0.5);
 
-    let near = [
-        whole[0] + (half[0] as isize),
-        whole[1] + (half[1] as isize),
-        whole[2] + (half[2] as isize),
-        whole[3] + (half[3] as isize),
-    ];
-    let far = [
-        whole[0] + (!half[0] as isize),
-        whole[1] + (!half[0] as isize),
-        whole[2] + (!half[0] as isize),
-        whole[3] + (!half[0] as isize),
-    ];
+    let near = whole + half.map(|x| x as isize);
+    let far = whole + half.map(|x| !x as isize);
 
     let mut seed_cell = near;
     let seed_point = get_point(hasher, near);
-    let mut distance = distance_function(&point, &seed_point);
+    let mut distance = distance_function(&point.into_array(), &seed_point.into_array());
 
     // get distance squared to center line for each axis
-    let center_distance = frac
-        .iter()
-        .map(|a| (0.5 - a).powf(2.0))
-        .collect::<Vec<f64>>();
+    let range = frac.map(|x| (0.5 - x).powf(2.0));
 
     macro_rules! test_point(
             [$x:expr, $y:expr, $z:expr, $w:expr] => {
                 {
-                    let cur_point = get_point(hasher, [$x, $y, $z, $w]);
-                    let cur_distance = distance_function(&point, &cur_point);
+                    let cur_point = get_point(hasher, Vector4::from([$x, $y, $z, $w]));
+                    let cur_distance = distance_function(&point.into_array(), &cur_point.into_array());
                     if cur_distance < distance {
                         distance = cur_distance;
-                        seed_cell = [$x, $y, $z, $w];
+                        seed_cell = Vector4::from([$x, $y, $z, $w]);
                     }
                 }
             }
         );
 
-    if center_distance[0] < distance {
-        test_point![far[0], near[1], near[2], near[3]];
+    if range.x < distance {
+        test_point![far.x, near.y, near.z, near.w];
     }
-    if center_distance[1] < distance {
-        test_point![near[0], far[1], near[2], near[3]];
+    if range.y < distance {
+        test_point![near.x, far.y, near.z, near.w];
     }
-    if center_distance[2] < distance {
-        test_point![near[0], near[1], far[2], near[3]];
+    if range.z < distance {
+        test_point![near.x, near.y, far.z, near.w];
     }
-    if center_distance[3] < distance {
-        test_point![near[0], near[1], near[2], far[3]];
-    }
-
-    if center_distance[0] < distance && center_distance[1] < distance {
-        test_point![far[0], far[1], near[2], near[3]];
-    }
-    if center_distance[0] < distance && center_distance[2] < distance {
-        test_point![far[0], near[1], far[2], near[3]];
-    }
-    if center_distance[0] < distance && center_distance[3] < distance {
-        test_point![far[0], near[1], near[2], far[3]];
-    }
-    if center_distance[1] < distance && center_distance[2] < distance {
-        test_point![near[0], far[1], far[2], near[3]];
-    }
-    if center_distance[1] < distance && center_distance[3] < distance {
-        test_point![near[0], far[1], near[2], far[3]];
-    }
-    if center_distance[2] < distance && center_distance[3] < distance {
-        test_point![near[0], near[1], far[2], far[3]];
+    if range.w < distance {
+        test_point![near.x, near.y, near.z, far.w];
     }
 
-    if center_distance[0] < distance
-        && center_distance[1] < distance
-        && center_distance[2] < distance
-    {
-        test_point![far[0], far[1], far[2], near[3]];
+    if range.x < distance && range.y < distance {
+        test_point![far.x, far.y, near.z, near.w];
     }
-    if center_distance[0] < distance
-        && center_distance[1] < distance
-        && center_distance[3] < distance
-    {
-        test_point![far[0], far[1], near[2], far[3]];
+    if range.x < distance && range.z < distance {
+        test_point![far.x, near.y, far.z, near.w];
     }
-    if center_distance[0] < distance
-        && center_distance[2] < distance
-        && center_distance[3] < distance
-    {
-        test_point![far[0], near[1], far[2], far[3]];
+    if range.x < distance && range.w < distance {
+        test_point![far.x, near.y, near.z, far.w];
     }
-    if center_distance[1] < distance
-        && center_distance[2] < distance
-        && center_distance[3] < distance
-    {
-        test_point![near[0], far[1], far[2], far[3]];
+    if range.y < distance && range.z < distance {
+        test_point![near.x, far.y, far.z, near.w];
+    }
+    if range.y < distance && range.w < distance {
+        test_point![near.x, far.y, near.z, far.w];
+    }
+    if range.z < distance && range.w < distance {
+        test_point![near.x, near.y, far.z, far.w];
     }
 
-    if center_distance[0] < distance
-        && center_distance[1] < distance
-        && center_distance[2] < distance
-        && center_distance[3] < distance
-    {
-        test_point![far[0], far[1], far[2], far[3]];
+    if range.x < distance && range.y < distance && range.z < distance {
+        test_point![far.x, far.y, far.z, near.w];
+    }
+    if range.x < distance && range.y < distance && range.w < distance {
+        test_point![far.x, far.y, near.z, far.w];
+    }
+    if range.x < distance && range.z < distance && range.w < distance {
+        test_point![far.x, near.y, far.z, far.w];
+    }
+    if range.y < distance && range.z < distance && range.w < distance {
+        test_point![near.x, far.y, far.z, far.w];
+    }
+
+    if range.x < distance && range.y < distance && range.z < distance && range.w < distance {
+        test_point![far.x, far.y, far.z, far.w];
     }
 
     let value = match return_type {
         ReturnType::Distance => distance,
-        ReturnType::Value => hasher.hash(&seed_cell) as f64 / 255.0,
+        ReturnType::Value => hasher.hash(&seed_cell.into_array()) as f64 / 255.0,
     };
 
     value * 2.0 - 1.0
@@ -391,11 +357,11 @@ where
 
 #[rustfmt::skip]
 #[inline(always)]
-fn get_vec4(index: usize) -> [f64; 4] {
+fn get_vec4(index: usize) -> Vector4<f64> {
     let length = ((index & 0xE0) >> 5) as f64 * 0.5 / 7.0;
     let diag = length * 0.577_350_269_189_625_8;
 
-    match index % 32 {
+    Vector4::from(match index % 32 {
         0  => [ diag,  diag,  diag,  0.0],
         1  => [ diag, -diag,  diag,  0.0],
         2  => [-diag,  diag,  diag,  0.0],
@@ -428,6 +394,6 @@ fn get_vec4(index: usize) -> [f64; 4] {
         29 => [ 0.0,  diag, -diag, -diag],
         30 => [ 0.0, -diag,  diag, -diag],
         31 => [ 0.0, -diag, -diag, -diag],
-        _ => panic!("Attempt to access 4D gradient {} of 32", index % 32),
-    }
+        _ => unreachable!("Attempt to access 4D gradient {} of 32", index % 32),
+    })
 }
