@@ -1,5 +1,5 @@
 use crate::{
-    math::{self, scale_shift},
+    math::{scale_shift, vectors::*},
     noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable},
 };
 use alloc::vec::Vec;
@@ -129,14 +129,16 @@ impl Seedable for Billow {
 
 /// 2-dimensional Billow noise
 impl NoiseFn<f64, 2> for Billow {
-    fn get(&self, mut point: [f64; 2]) -> f64 {
+    fn get(&self, point: [f64; 2]) -> f64 {
+        let mut point = Vector2::from(point);
+
         let mut result = 0.0;
 
-        point = math::mul2(point, self.frequency);
+        point *= self.frequency;
 
         for x in 0..self.octaves {
             // Get the signal.
-            let mut signal = self.sources[x].get(point);
+            let mut signal = self.sources[x].get(point.into_array());
 
             // Take the abs of the signal, then scale and shift back to
             // the [-1,1] range.
@@ -149,7 +151,7 @@ impl NoiseFn<f64, 2> for Billow {
             result += signal;
 
             // Increase the frequency for the next octave.
-            point = math::mul2(point, self.lacunarity);
+            point *= self.lacunarity;
         }
 
         // Scale the result to the [-1,1] range.
@@ -159,14 +161,16 @@ impl NoiseFn<f64, 2> for Billow {
 
 /// 3-dimensional Billow noise
 impl NoiseFn<f64, 3> for Billow {
-    fn get(&self, mut point: [f64; 3]) -> f64 {
+    fn get(&self, point: [f64; 3]) -> f64 {
+        let mut point = Vector3::from(point);
+
         let mut result = 0.0;
 
-        point = math::mul3(point, self.frequency);
+        point *= self.frequency;
 
         for x in 0..self.octaves {
             // Get the signal.
-            let mut signal = self.sources[x].get(point);
+            let mut signal = self.sources[x].get(point.into_array());
 
             // Take the abs of the signal, then scale and shift back to
             // the [-1,1] range.
@@ -179,7 +183,7 @@ impl NoiseFn<f64, 3> for Billow {
             result += signal;
 
             // Increase the frequency for the next octave.
-            point = math::mul3(point, self.lacunarity);
+            point *= self.lacunarity;
         }
 
         // Scale the result to the [-1,1] range.
@@ -189,14 +193,16 @@ impl NoiseFn<f64, 3> for Billow {
 
 /// 4-dimensional Billow noise
 impl NoiseFn<f64, 4> for Billow {
-    fn get(&self, mut point: [f64; 4]) -> f64 {
+    fn get(&self, point: [f64; 4]) -> f64 {
+        let mut point = Vector4::from(point);
+
         let mut result = 0.0;
 
-        point = math::mul4(point, self.frequency);
+        point *= self.frequency;
 
         for x in 0..self.octaves {
             // Get the signal.
-            let mut signal = self.sources[x].get(point);
+            let mut signal = self.sources[x].get(point.into_array());
 
             // Take the abs of the signal, then scale and shift back to
             // the [-1,1] range.
@@ -205,11 +211,11 @@ impl NoiseFn<f64, 4> for Billow {
             // Scale the amplitude appropriately for this frequency.
             signal *= self.persistence.powi(x as i32);
 
-            // Add the signal to the output value.
+            // Add the signal to the result.
             result += signal;
 
             // Increase the frequency for the next octave.
-            point = math::mul4(point, self.lacunarity);
+            point *= self.lacunarity;
         }
 
         // Scale the result to the [-1,1] range.
