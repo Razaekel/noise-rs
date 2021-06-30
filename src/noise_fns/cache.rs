@@ -45,10 +45,9 @@ where
                 return value;
             }
         }
+        drop(readable);
 
         let value = self.source.get(point);
-
-        drop(readable);
         let mut writable = self.value.write().unwrap();
         *writable = Some(value);
 
