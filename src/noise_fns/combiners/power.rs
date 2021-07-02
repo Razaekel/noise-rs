@@ -1,24 +1,41 @@
 use crate::noise_fns::NoiseFn;
+use core::marker::PhantomData;
 
 /// Noise function that raises the output value from the first source function
 /// to the power of the output value of the second source function.
-pub struct Power<'a, T, const DIM: usize> {
+pub struct Power<T, Source1, Source2, const DIM: usize>
+where
+    Source1: NoiseFn<T, DIM>,
+    Source2: NoiseFn<T, DIM>,
+{
     /// Outputs a value.
-    pub source1: &'a dyn NoiseFn<T, DIM>,
+    pub source1: Source1,
 
     /// Outputs a value.
-    pub source2: &'a dyn NoiseFn<T, DIM>,
+    pub source2: Source2,
+
+    phantom: PhantomData<T>,
 }
 
-impl<'a, T, const DIM: usize> Power<'a, T, DIM> {
-    pub fn new(source1: &'a dyn NoiseFn<T, DIM>, source2: &'a dyn NoiseFn<T, DIM>) -> Self {
-        Self { source1, source2 }
+impl<T, Source1, Source2, const DIM: usize> Power<T, Source1, Source2, DIM>
+where
+    Source1: NoiseFn<T, DIM>,
+    Source2: NoiseFn<T, DIM>,
+{
+    pub fn new(source1: Source1, source2: Source2) -> Self {
+        Self {
+            source1,
+            source2,
+            phantom: PhantomData,
+        }
     }
 }
 
-impl<'a, T, const DIM: usize> NoiseFn<T, DIM> for Power<'a, T, DIM>
+impl<T, Source1, Source2, const DIM: usize> NoiseFn<T, DIM> for Power<T, Source1, Source2, DIM>
 where
     T: Copy,
+    Source1: NoiseFn<T, DIM>,
+    Source2: NoiseFn<T, DIM>,
 {
     fn get(&self, point: [T; DIM]) -> f64 {
         (self.source1.get(point)).powf(self.source2.get(point))

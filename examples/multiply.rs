@@ -5,7 +5,7 @@ use noise::{utils::*, Cylinders, Multiply, Perlin};
 fn main() {
     let cyl = Cylinders::new();
     let perlin = Perlin::default();
-    let multiply = Multiply::new(&cyl, &perlin);
+    let multiply = Multiply::new(cyl, perlin);
 
     PlaneMapBuilder::new(&multiply)
         .build()

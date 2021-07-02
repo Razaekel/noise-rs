@@ -5,7 +5,7 @@ use noise::{utils::*, Perlin, Power, Seedable};
 fn main() {
     let perlin1 = Perlin::default();
     let perlin2 = Perlin::new(1);
-    let power = Power::new(&perlin1, &perlin2);
+    let power = Power::new(perlin1, perlin2);
 
     PlaneMapBuilder::new(&power)
         .build()
