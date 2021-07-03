@@ -2,41 +2,51 @@ use crate::{
     math::{interpolate, s_curve::cubic::Cubic},
     noise_fns::NoiseFn,
 };
+use core::marker::PhantomData;
 
 /// Noise function that outputs the value selected from one of two source
 /// functions chosen by the output value from a control function.
-pub struct Select<'a, T, const DIM: usize> {
+pub struct Select<T, Source1, Source2, Control, const DIM: usize>
+where
+    Source1: NoiseFn<T, DIM>,
+    Source2: NoiseFn<T, DIM>,
+    Control: NoiseFn<T, DIM>,
+{
     /// Outputs a value.
-    pub source1: &'a dyn NoiseFn<T, DIM>,
+    pub source1: Source1,
 
     /// Outputs a value.
-    pub source2: &'a dyn NoiseFn<T, DIM>,
+    pub source2: Source2,
 
     /// Determines the value to select. If the output value from
     /// the control function is within a range of values know as the _selection
     /// range_, this noise function outputs the value from `source2`.
     /// Otherwise, this noise function outputs the value from `source1`.
-    pub control: &'a dyn NoiseFn<T, DIM>,
+    pub control: Control,
 
     /// Bounds of the selection range. Default is 0.0 to 1.0.
     pub bounds: (f64, f64),
 
     /// Edge falloff value. Default is 0.0.
     pub falloff: f64,
+
+    phantom: PhantomData<T>,
 }
 
-impl<'a, T, const DIM: usize> Select<'a, T, DIM> {
-    pub fn new(
-        source1: &'a dyn NoiseFn<T, DIM>,
-        source2: &'a dyn NoiseFn<T, DIM>,
-        control: &'a dyn NoiseFn<T, DIM>,
-    ) -> Self {
+impl<T, Source1, Source2, Control, const DIM: usize> Select<T, Source1, Source2, Control, DIM>
+where
+    Source1: NoiseFn<T, DIM>,
+    Source2: NoiseFn<T, DIM>,
+    Control: NoiseFn<T, DIM>,
+{
+    pub fn new(source1: Source1, source2: Source2, control: Control) -> Self {
         Select {
             source1,
             source2,
             control,
             bounds: (0.0, 1.0),
             falloff: 0.0,
+            phantom: PhantomData,
         }
     }
 
@@ -52,9 +62,13 @@ impl<'a, T, const DIM: usize> Select<'a, T, DIM> {
     }
 }
 
-impl<'a, T, const DIM: usize> NoiseFn<T, DIM> for Select<'a, T, DIM>
+impl<T, Source1, Source2, Control, const DIM: usize> NoiseFn<T, DIM>
+    for Select<T, Source1, Source2, Control, DIM>
 where
     T: Copy,
+    Source1: NoiseFn<T, DIM>,
+    Source2: NoiseFn<T, DIM>,
+    Control: NoiseFn<T, DIM>,
 {
     fn get(&self, point: [T; DIM]) -> f64 {
         let control_value = self.control.get(point);

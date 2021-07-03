@@ -1,5 +1,6 @@
 use crate::{math::interpolate, noise_fns::NoiseFn};
 use alloc::vec::Vec;
+use core::marker::PhantomData;
 
 /// Noise function that maps the output value from the source function onto a
 /// terrace-forming curve.
@@ -24,9 +25,12 @@ use alloc::vec::Vec;
 ///
 /// This noise function is often used to generate terrain features such as the
 /// stereotypical desert canyon.
-pub struct Terrace<'a, T, const DIM: usize> {
+pub struct Terrace<T, Source, const DIM: usize>
+where
+    Source: NoiseFn<T, DIM>,
+{
     /// Outputs a value.
-    pub source: &'a dyn NoiseFn<T, DIM>,
+    pub source: Source,
 
     /// Determines if the terrace-forming curve between all control points is
     /// inverted.
@@ -34,14 +38,20 @@ pub struct Terrace<'a, T, const DIM: usize> {
 
     /// Vec that stores the control points.
     control_points: Vec<f64>,
+
+    phantom: PhantomData<T>,
 }
 
-impl<'a, T, const DIM: usize> Terrace<'a, T, DIM> {
-    pub fn new(source: &'a dyn NoiseFn<T, DIM>) -> Self {
+impl<T, Source, const DIM: usize> Terrace<T, Source, DIM>
+where
+    Source: NoiseFn<T, DIM>,
+{
+    pub fn new(source: Source) -> Self {
         Terrace {
             source,
             invert_terraces: false,
             control_points: Vec::with_capacity(2),
+            phantom: PhantomData,
         }
     }
 
@@ -85,7 +95,10 @@ impl<'a, T, const DIM: usize> Terrace<'a, T, DIM> {
     }
 }
 
-impl<'a, T, const DIM: usize> NoiseFn<T, DIM> for Terrace<'a, T, DIM> {
+impl<T, Source, const DIM: usize> NoiseFn<T, DIM> for Terrace<T, Source, DIM>
+where
+    Source: NoiseFn<T, DIM>,
+{
     fn get(&self, point: [T; DIM]) -> f64 {
         // confirm that there's at least 2 control points in the vector.
         assert!(self.control_points.len() >= 2);

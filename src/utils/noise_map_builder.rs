@@ -1,24 +1,30 @@
 use crate::{math::interpolate, noise_fns::NoiseFn, utils::noise_map::NoiseMap};
 
-pub trait NoiseMapBuilder<'a> {
+pub trait NoiseMapBuilder<SourceModule> {
     fn set_size(self, width: usize, height: usize) -> Self;
 
-    fn set_source_module(self, source_module: &'a dyn NoiseFn<f64, 3>) -> Self;
+    fn set_source_module(self, source_module: SourceModule) -> Self;
 
     fn size(&self) -> (usize, usize);
 
     fn build(&self) -> NoiseMap;
 }
 
-pub struct CylinderMapBuilder<'a> {
+pub struct CylinderMapBuilder<SourceModule>
+where
+    SourceModule: NoiseFn<f64, 3>,
+{
     angle_bounds: (f64, f64),
     height_bounds: (f64, f64),
     size: (usize, usize),
-    source_module: &'a dyn NoiseFn<f64, 3>,
+    source_module: SourceModule,
 }
 
-impl<'a> CylinderMapBuilder<'a> {
-    pub fn new(source_module: &'a dyn NoiseFn<f64, 3>) -> Self {
+impl<SourceModule> CylinderMapBuilder<SourceModule>
+where
+    SourceModule: NoiseFn<f64, 3>,
+{
+    pub fn new(source_module: SourceModule) -> Self {
         CylinderMapBuilder {
             angle_bounds: (-90.0, 90.0),
             height_bounds: (-1.0, 1.0),
@@ -70,7 +76,10 @@ impl<'a> CylinderMapBuilder<'a> {
     }
 }
 
-impl<'a> NoiseMapBuilder<'a> for CylinderMapBuilder<'a> {
+impl<SourceModule> NoiseMapBuilder<SourceModule> for CylinderMapBuilder<SourceModule>
+where
+    SourceModule: NoiseFn<f64, 3>,
+{
     fn set_size(self, width: usize, height: usize) -> Self {
         CylinderMapBuilder {
             size: (width, height),
@@ -78,7 +87,7 @@ impl<'a> NoiseMapBuilder<'a> for CylinderMapBuilder<'a> {
         }
     }
 
-    fn set_source_module(self, source_module: &'a dyn NoiseFn<f64, 3>) -> Self {
+    fn set_source_module(self, source_module: SourceModule) -> Self {
         CylinderMapBuilder {
             source_module,
             ..self
@@ -124,16 +133,22 @@ impl<'a> NoiseMapBuilder<'a> for CylinderMapBuilder<'a> {
     }
 }
 
-pub struct PlaneMapBuilder<'a> {
+pub struct PlaneMapBuilder<SourceModule>
+where
+    SourceModule: NoiseFn<f64, 3>,
+{
     is_seamless: bool,
     x_bounds: (f64, f64),
     y_bounds: (f64, f64),
     size: (usize, usize),
-    source_module: &'a dyn NoiseFn<f64, 3>,
+    source_module: SourceModule,
 }
 
-impl<'a> PlaneMapBuilder<'a> {
-    pub fn new(source_module: &'a dyn NoiseFn<f64, 3>) -> Self {
+impl<SourceModule> PlaneMapBuilder<SourceModule>
+where
+    SourceModule: NoiseFn<f64, 3>,
+{
+    pub fn new(source_module: SourceModule) -> Self {
         PlaneMapBuilder {
             is_seamless: false,
             x_bounds: (-1.0, 1.0),
@@ -173,7 +188,10 @@ impl<'a> PlaneMapBuilder<'a> {
     }
 }
 
-impl<'a> NoiseMapBuilder<'a> for PlaneMapBuilder<'a> {
+impl<SourceModule> NoiseMapBuilder<SourceModule> for PlaneMapBuilder<SourceModule>
+where
+    SourceModule: NoiseFn<f64, 3>,
+{
     fn set_size(self, width: usize, height: usize) -> Self {
         PlaneMapBuilder {
             size: (width, height),
@@ -181,7 +199,7 @@ impl<'a> NoiseMapBuilder<'a> for PlaneMapBuilder<'a> {
         }
     }
 
-    fn set_source_module(self, source_module: &'a dyn NoiseFn<f64, 3>) -> Self {
+    fn set_source_module(self, source_module: SourceModule) -> Self {
         PlaneMapBuilder {
             source_module,
             ..self
@@ -240,15 +258,21 @@ impl<'a> NoiseMapBuilder<'a> for PlaneMapBuilder<'a> {
     }
 }
 
-pub struct SphereMapBuilder<'a> {
+pub struct SphereMapBuilder<SourceModule>
+where
+    SourceModule: NoiseFn<f64, 3>,
+{
     latitude_bounds: (f64, f64),
     longitude_bounds: (f64, f64),
     size: (usize, usize),
-    source_module: &'a dyn NoiseFn<f64, 3>,
+    source_module: SourceModule,
 }
 
-impl<'a> SphereMapBuilder<'a> {
-    pub fn new(source_module: &'a dyn NoiseFn<f64, 3>) -> Self {
+impl<SourceModule> SphereMapBuilder<SourceModule>
+where
+    SourceModule: NoiseFn<f64, 3>,
+{
+    pub fn new(source_module: SourceModule) -> Self {
         SphereMapBuilder {
             latitude_bounds: (-1.0, 1.0),
             longitude_bounds: (-1.0, 1.0),
@@ -294,7 +318,10 @@ impl<'a> SphereMapBuilder<'a> {
     }
 }
 
-impl<'a> NoiseMapBuilder<'a> for SphereMapBuilder<'a> {
+impl<SourceModule> NoiseMapBuilder<SourceModule> for SphereMapBuilder<SourceModule>
+where
+    SourceModule: NoiseFn<f64, 3>,
+{
     fn set_size(self, width: usize, height: usize) -> Self {
         SphereMapBuilder {
             size: (width, height),
@@ -302,7 +329,7 @@ impl<'a> NoiseMapBuilder<'a> for SphereMapBuilder<'a> {
         }
     }
 
-    fn set_source_module(self, source_module: &'a dyn NoiseFn<f64, 3>) -> Self {
+    fn set_source_module(self, source_module: SourceModule) -> Self {
         SphereMapBuilder {
             source_module,
             ..self
