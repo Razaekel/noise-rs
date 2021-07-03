@@ -1,20 +1,30 @@
 use crate::noise_fns::NoiseFn;
+use core::marker::PhantomData;
 
 /// Noise function that clamps the output value from the source function to a
 /// range of values.
-pub struct Clamp<'a, T, const DIM: usize> {
+pub struct Clamp<T, Source, const DIM: usize>
+where
+    Source: NoiseFn<T, DIM>,
+{
     /// Outputs a value.
-    pub source: &'a dyn NoiseFn<T, DIM>,
+    pub source: Source,
 
     /// Bound of the clamping range. Default is -1.0 to 1.0.
     pub bounds: (f64, f64),
+
+    phantom: PhantomData<T>,
 }
 
-impl<'a, T, const DIM: usize> Clamp<'a, T, DIM> {
-    pub fn new(source: &'a dyn NoiseFn<T, DIM>) -> Self {
+impl<T, Source, const DIM: usize> Clamp<T, Source, DIM>
+where
+    Source: NoiseFn<T, DIM>,
+{
+    pub fn new(source: Source) -> Self {
         Self {
             source,
             bounds: (-1.0, 1.0),
+            phantom: PhantomData,
         }
     }
 
@@ -40,7 +50,10 @@ impl<'a, T, const DIM: usize> Clamp<'a, T, DIM> {
     }
 }
 
-impl<'a, T, const DIM: usize> NoiseFn<T, DIM> for Clamp<'a, T, DIM> {
+impl<T, Source, const DIM: usize> NoiseFn<T, DIM> for Clamp<T, Source, DIM>
+where
+    Source: NoiseFn<T, DIM>,
+{
     fn get(&self, point: [T; DIM]) -> f64 {
         let value = self.source.get(point);
 

@@ -1,5 +1,6 @@
 use crate::{math::interpolate, noise_fns::NoiseFn};
 use alloc::vec::Vec;
+use core::marker::PhantomData;
 
 /// Noise function that maps the output value from the source function onto an
 /// arbitrary function curve.
@@ -15,12 +16,17 @@ use alloc::vec::Vec;
 /// four control points to the curve. If there is less than four control
 /// points, the get() method panics. Each control point can have any input
 /// and output value, although no two control points can have the same input.
-pub struct Curve<'a, T, const DIM: usize> {
+pub struct Curve<T, Source, const DIM: usize>
+where
+    Source: NoiseFn<T, DIM>,
+{
     /// Outputs a value.
-    pub source: &'a dyn NoiseFn<T, DIM>,
+    pub source: Source,
 
     /// Vec that stores the control points.
     control_points: Vec<ControlPoint<f64>>,
+
+    phantom: PhantomData<T>,
 }
 
 struct ControlPoint<T> {
@@ -28,11 +34,15 @@ struct ControlPoint<T> {
     output: T,
 }
 
-impl<'a, T, const DIM: usize> Curve<'a, T, DIM> {
-    pub fn new(source: &'a dyn NoiseFn<T, DIM>) -> Self {
+impl<T, Source, const DIM: usize> Curve<T, Source, DIM>
+where
+    Source: NoiseFn<T, DIM>,
+{
+    pub fn new(source: Source) -> Self {
         Self {
             source,
             control_points: Vec::with_capacity(4),
+            phantom: PhantomData,
         }
     }
 
@@ -65,7 +75,10 @@ impl<'a, T, const DIM: usize> Curve<'a, T, DIM> {
     }
 }
 
-impl<'a, T, const DIM: usize> NoiseFn<T, DIM> for Curve<'a, T, DIM> {
+impl<T, Source, const DIM: usize> NoiseFn<T, DIM> for Curve<T, Source, DIM>
+where
+    Source: NoiseFn<T, DIM>,
+{
     fn get(&self, point: [T; DIM]) -> f64 {
         // confirm that there's at least 4 control points in the vector.
         assert!(self.control_points.len() >= 4);
