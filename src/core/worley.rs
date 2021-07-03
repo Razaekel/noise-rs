@@ -1,4 +1,5 @@
 use crate::{math, permutationtable::NoiseHasher};
+#[cfg(not(feature = "std"))]
 use alloc::vec::Vec;
 use core::f64;
 
