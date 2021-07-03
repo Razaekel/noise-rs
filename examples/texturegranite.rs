@@ -19,10 +19,10 @@ fn main() {
     // Scale the small grain values so that they can be added to the base
     // granite texture. Worley polygons normally generate pits, so apply a
     // negative scaling factor to produce bumps instead.
-    let scaled_grains = ScaleBias::new(&base_grains).set_scale(-0.5).set_bias(0.0);
+    let scaled_grains = ScaleBias::new(base_grains).set_scale(-0.5).set_bias(0.0);
 
     // Combine the primary granite texture with the small grain texture.
-    let combined_granite = Add::new(&primary_granite, &scaled_grains);
+    let combined_granite = Add::new(primary_granite, scaled_grains);
 
     // Finally, perturb the granite texture to add realism.
     let final_granite = Turbulence::new(combined_granite)
@@ -40,7 +40,7 @@ fn main() {
         .set_is_seamless(true)
         .build();
 
-    let sphere_texture = SphereMapBuilder::new(&final_granite)
+    let sphere_texture = SphereMapBuilder::new(final_granite)
         .set_size(1024, 512)
         .set_bounds(-90.0, 90.0, -180.0, 180.0)
         .build();

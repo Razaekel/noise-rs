@@ -6,9 +6,9 @@ fn main() {
     let perlin = Perlin::default();
     let ridged = RidgedMulti::default();
     let fbm = Fbm::default();
-    let blend = Blend::new(&perlin, &ridged, &fbm);
+    let blend = Blend::new(perlin, ridged, fbm);
 
-    PlaneMapBuilder::new(&blend)
+    PlaneMapBuilder::new(blend)
         .build()
         .write_to_file("blend.png");
 }

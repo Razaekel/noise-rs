@@ -8,5 +8,5 @@ fn main() {
 
     let add = Add::new(cyl, perlin);
 
-    PlaneMapBuilder::new(&add).build().write_to_file("add.png");
+    PlaneMapBuilder::new(add).build().write_to_file("add.png");
 }

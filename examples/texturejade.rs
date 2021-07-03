@@ -29,14 +29,14 @@ fn main() {
 
     // Scale the secondary jade texture so it makes a small contribution to the
     // final jade texture.
-    let secondary_jade = ScaleBias::new(&perturbed_base_secondary_jade)
+    let secondary_jade = ScaleBias::new(perturbed_base_secondary_jade)
         .set_scale(0.25)
         .set_bias(0.0);
 
     // Add the two jade textures together. These two textures were produced
     // using different combinations of coherent noise, so the final texture
     // will have a lot of variation.
-    let combined_jade = Add::new(&primary_jade, &secondary_jade);
+    let combined_jade = Add::new(primary_jade, secondary_jade);
 
     // Finally, perturb the combined jade texture to produce the final jade
     // texture. A low roughness produces nice veins.
@@ -50,7 +50,7 @@ fn main() {
         .set_size(1024, 1024)
         .build();
 
-    let seamless_texture = PlaneMapBuilder::new(&final_jade)
+    let seamless_texture = PlaneMapBuilder::new(final_jade)
         .set_size(1024, 1024)
         .set_is_seamless(true)
         .build();
