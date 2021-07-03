@@ -7,7 +7,7 @@ fn main() {
     let perlin = Perlin::default();
     let multiply = Multiply::new(cyl, perlin);
 
-    PlaneMapBuilder::new(&multiply)
+    PlaneMapBuilder::new(multiply)
         .build()
         .write_to_file("multiply.png");
 }

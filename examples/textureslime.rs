@@ -17,7 +17,7 @@ fn main() {
         .set_octaves(1);
 
     // Scale and lower the small slime bubble values.
-    let small_slime = ScaleBias::new(&small_slime_base)
+    let small_slime = ScaleBias::new(small_slime_base)
         .set_scale(0.5)
         .set_bias(-0.5);
 
@@ -34,7 +34,7 @@ fn main() {
     // values, otherwise choose the large slime bubble texture. The edge
     // falloff is non-zero so that there is a smooth transition between the
     // two textures.
-    let slime_chooser = Select::new(&large_slime, &small_slime, &slime_map)
+    let slime_chooser = Select::new(large_slime, small_slime, slime_map)
         .set_bounds(-0.375, 0.375)
         .set_falloff(0.5);
 
@@ -49,7 +49,7 @@ fn main() {
         .set_size(1024, 1024)
         .build();
 
-    let seamless_texture = PlaneMapBuilder::new(&final_slime)
+    let seamless_texture = PlaneMapBuilder::new(final_slime)
         .set_size(1024, 1024)
         .set_is_seamless(true)
         .build();
