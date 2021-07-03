@@ -43,8 +43,9 @@ impl<const N: usize> NoiseFn<f64, N> for Checkerboard {
     fn get(&self, point: [f64; N]) -> f64 {
         let result = point
             .iter()
-            .map(|&a| a.floor() as usize)
-            .fold(0, |a, b| (a & self.size) ^ (b & self.size));
+            .map(|&a| a.floor() as isize)
+            .reduce(|a, b| (a & self.size as isize) ^ (b & self.size as isize))
+            .unwrap();
 
         if result > 0 {
             -1.0
