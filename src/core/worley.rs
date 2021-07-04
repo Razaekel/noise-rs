@@ -2,8 +2,6 @@ use crate::{
     math::vectors::{Vector, Vector2, Vector3, Vector4, VectorMap},
     permutationtable::NoiseHasher,
 };
-#[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
 use core::f64;
 
 #[derive(Clone, Copy, Debug)]
@@ -47,6 +45,7 @@ pub mod distance_functions {
     }
 
     pub fn quadratic(p1: &[f64], p2: &[f64]) -> f64 {
+        #[cfg(not(feature = "std"))]
         use alloc::vec::Vec;
 
         let temp: Vec<f64> = p1.iter().zip(p2).map(|(a, b)| *a - *b).collect();

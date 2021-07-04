@@ -41,19 +41,10 @@ pub trait Vector<T, const DIM: usize> {
         T: Add<Output = T> + Real;
 
     /// Applies the function f to each element of this vector, in-place.
-    ///
-    /// ```
-    /// # use noise::math::vectors::{Vector, Vector4};
-    /// let mut v = Vector4::new(0_u32, 1, 2, 3);
-    /// v.apply(|x| x.count_ones());
-    /// assert_eq!(v, Vector4::new(0, 1, 1, 2));
-    /// ```
     fn apply<F>(&mut self, f: F)
     where
         T: Copy,
         F: Fn(T) -> T;
-
-    // fn numcast<U>(self) -> Self<T = U>;
 
     fn min(&self, other: &Self) -> Self
     where
@@ -70,30 +61,12 @@ pub trait Vector<T, const DIM: usize> {
         T: Real;
 
     /// Returns the sum of each of this vectors elements
-    ///
-    /// # Example
-    /// ```
-    /// use noise::math::vectors::{Vector2, Vector};
-    ///
-    /// let vector = Vector2::new(1, 2);
-    ///
-    /// println!("The sum of the elements is: {}", vector.sum());
-    ///
-    /// assert_eq!(vector.sum(), 3);
-    /// ```
     fn sum(self) -> T
     where
         T: Add<T, Output = T>;
 
     /// Returns a new vector which elements are the respective square roots of this
     /// vector's elements.
-    ///
-    /// ```
-    /// # use noise::math::vectors::{Vector, Vector2};
-    /// let v = Vector2::new(3f32, 5f32);
-    /// let s = Vector2::new(9f32, 25f32);
-    /// assert_eq!(v, s.sqrt());
-    /// ```
     fn sqrt(self) -> Self
     where
         T: Real;
@@ -104,13 +77,6 @@ pub trait VectorMap<T, U> {
 
     /// Returns a copy of this vector with the members converted using the given conversion
     /// closure.
-    ///
-    /// ```
-    /// # use noise::math::vectors::{Vector4, VectorMap};
-    /// let v = Vector4::new(0_f32, 1., 1.8, 3.14);
-    /// let i = v.map(|x| x.round() as i32);
-    /// assert_eq!(i, Vector4::new(0, 1, 2, 3));
-    /// ```
     fn map<F>(&self, f: F) -> Self::Output
     where
         F: Fn(T) -> U;

@@ -57,6 +57,10 @@ name = "perlin"
 required-features = ["image"]
 
 [[example]]
+name = "perlin_surflet"
+required-features = ["image"]
+
+[[example]]
 name = "open_simplex"
 required-features = ["image"]
 
