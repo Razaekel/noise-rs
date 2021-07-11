@@ -17,6 +17,13 @@ pub struct OpenSimplex {
 
 impl OpenSimplex {
     const DEFAULT_SEED: u32 = 0;
+
+    pub fn new(seed: u32) -> Self {
+        Self {
+            seed,
+            perm_table: PermutationTable::new(Self::DEFAULT_SEED),
+        }
+    }
 }
 
 impl Default for OpenSimplex {
@@ -26,13 +33,6 @@ impl Default for OpenSimplex {
 }
 
 impl Seedable for OpenSimplex {
-    fn new(seed: u32) -> Self {
-        Self {
-            seed,
-            perm_table: PermutationTable::new(seed),
-        }
-    }
-
     /// Sets the seed value for Open Simplex noise
     fn set_seed(self, seed: u32) -> Self {
         // If the new seed is the same as the current seed, just return self.

@@ -49,6 +49,17 @@ impl HybridMulti {
     pub const DEFAULT_LACUNARITY: f64 = core::f64::consts::PI * 2.0 / 3.0;
     pub const DEFAULT_PERSISTENCE: f64 = 0.25;
     pub const MAX_OCTAVES: usize = 32;
+
+    pub fn new(seed: u32) -> Self {
+        Self {
+            seed,
+            octaves: Self::DEFAULT_OCTAVES,
+            frequency: Self::DEFAULT_FREQUENCY,
+            lacunarity: Self::DEFAULT_LACUNARITY,
+            persistence: Self::DEFAULT_PERSISTENCE,
+            sources: super::build_sources(Self::DEFAULT_SEED, Self::DEFAULT_OCTAVES),
+        }
+    }
 }
 
 impl Default for HybridMulti {
@@ -88,17 +99,6 @@ impl MultiFractal for HybridMulti {
 }
 
 impl Seedable for HybridMulti {
-    fn new(seed: u32) -> Self {
-        Self {
-            seed,
-            octaves: Self::DEFAULT_OCTAVES,
-            frequency: Self::DEFAULT_FREQUENCY,
-            lacunarity: Self::DEFAULT_LACUNARITY,
-            persistence: Self::DEFAULT_PERSISTENCE,
-            sources: super::build_sources(seed, Self::DEFAULT_OCTAVES),
-        }
-    }
-
     fn set_seed(self, seed: u32) -> Self {
         if self.seed == seed {
             return self;

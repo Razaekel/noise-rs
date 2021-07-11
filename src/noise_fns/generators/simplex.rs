@@ -14,6 +14,13 @@ pub struct Simplex {
 
 impl Simplex {
     pub const DEFAULT_SEED: u32 = 0;
+
+    pub fn new(seed: u32) -> Self {
+        Simplex {
+            seed,
+            hasher: PermutationTable::new(seed),
+        }
+    }
 }
 
 impl Default for Simplex {
@@ -23,13 +30,6 @@ impl Default for Simplex {
 }
 
 impl Seedable for Simplex {
-    fn new(seed: u32) -> Self {
-        Simplex {
-            seed,
-            hasher: PermutationTable::new(seed),
-        }
-    }
-
     /// Sets the seed value for Simplex noise
     fn set_seed(self, seed: u32) -> Self {
         // If the new seed is the same as the current seed, just return self.

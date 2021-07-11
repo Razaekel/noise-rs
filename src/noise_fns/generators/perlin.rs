@@ -13,6 +13,13 @@ pub struct Perlin {
 
 impl Perlin {
     pub const DEFAULT_SEED: u32 = 0;
+
+    pub fn new(seed: u32) -> Self {
+        Self {
+            seed,
+            perm_table: PermutationTable::new(seed),
+        }
+    }
 }
 
 impl Default for Perlin {
@@ -22,13 +29,6 @@ impl Default for Perlin {
 }
 
 impl Seedable for Perlin {
-    fn new(seed: u32) -> Self {
-        Self {
-            seed,
-            perm_table: PermutationTable::new(seed),
-        }
-    }
-
     /// Sets the seed value for Perlin noise
     fn set_seed(self, seed: u32) -> Self {
         // If the new seed is the same as the current seed, just return self.

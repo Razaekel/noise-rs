@@ -43,16 +43,20 @@ impl<Source> Turbulence<Source> {
             frequency: Self::DEFAULT_FREQUENCY,
             power: Self::DEFAULT_POWER,
             roughness: Self::DEFAULT_ROUGHNESS,
-            x_distort_function: Fbm::new(Self::DEFAULT_SEED)
+            x_distort_function: Fbm::default()
+                .set_seed(Self::DEFAULT_SEED)
                 .set_octaves(Self::DEFAULT_ROUGHNESS)
                 .set_frequency(Self::DEFAULT_FREQUENCY),
-            y_distort_function: Fbm::new(Self::DEFAULT_SEED + 1)
+            y_distort_function: Fbm::default()
+                .set_seed(Self::DEFAULT_SEED + 1)
                 .set_octaves(Self::DEFAULT_ROUGHNESS)
                 .set_frequency(Self::DEFAULT_FREQUENCY),
-            z_distort_function: Fbm::new(Self::DEFAULT_SEED + 2)
+            z_distort_function: Fbm::default()
+                .set_seed(Self::DEFAULT_SEED + 2)
                 .set_octaves(Self::DEFAULT_ROUGHNESS)
                 .set_frequency(Self::DEFAULT_FREQUENCY),
-            u_distort_function: Fbm::new(Self::DEFAULT_SEED + 3)
+            u_distort_function: Fbm::default()
+                .set_seed(Self::DEFAULT_SEED + 3)
                 .set_octaves(Self::DEFAULT_ROUGHNESS)
                 .set_frequency(Self::DEFAULT_FREQUENCY),
         }
@@ -83,8 +87,10 @@ impl<Source> Turbulence<Source> {
             ..self
         }
     }
+}
 
-    pub fn set_seed(self, seed: u32) -> Self {
+impl<Source> Seedable for Turbulence<Source> {
+    fn set_seed(self, seed: u32) -> Self {
         Self {
             seed,
             x_distort_function: self.x_distort_function.set_seed(seed),
@@ -95,7 +101,7 @@ impl<Source> Turbulence<Source> {
         }
     }
 
-    pub fn seed(&self) -> u32 {
+    fn seed(&self) -> u32 {
         self.seed
     }
 }
