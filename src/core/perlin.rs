@@ -8,7 +8,10 @@ use crate::{
 use core::f64;
 
 #[inline(always)]
-pub fn perlin_2d(point: [f64; 2], hasher: &dyn NoiseHasher) -> f64 {
+pub fn perlin_2d<NH>(point: [f64; 2], hasher: &NH) -> f64
+where
+    NH: NoiseHasher + ?Sized,
+{
     // Unscaled range of linearly interpolated perlin noise should be (-sqrt(N)/2, sqrt(N)/2).
     // Need to invert this value and multiply the unscaled result by the value to get a scaled
     // range of (-1, 1).
@@ -76,7 +79,10 @@ fn bilinear_interpolation(u: f64, v: f64, g00: f64, g01: f64, g10: f64, g11: f64
 }
 
 #[inline(always)]
-pub fn perlin_3d(point: [f64; 3], hasher: &dyn NoiseHasher) -> f64 {
+pub fn perlin_3d<NH>(point: [f64; 3], hasher: &NH) -> f64
+where
+    NH: NoiseHasher + ?Sized,
+{
     // Unscaled range of linearly interpolated perlin noise should be (-sqrt(N)/2, sqrt(N)/2).
     // Need to invert this value and multiply the unscaled result by the value to get a scaled
     // range of (-1, 1).
@@ -159,7 +165,10 @@ pub fn perlin_3d(point: [f64; 3], hasher: &dyn NoiseHasher) -> f64 {
 }
 
 #[inline(always)]
-pub fn perlin_4d(point: [f64; 4], hasher: &dyn NoiseHasher) -> f64 {
+pub fn perlin_4d<NH>(point: [f64; 4], hasher: &NH) -> f64
+where
+    NH: NoiseHasher + ?Sized,
+{
     // Unscaled range of linearly interpolated perlin noise should be (-sqrt(N)/2, sqrt(N)/2).
     // Need to invert this value and multiply the unscaled result by the value to get a scaled
     // range of (-1, 1).
