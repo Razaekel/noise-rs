@@ -4,18 +4,20 @@ use crate::{
     permutationtable::NoiseHasher,
 };
 
-pub fn open_simplex_2d(point: [f64; 2], hasher: &impl NoiseHasher) -> f64 {
+pub fn open_simplex_2d<NH>(point: [f64; 2], hasher: &NH) -> f64
+where
+    NH: NoiseHasher + ?Sized,
+{
     const STRETCH_CONSTANT: f64 = -0.211_324_865_405_187; //(1/sqrt(2+1)-1)/2;
     const SQUISH_CONSTANT: f64 = 0.366_025_403_784_439; //(sqrt(2+1)-1)/2;
     const NORM_CONSTANT: f64 = 1.0 / 14.0;
 
-    fn gradient(hasher: &impl NoiseHasher, vertex: Vector2<f64>, pos: Vector2<f64>) -> f64 {
-        let attn = 2.0 - pos.magnitude_squared();
+    fn surflet(index: usize, point: Vector2<f64>) -> f64 {
+        let t = 2.0 - point.magnitude_squared();
 
-        if attn > 0.0 {
-            let index = hasher.hash(&vertex.numcast().unwrap().into_array());
-            let vec = Vector2::from(gradient::grad2(index));
-            attn.powi(4) * pos.dot(vec)
+        if t > 0.0 {
+            let gradient = Vector2::from(gradient::grad2(index));
+            t.powi(4) * point.dot(gradient)
         } else {
             0.0
         }
@@ -48,9 +50,10 @@ pub fn open_simplex_2d(point: [f64; 2], hasher: &impl NoiseHasher) -> f64 {
             {
                 let offset = Vector2::new($x, $y);
                 let vertex = stretched_floor + offset;
+                let index = hasher.hash(&vertex.numcast().unwrap().into_array());
                 let dpos = rel_pos - (Vector2::broadcast(SQUISH_CONSTANT) * offset.sum()) - offset;
 
-                gradient(hasher, vertex, dpos)
+                surflet(index, dpos)
             }
         }
     );
@@ -82,18 +85,20 @@ pub fn open_simplex_2d(point: [f64; 2], hasher: &impl NoiseHasher) -> f64 {
     value * NORM_CONSTANT
 }
 
-pub fn open_simplex_3d(point: [f64; 3], hasher: &impl NoiseHasher) -> f64 {
+pub fn open_simplex_3d<NH>(point: [f64; 3], hasher: &NH) -> f64
+where
+    NH: NoiseHasher,
+{
     const STRETCH_CONSTANT: f64 = -1.0 / 6.0; //(1/Math.sqrt(3+1)-1)/3;
     const SQUISH_CONSTANT: f64 = 1.0 / 3.0; //(Math.sqrt(3+1)-1)/3;
     const NORM_CONSTANT: f64 = 1.0 / 14.0;
 
-    fn gradient(hasher: &impl NoiseHasher, vertex: Vector3<f64>, pos: Vector3<f64>) -> f64 {
-        let attn = 2.0 - pos.magnitude_squared();
+    fn surflet(index: usize, point: Vector3<f64>) -> f64 {
+        let t = 2.0 - point.magnitude_squared();
 
-        if attn > 0.0 {
-            let index = hasher.hash(&vertex.numcast().unwrap().into_array());
-            let vec = Vector3::from(gradient::grad3(index));
-            attn.powi(4) * pos.dot(vec)
+        if t > 0.0 {
+            let gradient = Vector3::from(gradient::grad3(index));
+            t.powi(4) * point.dot(gradient)
         } else {
             0.0
         }
@@ -128,9 +133,10 @@ pub fn open_simplex_3d(point: [f64; 3], hasher: &impl NoiseHasher) -> f64 {
             {
                 let offset = Vector3::new($x, $y, $z);
                 let vertex = stretched_floor + offset;
+                let index = hasher.hash(&vertex.numcast().unwrap().into_array());
                 let dpos = rel_pos - (Vector3::broadcast(SQUISH_CONSTANT) * offset.sum()) - offset;
 
-                gradient(hasher, vertex, dpos)
+                surflet(index, dpos)
             }
         }
     );
@@ -190,20 +196,21 @@ pub fn open_simplex_3d(point: [f64; 3], hasher: &impl NoiseHasher) -> f64 {
     value * NORM_CONSTANT
 }
 
-pub fn open_simplex_4d(point: [f64; 4], hasher: &impl NoiseHasher) -> f64 {
+pub fn open_simplex_4d<NH>(point: [f64; 4], hasher: &NH) -> f64
+where
+    NH: NoiseHasher + ?Sized,
+{
     const STRETCH_CONSTANT: f64 = -0.138_196_601_125_011; //(Math.sqrt(4+1)-1)/4;
     const SQUISH_CONSTANT: f64 = 0.309_016_994_374_947; //(Math.sqrt(4+1)-1)/4;
 
     const NORM_CONSTANT: f64 = 1.0 / 6.869_909_007_095_662_5;
 
-    #[inline(always)]
-    fn gradient(hasher: &impl NoiseHasher, vertex: Vector4<f64>, pos: Vector4<f64>) -> f64 {
-        let attn = 2.0 - pos.magnitude_squared();
+    fn surflet(index: usize, point: Vector4<f64>) -> f64 {
+        let t = 2.0 - point.magnitude_squared();
 
-        if attn > 0.0 {
-            let index = hasher.hash(&vertex.numcast().unwrap().into_array());
-            let vec = Vector4::from(gradient::grad4(index));
-            attn.powi(4) * pos.dot(vec)
+        if t > 0.0 {
+            let gradient = Vector4::from(gradient::grad4(index));
+            t.powi(4) * point.dot(gradient)
         } else {
             0.0
         }
@@ -240,9 +247,10 @@ pub fn open_simplex_4d(point: [f64; 4], hasher: &impl NoiseHasher) -> f64 {
             {
                 let offset = Vector4::new($x, $y, $z, $w);
                 let vertex = stretched_floor + offset;
+                let index = hasher.hash(&vertex.numcast().unwrap().into_array());
                 let dpos = rel_pos - (Vector4::broadcast(SQUISH_CONSTANT) * offset.sum()) - offset;
 
-                gradient(hasher, vertex, dpos)
+                surflet(index, dpos)
             }
         }
     );

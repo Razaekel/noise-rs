@@ -83,7 +83,10 @@ const LATTICE_LOOKUP_3D: [[i8; 3]; 4 * 16] =
      [0, 0, 0],[0, 1, 1],[1, 0, 1],[1, 1, 0],
      [1, 1, 1],[0, 1, 1],[1, 0, 1],[1, 1, 0]];
 
-pub fn super_simplex_2d(point: [f64; 2], hasher: &impl NoiseHasher) -> f64 {
+pub fn super_simplex_2d<NH>(point: [f64; 2], hasher: &NH) -> f64
+where
+    NH: NoiseHasher + ?Sized,
+{
     let point = Vector2::from(point);
 
     // Transform point from real space to simplex space
@@ -125,7 +128,10 @@ pub fn super_simplex_2d(point: [f64; 2], hasher: &impl NoiseHasher) -> f64 {
     value * NORM_CONSTANT_2D
 }
 
-pub fn super_simplex_3d(point: [f64; 3], hasher: &impl NoiseHasher) -> f64 {
+pub fn super_simplex_3d<NH>(point: [f64; 3], hasher: &NH) -> f64
+where
+    NH: NoiseHasher + ?Sized,
+{
     let point = Vector3::from(point);
 
     // Transform point from real space to simplex space
