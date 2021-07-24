@@ -68,7 +68,10 @@ where
 ///
 /// 1D Simplex Noise with Derivative
 #[inline(always)]
-pub fn simplex_1d(x: f64, hasher: &dyn NoiseHasher) -> (f64, f64) {
+pub fn simplex_1d<NH>(x: f64, hasher: &NH) -> (f64, f64)
+where
+    NH: NoiseHasher + ?Sized,
+{
     let cell = x.floor() as isize;
 
     let near_distance = x - cell as f64;
@@ -138,7 +141,10 @@ pub fn simplex_1d(x: f64, hasher: &dyn NoiseHasher) -> (f64, f64) {
 
 #[inline(always)]
 #[inline(always)]
-pub fn simplex_2d(point: [f64; 2], hasher: &dyn NoiseHasher) -> (f64, [f64; 2]) {
+pub fn simplex_2d<NH>(point: [f64; 2], hasher: &NH) -> (f64, [f64; 2])
+where
+    NH: NoiseHasher + ?Sized,
+{
     let f2: f64 = skew_factor(2);
     let g2: f64 = unskew_factor(2);
 
@@ -203,21 +209,21 @@ pub fn simplex_2d(point: [f64; 2], hasher: &dyn NoiseHasher) -> (f64, [f64; 2]) 
         // let t = 0.5 - (x * x + y * y);
         let t = 0.5 - point.magnitude_squared();
 
-        if t <= 0.0 {
-            // No influence
-            SurfletComponents::zeros()
-        } else {
+        if t > 0.0 {
             let gradient = Vector2::from(gradient::grad2(gradient_index));
             let t2 = t * t;
             let t4 = t2 * t2;
 
             SurfletComponents {
-                value: t4 * (gradient.dot(point)),
+                value: t4 * gradient.dot(point),
                 t,
                 t2,
                 t4,
                 gradient,
             }
+        } else {
+            // No influence
+            SurfletComponents::zeros()
         }
     }
 
@@ -258,7 +264,10 @@ pub fn simplex_2d(point: [f64; 2], hasher: &dyn NoiseHasher) -> (f64, [f64; 2]) 
 }
 
 #[inline(always)]
-pub fn simplex_3d(point: [f64; 3], hasher: &dyn NoiseHasher) -> (f64, [f64; 3]) {
+pub fn simplex_3d<NH>(point: [f64; 3], hasher: &NH) -> (f64, [f64; 3])
+where
+    NH: NoiseHasher + ?Sized,
+{
     let f3: f64 = skew_factor(3);
     let g3: f64 = unskew_factor(3);
 
@@ -343,10 +352,7 @@ pub fn simplex_3d(point: [f64; 3], hasher: &dyn NoiseHasher) -> (f64, [f64; 3]) 
     fn surflet(gradient_index: usize, point: Vector3<f64>) -> SurfletComponents {
         let t = 0.5 - point.magnitude_squared();
 
-        if t <= 0.0 {
-            // No influence
-            SurfletComponents::zeros()
-        } else {
+        if t > 0.0 {
             let gradient = Vector3::from(gradient::grad3(gradient_index));
             let t2 = t * t;
             let t4 = t2 * t2;
@@ -358,6 +364,9 @@ pub fn simplex_3d(point: [f64; 3], hasher: &dyn NoiseHasher) -> (f64, [f64; 3]) 
                 t4,
                 gradient,
             }
+        } else {
+            // No influence
+            SurfletComponents::zeros()
         }
     }
 
@@ -411,7 +420,10 @@ pub fn simplex_3d(point: [f64; 3], hasher: &dyn NoiseHasher) -> (f64, [f64; 3]) 
 }
 
 #[inline(always)]
-pub fn simplex_4d(point: [f64; 4], hasher: &dyn NoiseHasher) -> (f64, [f64; 4]) {
+pub fn simplex_4d<NH>(point: [f64; 4], hasher: &NH) -> (f64, [f64; 4])
+where
+    NH: NoiseHasher + ?Sized,
+{
     let f4: f64 = skew_factor(4);
     let g4: f64 = unskew_factor(4);
 
@@ -518,10 +530,7 @@ pub fn simplex_4d(point: [f64; 4], hasher: &dyn NoiseHasher) -> (f64, [f64; 4]) 
     fn surflet(gradient_index: usize, point: Vector4<f64>) -> SurfletComponents {
         let t = 0.6 - point.magnitude_squared();
 
-        if t <= 0.0 {
-            // No influence
-            SurfletComponents::zeros()
-        } else {
+        if t > 0.0 {
             let gradient = Vector4::from(gradient::grad4(gradient_index));
             let t2 = t * t;
             let t4 = t2 * t2;
@@ -533,6 +542,9 @@ pub fn simplex_4d(point: [f64; 4], hasher: &dyn NoiseHasher) -> (f64, [f64; 4]) 
                 t4,
                 gradient,
             }
+        } else {
+            // No influence
+            SurfletComponents::zeros()
         }
     }
 

@@ -5,18 +5,18 @@ use crate::{
 };
 
 #[inline(always)]
-pub fn perlin_surflet_2d(point: [f64; 2], hasher: &dyn NoiseHasher) -> f64 {
+pub fn perlin_surflet_2d<NH>(point: [f64; 2], hasher: &NH) -> f64
+where
+    NH: NoiseHasher + ?Sized,
+{
     const SCALE_FACTOR: f64 = 3.160_493_827_160_493_7;
 
-    #[inline(always)]
-    fn surflet(hasher: &dyn NoiseHasher, corner: Vector2<isize>, distance: Vector2<f64>) -> f64 {
+    fn surflet(index: usize, distance: Vector2<f64>) -> f64 {
         let attn: f64 = 1.0 - distance.magnitude_squared();
 
         if attn > 0.0 {
-            attn.powi(4)
-                * distance.dot(Vector2::from(gradient::grad2(
-                    hasher.hash(&corner.into_array()),
-                )))
+            let gradient = Vector2::from(gradient::grad2(index));
+            attn.powi(4) * distance.dot(gradient)
         } else {
             0.0
         }
@@ -32,7 +32,8 @@ pub fn perlin_surflet_2d(point: [f64; 2], hasher: &dyn NoiseHasher) -> f64 {
         ($x:expr, $y:expr) => {
             {
                 let offset = Vector2::new($x, $y);
-                surflet(hasher, corner + offset, distance - offset.numcast().unwrap())
+                let index = hasher.hash(&(corner + offset).into_array());
+                surflet(index, distance - offset.numcast().unwrap())
             }
         }
     );
@@ -46,18 +47,19 @@ pub fn perlin_surflet_2d(point: [f64; 2], hasher: &dyn NoiseHasher) -> f64 {
     ((f00 + f10 + f01 + f11) * SCALE_FACTOR).clamp(-1.0, 1.0)
 }
 
-pub fn perlin_surflet_3d(point: [f64; 3], hasher: &dyn NoiseHasher) -> f64 {
+pub fn perlin_surflet_3d<NH>(point: [f64; 3], hasher: &NH) -> f64
+where
+    NH: NoiseHasher + ?Sized,
+{
     const SCALE_FACTOR: f64 = 3.889_855_325_553_107_4;
 
     #[inline(always)]
-    fn surflet(hasher: &dyn NoiseHasher, corner: Vector3<isize>, distance: Vector3<f64>) -> f64 {
+    fn surflet(index: usize, distance: Vector3<f64>) -> f64 {
         let attn: f64 = 1.0 - distance.magnitude_squared();
 
         if attn > 0.0 {
-            attn.powi(4)
-                * distance.dot(Vector3::from(gradient::grad3(
-                    hasher.hash(&corner.into_array()),
-                )))
+            let gradient = Vector3::from(gradient::grad3(index));
+            attn.powi(4) * distance.dot(gradient)
         } else {
             0.0
         }
@@ -73,7 +75,8 @@ pub fn perlin_surflet_3d(point: [f64; 3], hasher: &dyn NoiseHasher) -> f64 {
         ($x:expr, $y:expr, $z:expr) => {
             {
                 let offset = Vector3::new($x, $y, $z);
-                surflet(hasher, corner + offset, distance - offset.numcast().unwrap())
+                let index = hasher.hash(&(corner + offset).into_array());
+                surflet(index, distance - offset.numcast().unwrap())
             }
         }
     );
@@ -91,18 +94,19 @@ pub fn perlin_surflet_3d(point: [f64; 3], hasher: &dyn NoiseHasher) -> f64 {
     ((f000 + f100 + f010 + f110 + f001 + f101 + f011 + f111) * SCALE_FACTOR).clamp(-1.0, 1.0)
 }
 
-pub fn perlin_surflet_4d(point: [f64; 4], hasher: &dyn NoiseHasher) -> f64 {
+pub fn perlin_surflet_4d<NH>(point: [f64; 4], hasher: &NH) -> f64
+where
+    NH: NoiseHasher + ?Sized,
+{
     const SCALE_FACTOR: f64 = 4.424_369_240_215_691;
 
     #[inline(always)]
-    fn surflet(hasher: &dyn NoiseHasher, corner: Vector4<isize>, distance: Vector4<f64>) -> f64 {
+    fn surflet(index: usize, distance: Vector4<f64>) -> f64 {
         let attn: f64 = 1.0 - distance.magnitude_squared();
 
         if attn > 0.0 {
-            attn.powi(4)
-                * distance.dot(Vector4::from(gradient::grad4(
-                    hasher.hash(&corner.into_array()),
-                )))
+            let gradient = Vector4::from(gradient::grad4(index));
+            attn.powi(4) * distance.dot(gradient)
         } else {
             0.0
         }
@@ -118,7 +122,8 @@ pub fn perlin_surflet_4d(point: [f64; 4], hasher: &dyn NoiseHasher) -> f64 {
         ($x:expr, $y:expr, $z:expr, $w:expr) => {
             {
                 let offset = Vector4::new($x, $y, $z, $w);
-                surflet(hasher, corner + offset, distance - offset.numcast().unwrap())
+                let index = hasher.hash(&(corner + offset).into_array());
+                surflet(index, distance - offset.numcast().unwrap())
             }
         }
     );
