@@ -258,14 +258,15 @@ fn get_vec3(index: usize) -> Vector3<f64> {
 
 #[inline(always)]
 #[allow(clippy::cognitive_complexity)]
-pub fn worley_4d<F>(
-    hasher: &dyn NoiseHasher,
+pub fn worley_4d<F, NH>(
+    hasher: &NH,
     distance_function: F,
     return_type: ReturnType,
     point: [f64; 4],
 ) -> f64
 where
     F: Fn(&[f64], &[f64]) -> f64,
+    NH: NoiseHasher + ?Sized,
 {
     let point = Vector4::from(point);
 
