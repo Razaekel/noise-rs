@@ -1,20 +1,21 @@
 use crate::noise_fns::NoiseFn;
 use core::marker::PhantomData;
+use num_traits::Float;
 
 /// Noise function that negates the output value from the source function.
-pub struct Negate<T, Source, const DIM: usize>
+pub struct Negate<F, Source, const DIM: usize>
 where
-    Source: NoiseFn<T, DIM>,
+    Source: NoiseFn<F, DIM>,
 {
     /// Outputs a value.
     pub source: Source,
 
-    phantom: PhantomData<T>,
+    phantom: PhantomData<F>,
 }
 
-impl<T, Source, const DIM: usize> Negate<T, Source, DIM>
+impl<F, Source, const DIM: usize> Negate<F, Source, DIM>
 where
-    Source: NoiseFn<T, DIM>,
+    Source: NoiseFn<F, DIM>,
 {
     pub fn new(source: Source) -> Self {
         Negate {
@@ -24,11 +25,12 @@ where
     }
 }
 
-impl<T, Source, const DIM: usize> NoiseFn<T, DIM> for Negate<T, Source, DIM>
+impl<F, Source, const DIM: usize> NoiseFn<F, DIM> for Negate<F, Source, DIM>
 where
-    Source: NoiseFn<T, DIM>,
+    F: Float,
+    Source: NoiseFn<F, DIM>,
 {
-    fn get(&self, point: [T; DIM]) -> f64 {
+    fn get(&self, point: [F; DIM]) -> F {
         -self.source.get(point)
     }
 }

@@ -1,21 +1,22 @@
 use crate::noise_fns::NoiseFn;
 use core::marker::PhantomData;
+use num_traits::Float;
 
 /// Noise function that outputs the absolute value of the output value from the
 /// source function.
-pub struct Abs<T, Source, const DIM: usize>
+pub struct Abs<F, Source, const DIM: usize>
 where
-    Source: NoiseFn<T, DIM>,
+    Source: NoiseFn<F, DIM>,
 {
     /// Outputs a value.
     pub source: Source,
 
-    phantom: PhantomData<T>,
+    phantom: PhantomData<F>,
 }
 
-impl<T, Source, const DIM: usize> Abs<T, Source, DIM>
+impl<F, Source, const DIM: usize> Abs<F, Source, DIM>
 where
-    Source: NoiseFn<T, DIM>,
+    Source: NoiseFn<F, DIM>,
 {
     pub fn new(source: Source) -> Self {
         Self {
@@ -25,11 +26,12 @@ where
     }
 }
 
-impl<T, Source, const DIM: usize> NoiseFn<T, DIM> for Abs<T, Source, DIM>
+impl<F, Source, const DIM: usize> NoiseFn<F, DIM> for Abs<F, Source, DIM>
 where
-    Source: NoiseFn<T, DIM>,
+    F: Float,
+    Source: NoiseFn<F, DIM>,
 {
-    fn get(&self, point: [T; DIM]) -> f64 {
+    fn get(&self, point: [F; DIM]) -> F {
         (self.source.get(point)).abs()
     }
 }

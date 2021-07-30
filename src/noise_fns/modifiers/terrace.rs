@@ -1,6 +1,7 @@
 use crate::{math::interpolate, noise_fns::NoiseFn};
 use alloc::vec::Vec;
-use core::marker::PhantomData;
+use core::{marker::PhantomData, ops::MulAssign};
+use num_traits::{Float, MulAdd};
 
 /// Noise function that maps the output value from the source function onto a
 /// terrace-forming curve.
@@ -25,9 +26,10 @@ use core::marker::PhantomData;
 ///
 /// This noise function is often used to generate terrain features such as the
 /// stereotypical desert canyon.
-pub struct Terrace<T, Source, const DIM: usize>
+pub struct Terrace<F, Source, const DIM: usize>
 where
-    Source: NoiseFn<T, DIM>,
+    F: Float,
+    Source: NoiseFn<F, DIM>,
 {
     /// Outputs a value.
     pub source: Source,
@@ -37,14 +39,15 @@ where
     pub invert_terraces: bool,
 
     /// Vec that stores the control points.
-    control_points: Vec<f64>,
+    control_points: Vec<F>,
 
-    phantom: PhantomData<T>,
+    phantom: PhantomData<F>,
 }
 
-impl<T, Source, const DIM: usize> Terrace<T, Source, DIM>
+impl<F, Source, const DIM: usize> Terrace<F, Source, DIM>
 where
-    Source: NoiseFn<T, DIM>,
+    F: Float,
+    Source: NoiseFn<F, DIM>,
 {
     pub fn new(source: Source) -> Self {
         Terrace {
@@ -62,12 +65,12 @@ where
     /// At the control points, its slope resets to zero.
     ///
     /// It does not matter which order these points are added in.
-    pub fn add_control_point(mut self, control_point: f64) -> Self {
+    pub fn add_control_point(mut self, control_point: F) -> Self {
         // check to see if the vector already contains the input point.
         if !self
             .control_points
             .iter()
-            .any(|&x| (x - control_point).abs() < f64::EPSILON)
+            .any(|&x| (x - control_point).abs() < F::from(f64::EPSILON).unwrap())
         {
             // it doesn't, so find the correct position to insert the new
             // control point.
@@ -95,11 +98,12 @@ where
     }
 }
 
-impl<T, Source, const DIM: usize> NoiseFn<T, DIM> for Terrace<T, Source, DIM>
+impl<F, Source, const DIM: usize> NoiseFn<F, DIM> for Terrace<F, Source, DIM>
 where
-    Source: NoiseFn<T, DIM>,
+    F: Float + MulAdd<Output = F> + MulAssign,
+    Source: NoiseFn<F, DIM>,
 {
-    fn get(&self, point: [T; DIM]) -> f64 {
+    fn get(&self, point: [F; DIM]) -> F {
         // confirm that there's at least 2 control points in the vector.
         assert!(self.control_points.len() >= 2);
 
@@ -133,7 +137,7 @@ where
         let mut alpha = (source_value - input0) / (input1 - input0);
 
         if self.invert_terraces {
-            alpha = 1.0 - alpha;
+            alpha = F::one() - alpha;
             core::mem::swap(&mut input0, &mut input1);
         }
 

@@ -3,14 +3,16 @@ use crate::{
     noise_fns::NoiseFn,
 };
 use core::marker::PhantomData;
+use num_traits::{Float, MulAdd};
 
 /// Noise function that outputs the value selected from one of two source
 /// functions chosen by the output value from a control function.
-pub struct Select<T, Source1, Source2, Control, const DIM: usize>
+pub struct Select<F, Source1, Source2, Control, const DIM: usize>
 where
-    Source1: NoiseFn<T, DIM>,
-    Source2: NoiseFn<T, DIM>,
-    Control: NoiseFn<T, DIM>,
+    F: Float,
+    Source1: NoiseFn<F, DIM>,
+    Source2: NoiseFn<F, DIM>,
+    Control: NoiseFn<F, DIM>,
 {
     /// Outputs a value.
     pub source1: Source1,
@@ -25,56 +27,57 @@ where
     pub control: Control,
 
     /// Bounds of the selection range. Default is 0.0 to 1.0.
-    pub bounds: (f64, f64),
+    pub bounds: (F, F),
 
     /// Edge falloff value. Default is 0.0.
-    pub falloff: f64,
+    pub falloff: F,
 
-    phantom: PhantomData<T>,
+    phantom: PhantomData<F>,
 }
 
-impl<T, Source1, Source2, Control, const DIM: usize> Select<T, Source1, Source2, Control, DIM>
+impl<F, Source1, Source2, Control, const DIM: usize> Select<F, Source1, Source2, Control, DIM>
 where
-    Source1: NoiseFn<T, DIM>,
-    Source2: NoiseFn<T, DIM>,
-    Control: NoiseFn<T, DIM>,
+    F: Float,
+    Source1: NoiseFn<F, DIM>,
+    Source2: NoiseFn<F, DIM>,
+    Control: NoiseFn<F, DIM>,
 {
     pub fn new(source1: Source1, source2: Source2, control: Control) -> Self {
         Select {
             source1,
             source2,
             control,
-            bounds: (0.0, 1.0),
-            falloff: 0.0,
+            bounds: (F::zero(), F::one()),
+            falloff: F::zero(),
             phantom: PhantomData,
         }
     }
 
-    pub fn set_bounds(self, lower_bound: f64, upper_bound: f64) -> Self {
+    pub fn set_bounds(self, lower_bound: F, upper_bound: F) -> Self {
         Select {
             bounds: (lower_bound, upper_bound),
             ..self
         }
     }
 
-    pub fn set_falloff(self, falloff: f64) -> Self {
+    pub fn set_falloff(self, falloff: F) -> Self {
         Select { falloff, ..self }
     }
 }
 
-impl<T, Source1, Source2, Control, const DIM: usize> NoiseFn<T, DIM>
-    for Select<T, Source1, Source2, Control, DIM>
+impl<F, Source1, Source2, Control, const DIM: usize> NoiseFn<F, DIM>
+    for Select<F, Source1, Source2, Control, DIM>
 where
-    T: Copy,
-    Source1: NoiseFn<T, DIM>,
-    Source2: NoiseFn<T, DIM>,
-    Control: NoiseFn<T, DIM>,
+    F: Float + MulAdd<Output = F> + Cubic,
+    Source1: NoiseFn<F, DIM>,
+    Source2: NoiseFn<F, DIM>,
+    Control: NoiseFn<F, DIM>,
 {
-    fn get(&self, point: [T; DIM]) -> f64 {
+    fn get(&self, point: [F; DIM]) -> F {
         let control_value = self.control.get(point);
         let (lower, upper) = self.bounds;
 
-        if self.falloff > 0.0 {
+        if self.falloff > F::zero() {
             match () {
                 _ if control_value < (lower - self.falloff) => self.source1.get(point),
                 _ if control_value < (lower + self.falloff) => {

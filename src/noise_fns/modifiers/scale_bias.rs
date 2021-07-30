@@ -1,59 +1,58 @@
 use crate::noise_fns::NoiseFn;
-use core::marker::PhantomData;
+use num_traits::{Float, MulAdd};
 
 /// Noise function that applies a scaling factor and a bias to the output value
 /// from the source function.
 ///
 /// The function retrieves the output value from the source function, multiplies
 /// it with the scaling factor, adds the bias to it, then outputs the value.
-pub struct ScaleBias<T, Source, const DIM: usize> {
+pub struct ScaleBias<F, Source, const DIM: usize> {
     /// Outputs a value.
     pub source: Source,
 
     /// Scaling factor to apply to the output value from the source function.
     /// The default value is 1.0.
-    pub scale: f64,
+    pub scale: F,
 
     /// Bias to apply to the scaled output value from the source function.
     /// The default value is 0.0.
-    pub bias: f64,
-
-    phantom: PhantomData<T>,
+    pub bias: F,
 }
 
-impl<T, Source, const DIM: usize> ScaleBias<T, Source, DIM>
+impl<F, Source, const DIM: usize> ScaleBias<F, Source, DIM>
 where
-    Source: NoiseFn<T, DIM>,
+    F: Float,
+    Source: NoiseFn<F, DIM>,
 {
     pub fn new(source: Source) -> Self {
         Self {
             source,
-            scale: 1.0,
-            bias: 0.0,
-            phantom: PhantomData,
+            scale: F::one(),
+            bias: F::zero(),
         }
     }
 
-    pub fn set_scale(self, scale: f64) -> Self {
+    pub fn set_scale(self, scale: F) -> Self {
         Self { scale, ..self }
     }
 
-    pub fn set_bias(self, bias: f64) -> Self {
+    pub fn set_bias(self, bias: F) -> Self {
         Self { bias, ..self }
     }
 }
 
-impl<T, Source, const DIM: usize> NoiseFn<T, DIM> for ScaleBias<T, Source, DIM>
+impl<F, Source, const DIM: usize> NoiseFn<F, DIM> for ScaleBias<F, Source, DIM>
 where
-    Source: NoiseFn<T, DIM>,
+    F: Float + MulAdd<Output = F>,
+    Source: NoiseFn<F, DIM>,
 {
     #[cfg(not(target_os = "emscripten"))]
-    fn get(&self, point: [T; DIM]) -> f64 {
-        (self.source.get(point)).mul_add(self.scale, self.bias)
+    fn get(&self, point: [F; DIM]) -> F {
+        MulAdd::mul_add(self.source.get(point), self.scale, self.bias)
     }
 
     #[cfg(target_os = "emscripten")]
-    fn get(&self, point: [T; DIM]) -> f64 {
+    fn get(&self, point: [F; DIM]) -> f64 {
         (self.source.get(point) * self.scale) + self.bias
     }
 }
