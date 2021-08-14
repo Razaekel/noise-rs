@@ -20,7 +20,7 @@ impl PerlinSurflet {
     pub fn new(seed: u32) -> Self {
         Self {
             seed,
-            perm_table: PermutationTable::new(Self::DEFAULT_SEED),
+            perm_table: PermutationTable::new(seed),
         }
     }
 }
