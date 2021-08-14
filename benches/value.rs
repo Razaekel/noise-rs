@@ -15,28 +15,28 @@ criterion_group!(
 criterion_main!(value, value_64x64);
 
 fn bench_value2(c: &mut Criterion) {
-    let value = Value::new();
+    let value = Value::new(42);
     c.bench_function("super simplex 4d", |b| {
         b.iter(|| value.get(black_box([42.0_f64, 37.0])))
     });
 }
 
 fn bench_value3(c: &mut Criterion) {
-    let value = Value::new();
+    let value = Value::new(42);
     c.bench_function("value 3d", |b| {
         b.iter(|| value.get(black_box([42.0_f64, 37.0, 26.0])))
     });
 }
 
 fn bench_value4(c: &mut Criterion) {
-    let value = Value::new();
+    let value = Value::new(42);
     c.bench_function("value 4d", |b| {
         b.iter(|| value.get(black_box([42.0_f64, 37.0, 26.0, 128.0])))
     });
 }
 
 fn bench_value2_64x64(c: &mut Criterion) {
-    let value = Value::new();
+    let value = Value::new(42);
     c.bench_function("value 2d (64x64)", |b| {
         b.iter(|| {
             for y in 0i8..64 {
@@ -49,7 +49,7 @@ fn bench_value2_64x64(c: &mut Criterion) {
 }
 
 fn bench_value3_64x64(c: &mut Criterion) {
-    let value = Value::new();
+    let value = Value::new(42);
     c.bench_function("value 3d (64x64)", |b| {
         b.iter(|| {
             for y in 0i8..64 {
@@ -62,7 +62,7 @@ fn bench_value3_64x64(c: &mut Criterion) {
 }
 
 fn bench_value4_64x64(c: &mut Criterion) {
-    let value = Value::new();
+    let value = Value::new(42);
     c.bench_function("value 4d (64x64)", |b| {
         b.iter(|| {
             for y in 0i8..64 {
