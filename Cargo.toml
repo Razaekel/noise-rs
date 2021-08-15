@@ -25,7 +25,7 @@ images = ["image", "std"]
 std = []
 
 [dev-dependencies]
-criterion = "0.3"
+criterion = { version = "0.3", features = ["html_reports"] }
 rand_pcg = "0.2"
 
 [[bench]]
