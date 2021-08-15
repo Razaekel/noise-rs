@@ -21,5 +21,5 @@ pub mod core;
 mod gradient;
 mod math;
 mod noise_fns;
-mod permutationtable;
+pub mod permutationtable;
 pub mod utils;
