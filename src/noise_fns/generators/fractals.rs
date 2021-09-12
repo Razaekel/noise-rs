@@ -11,13 +11,15 @@ use crate::Seedable;
 
 /// Trait for `MultiFractal` functions
 pub trait MultiFractal {
+    type F;
+
     fn set_octaves(self, octaves: usize) -> Self;
 
-    fn set_frequency(self, frequency: f64) -> Self;
+    fn set_frequency(self, frequency: Self::F) -> Self;
 
-    fn set_lacunarity(self, lacunarity: f64) -> Self;
+    fn set_lacunarity(self, lacunarity: Self::F) -> Self;
 
-    fn set_persistence(self, persistence: f64) -> Self;
+    fn set_persistence(self, persistence: Self::F) -> Self;
 }
 
 fn build_sources<Source>(seed: u32, octaves: usize) -> Vec<Source>
