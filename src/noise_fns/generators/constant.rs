@@ -8,19 +8,19 @@ use crate::noise_fns::NoiseFn;
 /// This function is not very useful by itself, but can be used as a source
 /// function for other noise functions.
 #[derive(Clone, Copy, Debug)]
-pub struct Constant {
+pub struct Constant<F> {
     /// Constant value.
-    pub value: f64,
+    pub value: F,
 }
 
-impl Constant {
-    pub fn new(value: f64) -> Self {
+impl<F> Constant<F> {
+    pub fn new(value: F) -> Self {
         Self { value }
     }
 }
 
-impl<T: Copy, const N: usize> NoiseFn<T, N> for Constant {
-    fn get(&self, _point: [T; N]) -> f64 {
+impl<F: Copy, const N: usize> NoiseFn<F, N> for Constant<F> {
+    fn get(&self, _point: [F; N]) -> F {
         self.value
     }
 }

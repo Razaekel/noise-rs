@@ -1,16 +1,17 @@
 use crate::{math::interpolate, noise_fns::NoiseFn};
 use core::marker::PhantomData;
+use num_traits::{Float, MulAdd};
 
 /// Noise function that outputs a weighted blend of the output values from two
 /// source functions given the output value supplied by a control function.
 ///
 /// This noise function uses linear interpolation to perform the blending
 /// operation.
-pub struct Blend<T, Source1, Source2, Control, const DIM: usize>
+pub struct Blend<F, Source1, Source2, Control, const DIM: usize>
 where
-    Source1: NoiseFn<T, DIM>,
-    Source2: NoiseFn<T, DIM>,
-    Control: NoiseFn<T, DIM>,
+    Source1: NoiseFn<F, DIM>,
+    Source2: NoiseFn<F, DIM>,
+    Control: NoiseFn<F, DIM>,
 {
     /// Outputs one of the values to blend.
     pub source1: Source1,
@@ -24,14 +25,14 @@ where
     /// function.
     pub control: Control,
 
-    phantom: PhantomData<T>,
+    phantom: PhantomData<F>,
 }
 
-impl<T, Source1, Source2, Control, const DIM: usize> Blend<T, Source1, Source2, Control, DIM>
+impl<F, Source1, Source2, Control, const DIM: usize> Blend<F, Source1, Source2, Control, DIM>
 where
-    Source1: NoiseFn<T, DIM>,
-    Source2: NoiseFn<T, DIM>,
-    Control: NoiseFn<T, DIM>,
+    Source1: NoiseFn<F, DIM>,
+    Source2: NoiseFn<F, DIM>,
+    Control: NoiseFn<F, DIM>,
 {
     pub fn new(source1: Source1, source2: Source2, control: Control) -> Self {
         Blend {
@@ -43,15 +44,15 @@ where
     }
 }
 
-impl<T, Source1, Source2, Control, const DIM: usize> NoiseFn<T, DIM>
-    for Blend<T, Source1, Source2, Control, DIM>
+impl<F, Source1, Source2, Control, const DIM: usize> NoiseFn<F, DIM>
+    for Blend<F, Source1, Source2, Control, DIM>
 where
-    T: Copy,
-    Source1: NoiseFn<T, DIM>,
-    Source2: NoiseFn<T, DIM>,
-    Control: NoiseFn<T, DIM>,
+    F: Float + MulAdd<Output = F>,
+    Source1: NoiseFn<F, DIM>,
+    Source2: NoiseFn<F, DIM>,
+    Control: NoiseFn<F, DIM>,
 {
-    fn get(&self, point: [T; DIM]) -> f64 {
+    fn get(&self, point: [F; DIM]) -> F {
         let lower = self.source1.get(point);
         let upper = self.source2.get(point);
         let control = self.control.get(point);
