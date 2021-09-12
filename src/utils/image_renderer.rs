@@ -1,5 +1,5 @@
 use crate::math::interpolate;
-use core::{self, f64::consts::SQRT_2};
+use core::{self, f32::consts::SQRT_2};
 
 use super::{color_gradient::*, noise_image::*, noise_map::*};
 
@@ -46,23 +46,23 @@ impl ImageRenderer {
         self.light_enabled
     }
 
-    pub fn set_light_azimuth(mut self, azimuth: f64) -> Self {
+    pub fn set_light_azimuth(mut self, azimuth: f32) -> Self {
         self.light_source.set_azimuth(azimuth);
 
         self
     }
 
-    pub fn light_azimuth(&self) -> f64 {
+    pub fn light_azimuth(&self) -> f32 {
         self.light_source.azimuth
     }
 
-    pub fn set_light_brightness(mut self, brightness: f64) -> Self {
+    pub fn set_light_brightness(mut self, brightness: f32) -> Self {
         self.light_source.set_brightness(brightness);
 
         self
     }
 
-    pub fn light_brightness(&self) -> f64 {
+    pub fn light_brightness(&self) -> f32 {
         self.light_source.brightness
     }
 
@@ -76,33 +76,33 @@ impl ImageRenderer {
         self.light_source.color
     }
 
-    pub fn set_light_contrast(mut self, contrast: f64) -> Self {
+    pub fn set_light_contrast(mut self, contrast: f32) -> Self {
         self.light_source.set_contrast(contrast);
 
         self
     }
 
-    pub fn light_contrast(&self) -> f64 {
+    pub fn light_contrast(&self) -> f32 {
         self.light_source.contrast
     }
 
-    pub fn set_light_elevation(mut self, elevation: f64) -> Self {
+    pub fn set_light_elevation(mut self, elevation: f32) -> Self {
         self.light_source.set_elevation(elevation);
 
         self
     }
 
-    pub fn light_elevation(&self) -> f64 {
+    pub fn light_elevation(&self) -> f32 {
         self.light_source.elevation
     }
 
-    pub fn set_light_intensity(mut self, intensity: f64) -> Self {
+    pub fn set_light_intensity(mut self, intensity: f32) -> Self {
         self.light_source.set_intensity(intensity);
 
         self
     }
 
-    pub fn light_intensity(&self) -> f64 {
+    pub fn light_intensity(&self) -> f32 {
         self.light_source.intensity
     }
 
@@ -192,8 +192,8 @@ impl ImageRenderer {
         destination_image
     }
 
-    fn calc_destination_color(&self, source_color: Color, light_value: f64) -> Color {
-        let source = u8_array_to_f64_array(source_color);
+    fn calc_destination_color(&self, source_color: Color, light_value: f32) -> Color {
+        let source = u8_array_to_f32_array(source_color);
 
         let mut red = source[0];
         let mut green = source[1];
@@ -201,9 +201,9 @@ impl ImageRenderer {
 
         if self.light_enabled {
             // Calculate light color
-            let light_red = light_value * f64::from(self.light_source.color[0]) / 255.0;
-            let light_green = light_value * f64::from(self.light_source.color[1]) / 255.0;
-            let light_blue = light_value * f64::from(self.light_source.color[2]) / 255.0;
+            let light_red = light_value * f32::from(self.light_source.color[0]) / 255.0;
+            let light_green = light_value * f32::from(self.light_source.color[1]) / 255.0;
+            let light_blue = light_value * f32::from(self.light_source.color[2]) / 255.0;
 
             // Apply the light color
             red *= light_red;
@@ -313,10 +313,10 @@ impl ImageRenderer {
         &self,
         source_color: Color,
         background_color: Color,
-        light_value: f64,
+        light_value: f32,
     ) -> Color {
-        let source = u8_array_to_f64_array(source_color);
-        let background = u8_array_to_f64_array(background_color);
+        let source = u8_array_to_f32_array(source_color);
+        let background = u8_array_to_f32_array(background_color);
 
         // Blend source color and background color together using source's alpha.
         let mut red = interpolate::linear(source[0], background[0], source[3]);
@@ -325,9 +325,9 @@ impl ImageRenderer {
 
         if self.light_enabled {
             // Calculate light color
-            let light_red = light_value * f64::from(self.light_source.color[0]) / 255.0;
-            let light_green = light_value * f64::from(self.light_source.color[1]) / 255.0;
-            let light_blue = light_value * f64::from(self.light_source.color[2]) / 255.0;
+            let light_red = light_value * f32::from(self.light_source.color[0]) / 255.0;
+            let light_green = light_value * f32::from(self.light_source.color[1]) / 255.0;
+            let light_blue = light_value * f32::from(self.light_source.color[2]) / 255.0;
 
             // Apply the light color
             red *= light_red;
@@ -359,34 +359,34 @@ impl Default for ImageRenderer {
 #[derive(Copy, Clone, Default)]
 pub struct LightSource {
     // Azimuth of the light source, in degrees.
-    azimuth: f64,
+    azimuth: f32,
 
     // Brightness of the light source.
-    brightness: f64,
+    brightness: f32,
 
     // The color of the light source.
     color: Color,
 
     // The contrast between areas in light and areas in shadow.
-    contrast: f64,
+    contrast: f32,
 
     // Elevation of the light source, in degrees.
-    elevation: f64,
+    elevation: f32,
 
     // The intensity of the light source.
-    intensity: f64,
+    intensity: f32,
 
     // The cosine of the azimuth of the light source.
-    azimuth_cosine: f64,
+    azimuth_cosine: f32,
 
     // The sine of the azimuth of the light source.
-    azimuth_sine: f64,
+    azimuth_sine: f32,
 
     // The cosine of the elevation of the light source.
-    elevation_cosine: f64,
+    elevation_cosine: f32,
 
     // The sine of the elevation of the light source.
-    elevation_sine: f64,
+    elevation_sine: f32,
 
     // Used by the calc_light_intensity method to recalculate the light values
     // only if the light parameters change.
@@ -405,20 +405,20 @@ impl LightSource {
             contrast: 1.0,
             elevation: 45.0,
             intensity: 1.0,
-            azimuth_cosine: 45.0_f64.to_radians().cos(),
-            azimuth_sine: 45.0_f64.to_radians().sin(),
-            elevation_cosine: 45.0_f64.to_radians().cos(),
-            elevation_sine: 45.0_f64.to_radians().sin(),
+            azimuth_cosine: 45.0_f32.to_radians().cos(),
+            azimuth_sine: 45.0_f32.to_radians().sin(),
+            elevation_cosine: 45.0_f32.to_radians().cos(),
+            elevation_sine: 45.0_f32.to_radians().sin(),
             recalculate_light_values: false,
         }
     }
 
-    pub fn set_azimuth(&mut self, azimuth: f64) {
+    pub fn set_azimuth(&mut self, azimuth: f32) {
         self.azimuth = azimuth;
         self.recalculate_light_values = true;
     }
 
-    pub fn set_brightness(&mut self, brightness: f64) {
+    pub fn set_brightness(&mut self, brightness: f32) {
         self.brightness = brightness;
         self.recalculate_light_values = true;
     }
@@ -427,7 +427,7 @@ impl LightSource {
         self.color = color;
     }
 
-    pub fn set_contrast(&mut self, contrast: f64) {
+    pub fn set_contrast(&mut self, contrast: f32) {
         if contrast >= 0.0 {
             self.contrast = contrast;
             self.recalculate_light_values = true;
@@ -436,24 +436,24 @@ impl LightSource {
         }
     }
 
-    pub fn set_elevation(&mut self, elevation: f64) {
+    pub fn set_elevation(&mut self, elevation: f32) {
         self.elevation = elevation;
         self.recalculate_light_values = true;
     }
 
-    pub fn set_intensity(&mut self, intensity: f64) {
+    pub fn set_intensity(&mut self, intensity: f32) {
         self.intensity = intensity;
         self.recalculate_light_values = true;
     }
 
     fn calc_light_intensity(
         &mut self,
-        _center: f64,
-        left: f64,
-        right: f64,
-        down: f64,
-        up: f64,
-    ) -> f64 {
+        _center: f32,
+        left: f32,
+        right: f32,
+        down: f32,
+        up: f32,
+    ) -> f32 {
         // Recalculate the sine and cosine of the various light values if necessary so it does not
         // have to be calculated each time this method is called.
         if self.recalculate_light_values {
@@ -483,11 +483,11 @@ impl LightSource {
 }
 
 #[inline]
-fn u8_array_to_f64_array(input: [u8; 4]) -> [f64; 4] {
+fn u8_array_to_f32_array(input: [u8; 4]) -> [f32; 4] {
     let mut result = [0.0; 4];
 
     for x in 0..4 {
-        result[x] = f64::from(input[x]) / 255.0;
+        result[x] = f32::from(input[x]) / 255.0;
     }
 
     result
@@ -499,7 +499,7 @@ mod tests {
 
     #[test]
     fn array_conversion() {
-        assert_eq!([0.0; 4], u8_array_to_f64_array([0; 4]));
-        assert_eq!([1.0; 4], u8_array_to_f64_array([255; 4]));
+        assert_eq!([0.0; 4], u8_array_to_f32_array([0; 4]));
+        assert_eq!([1.0; 4], u8_array_to_f32_array([255; 4]));
     }
 }

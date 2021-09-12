@@ -9,8 +9,8 @@ const RASTER_MAX_HEIGHT: u16 = 32_767;
 
 pub struct NoiseMap {
     size: (usize, usize),
-    border_value: f64,
-    map: Vec<f64>,
+    border_value: f32,
+    map: Vec<f32>,
 }
 
 impl NoiseMap {
@@ -18,11 +18,11 @@ impl NoiseMap {
         Self::initialize().set_size(width, height)
     }
 
-    pub fn iter(&self) -> Iter<'_, f64> {
+    pub fn iter(&self) -> Iter<'_, f32> {
         self.map.iter()
     }
 
-    pub fn iter_mut(&mut self) -> IterMut<'_, f64> {
+    pub fn iter_mut(&mut self) -> IterMut<'_, f32> {
         self.map.iter_mut()
     }
 
@@ -60,18 +60,18 @@ impl NoiseMap {
         self.size
     }
 
-    pub fn set_border_value(self, border_value: f64) -> Self {
+    pub fn set_border_value(self, border_value: f32) -> Self {
         Self {
             border_value,
             ..self
         }
     }
 
-    pub fn border_value(&self) -> f64 {
+    pub fn border_value(&self) -> f32 {
         self.border_value
     }
 
-    pub fn set_value(&mut self, x: usize, y: usize, value: f64) {
+    pub fn set_value(&mut self, x: usize, y: usize, value: f32) {
         let (width, height) = self.size;
 
         if x < width && y < height {
@@ -81,7 +81,7 @@ impl NoiseMap {
         }
     }
 
-    pub fn get_value(&self, x: usize, y: usize) -> f64 {
+    pub fn get_value(&self, x: usize, y: usize) -> f32 {
         let (width, height) = self.size;
 
         if x < width && y < height {
@@ -106,7 +106,7 @@ impl NoiseMap {
         let directory: String = "example_images/".to_owned();
         let file_path = directory + filename;
 
-        // collect the values from f64 into u8 in a separate vec
+        // collect the values from f32 into u8 in a separate vec
         let (width, height) = self.size;
         let mut pixels: Vec<u8> = Vec::with_capacity(width * height);
 
@@ -141,7 +141,7 @@ impl Default for NoiseMap {
 }
 
 impl Index<(usize, usize)> for NoiseMap {
-    type Output = f64;
+    type Output = f32;
 
     fn index(&self, (x, y): (usize, usize)) -> &Self::Output {
         let (width, height) = self.size;
@@ -168,9 +168,9 @@ impl IndexMut<(usize, usize)> for NoiseMap {
 }
 
 impl IntoIterator for NoiseMap {
-    type Item = f64;
+    type Item = f32;
 
-    type IntoIter = IntoIter<f64>;
+    type IntoIter = IntoIter<f32>;
 
     fn into_iter(self) -> Self::IntoIter {
         self.map.into_iter()
@@ -178,9 +178,9 @@ impl IntoIterator for NoiseMap {
 }
 
 impl<'a> IntoIterator for &'a NoiseMap {
-    type Item = &'a f64;
+    type Item = &'a f32;
 
-    type IntoIter = Iter<'a, f64>;
+    type IntoIter = Iter<'a, f32>;
 
     fn into_iter(self) -> Self::IntoIter {
         self.iter()
@@ -188,9 +188,9 @@ impl<'a> IntoIterator for &'a NoiseMap {
 }
 
 impl<'a> IntoIterator for &'a mut NoiseMap {
-    type Item = &'a mut f64;
+    type Item = &'a mut f32;
 
-    type IntoIter = IterMut<'a, f64>;
+    type IntoIter = IterMut<'a, f32>;
 
     fn into_iter(self) -> Self::IntoIter {
         self.iter_mut()

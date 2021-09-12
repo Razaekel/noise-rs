@@ -4,26 +4,26 @@ pub type Color = [u8; 4];
 
 #[derive(Clone, Copy, Debug, Default)]
 struct GradientPoint {
-    pos: f64,
+    pos: f32,
     color: Color,
 }
 
 #[derive(Clone, Copy, Debug, Default)]
 struct GradientDomain {
-    min: f64,
-    max: f64,
+    min: f32,
+    max: f32,
 }
 
 impl GradientDomain {
-    pub fn new(min: f64, max: f64) -> Self {
+    pub fn new(min: f32, max: f32) -> Self {
         Self { min, max }
     }
 
-    pub fn set_min(&mut self, min: f64) {
+    pub fn set_min(&mut self, min: f32) {
         self.min = min;
     }
 
-    pub fn set_max(&mut self, max: f64) {
+    pub fn set_max(&mut self, max: f32) {
         self.max = max;
     }
 }
@@ -44,7 +44,7 @@ impl ColorGradient {
         gradient.build_grayscale_gradient()
     }
 
-    pub fn add_gradient_point(mut self, pos: f64, color: Color) -> Self {
+    pub fn add_gradient_point(mut self, pos: f32, color: Color) -> Self {
         let new_point = GradientPoint { pos, color };
 
         // first check to see if the position is within the domain of the gradient. if the position
@@ -63,7 +63,7 @@ impl ColorGradient {
             // it doesn't exist already
             .gradient_points
             .iter()
-            .any(|&x| (x.pos - pos).abs() < f64::EPSILON)
+            .any(|&x| (x.pos - pos).abs() < f32::EPSILON)
         {
             // it doesn't, so find the correct position to insert the new
             // control point.
@@ -76,7 +76,7 @@ impl ColorGradient {
         self
     }
 
-    fn find_insertion_point(&self, pos: f64) -> usize {
+    fn find_insertion_point(&self, pos: f32) -> usize {
         self.gradient_points
             .iter()
             .position(|x| x.pos >= pos)
@@ -124,7 +124,7 @@ impl ColorGradient {
             .add_gradient_point( 1.0, [255,   0,   0, 255])
     }
 
-    pub fn get_color(&self, pos: f64) -> Color {
+    pub fn get_color(&self, pos: f32) -> Color {
         let mut color = Color::default();
 
         // If there are no colors in the gradient, return black
@@ -150,10 +150,10 @@ impl ColorGradient {
     }
 }
 
-fn interpolate_color(color0: Color, color1: Color, alpha: f64) -> Color {
-    fn blend_channel(channel0: u8, channel1: u8, alpha: f64) -> u8 {
-        let c0 = (f64::from(channel0)) / 255.0;
-        let c1 = (f64::from(channel1)) / 255.0;
+fn interpolate_color(color0: Color, color1: Color, alpha: f32) -> Color {
+    fn blend_channel(channel0: u8, channel1: u8, alpha: f32) -> u8 {
+        let c0 = (f32::from(channel0)) / 255.0;
+        let c1 = (f32::from(channel1)) / 255.0;
 
         ((c1 - c0).mul_add(alpha, c0) * 255.0) as u8
     }
