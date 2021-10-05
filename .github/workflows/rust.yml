@@ -7,7 +7,7 @@ on:
   pull_request:
     branches:
       - develop
-      - master
+      - main
 
 env:
   minrust: 1.51.0
