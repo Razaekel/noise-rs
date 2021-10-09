@@ -2,10 +2,24 @@
 
 extern crate noise;
 
-use noise::{utils::*, BasicMulti};
+use noise::{utils::*, BasicMulti, Perlin, Worley};
 
 fn main() {
-    PlaneMapBuilder::new(BasicMulti::default())
+    let basicmulti = BasicMulti::<Perlin>::default();
+
+    PlaneMapBuilder::new(basicmulti)
         .build()
-        .write_to_file("basicmulti.png");
+        .write_to_file("basicmulti_perlin.png");
+        
+    let basicmulti = BasicMulti::<Worley>::default();
+
+    PlaneMapBuilder::new(basicmulti)
+        .build()
+        .write_to_file("basicmulti_worley.png");
+
+    let basicmulti = BasicMulti::<BasicMulti<Perlin>>::default();
+
+    PlaneMapBuilder::new(basicmulti)
+        .build()
+        .write_to_file("basicmulti_basicmulti_perlin.png");
 }
