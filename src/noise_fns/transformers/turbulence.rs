@@ -9,7 +9,10 @@ use crate::noise_fns::{Fbm, MultiFractal, NoiseFn, Seedable};
 /// turbulence, an application can modify its frequency, its power, and its
 /// roughness.
 #[derive(Clone, Debug)]
-pub struct Turbulence<Source> {
+pub struct Turbulence<Source, F>
+where
+    F: Default + Seedable,
+{
     /// Source function that outputs a value.
     pub source: Source,
 
@@ -24,13 +27,16 @@ pub struct Turbulence<Source> {
     pub roughness: usize,
 
     seed: u32,
-    x_distort_function: Fbm,
-    y_distort_function: Fbm,
-    z_distort_function: Fbm,
-    u_distort_function: Fbm,
+    x_distort_function: Fbm<F>,
+    y_distort_function: Fbm<F>,
+    z_distort_function: Fbm<F>,
+    u_distort_function: Fbm<F>,
 }
 
-impl<Source> Turbulence<Source> {
+impl<Source, F> Turbulence<Source, F>
+where
+    F: Default + Seedable,
+{
     pub const DEFAULT_SEED: u32 = 0;
     pub const DEFAULT_FREQUENCY: f64 = 1.0;
     pub const DEFAULT_POWER: f64 = 1.0;
@@ -89,7 +95,10 @@ impl<Source> Turbulence<Source> {
     }
 }
 
-impl<Source> Seedable for Turbulence<Source> {
+impl<Source, F> Seedable for Turbulence<Source, F>
+where
+    F: Default + Seedable,
+{
     fn set_seed(self, seed: u32) -> Self {
         Self {
             seed,
@@ -106,9 +115,10 @@ impl<Source> Seedable for Turbulence<Source> {
     }
 }
 
-impl<Source> NoiseFn<f64, 2> for Turbulence<Source>
+impl<Source, F> NoiseFn<f64, 2> for Turbulence<Source, F>
 where
     Source: NoiseFn<f64, 2>,
+    F: Default + Seedable + NoiseFn<f64, 2>,
 {
     fn get(&self, point: [f64; 2]) -> f64 {
         // First, create offsets based on the input values to keep the sampled
@@ -127,9 +137,10 @@ where
     }
 }
 
-impl<Source> NoiseFn<f64, 3> for Turbulence<Source>
+impl<Source, F> NoiseFn<f64, 3> for Turbulence<Source, F>
 where
     Source: NoiseFn<f64, 3>,
+    F: Default + Seedable + NoiseFn<f64, 3>,
 {
     fn get(&self, point: [f64; 3]) -> f64 {
         // First, create offsets based on the input values to keep the sampled
@@ -155,9 +166,10 @@ where
     }
 }
 
-impl<Source> NoiseFn<f64, 4> for Turbulence<Source>
+impl<Source, F> NoiseFn<f64, 4> for Turbulence<Source, F>
 where
     Source: NoiseFn<f64, 4>,
+    F: Default + Seedable + NoiseFn<f64, 4>,
 {
     fn get(&self, point: [f64; 4]) -> f64 {
         // First, create offsets based on the input values to keep the sampled

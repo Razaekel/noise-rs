@@ -1,6 +1,6 @@
 use crate::{
     math::vectors::*,
-    noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable},
+    noise_fns::{MultiFractal, NoiseFn, Seedable},
 };
 use alloc::vec::Vec;
 
@@ -15,7 +15,7 @@ use alloc::vec::Vec;
 /// not be as damped and thus will grow more jagged as iteration progresses.
 ///
 #[derive(Clone, Debug)]
-pub struct BasicMulti {
+pub struct BasicMulti<T> {
     /// Total number of frequency octaves to generate the noise with.
     ///
     /// The number of octaves control the _amount of detail_ in the noise
@@ -45,10 +45,13 @@ pub struct BasicMulti {
     pub persistence: f64,
 
     seed: u32,
-    sources: Vec<Perlin>,
+    sources: Vec<T>,
 }
 
-impl BasicMulti {
+impl<T> BasicMulti<T>
+where
+    T: Default + Seedable,
+{
     pub const DEFAULT_SEED: u32 = 0;
     pub const DEFAULT_OCTAVES: usize = 6;
     pub const DEFAULT_FREQUENCY: f64 = 2.0;
@@ -63,18 +66,28 @@ impl BasicMulti {
             frequency: Self::DEFAULT_FREQUENCY,
             lacunarity: Self::DEFAULT_LACUNARITY,
             persistence: Self::DEFAULT_PERSISTENCE,
-            sources: super::build_sources(Self::DEFAULT_SEED, Self::DEFAULT_OCTAVES),
+            sources: super::build_sources(seed, Self::DEFAULT_OCTAVES),
         }
+    }
+
+    pub fn set_sources(self, sources: Vec<T>) -> Self {
+        Self { sources, ..self }
     }
 }
 
-impl Default for BasicMulti {
+impl<T> Default for BasicMulti<T>
+where
+    T: Default + Seedable,
+{
     fn default() -> Self {
         Self::new(Self::DEFAULT_SEED)
     }
 }
 
-impl MultiFractal for BasicMulti {
+impl<T> MultiFractal for BasicMulti<T>
+where
+    T: Default + Seedable,
+{
     fn set_octaves(self, mut octaves: usize) -> Self {
         if self.octaves == octaves {
             return self;
@@ -104,7 +117,10 @@ impl MultiFractal for BasicMulti {
     }
 }
 
-impl Seedable for BasicMulti {
+impl<T> Seedable for BasicMulti<T>
+where
+    T: Default + Seedable,
+{
     fn set_seed(self, seed: u32) -> Self {
         if self.seed == seed {
             return self;
@@ -123,7 +139,10 @@ impl Seedable for BasicMulti {
 }
 
 /// 2-dimensional `BasicMulti` noise
-impl NoiseFn<f64, 2> for BasicMulti {
+impl<T> NoiseFn<f64, 2> for BasicMulti<T>
+where
+    T: NoiseFn<f64, 2>,
+{
     fn get(&self, point: [f64; 2]) -> f64 {
         let mut point = Vector2::from(point);
 
@@ -155,7 +174,10 @@ impl NoiseFn<f64, 2> for BasicMulti {
 }
 
 /// 3-dimensional `BasicMulti` noise
-impl NoiseFn<f64, 3> for BasicMulti {
+impl<T> NoiseFn<f64, 3> for BasicMulti<T>
+where
+    T: NoiseFn<f64, 3>,
+{
     fn get(&self, point: [f64; 3]) -> f64 {
         let mut point = Vector3::from(point);
 
@@ -187,7 +209,10 @@ impl NoiseFn<f64, 3> for BasicMulti {
 }
 
 /// 4-dimensional `BasicMulti` noise
-impl NoiseFn<f64, 4> for BasicMulti {
+impl<T> NoiseFn<f64, 4> for BasicMulti<T>
+where
+    T: NoiseFn<f64, 4>,
+{
     fn get(&self, point: [f64; 4]) -> f64 {
         let mut point = Vector4::from(point);
 

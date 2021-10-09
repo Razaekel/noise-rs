@@ -1,6 +1,6 @@
 use crate::{
     math::{scale_shift, vectors::*},
-    noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable},
+    noise_fns::{MultiFractal, NoiseFn, Seedable},
 };
 use alloc::vec::Vec;
 
@@ -21,7 +21,7 @@ use alloc::vec::Vec;
 /// Ridged-multifractal noise is often used to generate craggy mountainous
 /// terrain or marble-like textures.
 #[derive(Clone, Debug)]
-pub struct RidgedMulti {
+pub struct RidgedMulti<T> {
     /// Total number of frequency octaves to generate the noise with.
     ///
     /// The number of octaves control the _amount of detail_ in the noise
@@ -57,10 +57,13 @@ pub struct RidgedMulti {
     pub attenuation: f64,
 
     seed: u32,
-    sources: Vec<Perlin>,
+    sources: Vec<T>,
 }
 
-impl RidgedMulti {
+impl<T> RidgedMulti<T>
+where
+    T: Default + Seedable,
+{
     pub const DEFAULT_SEED: u32 = 0;
     pub const DEFAULT_OCTAVE_COUNT: usize = 6;
     pub const DEFAULT_FREQUENCY: f64 = 1.0;
@@ -87,15 +90,25 @@ impl RidgedMulti {
             ..self
         }
     }
+
+    pub fn set_sources(self, sources: Vec<T>) -> Self {
+        Self { sources, ..self }
+    }
 }
 
-impl Default for RidgedMulti {
+impl<T> Default for RidgedMulti<T>
+where
+    T: Default + Seedable,
+{
     fn default() -> Self {
         Self::new(Self::DEFAULT_SEED)
     }
 }
 
-impl MultiFractal for RidgedMulti {
+impl<T> MultiFractal for RidgedMulti<T>
+where
+    T: Default + Seedable,
+{
     fn set_octaves(self, mut octaves: usize) -> Self {
         if self.octaves == octaves {
             return self;
@@ -125,7 +138,10 @@ impl MultiFractal for RidgedMulti {
     }
 }
 
-impl Seedable for RidgedMulti {
+impl<T> Seedable for RidgedMulti<T>
+where
+    T: Default + Seedable,
+{
     fn set_seed(self, seed: u32) -> Self {
         if self.seed == seed {
             return self;
@@ -144,7 +160,10 @@ impl Seedable for RidgedMulti {
 }
 
 /// 2-dimensional `RidgedMulti` noise
-impl NoiseFn<f64, 2> for RidgedMulti {
+impl<T> NoiseFn<f64, 2> for RidgedMulti<T>
+where
+    T: NoiseFn<f64, 2>,
+{
     fn get(&self, point: [f64; 2]) -> f64 {
         let mut point = Vector2::from(point);
 
@@ -192,7 +211,10 @@ impl NoiseFn<f64, 2> for RidgedMulti {
 }
 
 /// 3-dimensional `RidgedMulti` noise
-impl NoiseFn<f64, 3> for RidgedMulti {
+impl<T> NoiseFn<f64, 3> for RidgedMulti<T>
+where
+    T: NoiseFn<f64, 3>,
+{
     fn get(&self, point: [f64; 3]) -> f64 {
         let mut point = Vector3::from(point);
 
@@ -240,7 +262,10 @@ impl NoiseFn<f64, 3> for RidgedMulti {
 }
 
 /// 4-dimensional `RidgedMulti` noise
-impl NoiseFn<f64, 4> for RidgedMulti {
+impl<T> NoiseFn<f64, 4> for RidgedMulti<T>
+where
+    T: NoiseFn<f64, 4>,
+{
     fn get(&self, point: [f64; 4]) -> f64 {
         let mut point = Vector4::from(point);
 
