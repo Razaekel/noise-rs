@@ -4,13 +4,14 @@ use crate::{
     noise_fns::{NoiseFn, Seedable},
     permutationtable::PermutationTable,
 };
-use alloc::boxed::Box;
+use alloc::rc::Rc;
 
 /// Noise function that outputs Worley noise.
+#[derive(Clone)]
 pub struct Worley {
     /// Specifies the distance function to use when calculating the boundaries of
     /// the cell.
-    pub distance_function: Box<DistanceFunction>,
+    pub distance_function: Rc<DistanceFunction>,
 
     /// Signifies whether the distance from the borders of the cell should be returned, or the
     /// value for the cell.
@@ -33,7 +34,7 @@ impl Worley {
         Self {
             perm_table: PermutationTable::new(seed),
             seed,
-            distance_function: Box::new(distance_functions::euclidean),
+            distance_function: Rc::new(distance_functions::euclidean),
             return_type: ReturnType::Value,
             frequency: Self::DEFAULT_FREQUENCY,
         }
@@ -45,7 +46,7 @@ impl Worley {
         F: Fn(&[f64], &[f64]) -> f64 + 'static,
     {
         Self {
-            distance_function: Box::new(function),
+            distance_function: Rc::new(function),
             ..self
         }
     }
@@ -96,7 +97,7 @@ impl NoiseFn<f64, 2> for Worley {
     fn get(&self, point: [f64; 2]) -> f64 {
         worley_2d(
             &self.perm_table,
-            &self.distance_function,
+            &*self.distance_function,
             self.return_type,
             (Vector2::from(point) * self.frequency).into_array(),
         )
@@ -107,7 +108,7 @@ impl NoiseFn<f64, 3> for Worley {
     fn get(&self, point: [f64; 3]) -> f64 {
         worley_3d(
             &self.perm_table,
-            &self.distance_function,
+            &*self.distance_function,
             self.return_type,
             (Vector3::from(point) * self.frequency).into_array(),
         )
@@ -119,7 +120,7 @@ impl NoiseFn<f64, 4> for Worley {
     fn get(&self, point: [f64; 4]) -> f64 {
         worley_4d(
             &self.perm_table,
-            &self.distance_function,
+            &*self.distance_function,
             self.return_type,
             (Vector4::from(point) * self.frequency).into_array(),
         )
