@@ -5,7 +5,7 @@ use noise::{utils::*, *};
 fn main() {
     // Primary jade texture. The ridges from the ridged-multifractal function
     // produces the veins.
-    let primary_jade = RidgedMulti::new(0)
+    let primary_jade = RidgedMulti::<Perlin>::new(0)
         .set_frequency(2.0)
         .set_lacunarity(2.20703125)
         .set_octaves(6);
@@ -21,7 +21,7 @@ fn main() {
         RotatePoint::new(base_secondary_jade).set_angles(90.0, 25.0, 5.0, 0.0);
 
     // Slightly perturb the secondary jade texture for more realism.
-    let perturbed_base_secondary_jade = Turbulence::new(rotated_base_secondary_jade)
+    let perturbed_base_secondary_jade = Turbulence::<_, Perlin>::new(rotated_base_secondary_jade)
         .set_seed(1)
         .set_frequency(4.0)
         .set_power(1.0 / 4.0)
@@ -40,7 +40,7 @@ fn main() {
 
     // Finally, perturb the combined jade texture to produce the final jade
     // texture. A low roughness produces nice veins.
-    let final_jade = Turbulence::new(combined_jade)
+    let final_jade = Turbulence::<_, Perlin>::new(combined_jade)
         .set_seed(2)
         .set_frequency(4.0)
         .set_power(1.0 / 16.0)

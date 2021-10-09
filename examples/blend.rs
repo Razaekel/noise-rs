@@ -4,8 +4,8 @@ use noise::{utils::*, Blend, Fbm, Perlin, RidgedMulti};
 
 fn main() {
     let perlin = Perlin::default();
-    let ridged = RidgedMulti::default();
-    let fbm = Fbm::default();
+    let ridged = RidgedMulti::<Perlin>::default();
+    let fbm = Fbm::<Perlin>::default();
     let blend = Blend::new(perlin, ridged, fbm);
 
     PlaneMapBuilder::new(blend)
