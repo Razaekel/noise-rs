@@ -2,7 +2,7 @@
 
 extern crate noise;
 
-use noise::{Fbm, Perlin, Worley, utils::*};
+use noise::{utils::*, Fbm, Perlin, Worley};
 
 fn main() {
     let fbm = Fbm::<Perlin>::default();
@@ -15,7 +15,7 @@ fn main() {
         .write_to_file("fbm_perlin.png");
 
     let fbm = Fbm::<Worley>::default();
-        
+
     PlaneMapBuilder::new(fbm)
         .set_size(1000, 1000)
         .set_x_bounds(-5.0, 5.0)
@@ -24,7 +24,7 @@ fn main() {
         .write_to_file("fbm_worley.png");
 
     let fbm = Fbm::<Fbm<Perlin>>::default();
-        
+
     PlaneMapBuilder::new(fbm)
         .set_size(1000, 1000)
         .set_x_bounds(-5.0, 5.0)

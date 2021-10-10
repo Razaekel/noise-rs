@@ -10,7 +10,7 @@ fn main() {
     PlaneMapBuilder::new(basicmulti)
         .build()
         .write_to_file("basicmulti_perlin.png");
-        
+
     let basicmulti = BasicMulti::<Worley>::default();
 
     PlaneMapBuilder::new(basicmulti)

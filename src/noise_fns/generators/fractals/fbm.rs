@@ -78,10 +78,7 @@ where
             lacunarity: Self::DEFAULT_LACUNARITY,
             persistence: Self::DEFAULT_PERSISTENCE,
             sources: super::build_sources(seed, Self::DEFAULT_OCTAVE_COUNT),
-            scale_factor: calc_scale_factor(
-                Self::DEFAULT_PERSISTENCE,
-                Self::DEFAULT_OCTAVE_COUNT,
-            ),
+            scale_factor: calc_scale_factor(Self::DEFAULT_PERSISTENCE, Self::DEFAULT_OCTAVE_COUNT),
         }
     }
 

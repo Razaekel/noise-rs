@@ -10,7 +10,7 @@ fn main() {
     PlaneMapBuilder::new(billow)
         .build()
         .write_to_file("billow_perlin.png");
-        
+
     let billow = Billow::<Worley>::default();
 
     PlaneMapBuilder::new(billow)

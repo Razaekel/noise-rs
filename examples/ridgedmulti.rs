@@ -2,7 +2,7 @@
 
 extern crate noise;
 
-use noise::{utils::*, RidgedMulti, Perlin, Worley};
+use noise::{utils::*, Perlin, RidgedMulti, Worley};
 
 fn main() {
     let ridged_multi = RidgedMulti::<Perlin>::default();
