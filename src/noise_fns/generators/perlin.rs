@@ -4,7 +4,7 @@ use crate::{
     permutationtable::PermutationTable,
 };
 
-/// Noise function that outputs 2/3/4-dimensional Perlin noise.
+/// Noise function that outputs 1/2/3/4-dimensional Perlin noise.
 #[derive(Clone, Copy, Debug)]
 pub struct Perlin {
     seed: u32,
@@ -45,6 +45,13 @@ impl Seedable for Perlin {
 
     fn seed(&self) -> u32 {
         self.seed
+    }
+}
+
+/// 1-dimensional perlin noise
+impl NoiseFn<f64, 1> for Perlin {
+    fn get(&self, point: [f64; 1]) -> f64 {
+        perlin_1d(point[0], &self.perm_table)
     }
 }
 
