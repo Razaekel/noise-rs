@@ -7,7 +7,6 @@ use crate::{
 };
 use core::f64;
 
-
 #[inline(always)]
 fn linear_interpolation(u: f64, g0: f64, g1: f64) -> f64 {
     let k0 = g0;
@@ -68,7 +67,6 @@ where
     // outliers and return it.
     scaled_result.clamp(-1.0, 1.0)
 }
-
 
 #[inline(always)]
 pub fn perlin_2d<NH>(point: [f64; 2], hasher: &NH) -> f64
