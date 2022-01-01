@@ -8,6 +8,67 @@ use crate::{
 use core::f64;
 
 #[inline(always)]
+fn linear_interpolation(u: f64, g0: f64, g1: f64) -> f64 {
+    let k0 = g0;
+    let k1 = g1 - g0;
+    k0 + k1 * u
+}
+
+#[inline(always)]
+pub fn perlin_1d<NH>(point: f64, hasher: &NH) -> f64
+where
+    NH: NoiseHasher + ?Sized,
+{
+    // Unscaled range of linearly interpolated perlin noise should be (-sqrt(N)/2, sqrt(N)/2).
+    // Need to invert this value and multiply the unscaled result by the value to get a scaled
+    // range of (-1, 1).
+    //
+    // 1/(sqrt(N)/2), N=1 -> 1/2
+    const SCALE_FACTOR: f64 = 0.5;
+
+    #[inline(always)]
+    #[rustfmt::skip]
+    fn gradient_dot_v(perm: usize, point: f64) -> f64 {
+        let x = point;
+
+        match perm & 0b1 {
+            0 =>  x, // ( 1 )
+            1 => -x, // (-1 )
+            _ => unreachable!(),
+        }
+    }
+
+    let floored = point.floor();
+    let corner = floored as isize;
+    let distance = point - floored;
+
+    macro_rules! call_gradient(
+        ($x_offset:expr) => {
+            {
+                gradient_dot_v(
+                    hasher.hash(&[corner + $x_offset]),
+                    distance - $x_offset as f64
+                )
+            }
+        }
+    );
+
+    let g0 = call_gradient!(0);
+    let g1 = call_gradient!(1);
+
+    let u = distance.map_quintic();
+
+    let unscaled_result = linear_interpolation(u, g0, g1);
+
+    let scaled_result = unscaled_result * SCALE_FACTOR;
+
+    // At this point, we should be really damn close to the (-1, 1) range, but some float errors
+    // could have accumulated, so let's just clamp the results to (-1, 1) to cut off any
+    // outliers and return it.
+    scaled_result.clamp(-1.0, 1.0)
+}
+
+#[inline(always)]
 pub fn perlin_2d<NH>(point: [f64; 2], hasher: &NH) -> f64
 where
     NH: NoiseHasher + ?Sized,
