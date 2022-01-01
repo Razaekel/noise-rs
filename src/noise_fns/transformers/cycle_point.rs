@@ -1,5 +1,6 @@
 use crate::noise_fns::NoiseFn;
 
+#[inline(always)]
 fn lerp(t: f64, start: f64, end: f64) -> f64 {
     t.mul_add(end, (-t).mul_add(start, start))
 }
@@ -256,5 +257,50 @@ where
                 ),
             ),
         )
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{super::super::Perlin, *};
+    use float_cmp::approx_eq;
+
+    #[test]
+    fn repeats_1d() {
+        let source = Perlin::default();
+        let cycle = CyclePoint::new(&source);
+        assert!(approx_eq!(f64, cycle.get([0.5, 0.]), cycle.get([1.5, 0.])));
+    }
+
+    #[test]
+    fn repeats_2d() {
+        let source = Perlin::default();
+        let cycle = CyclePoint::new(&source);
+        assert!(approx_eq!(
+            f64,
+            cycle.get([0.1, 0.1]),
+            cycle.get([1.1, 0.1])
+        ));
+        assert!(approx_eq!(
+            f64,
+            cycle.get([0.1, 0.1]),
+            cycle.get([0.1, 1.1])
+        ));
+    }
+
+    #[test]
+    fn repeats_with_period_2d() {
+        let source = Perlin::default();
+        let cycle = CyclePoint::new(&source).set_x_period(10.).set_y_period(20.);
+        assert!(approx_eq!(
+            f64,
+            cycle.get([5.1, 0.1]),
+            cycle.get([15.1, 0.1])
+        ));
+        assert!(approx_eq!(
+            f64,
+            cycle.get([5.25, 2.25]),
+            cycle.get([5.25, 22.25])
+        ));
     }
 }
