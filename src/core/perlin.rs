@@ -19,12 +19,7 @@ pub fn perlin_1d<NH>(point: f64, hasher: &NH) -> f64
 where
     NH: NoiseHasher + ?Sized,
 {
-    // Unscaled range of linearly interpolated perlin noise should be (-sqrt(N)/2, sqrt(N)/2).
-    // Need to invert this value and multiply the unscaled result by the value to get a scaled
-    // range of (-1, 1).
-    //
-    // 1/(sqrt(N)/2), N=1 -> 1/2
-    const SCALE_FACTOR: f64 = 0.5;
+    const SCALE_FACTOR: f64 = 2.;
 
     #[inline(always)]
     #[rustfmt::skip]
@@ -73,12 +68,7 @@ pub fn perlin_2d<NH>(point: [f64; 2], hasher: &NH) -> f64
 where
     NH: NoiseHasher + ?Sized,
 {
-    // Unscaled range of linearly interpolated perlin noise should be (-sqrt(N)/2, sqrt(N)/2).
-    // Need to invert this value and multiply the unscaled result by the value to get a scaled
-    // range of (-1, 1).
-    //
-    // 1/(sqrt(N)/2), N=2 -> sqrt(2)
-    const SCALE_FACTOR: f64 = f64::consts::SQRT_2;
+    const SCALE_FACTOR: f64 = 2.;
 
     let point = Vector2::from(point);
 
@@ -144,15 +134,7 @@ pub fn perlin_3d<NH>(point: [f64; 3], hasher: &NH) -> f64
 where
     NH: NoiseHasher + ?Sized,
 {
-    // Unscaled range of linearly interpolated perlin noise should be (-sqrt(N)/2, sqrt(N)/2).
-    // Need to invert this value and multiply the unscaled result by the value to get a scaled
-    // range of (-1, 1).
-    //
-    // 1/(sqrt(N)/2), N=3 -> 2/sqrt(3)
-    // sqrt() is not a const function, so use a high-precision value instead.
-    // TODO: Replace fixed const values with const fn if sqrt() ever becomes a const function.
-    // 2/sqrt(3) = 1.1547005383792515290182975610039149112952035025402537520372046529
-    const SCALE_FACTOR: f64 = 1.154_700_538_379_251_5;
+    const SCALE_FACTOR: f64 = 2.;
 
     let point = Vector3::from(point);
 
@@ -230,10 +212,7 @@ pub fn perlin_4d<NH>(point: [f64; 4], hasher: &NH) -> f64
 where
     NH: NoiseHasher + ?Sized,
 {
-    // Unscaled range of linearly interpolated perlin noise should be (-sqrt(N)/2, sqrt(N)/2).
-    // Need to invert this value and multiply the unscaled result by the value to get a scaled
-    // range of (-1, 1).
-    const SCALE_FACTOR: f64 = 1.0; // 1/(sqrt(N)/2), N=4 -> 2/sqrt(4) -> 2/2 -> 1
+    const SCALE_FACTOR: f64 = 2.0;
 
     let point = Vector4::from(point);
 
@@ -350,4 +329,79 @@ where
     // could have accumulated, so let's just clamp the results to (-1, 1) to cut off any
     // outliers and return it.
     scaled_result.clamp(-1.0, 1.0)
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use float_cmp::{ApproxEq, F64Margin};
+    use crate::permutationtable::PermutationTable;
+
+    fn range_is_valid(min: f64, max: f64) -> bool {
+        min.approx_eq(-1., F64Margin::default()) && max.approx_eq(1., F64Margin::default())
+    }
+
+    #[test]
+    fn test_1d_scale() {
+        let mut min: f64 = 0.;
+        let mut max: f64 = 0.;
+        for i in 0..1000 {
+            let perm_table = PermutationTable::new(0);
+            let val = perlin_1d(i as f64 / 64., &perm_table);
+            min = min.min(val);
+            max = max.max(val);
+            if range_is_valid(min, max) {
+                return
+            }
+        }
+        assert!(range_is_valid(min, max), "Range should be from (-1, 1), actual: ({}, {})", min, max);
+    }
+
+    #[test]
+    fn test_2d_scale() {
+        let mut min: f64 = 0.;
+        let mut max: f64 = 0.;
+        for i in 0..1000 {
+            let perm_table = PermutationTable::new(0);
+            let val = perlin_2d([i as f64 / 64., 0.], &perm_table);
+            min = min.min(val);
+            max = max.max(val);
+            if range_is_valid(min, max) {
+                return
+            }
+        }
+        assert!(range_is_valid(min, max), "Range should be from (-1, 1), actual: ({}, {})", min, max);
+    }
+
+    #[test]
+    fn test_3d_scale() {
+        let mut min: f64 = 0.;
+        let mut max: f64 = 0.;
+        for i in 0..1000 {
+            let perm_table = PermutationTable::new(0);
+            let val = perlin_3d([i as f64 / 64., 0., 0.], &perm_table);
+            min = min.min(val);
+            max = max.max(val);
+            if range_is_valid(min, max) {
+                return
+            }
+        }
+        assert!(range_is_valid(min, max), "Range should be from (-1, 1), actual: ({}, {})", min, max);
+    }
+
+    #[test]
+    fn test_4d_scale() {
+        let mut min: f64 = 0.;
+        let mut max: f64 = 0.;
+        for i in 0..1000 {
+            let perm_table = PermutationTable::new(0);
+            let val = perlin_4d([i as f64 / 64., 0., 0., 0.], &perm_table);
+            min = min.min(val);
+            max = max.max(val);
+            if range_is_valid(min, max) {
+                return
+            }
+        }
+        assert!(range_is_valid(min, max), "Range should be from (-1, 1), actual: ({}, {})", min, max);
+    }
 }
