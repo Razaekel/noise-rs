@@ -212,7 +212,7 @@ pub fn perlin_4d<NH>(point: [f64; 4], hasher: &NH) -> f64
 where
     NH: NoiseHasher + ?Sized,
 {
-    const SCALE_FACTOR: f64 = 2.0;
+    const SCALE_FACTOR: f64 = 2.;
 
     let point = Vector4::from(point);
 
@@ -334,8 +334,8 @@ where
 #[cfg(test)]
 mod test {
     use super::*;
-    use float_cmp::{ApproxEq, F64Margin};
     use crate::permutationtable::PermutationTable;
+    use float_cmp::{ApproxEq, F64Margin};
 
     fn range_is_valid(min: f64, max: f64) -> bool {
         min.approx_eq(-1., F64Margin::default()) && max.approx_eq(1., F64Margin::default())
@@ -351,10 +351,15 @@ mod test {
             min = min.min(val);
             max = max.max(val);
             if range_is_valid(min, max) {
-                return
+                return;
             }
         }
-        assert!(range_is_valid(min, max), "Range should be from (-1, 1), actual: ({}, {})", min, max);
+        assert!(
+            range_is_valid(min, max),
+            "Range should be from (-1, 1), actual: ({}, {})",
+            min,
+            max
+        );
     }
 
     #[test]
@@ -367,10 +372,15 @@ mod test {
             min = min.min(val);
             max = max.max(val);
             if range_is_valid(min, max) {
-                return
+                return;
             }
         }
-        assert!(range_is_valid(min, max), "Range should be from (-1, 1), actual: ({}, {})", min, max);
+        assert!(
+            range_is_valid(min, max),
+            "Range should be from (-1, 1), actual: ({}, {})",
+            min,
+            max
+        );
     }
 
     #[test]
@@ -383,10 +393,15 @@ mod test {
             min = min.min(val);
             max = max.max(val);
             if range_is_valid(min, max) {
-                return
+                return;
             }
         }
-        assert!(range_is_valid(min, max), "Range should be from (-1, 1), actual: ({}, {})", min, max);
+        assert!(
+            range_is_valid(min, max),
+            "Range should be from (-1, 1), actual: ({}, {})",
+            min,
+            max
+        );
     }
 
     #[test]
@@ -399,9 +414,14 @@ mod test {
             min = min.min(val);
             max = max.max(val);
             if range_is_valid(min, max) {
-                return
+                return;
             }
         }
-        assert!(range_is_valid(min, max), "Range should be from (-1, 1), actual: ({}, {})", min, max);
+        assert!(
+            range_is_valid(min, max),
+            "Range should be from (-1, 1), actual: ({}, {})",
+            min,
+            max
+        );
     }
 }
