@@ -342,7 +342,7 @@ mod test {
     }
 
     #[test]
-    fn test_1d_scale() {
+    fn test_1d_perlin_range() {
         let mut min: f64 = 0.;
         let mut max: f64 = 0.;
         for i in 0..1000 {
@@ -363,7 +363,7 @@ mod test {
     }
 
     #[test]
-    fn test_2d_scale() {
+    fn test_2d_perlin_range() {
         let mut min: f64 = 0.;
         let mut max: f64 = 0.;
         for i in 0..1000 {
@@ -384,7 +384,7 @@ mod test {
     }
 
     #[test]
-    fn test_3d_scale() {
+    fn test_3d_perlin_range() {
         let mut min: f64 = 0.;
         let mut max: f64 = 0.;
         for i in 0..1000 {
@@ -405,12 +405,12 @@ mod test {
     }
 
     #[test]
-    fn test_4d_scale() {
+    fn test_4d_perlin_range() {
         let mut min: f64 = 0.;
         let mut max: f64 = 0.;
         for i in 0..1000 {
             let perm_table = PermutationTable::new(0);
-            let val = perlin_4d([i as f64 / 64., 0., 0., 0.], &perm_table);
+            let val = perlin_4d([i as f64 / 64., 0.1, 0.2, 0.3], &perm_table);
             min = min.min(val);
             max = max.max(val);
             if range_is_valid(min, max) {
