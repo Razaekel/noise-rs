@@ -6,29 +6,24 @@ use num_traits::Float;
 /// This creates a curve with endpoints (0,0) and (1,1), and a first derivative of zero at the
 /// endpoints, allowing the curves to be combined together without discontinuities.
 ///
-/// # Panics
-/// Self must be between 0 and 1 inclusive, otherwise this will panic.
+/// Values outside the range of [0, 1] will be clamped to the range before mapping.
 pub trait Cubic {
     fn map_cubic(&self) -> Self;
 }
 
 impl Cubic for f32 {
     fn map_cubic(&self) -> Self {
-        // Validate that `self` is between 0 and 1, inclusive
-        assert!(*self >= 0.0, "Self was less than 0!");
-        assert!(*self <= 1.0, "Self was greater than 1!");
+        let x = self.clamp(0.0, 1.0);
 
-        self * self * (3.0 - (self * 2.0))
+        x * x * (3.0 - (x * 2.0))
     }
 }
 
 impl Cubic for f64 {
     fn map_cubic(&self) -> Self {
-        // Validate that `self` is between 0 and 1, inclusive
-        assert!(*self >= 0.0, "Self was less than 0!");
-        assert!(*self <= 1.0, "Self was greater than 1!");
+        let x = self.clamp(0.0, 1.0);
 
-        self * self * (3.0 - (self * 2.0))
+        x * x * (3.0 - (x * 2.0))
     }
 }
 
