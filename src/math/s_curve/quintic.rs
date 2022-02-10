@@ -8,29 +8,24 @@ use num_traits::Float;
 /// and (1,1), and first and second derivatives of zero at the endpoints, allowing the curves to be
 /// combined together without discontinuities.
 ///
-/// # Panics
-/// Self must be between 0 and 1 inclusive, otherwise this will panic.
+/// Values outside the range of [0, 1] will be clamped to the range before mapping.
 pub trait Quintic {
     fn map_quintic(&self) -> Self;
 }
 
 impl Quintic for f32 {
     fn map_quintic(&self) -> Self {
-        // Validate that `self` is between 0 and 1, inclusive
-        assert!(*self >= 0.0, "Self was less than 0!");
-        assert!(*self <= 1.0, "Self was greater than 1!");
+        let x = self.clamp(0.0, 1.0);
 
-        self * self * self * (self * (self * 6.0 - 15.0) + 10.0)
+        x * x * x * (x * (x * 6.0 - 15.0) + 10.0)
     }
 }
 
 impl Quintic for f64 {
     fn map_quintic(&self) -> Self {
-        // Validate that `self` is between 0 and 1, inclusive
-        assert!(*self >= 0.0, "Self was less than 0!");
-        assert!(*self <= 1.0, "Self was greater than 1!");
+        let x = self.clamp(0.0, 1.0);
 
-        self * self * self * (self * (self * 6.0 - 15.0) + 10.0)
+        x * x * x * (x * (x * 6.0 - 15.0) + 10.0)
     }
 }
 
