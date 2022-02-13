@@ -7,7 +7,7 @@ use noise::{utils::*, Seedable, Simplex};
 fn main() {
     let mut simplex = Simplex::default();
 
-    PlaneMapBuilder::new(simplex)
+    (PlaneMapBuilder::new(simplex) as PlaneMapBuilder<Simplex, 2>)
         .set_size(1024, 1024)
         .set_x_bounds(-5.0, 5.0)
         .set_y_bounds(-5.0, 5.0)
@@ -15,8 +15,7 @@ fn main() {
         .write_to_file("simplex.png");
 
     simplex = simplex.set_seed(1);
-
-    PlaneMapBuilder::new(simplex)
+    (PlaneMapBuilder::new(simplex) as PlaneMapBuilder<Simplex, 2>)
         .set_size(1024, 1024)
         .set_x_bounds(-5.0, 5.0)
         .set_y_bounds(-5.0, 5.0)
