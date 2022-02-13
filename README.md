@@ -69,7 +69,7 @@ See the individual function pages for their descriptions, and the [examples][exa
 
 ```rust
 use noise::Fbm;
-use noise::utils::PlaneMapBuilder;
+use noise::utils::{NoiseMapBuilder, PlaneMapBuilder};
 
 fn main() {
   let fbm = Fbm::new();
