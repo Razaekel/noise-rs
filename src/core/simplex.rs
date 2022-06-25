@@ -140,7 +140,6 @@ where
 }
 
 #[inline(always)]
-#[inline(always)]
 pub fn simplex_2d<NH>(point: [f64; 2], hasher: &NH) -> (f64, [f64; 2])
 where
     NH: NoiseHasher + ?Sized,
