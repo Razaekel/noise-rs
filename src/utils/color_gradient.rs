@@ -80,7 +80,7 @@ impl ColorGradient {
         self.gradient_points
             .iter()
             .position(|x| x.pos >= pos)
-            .unwrap_or_else(|| self.gradient_points.len())
+            .unwrap_or(self.gradient_points.len())
     }
 
     pub fn clear_gradient(mut self) -> Self {

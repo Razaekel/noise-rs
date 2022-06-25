@@ -75,7 +75,7 @@ where
                 .control_points
                 .iter()
                 .position(|&x| x >= control_point)
-                .unwrap_or_else(|| self.control_points.len());
+                .unwrap_or(self.control_points.len());
 
             // add the new control point at the correct position.
             self.control_points.insert(insertion_point, control_point);
@@ -112,7 +112,7 @@ where
             .control_points
             .iter()
             .position(|&x| x >= source_value)
-            .unwrap_or_else(|| self.control_points.len());
+            .unwrap_or(self.control_points.len());
 
         // Find the two nearest control points so that we can map their values
         // onto a quadratic curve.
