@@ -1,4 +1,7 @@
-use crate::{math::interpolate, noise_fns::NoiseFn, permutationtable::NoiseHasher, utils::noise_map::NoiseMap};
+use crate::{
+    math::interpolate, noise_fns::NoiseFn, permutationtable::NoiseHasher,
+    utils::noise_map::NoiseMap,
+};
 
 pub struct NoiseFnWrapper<NH, F, const DIM: usize>
 where
@@ -221,7 +224,8 @@ where
     }
 }
 
-impl<SourceModule, const DIM: usize> NoiseMapBuilder<SourceModule> for PlaneMapBuilder<SourceModule, DIM>
+impl<SourceModule, const DIM: usize> NoiseMapBuilder<SourceModule>
+    for PlaneMapBuilder<SourceModule, DIM>
 where
     SourceModule: NoiseFn<f64, DIM>,
 {
@@ -268,9 +272,9 @@ where
                     let nw_value = self
                         .source_module
                         .get(pad_array(&[current_x, current_y + y_extent]));
-                    let ne_value =
-                        self.source_module
-                            .get(pad_array(&[current_x + x_extent, current_y + y_extent]));
+                    let ne_value = self
+                        .source_module
+                        .get(pad_array(&[current_x + x_extent, current_y + y_extent]));
 
                     let x_blend = 1.0 - ((current_x - self.x_bounds.0) / x_extent);
                     let y_blend = 1.0 - ((current_y - self.y_bounds.0) / y_extent);

@@ -2,7 +2,7 @@ extern crate criterion;
 extern crate noise;
 
 use criterion::*;
-use noise::{NoiseFn, core::worley::ReturnType, Worley};
+use noise::{core::worley::ReturnType, NoiseFn, Worley};
 use rand::Rng;
 
 criterion_group!(worley_range, bench_worley2d, bench_worley3d, bench_worley4d,);
