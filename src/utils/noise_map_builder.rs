@@ -62,10 +62,6 @@ where
 
     pub fn set_angle_bounds(self, lower_bound: f64, upper_bound: f64) -> Self {
         let angle_bounds = if lower_bound >= upper_bound {
-            // eprintln!(
-            //     "lower bound {:?} is larger than upper bound {:?}, switching order",
-            //     lower_bound, upper_bound
-            // );
             (upper_bound, lower_bound)
         } else {
             (lower_bound, upper_bound)
@@ -79,10 +75,6 @@ where
 
     pub fn set_height_bounds(self, lower_bound: f64, upper_bound: f64) -> Self {
         let height_bounds = if lower_bound >= upper_bound {
-            // eprintln!(
-            //     "lower bound {:?} is larger than upper bound {:?}, switching order",
-            //     lower_bound, upper_bound
-            // );
             (upper_bound, lower_bound)
         } else {
             (lower_bound, upper_bound)
@@ -146,11 +138,6 @@ where
                 let point_z = current_angle.to_radians().sin();
 
                 let value = self.source_module.get([point_x, current_height, point_z]);
-
-                // println!(
-                //     "calculated value {} at {}, {}, {}",
-                //     value, point_x, current_height, point_z
-                // );
 
                 result_map[(x, y)] = value;
             }
