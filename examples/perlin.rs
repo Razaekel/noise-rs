@@ -2,7 +2,11 @@
 
 extern crate noise;
 
-use noise::{utils::*, core::perlin::{perlin_2d, perlin_3d, perlin_4d}, permutationtable::PermutationTable};
+use noise::{
+    core::perlin::{perlin_2d, perlin_3d, perlin_4d},
+    permutationtable::PermutationTable,
+    utils::*,
+};
 
 fn main() {
     let hasher = PermutationTable::new(0);
