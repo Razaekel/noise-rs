@@ -59,7 +59,7 @@ where
                 .control_points
                 .iter()
                 .position(|x| x.input >= input_value)
-                .unwrap_or_else(|| self.control_points.len());
+                .unwrap_or(self.control_points.len());
 
             // add the new control point at the correct position.
             self.control_points.insert(
@@ -92,7 +92,7 @@ where
             .control_points
             .iter()
             .position(|x| x.input > source_value)
-            .unwrap_or_else(|| self.control_points.len());
+            .unwrap_or(self.control_points.len());
 
         // if index_pos < 2 {
         //     println!(
