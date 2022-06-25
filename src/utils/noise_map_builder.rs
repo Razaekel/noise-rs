@@ -21,9 +21,9 @@ where
 
 fn pad_array<const SIZE: usize>(values: &[f64]) -> [f64; SIZE] {
     let mut result = [0.0; SIZE];
-    for i in 0..values.len().min(SIZE) {
-        result[i] = values[i];
-    }
+
+    result[..values.len().min(SIZE)].clone_from_slice(&values[..values.len().min(SIZE)]);
+
     result
 }
 
