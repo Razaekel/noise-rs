@@ -7,7 +7,7 @@ use noise::{utils::*, Fbm, Perlin, Worley};
 fn main() {
     let fbm = Fbm::<Perlin>::default();
 
-    PlaneMapBuilder::new(fbm)
+    PlaneMapBuilder::<_, 2>::new(fbm)
         .set_size(1000, 1000)
         .set_x_bounds(-5.0, 5.0)
         .set_y_bounds(-5.0, 5.0)
@@ -16,7 +16,7 @@ fn main() {
 
     let fbm = Fbm::<Worley>::default();
 
-    PlaneMapBuilder::new(fbm)
+    PlaneMapBuilder::<_, 2>::new(fbm)
         .set_size(1000, 1000)
         .set_x_bounds(-5.0, 5.0)
         .set_y_bounds(-5.0, 5.0)
@@ -25,7 +25,7 @@ fn main() {
 
     let fbm = Fbm::<Fbm<Perlin>>::default();
 
-    PlaneMapBuilder::new(fbm)
+    PlaneMapBuilder::<_, 2>::new(fbm)
         .set_size(1000, 1000)
         .set_x_bounds(-5.0, 5.0)
         .set_y_bounds(-5.0, 5.0)

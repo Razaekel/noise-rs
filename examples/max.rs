@@ -7,5 +7,7 @@ fn main() {
     let perlin = Perlin::default();
     let max = Max::new(cyl, perlin);
 
-    PlaneMapBuilder::new(max).build().write_to_file("max.png");
+    PlaneMapBuilder::<_, 2>::new(max)
+        .build()
+        .write_to_file("max.png");
 }

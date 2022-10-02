@@ -8,7 +8,7 @@ fn main() {
     let fbm = Fbm::<Perlin>::default();
     let blend = Blend::new(perlin, ridged, fbm);
 
-    PlaneMapBuilder::new(blend)
+    PlaneMapBuilder::<_, 2>::new(blend)
         .build()
         .write_to_file("blend.png");
 }

@@ -200,13 +200,13 @@ fn main() {
 
     let super_simplex = SuperSimplex::default();
 
-    PlaneMapBuilder::new(super_simplex)
+    PlaneMapBuilder::<_, 2>::new(super_simplex)
         .build()
         .write_to_file("super_simplex.png");
 
     let super_simplex = super_simplex.set_seed(1);
 
-    PlaneMapBuilder::new(super_simplex)
+    PlaneMapBuilder::<_, 2>::new(super_simplex)
         .build()
         .write_to_file("super_simplex_seed=1.png");
 }

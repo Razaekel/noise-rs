@@ -46,11 +46,11 @@ fn main() {
         .set_power(1.0 / 16.0)
         .set_roughness(2);
 
-    let planar_texture = PlaneMapBuilder::new(&final_jade)
+    let planar_texture = PlaneMapBuilder::<_, 2>::new(&final_jade)
         .set_size(1024, 1024)
         .build();
 
-    let seamless_texture = PlaneMapBuilder::new(final_jade)
+    let seamless_texture = PlaneMapBuilder::<_, 2>::new(final_jade)
         .set_size(1024, 1024)
         .set_is_seamless(true)
         .build();

@@ -17,11 +17,11 @@ fn main() {
         .add_control_point(1.0)
         .invert_terraces(true);
 
-    PlaneMapBuilder::new(terrace)
+    PlaneMapBuilder::<_, 2>::new(terrace)
         .build()
         .write_to_file("terrace.png");
 
-    PlaneMapBuilder::new(terrace_inverted)
+    PlaneMapBuilder::<_, 2>::new(terrace_inverted)
         .build()
         .write_to_file("terrace_inverted.png");
 }

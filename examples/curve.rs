@@ -13,7 +13,7 @@ fn main() {
         .add_control_point(0.75, 1.0)
         .add_control_point(2.0, 1.25);
 
-    PlaneMapBuilder::new(curve)
+    PlaneMapBuilder::<_, 2>::new(curve)
         .build()
         .write_to_file("curve.png");
 }

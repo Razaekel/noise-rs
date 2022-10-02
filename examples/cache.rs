@@ -6,7 +6,7 @@ fn main() {
     let cboard = Checkerboard::default();
     let cache = Cache::new(cboard);
 
-    PlaneMapBuilder::new(cache)
+    PlaneMapBuilder::<_, 2>::new(cache)
         .build()
         .write_to_file("cache.png");
 }

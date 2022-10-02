@@ -7,7 +7,7 @@ fn main() {
     let perlin2 = Perlin::new(1);
     let power = Power::new(perlin1, perlin2);
 
-    PlaneMapBuilder::new(power)
+    PlaneMapBuilder::<_, 2>::new(power)
         .build()
         .write_to_file("power.png");
 }
