@@ -37,7 +37,7 @@
 
 ```toml
 [dependencies]
-noise = "0.7"
+noise = "0.8"
 ```
 
 <!-- ABOUT THE PROJECT -->
