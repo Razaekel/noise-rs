@@ -11,7 +11,7 @@ where
 
     let floored = point.floor();
     let corner = floored.numcast().unwrap();
-    let weight = point - floored.map_quintic();
+    let weight = (point - floored).map_quintic();
 
     macro_rules! get(
         ($corner:expr, $offset:expr) => {
@@ -41,7 +41,7 @@ where
 
     let floored = point.floor();
     let corner = floored.numcast().unwrap();
-    let weight = point - floored.map_quintic();
+    let weight = (point - floored).map_quintic();
 
     macro_rules! get(
         ($corner:expr, $offset:expr) => {
@@ -79,7 +79,7 @@ where
 
     let floored = point.floor();
     let corner = floored.numcast().unwrap();
-    let weight = point - floored.map_quintic();
+    let weight = (point - floored).map_quintic();
 
     macro_rules! get(
         ($corner:expr, $offset:expr) => {
