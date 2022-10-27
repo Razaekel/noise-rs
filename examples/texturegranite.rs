@@ -2,6 +2,8 @@ extern crate noise;
 
 use noise::{core::worley::ReturnType, utils::*, *};
 
+mod utils;
+
 fn main() {
     // Primary granite texture. This generates the "roughness" of the texture
     // when lit by a light source.
@@ -59,15 +61,18 @@ fn main() {
 
     let mut renderer = ImageRenderer::new().set_gradient(granite_gradient);
 
-    renderer
-        .render(&planar_texture)
-        .write_to_file("texture_granite_planar.png");
+    utils::write_image_to_file(
+        &renderer.render(&planar_texture),
+        "texture_granite_planar.png",
+    );
 
-    renderer
-        .render(&seamless_texture)
-        .write_to_file("texture_granite_seamless.png");
+    utils::write_image_to_file(
+        &renderer.render(&seamless_texture),
+        "texture_granite_seamless.png",
+    );
 
-    renderer
-        .render(&sphere_texture)
-        .write_to_file("texture_granite_sphere.png");
+    utils::write_image_to_file(
+        &renderer.render(&sphere_texture),
+        "texture_granite_sphere.png",
+    );
 }

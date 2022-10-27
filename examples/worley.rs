@@ -6,48 +6,63 @@ use noise::{
     Worley,
 };
 
+mod utils;
+
 fn main() {
-    PlaneMapBuilder::<_, 2>::new(Worley::default())
-        .build()
-        .write_to_file("worley.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(Worley::default()).build(),
+        "worley.png",
+    );
 
-    PlaneMapBuilder::<_, 2>::new(Worley::default().set_return_type(ReturnType::Distance))
-        .build()
-        .write_to_file("worley_distance.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(Worley::default().set_return_type(ReturnType::Distance))
+            .build(),
+        "worley_distance.png",
+    );
 
-    PlaneMapBuilder::<_, 2>::new(Worley::default().set_distance_function(euclidean_squared))
-        .build()
-        .write_to_file("worley_squared.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(Worley::default().set_distance_function(euclidean_squared))
+            .build(),
+        "worley_squared.png",
+    );
 
-    PlaneMapBuilder::<_, 2>::new(
-        Worley::default()
-            .set_return_type(ReturnType::Distance)
-            .set_distance_function(euclidean_squared),
-    )
-    .build()
-    .write_to_file("worley_squared_distance.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(
+            Worley::default()
+                .set_return_type(ReturnType::Distance)
+                .set_distance_function(euclidean_squared),
+        )
+        .build(),
+        "worley_squared_distance.png",
+    );
 
-    PlaneMapBuilder::<_, 2>::new(Worley::default().set_distance_function(manhattan))
-        .build()
-        .write_to_file("worley_manhattan.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(Worley::default().set_distance_function(manhattan)).build(),
+        "worley_manhattan.png",
+    );
 
-    PlaneMapBuilder::<_, 2>::new(
-        Worley::default()
-            .set_distance_function(manhattan)
-            .set_return_type(ReturnType::Distance),
-    )
-    .build()
-    .write_to_file("worley_manhattan_distance.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(
+            Worley::default()
+                .set_distance_function(manhattan)
+                .set_return_type(ReturnType::Distance),
+        )
+        .build(),
+        "worley_manhattan_distance.png",
+    );
 
-    PlaneMapBuilder::<_, 2>::new(Worley::default().set_distance_function(chebyshev))
-        .build()
-        .write_to_file("worley_chebyshev.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(Worley::default().set_distance_function(chebyshev)).build(),
+        "worley_chebyshev.png",
+    );
 
-    PlaneMapBuilder::<_, 2>::new(
-        Worley::default()
-            .set_return_type(ReturnType::Distance)
-            .set_distance_function(chebyshev),
-    )
-    .build()
-    .write_to_file("worley_chebyshev_distance.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(
+            Worley::default()
+                .set_return_type(ReturnType::Distance)
+                .set_distance_function(chebyshev),
+        )
+        .build(),
+        "worley_chebyshev_distance.png",
+    );
 }

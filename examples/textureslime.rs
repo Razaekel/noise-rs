@@ -2,6 +2,8 @@ extern crate noise;
 
 use noise::{utils::*, *};
 
+mod utils;
+
 fn main() {
     // Large slime bubble texture.
     let large_slime = Billow::<Perlin>::new(0)
@@ -63,11 +65,13 @@ fn main() {
 
     let mut renderer = ImageRenderer::new().set_gradient(slime_gradient);
 
-    renderer
-        .render(&planar_texture)
-        .write_to_file("texture_slime_planar.png");
+    utils::write_image_to_file(
+        &renderer.render(&planar_texture),
+        "texture_slime_planar.png",
+    );
 
-    renderer
-        .render(&seamless_texture)
-        .write_to_file("texture_slime_seamless.png");
+    utils::write_image_to_file(
+        &renderer.render(&seamless_texture),
+        "texture_slime_seamless.png",
+    );
 }

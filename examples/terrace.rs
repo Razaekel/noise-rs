@@ -2,6 +2,8 @@ extern crate noise;
 
 use noise::{utils::*, Perlin, Terrace};
 
+mod utils;
+
 fn main() {
     let perlin = Perlin::default();
     let terrace = Terrace::new(perlin)
@@ -17,11 +19,13 @@ fn main() {
         .add_control_point(1.0)
         .invert_terraces(true);
 
-    PlaneMapBuilder::<_, 2>::new(terrace)
-        .build()
-        .write_to_file("terrace.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(terrace).build(),
+        "terrace.png",
+    );
 
-    PlaneMapBuilder::<_, 2>::new(terrace_inverted)
-        .build()
-        .write_to_file("terrace_inverted.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(terrace_inverted).build(),
+        "terrace_inverted.png",
+    );
 }

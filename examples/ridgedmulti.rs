@@ -4,22 +4,27 @@ extern crate noise;
 
 use noise::{utils::*, Perlin, RidgedMulti, Worley};
 
+mod utils;
+
 fn main() {
     let ridged_multi = RidgedMulti::<Perlin>::default();
 
-    PlaneMapBuilder::<_, 2>::new(ridged_multi)
-        .build()
-        .write_to_file("ridged_multi_perlin.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(ridged_multi).build(),
+        "ridged_multi_perlin.png",
+    );
 
     let ridged_multi = RidgedMulti::<Worley>::default();
 
-    PlaneMapBuilder::<_, 2>::new(ridged_multi)
-        .build()
-        .write_to_file("ridged_multi_worley.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(ridged_multi).build(),
+        "ridged_multi_worley.png",
+    );
 
     let ridged_multi = RidgedMulti::<RidgedMulti<Perlin>>::default();
 
-    PlaneMapBuilder::<_, 2>::new(ridged_multi)
-        .build()
-        .write_to_file("ridged_multi_ridged_multi_perlin.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(ridged_multi).build(),
+        "ridged_multi_ridged_multi_perlin.png",
+    );
 }

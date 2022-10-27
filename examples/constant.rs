@@ -4,14 +4,19 @@ extern crate noise;
 
 use noise::{utils::*, Constant};
 
+mod utils;
+
 fn main() {
-    PlaneMapBuilder::<_, 2>::new(Constant::new(-1.0))
-        .build()
-        .write_to_file("constant_-1.png");
-    PlaneMapBuilder::<_, 2>::new(Constant::new(0.0))
-        .build()
-        .write_to_file("constant_0.png");
-    PlaneMapBuilder::<_, 2>::new(Constant::new(1.0))
-        .build()
-        .write_to_file("constant_1.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(Constant::new(-1.0)).build(),
+        "constant_-1.png",
+    );
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(Constant::new(0.0)).build(),
+        "constant_0.png",
+    );
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(Constant::new(1.0)).build(),
+        "constant_1.png",
+    );
 }

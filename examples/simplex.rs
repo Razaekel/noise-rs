@@ -4,22 +4,28 @@ extern crate noise;
 
 use noise::{utils::*, Seedable, Simplex};
 
+mod utils;
+
 fn main() {
     let mut simplex = Simplex::default();
 
-    PlaneMapBuilder::new(simplex)
-        .set_size(1024, 1024)
-        .set_x_bounds(-5.0, 5.0)
-        .set_y_bounds(-5.0, 5.0)
-        .build()
-        .write_to_file("simplex.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::new(simplex)
+            .set_size(1024, 1024)
+            .set_x_bounds(-5.0, 5.0)
+            .set_y_bounds(-5.0, 5.0)
+            .build(),
+        "simplex.png",
+    );
 
     simplex = simplex.set_seed(1);
 
-    PlaneMapBuilder::new(simplex)
-        .set_size(1024, 1024)
-        .set_x_bounds(-5.0, 5.0)
-        .set_y_bounds(-5.0, 5.0)
-        .build()
-        .write_to_file("simplex_seed=1.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::new(simplex)
+            .set_size(1024, 1024)
+            .set_x_bounds(-5.0, 5.0)
+            .set_y_bounds(-5.0, 5.0)
+            .build(),
+        "simplex_seed=1.png",
+    );
 }

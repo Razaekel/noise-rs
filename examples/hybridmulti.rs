@@ -4,22 +4,27 @@ extern crate noise;
 
 use noise::{utils::*, HybridMulti, Perlin, Worley};
 
+mod utils;
+
 fn main() {
     let hybrid_multi = HybridMulti::<Perlin>::default();
 
-    PlaneMapBuilder::<_, 2>::new(hybrid_multi)
-        .build()
-        .write_to_file("hybrid_multi_perlin.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(hybrid_multi).build(),
+        "hybrid_multi_perlin.png",
+    );
 
     let hybrid_multi = HybridMulti::<Worley>::default();
 
-    PlaneMapBuilder::<_, 2>::new(hybrid_multi)
-        .build()
-        .write_to_file("hybrid_multi_worley.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(hybrid_multi).build(),
+        "hybrid_multi_worley.png",
+    );
 
     let hybrid_multi = HybridMulti::<HybridMulti<Perlin>>::default();
 
-    PlaneMapBuilder::<_, 2>::new(hybrid_multi)
-        .build()
-        .write_to_file("hybrid_multi_hybrid_multi_perlin.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(hybrid_multi).build(),
+        "hybrid_multi_hybrid_multi_perlin.png",
+    );
 }
