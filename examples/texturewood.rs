@@ -2,6 +2,8 @@ extern crate noise;
 
 use noise::{utils::*, *};
 
+mod utils;
+
 fn main() {
     // Base wood texture. Uses concentric cylinders aligned on the z-axis, like a log.
     let base_wood = Cylinders::new().set_frequency(16.0);
@@ -58,7 +60,5 @@ fn main() {
 
     let mut renderer = ImageRenderer::new().set_gradient(wood_gradient);
 
-    renderer
-        .render(&planar_texture)
-        .write_to_file("texture_wood_planar.png");
+    utils::write_image_to_file(&renderer.render(&planar_texture), "texture_wood_planar.png");
 }

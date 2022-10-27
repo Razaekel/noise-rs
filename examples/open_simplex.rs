@@ -4,16 +4,20 @@ extern crate noise;
 
 use noise::{utils::*, OpenSimplex, Seedable};
 
+mod utils;
+
 fn main() {
     let open_simplex = OpenSimplex::default();
 
-    PlaneMapBuilder::<_, 2>::new(open_simplex)
-        .build()
-        .write_to_file("open_simplex.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(open_simplex).build(),
+        "open_simplex.png",
+    );
 
     let open_simplex = open_simplex.set_seed(1);
 
-    PlaneMapBuilder::<_, 2>::new(open_simplex)
-        .build()
-        .write_to_file("open_simplex_seed=1.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(open_simplex).build(),
+        "open_simplex_seed=1.png",
+    );
 }

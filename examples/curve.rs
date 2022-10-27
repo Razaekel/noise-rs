@@ -2,6 +2,8 @@ extern crate noise;
 
 use noise::{utils::*, Curve, Perlin};
 
+mod utils;
+
 fn main() {
     let perlin = Perlin::default();
     let curve = Curve::new(perlin)
@@ -13,7 +15,5 @@ fn main() {
         .add_control_point(0.75, 1.0)
         .add_control_point(2.0, 1.25);
 
-    PlaneMapBuilder::<_, 2>::new(curve)
-        .build()
-        .write_to_file("curve.png");
+    utils::write_example_to_file(&PlaneMapBuilder::<_, 2>::new(curve).build(), "curve.png");
 }
