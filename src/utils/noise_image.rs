@@ -102,18 +102,7 @@ impl NoiseImage {
 
     #[cfg(feature = "images")]
     pub fn write_to_file(&self, filename: &str) {
-        use std::{fs, path::Path};
-
-        // Create the output directory for the images, if it doesn't already exist
-        let target_dir = Path::new("example_images/");
-
-        if !target_dir.exists() {
-            fs::create_dir(target_dir).expect("failed to create example_images directory");
-        }
-
-        //concatenate the directory to the filename string
-        let directory: String = "example_images/".to_owned();
-        let file_path = directory + filename;
+        use std::path::Path;
 
         // collect the values from the map vector into an array
         let (width, height) = self.size;
@@ -126,7 +115,7 @@ impl NoiseImage {
         }
 
         let _ = image::save_buffer(
-            &Path::new(&file_path),
+            &Path::new(filename),
             &*result,
             self.size.0 as u32,
             self.size.1 as u32,
