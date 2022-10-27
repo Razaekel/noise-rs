@@ -2,6 +2,8 @@ extern crate noise;
 
 use noise::{utils::*, Checkerboard, Constant, Cylinders, Perlin, Select};
 
+mod utils;
+
 fn main() {
     let checkerboard = Checkerboard::default();
     let cylinders = Cylinders::new();
@@ -14,12 +16,15 @@ fn main() {
         .set_bounds(0.0, 1.0)
         .set_falloff(0.0);
 
-    PlaneMapBuilder::<_, 2>::new(select1)
-        .set_x_bounds(-1.0, 1.0)
-        .set_y_bounds(-1.0, 1.0)
-        .build()
-        .write_to_file("select1.png");
-    PlaneMapBuilder::<_, 2>::new(select2)
-        .build()
-        .write_to_file("select2.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(select1)
+            .set_x_bounds(-1.0, 1.0)
+            .set_y_bounds(-1.0, 1.0)
+            .build(),
+        "select1.png",
+    );
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(select2).build(),
+        "select2.png",
+    );
 }

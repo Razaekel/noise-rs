@@ -2,6 +2,8 @@ extern crate noise;
 
 use noise::{core::worley::ReturnType, utils::*, *};
 
+mod utils;
+
 /// This example demonstrates how to use the noise-rs library to generate
 /// terrain elevations for a complex planetary surface.
 ///
@@ -1722,10 +1724,12 @@ fn main() {
         .set_y_bounds(-2.0, 2.0)
         .build();
 
-    ImageRenderer::new()
-        .set_gradient(ColorGradient::new().build_terrain_gradient())
-        .render(&noise_map)
-        .write_to_file("unscaledFinalPlanet.png");
+    utils::write_image_to_file(
+        &ImageRenderer::new()
+            .set_gradient(ColorGradient::new().build_terrain_gradient())
+            .render(&noise_map),
+        "unscaledFinalPlanet.png",
+    );
 
     let noise_map = PlaneMapBuilder::new(&unscaledFinalPlanet)
         .set_size(1024, 1024)
@@ -1733,10 +1737,12 @@ fn main() {
         .set_y_bounds(-0.5, 0.5)
         .build();
 
-    ImageRenderer::new()
-        .set_gradient(ColorGradient::new().build_terrain_gradient())
-        .render(&noise_map)
-        .write_to_file("unscaledFinalPlanet_4x_zoom.png");
+    utils::write_image_to_file(
+        &ImageRenderer::new()
+            .set_gradient(ColorGradient::new().build_terrain_gradient())
+            .render(&noise_map),
+        "unscaledFinalPlanet_4x_zoom.png",
+    );
 
     let noise_map = PlaneMapBuilder::new(&unscaledFinalPlanet)
         .set_size(1024, 1024)
@@ -1744,18 +1750,22 @@ fn main() {
         .set_y_bounds(-0.125, 0.125)
         .build();
 
-    ImageRenderer::new()
-        .set_gradient(ColorGradient::new().build_terrain_gradient())
-        .render(&noise_map)
-        .write_to_file("unscaledFinalPlanet_16x_zoom.png");
+    utils::write_image_to_file(
+        &ImageRenderer::new()
+            .set_gradient(ColorGradient::new().build_terrain_gradient())
+            .render(&noise_map),
+        "unscaledFinalPlanet_16x_zoom.png",
+    );
 
-    ImageRenderer::new()
-        .set_gradient(ColorGradient::new().build_terrain_gradient())
-        .render(
-            &SphereMapBuilder::new(unscaledFinalPlanet)
-                .set_size(1024, 1024)
-                .set_bounds(-90.0, 90.0, -180.0, 180.0)
-                .build(),
-        )
-        .write_to_file("unscaledFinalPlanet_sphere.png");
+    utils::write_image_to_file(
+        &ImageRenderer::new()
+            .set_gradient(ColorGradient::new().build_terrain_gradient())
+            .render(
+                &SphereMapBuilder::new(unscaledFinalPlanet)
+                    .set_size(1024, 1024)
+                    .set_bounds(-90.0, 90.0, -180.0, 180.0)
+                    .build(),
+            ),
+        "unscaledFinalPlanet_sphere.png",
+    );
 }

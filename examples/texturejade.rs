@@ -2,6 +2,8 @@ extern crate noise;
 
 use noise::{utils::*, *};
 
+mod utils;
+
 fn main() {
     // Primary jade texture. The ridges from the ridged-multifractal function
     // produces the veins.
@@ -66,11 +68,10 @@ fn main() {
 
     let mut renderer = ImageRenderer::new().set_gradient(jade_gradient);
 
-    renderer
-        .render(&planar_texture)
-        .write_to_file("texture_jade_planar.png");
+    utils::write_image_to_file(&renderer.render(&planar_texture), "texture_jade_planar.png");
 
-    renderer
-        .render(&seamless_texture)
-        .write_to_file("texture_jade_seamless.png");
+    utils::write_image_to_file(
+        &renderer.render(&seamless_texture),
+        "texture_jade_seamless.png",
+    );
 }

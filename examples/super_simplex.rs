@@ -4,6 +4,8 @@ extern crate noise;
 
 use noise::{utils::*, Seedable, SuperSimplex};
 
+mod utils;
+
 fn main() {
     let mut lookup_2d: [([i8; 2], [f64; 2]); 8 * 4] = [([0; 2], [0.0; 2]); 8 * 4];
     let mut lookup_3d: [[i8; 3]; 16 * 4] = [[0; 3]; 16 * 4];
@@ -200,13 +202,15 @@ fn main() {
 
     let super_simplex = SuperSimplex::default();
 
-    PlaneMapBuilder::<_, 2>::new(super_simplex)
-        .build()
-        .write_to_file("super_simplex.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(super_simplex).build(),
+        "super_simplex.png",
+    );
 
     let super_simplex = super_simplex.set_seed(1);
 
-    PlaneMapBuilder::<_, 2>::new(super_simplex)
-        .build()
-        .write_to_file("super_simplex_seed=1.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(super_simplex).build(),
+        "super_simplex_seed=1.png",
+    );
 }

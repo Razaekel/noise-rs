@@ -4,22 +4,27 @@ extern crate noise;
 
 use noise::{utils::*, Billow, Perlin, Worley};
 
+mod utils;
+
 fn main() {
     let billow = Billow::<Perlin>::default();
 
-    PlaneMapBuilder::<_, 2>::new(billow)
-        .build()
-        .write_to_file("billow_perlin.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(billow).build(),
+        "billow_perlin.png",
+    );
 
     let billow = Billow::<Worley>::default();
 
-    PlaneMapBuilder::<_, 2>::new(billow)
-        .build()
-        .write_to_file("billow_worley.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(billow).build(),
+        "billow_worley.png",
+    );
 
     let billow = Billow::<Billow<Perlin>>::default();
 
-    PlaneMapBuilder::<_, 2>::new(billow)
-        .build()
-        .write_to_file("billow_billow_perlin.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(billow).build(),
+        "billow_billow_perlin.png",
+    );
 }

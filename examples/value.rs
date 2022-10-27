@@ -4,8 +4,11 @@ extern crate noise;
 
 use noise::{utils::*, Value};
 
+mod utils;
+
 fn main() {
-    PlaneMapBuilder::<_, 2>::new(Value::default())
-        .build()
-        .write_to_file("value.png");
+    utils::write_example_to_file(
+        &PlaneMapBuilder::<_, 2>::new(Value::default()).build(),
+        "value.png",
+    );
 }
