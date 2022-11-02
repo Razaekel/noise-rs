@@ -16,7 +16,7 @@ where
 #[inline]
 pub(crate) fn linear<T>(a: T, b: T, x: T) -> T
 where
-    T: MulAdd<Output = T> + Sub<Output = T> + Copy,
+    T: Mul<Output = T> + Add<Output = T> + Sub<Output = T> + Copy,
 {
     (x * (b - a)) + a
 }
