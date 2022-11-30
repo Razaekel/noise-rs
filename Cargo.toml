@@ -9,12 +9,13 @@ license = "Apache-2.0/MIT"
 keywords = ["math", "random"]
 authors = ["The Noise-rs Developers."]
 edition = "2018"
+resolver = "2"
 
 [lib]
 name = "noise"
 
 [dependencies]
-rand = "0.8"
+rand = { version = "0.8", default-features = false }
 rand_xorshift = "0.3"
 image = { version = "0.23", optional = true }
 num-traits = "0.2"
@@ -26,6 +27,7 @@ std = []
 
 [dev-dependencies]
 criterion = { version = "0.3", features = ["html_reports"] }
+rand = { version = "0.8", default-features = true }
 rand_pcg = "0.3"
 
 [[bench]]
