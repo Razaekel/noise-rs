@@ -1,4 +1,3 @@
-use alloc::vec::Vec;
 use core::fmt;
 use rand::{
     distributions::{Distribution, Standard},
@@ -25,19 +24,17 @@ pub struct PermutationTable {
 impl Distribution<PermutationTable> for Standard {
     /// Generates a PermutationTable using a random seed.
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> PermutationTable {
-        let mut seq: Vec<u8> = (0..TABLE_SIZE).map(|x| x as u8).collect();
-        seq.shuffle(rng);
-
-        // It's unfortunate that this double-initializes the array, but Rust
-        // doesn't currently provide a clean way to do this in one pass. Hopefully
-        // it won't matter, as Seed creation will usually be a one-time event.
         let mut perm_table = PermutationTable {
             values: [0; TABLE_SIZE],
         };
-        let seq_it = seq.iter();
-        for (x, y) in perm_table.values.iter_mut().zip(seq_it) {
-            *x = *y
-        }
+
+        perm_table
+            .values
+            .iter_mut()
+            .enumerate()
+            .for_each(|(i, b)| *b = i as u8);
+        perm_table.values.shuffle(rng);
+
         perm_table
     }
 }
