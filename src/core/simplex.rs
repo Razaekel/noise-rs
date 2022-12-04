@@ -453,12 +453,12 @@ where
     // First, six pair-wise comparisons are performed between each possible pair
     // of the four coordinates, and then the results are used to add up binary
     // bits for an integer index into a precomputed lookup table, simplex[].
-    let c1 = if distance.x > distance.y { 32 } else { 0 };
-    let c2 = if distance.x > distance.z { 16 } else { 0 };
-    let c3 = if distance.y > distance.z { 8 } else { 0 };
-    let c4 = if distance.x > distance.w { 4 } else { 0 };
-    let c5 = if distance.y > distance.w { 2 } else { 0 };
-    let c6 = if distance.z > distance.w { 1 } else { 0 };
+    let c1 = (distance.x > distance.y) as usize * 32;
+    let c2 = (distance.x > distance.z) as usize * 16;
+    let c3 = (distance.y > distance.z) as usize * 8;
+    let c4 = (distance.x > distance.w) as usize * 4;
+    let c5 = (distance.y > distance.w) as usize * 2;
+    let c6 = (distance.z > distance.w) as usize;
     let c = c1 | c2 | c3 | c4 | c5 | c6; // '|' is mostly faster than '+'
 
     let [i1, j1, k1, l1]: [isize; 4]; // The integer offsets for the second simplex corner
@@ -470,20 +470,20 @@ where
     // impossible. Only the 24 indices which have non-zero entries make any sense.
     // We use a thresholding to set the coordinates in turn from the largest magnitude.
     // The number 3 in the "simplex" array is at the position of the largest coordinate.
-    i1 = if SIMPLEX[c][0] >= 3 { 1 } else { 0 };
-    j1 = if SIMPLEX[c][1] >= 3 { 1 } else { 0 };
-    k1 = if SIMPLEX[c][2] >= 3 { 1 } else { 0 };
-    l1 = if SIMPLEX[c][3] >= 3 { 1 } else { 0 };
+    j1 = (SIMPLEX[c][1] >= 1) as isize;
+    k1 = (SIMPLEX[c][2] >= 1) as isize;
+    l1 = (SIMPLEX[c][3] >= 1) as isize;
+    i1 = (SIMPLEX[c][0] >= 1) as isize;
     // The number 2 in the "simplex" array is at the second largest coordinate.
-    i2 = if SIMPLEX[c][0] >= 2 { 1 } else { 0 };
-    j2 = if SIMPLEX[c][1] >= 2 { 1 } else { 0 };
-    k2 = if SIMPLEX[c][2] >= 2 { 1 } else { 0 };
-    l2 = if SIMPLEX[c][3] >= 2 { 1 } else { 0 };
+    i2 = (SIMPLEX[c][0] >= 1) as isize;
+    j2 = (SIMPLEX[c][1] >= 1) as isize;
+    k2 = (SIMPLEX[c][2] >= 1) as isize;
+    l2 = (SIMPLEX[c][3] >= 1) as isize;
     // The number 1 in the "simplex" array is at the second smallest coordinate.
-    i3 = if SIMPLEX[c][0] >= 1 { 1 } else { 0 };
-    j3 = if SIMPLEX[c][1] >= 1 { 1 } else { 0 };
-    k3 = if SIMPLEX[c][2] >= 1 { 1 } else { 0 };
-    l3 = if SIMPLEX[c][3] >= 1 { 1 } else { 0 };
+    i3 = (SIMPLEX[c][0] >= 1) as isize;
+    j3 = (SIMPLEX[c][1] >= 1) as isize;
+    k3 = (SIMPLEX[c][2] >= 1) as isize;
+    l3 = (SIMPLEX[c][3] >= 1) as isize;
     // The fifth corner has all coordinate offsets = 1, so no need to look that up.
 
     let order1 = Vector4::new(i1, j1, k1, l1);

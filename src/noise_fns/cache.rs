@@ -41,7 +41,7 @@ where
 {
     fn get(&self, point: [f64; DIM]) -> f64 {
         match self.value.get() {
-            Some(value) if quick_eq(&*self.point.borrow(), &point) => value,
+            Some(value) if quick_eq(&self.point.borrow(), &point) => value,
             Some(_) | None => {
                 let value = self.source.get(point);
                 self.value.set(Some(value));
