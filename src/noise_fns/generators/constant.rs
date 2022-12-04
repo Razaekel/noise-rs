@@ -19,8 +19,8 @@ impl Constant {
     }
 }
 
-impl<T: Copy> NoiseFn<T> for Constant {
-    fn get(&self, _point: T) -> f64 {
+impl<T: Copy, const N: usize> NoiseFn<T, N> for Constant {
+    fn get(&self, _point: [T; N]) -> f64 {
         self.value
     }
 }

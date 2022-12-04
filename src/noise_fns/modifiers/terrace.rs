@@ -1,7 +1,6 @@
-use crate::{
-    math::{clamp, interpolate},
-    noise_fns::NoiseFn,
-};
+use crate::{math::interpolate, noise_fns::NoiseFn};
+use alloc::vec::Vec;
+use core::marker::PhantomData;
 
 /// Noise function that maps the output value from the source function onto a
 /// terrace-forming curve.
@@ -26,9 +25,12 @@ use crate::{
 ///
 /// This noise function is often used to generate terrain features such as the
 /// stereotypical desert canyon.
-pub struct Terrace<'a, T> {
+pub struct Terrace<T, Source, const DIM: usize>
+where
+    Source: NoiseFn<T, DIM>,
+{
     /// Outputs a value.
-    pub source: &'a dyn NoiseFn<T>,
+    pub source: Source,
 
     /// Determines if the terrace-forming curve between all control points is
     /// inverted.
@@ -36,14 +38,20 @@ pub struct Terrace<'a, T> {
 
     /// Vec that stores the control points.
     control_points: Vec<f64>,
+
+    phantom: PhantomData<T>,
 }
 
-impl<'a, T> Terrace<'a, T> {
-    pub fn new(source: &'a dyn NoiseFn<T>) -> Self {
+impl<T, Source, const DIM: usize> Terrace<T, Source, DIM>
+where
+    Source: NoiseFn<T, DIM>,
+{
+    pub fn new(source: Source) -> Self {
         Terrace {
             source,
             invert_terraces: false,
             control_points: Vec::with_capacity(2),
+            phantom: PhantomData,
         }
     }
 
@@ -59,7 +67,7 @@ impl<'a, T> Terrace<'a, T> {
         if !self
             .control_points
             .iter()
-            .any(|&x| (x - control_point).abs() < std::f64::EPSILON)
+            .any(|&x| (x - control_point).abs() < f64::EPSILON)
         {
             // it doesn't, so find the correct position to insert the new
             // control point.
@@ -67,7 +75,7 @@ impl<'a, T> Terrace<'a, T> {
                 .control_points
                 .iter()
                 .position(|&x| x >= control_point)
-                .unwrap_or_else(|| self.control_points.len());
+                .unwrap_or(self.control_points.len());
 
             // add the new control point at the correct position.
             self.control_points.insert(insertion_point, control_point);
@@ -87,8 +95,11 @@ impl<'a, T> Terrace<'a, T> {
     }
 }
 
-impl<'a, T> NoiseFn<T> for Terrace<'a, T> {
-    fn get(&self, point: T) -> f64 {
+impl<T, Source, const DIM: usize> NoiseFn<T, DIM> for Terrace<T, Source, DIM>
+where
+    Source: NoiseFn<T, DIM>,
+{
+    fn get(&self, point: [T; DIM]) -> f64 {
         // confirm that there's at least 2 control points in the vector.
         assert!(self.control_points.len() >= 2);
 
@@ -101,7 +112,7 @@ impl<'a, T> NoiseFn<T> for Terrace<'a, T> {
             .control_points
             .iter()
             .position(|&x| x >= source_value)
-            .unwrap_or_else(|| self.control_points.len());
+            .unwrap_or(self.control_points.len());
 
         // Find the two nearest control points so that we can map their values
         // onto a quadratic curve.
@@ -123,7 +134,7 @@ impl<'a, T> NoiseFn<T> for Terrace<'a, T> {
 
         if self.invert_terraces {
             alpha = 1.0 - alpha;
-            std::mem::swap(&mut input0, &mut input1);
+            core::mem::swap(&mut input0, &mut input1);
         }
 
         // Squaring the alpha produces the terrace effect.
@@ -135,5 +146,5 @@ impl<'a, T> NoiseFn<T> for Terrace<'a, T> {
 }
 
 fn clamp_index(index: isize, min: usize, max: usize) -> usize {
-    clamp(index, min as isize, max as isize) as usize
+    index.clamp(min as isize, max as isize) as usize
 }

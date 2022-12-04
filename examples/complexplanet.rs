@@ -1,6 +1,6 @@
 extern crate noise;
 
-use noise::{utils::*, *};
+use noise::{core::worley::ReturnType, utils::*, *};
 
 /// This example demonstrates how to use the noise-rs library to generate
 /// terrain elevations for a complex planetary surface.
@@ -164,105 +164,106 @@ fn main() {
     // -1.0 represents the lowest elevations and +1.0 represents the highest
     // elevations.
     //
+    fn baseContinentDef() -> impl NoiseFn<f64, 3> {
+        // 1: [Continent module]: This FBM module generates the continents. This
+        // noise function has a high number of octaves so that detail is visible at
+        // high zoom levels.
+        let baseContinentDef_fb0 = Fbm::<Perlin>::new(CURRENT_SEED)
+            .set_frequency(CONTINENT_FREQUENCY)
+            .set_persistence(0.5)
+            .set_lacunarity(CONTINENT_LACUNARITY)
+            .set_octaves(14);
 
-    // 1: [Continent module]: This FBM module generates the continents. This
-    // noise function has a high number of octaves so that detail is visible at
-    // high zoom levels.
-    let baseContinentDef_fb0 = Fbm::new()
-        .set_seed(CURRENT_SEED)
-        .set_frequency(CONTINENT_FREQUENCY)
-        .set_persistence(0.5)
-        .set_lacunarity(CONTINENT_LACUNARITY)
-        .set_octaves(14);
+        //    debug::render_noise_module("complexplanet_images/00_0_baseContinentDef_fb0\
+        //    .png",
+        //                               &baseContinentDef_fb0,
+        //                               1024,
+        //                               1024,
+        //                               100);
 
-    //    debug::render_noise_module("complexplanet_images/00_0_baseContinentDef_fb0\
-    //    .png",
-    //                               &baseContinentDef_fb0,
-    //                               1024,
-    //                               1024,
-    //                               100);
+        // 2: [Continent-with-ranges module]: Next, a curve module modifies the
+        // output value from the continent module so that very high values appear
+        // near sea level. This defines the positions of the mountain ranges.
+        let baseContinentDef_cu = Curve::new(baseContinentDef_fb0)
+            .add_control_point(-2.0000 + SEA_LEVEL, -1.625 + SEA_LEVEL)
+            .add_control_point(-1.0000 + SEA_LEVEL, -1.375 + SEA_LEVEL)
+            .add_control_point(0.0000 + SEA_LEVEL, -0.375 + SEA_LEVEL)
+            .add_control_point(0.0625 + SEA_LEVEL, 0.125 + SEA_LEVEL)
+            .add_control_point(0.1250 + SEA_LEVEL, 0.250 + SEA_LEVEL)
+            .add_control_point(0.2500 + SEA_LEVEL, 1.000 + SEA_LEVEL)
+            .add_control_point(0.5000 + SEA_LEVEL, 0.250 + SEA_LEVEL)
+            .add_control_point(0.7500 + SEA_LEVEL, 0.250 + SEA_LEVEL)
+            .add_control_point(1.0000 + SEA_LEVEL, 0.500 + SEA_LEVEL)
+            .add_control_point(2.0000 + SEA_LEVEL, 0.500 + SEA_LEVEL);
 
-    // 2: [Continent-with-ranges module]: Next, a curve module modifies the
-    // output value from the continent module so that very high values appear
-    // near sea level. This defines the positions of the mountain ranges.
-    let baseContinentDef_cu = Curve::new(&baseContinentDef_fb0)
-        .add_control_point(-2.0000 + SEA_LEVEL, -1.625 + SEA_LEVEL)
-        .add_control_point(-1.0000 + SEA_LEVEL, -1.375 + SEA_LEVEL)
-        .add_control_point(0.0000 + SEA_LEVEL, -0.375 + SEA_LEVEL)
-        .add_control_point(0.0625 + SEA_LEVEL, 0.125 + SEA_LEVEL)
-        .add_control_point(0.1250 + SEA_LEVEL, 0.250 + SEA_LEVEL)
-        .add_control_point(0.2500 + SEA_LEVEL, 1.000 + SEA_LEVEL)
-        .add_control_point(0.5000 + SEA_LEVEL, 0.250 + SEA_LEVEL)
-        .add_control_point(0.7500 + SEA_LEVEL, 0.250 + SEA_LEVEL)
-        .add_control_point(1.0000 + SEA_LEVEL, 0.500 + SEA_LEVEL)
-        .add_control_point(2.0000 + SEA_LEVEL, 0.500 + SEA_LEVEL);
+        //    debug::render_noise_module("complexplanet_images/00_1_baseContinentDef_cu\
+        //    .png",
+        //                               &baseContinentDef_cu,
+        //                               1024,
+        //                               1024,
+        //                               100);
 
-    //    debug::render_noise_module("complexplanet_images/00_1_baseContinentDef_cu\
-    //    .png",
-    //                               &baseContinentDef_cu,
-    //                               1024,
-    //                               1024,
-    //                               100);
+        // 3: [Carver module]: This higher-frequency BasicMulti module will be
+        // used by subsequent noise functions to carve out chunks from the
+        // mountain ranges within the continent-with-ranges module so that the
+        // mountain ranges will not be completely impassible.
+        let baseContinentDef_fb1 = Fbm::<Perlin>::new(CURRENT_SEED + 1)
+            .set_frequency(CONTINENT_FREQUENCY * 4.34375)
+            .set_persistence(0.5)
+            .set_lacunarity(CONTINENT_LACUNARITY)
+            .set_octaves(11);
 
-    // 3: [Carver module]: This higher-frequency BasicMulti module will be
-    // used by subsequent noise functions to carve out chunks from the
-    // mountain ranges within the continent-with-ranges module so that the
-    // mountain ranges will not be completely impassible.
-    let baseContinentDef_fb1 = Fbm::new()
-        .set_seed(CURRENT_SEED + 1)
-        .set_frequency(CONTINENT_FREQUENCY * 4.34375)
-        .set_persistence(0.5)
-        .set_lacunarity(CONTINENT_LACUNARITY)
-        .set_octaves(11);
+        //    debug::render_noise_module("complexplanet_images/00_2_baseContinentDef_fb1\
+        //    .png",
+        //                               &baseContinentDef_fb1,
+        //                               1024,
+        //                               1024,
+        //                               100);
 
-    //    debug::render_noise_module("complexplanet_images/00_2_baseContinentDef_fb1\
-    //    .png",
-    //                               &baseContinentDef_fb1,
-    //                               1024,
-    //                               1024,
-    //                               100);
+        // 4: [Scaled-carver module]: This scale/bias module scales the output
+        // value from the carver module such that it is usually near 1.0. This
+        // is required for step 5.
+        let baseContinentDef_sb = ScaleBias::new(baseContinentDef_fb1)
+            .set_scale(0.375)
+            .set_bias(0.625);
 
-    // 4: [Scaled-carver module]: This scale/bias module scales the output
-    // value from the carver module such that it is usually near 1.0. This
-    // is required for step 5.
-    let baseContinentDef_sb = ScaleBias::new(&baseContinentDef_fb1)
-        .set_scale(0.375)
-        .set_bias(0.625);
+        //    debug::render_noise_module("complexplanet_images/00_3_baseContinentDef_sb\
+        //    .png",
+        //                               &baseContinentDef_sb,
+        //                               1024,
+        //                               1024,
+        //                               100);
 
-    //    debug::render_noise_module("complexplanet_images/00_3_baseContinentDef_sb\
-    //    .png",
-    //                               &baseContinentDef_sb,
-    //                               1024,
-    //                               1024,
-    //                               100);
+        // 5: [Carved-continent module]: This minimum-value module carves out
+        // chunks from the continent-with-ranges module. it does this by ensuring
+        // that only the minimum of the output values from the scaled-carver
+        // module and the continent-with-ranges module contributes to the output
+        // value of this subgroup. Most of the time, the minimum value module will
+        // select the output value from the continent-with-ranges module since the
+        // output value from the scaled-carver is usually near 1.0. Occasionally,
+        // the output from the scaled-carver module will be less than the output
+        // value from the continent-with-ranges module, so in this case, the output
+        // value from the scaled-carver module is selected.
+        let baseContinentDef_mi = Min::new(baseContinentDef_sb, baseContinentDef_cu);
 
-    // 5: [Carved-continent module]: This minimum-value module carves out
-    // chunks from the continent-with-ranges module. it does this by ensuring
-    // that only the minimum of the output values from the scaled-carver
-    // module and the continent-with-ranges module contributes to the output
-    // value of this subgroup. Most of the time, the minimum value module will
-    // select the output value from the continent-with-ranges module since the
-    // output value from the scaled-carver is usually near 1.0. Occasionally,
-    // the output from the scaled-carver module will be less than the output
-    // value from the continent-with-ranges module, so in this case, the output
-    // value from the scaled-carver module is selected.
-    let baseContinentDef_mi = Min::new(&baseContinentDef_sb, &baseContinentDef_cu);
+        //    debug::render_noise_module("complexplanet_images/00_4_baseContinentDef_mi\
+        //    .png",
+        //                               &baseContinentDef_mi,
+        //                               1024,
+        //                               1024,
+        //                               100);
 
-    //    debug::render_noise_module("complexplanet_images/00_4_baseContinentDef_mi\
-    //    .png",
-    //                               &baseContinentDef_mi,
-    //                               1024,
-    //                               1024,
-    //                               100);
+        // 6: [Clamped-continent module]: Finally, a clamp module modifies the
+        // carved continent module to ensure that the output value of this subgroup
+        // is between -1.0 and 1.0.
+        let baseContinentDef_cl = Clamp::new(baseContinentDef_mi).set_bounds(-1.0, 1.0);
 
-    // 6: [Clamped-continent module]: Finally, a clamp module modifies the
-    // carved continent module to ensure that the output value of this subgroup
-    // is between -1.0 and 1.0.
-    let baseContinentDef_cl = Clamp::new(&baseContinentDef_mi).set_bounds(-1.0, 1.0);
+        // 7: [Base-continent-definition subgroup]: Caches the output value from
+        // the clamped-continent module.
+        let baseContinentDef = Cache::new(baseContinentDef_cl);
 
-    // 7: [Base-continent-definition subgroup]: Caches the output value from
-    // the clamped-continent module.
-    let baseContinentDef = Cache::new(baseContinentDef_cl);
+        baseContinentDef
+    }
 
     //    debug::render_noise_module("complexplanet_images/00_5_baseContinentDef.png",
     //                               &baseContinentDef,
@@ -286,7 +287,7 @@ fn main() {
     // 1: [Coarse-turbulence module]: This turbulence module warps the output
     // value from the base-continent-definition subgroup, adding some coarse
     // detail to it.
-    let continentDef_tu0 = Turbulence::new(&baseContinentDef)
+    let continentDef_tu0 = Turbulence::<_, Perlin>::new(baseContinentDef())
         .set_seed(CURRENT_SEED + 10)
         .set_frequency(CONTINENT_FREQUENCY * 15.25)
         .set_power(CONTINENT_FREQUENCY / 113.75)
@@ -302,7 +303,7 @@ fn main() {
     // output value from the coarse-turbulence module. This turbulence has a
     // higher frequency, but lower power, than the coarse-turbulence module,
     // adding some intermediate detail to it.
-    let continentDef_tu1 = Turbulence::new(continentDef_tu0)
+    let continentDef_tu1 = Turbulence::<_, Perlin>::new(continentDef_tu0)
         .set_seed(CURRENT_SEED + 11)
         .set_frequency(CONTINENT_FREQUENCY * 47.25)
         .set_power(CONTINENT_FREQUENCY / 433.75)
@@ -318,7 +319,7 @@ fn main() {
     // warps the output value from the intermediate-turbulence module. This
     // turbulence has a higher frequency, but lower power, than the
     // intermediate-turbulence module, adding some fine detail to it.
-    let continentDef_tu2 = Turbulence::new(continentDef_tu1)
+    let continentDef_tu2 = Turbulence::<_, Perlin>::new(continentDef_tu1)
         .set_seed(CURRENT_SEED + 12)
         .set_frequency(CONTINENT_FREQUENCY * 95.25)
         .set_power(CONTINENT_FREQUENCY / 1019.75)
@@ -340,7 +341,7 @@ fn main() {
     // transition.  In effect, only the higher areas of the base-continent-
     // definition subgroup become warped; the underwater and coastal areas
     // remain unaffected.
-    let continentDef_se = Select::new(&baseContinentDef, &continentDef_tu2, &baseContinentDef)
+    let continentDef_se = Select::new(baseContinentDef(), continentDef_tu2, baseContinentDef())
         .set_bounds(SEA_LEVEL - 0.0375, SEA_LEVEL + 1000.0375)
         .set_falloff(0.0625);
 
@@ -386,7 +387,7 @@ fn main() {
     // rougher terrain from appearing exclusively at higher elevations. Rough
     // areas may now appear in the the ocean, creating rocky islands and
     // fjords.
-    let terrainTypeDef_tu = Turbulence::new(&continentDef)
+    let terrainTypeDef_tu = Turbulence::<_, Perlin>::new(&continentDef)
         .set_seed(CURRENT_SEED + 20)
         .set_frequency(CONTINENT_FREQUENCY * 18.125)
         .set_power(CONTINENT_FREQUENCY / 20.59375 * TERRAIN_OFFSET)
@@ -397,7 +398,7 @@ fn main() {
     // slope towards the higher-elevation areas. This shrinks the areas in
     // which the rough terrain appears, increasing the "rarity" of rough
     // terrain.
-    let terrainTypeDef_te = Terrace::new(&terrainTypeDef_tu)
+    let terrainTypeDef_te = Terrace::new(terrainTypeDef_tu)
         .add_control_point(-1.00)
         .add_control_point(SHELF_LEVEL + SEA_LEVEL / 2.0)
         .add_control_point(1.00);
@@ -423,8 +424,7 @@ fn main() {
 
     // 1: [Mountain-ridge module]: This ridged-multifractal-noise function
     // generates the mountain ridges.
-    let mountainBaseDef_rm0 = RidgedMulti::new()
-        .set_seed(CURRENT_SEED + 30)
+    let mountainBaseDef_rm0 = RidgedMulti::<Perlin>::new(CURRENT_SEED + 30)
         .set_frequency(1723.0)
         .set_lacunarity(MOUNTAIN_LACUNARITY)
         .set_octaves(4);
@@ -433,7 +433,7 @@ fn main() {
     // output value from the mountain-ridge module so that its ridges are not
     // too high. The reason for this is that another subgroup adds actual
     // mountainous terrain to these ridges.
-    let mountainBaseDef_sb0 = ScaleBias::new(&mountainBaseDef_rm0)
+    let mountainBaseDef_sb0 = ScaleBias::new(mountainBaseDef_rm0)
         .set_scale(0.5)
         .set_bias(0.375);
 
@@ -443,8 +443,7 @@ fn main() {
     // of the valleys. Note that this noise function generates ridged-multifractal
     // noise using only one octave; this information will be important in the
     // next step.
-    let mountainBaseDef_rm1 = RidgedMulti::new()
-        .set_seed(CURRENT_SEED + 31)
+    let mountainBaseDef_rm1 = RidgedMulti::<Perlin>::new(CURRENT_SEED + 31)
         .set_frequency(367.0)
         .set_lacunarity(MOUNTAIN_LACUNARITY)
         .set_octaves(1);
@@ -456,7 +455,7 @@ fn main() {
     // octave ridged-multifractal noise. The negative scaling factor inverts
     // the range of the output value, turning the ridges from the river-valley
     // module into valleys.
-    let mountainBaseDef_sb1 = ScaleBias::new(&mountainBaseDef_rm1)
+    let mountainBaseDef_sb1 = ScaleBias::new(mountainBaseDef_rm1)
         .set_scale(-2.0)
         .set_bias(-0.5);
 
@@ -479,7 +478,7 @@ fn main() {
     // 7: [Coarse-turbulence module]: This turbulence module warps the output
     // value from the mountain-and-valleys module, adding some coarse detail to
     // it.
-    let mountainBaseDef_tu0 = Turbulence::new(mountainBaseDef_bl)
+    let mountainBaseDef_tu0 = Turbulence::<_, Perlin>::new(mountainBaseDef_bl)
         .set_seed(CURRENT_SEED + 32)
         .set_frequency(1337.0)
         .set_power(1.0 / 6730.0 * MOUNTAINS_TWIST)
@@ -489,7 +488,7 @@ fn main() {
     // the output value from the coarse-turbulence module. This turbulence has
     // a higher frequency, but lower power, than the coarse-turbulence module,
     // adding some fine detail to it.
-    let mountainBaseDef_tu1 = Turbulence::new(mountainBaseDef_tu0)
+    let mountainBaseDef_tu1 = Turbulence::<_, Perlin>::new(mountainBaseDef_tu0)
         .set_seed(CURRENT_SEED + 33)
         .set_frequency(21221.0)
         .set_power(1.0 / 120157.0 * MOUNTAINS_TWIST)
@@ -512,8 +511,7 @@ fn main() {
     // 1: [Mountain-basis-0 module]: This ridged-multifractal-noise function,
     // along with the mountain-basis-1 module, generates the individual
     // mountains.
-    let mountainousHigh_rm0 = RidgedMulti::new()
-        .set_seed(CURRENT_SEED + 40)
+    let mountainousHigh_rm0 = RidgedMulti::<Perlin>::new(CURRENT_SEED + 40)
         .set_frequency(2371.0)
         .set_lacunarity(MOUNTAIN_LACUNARITY)
         .set_octaves(3);
@@ -521,8 +519,7 @@ fn main() {
     // 2: [Mountain-basis-1 module]: This ridged-multifractal-noise function,
     // along with the mountain-basis-0 module, generates the individual
     // mountains.
-    let mountainousHigh_rm1 = RidgedMulti::new()
-        .set_seed(CURRENT_SEED + 41)
+    let mountainousHigh_rm1 = RidgedMulti::<Perlin>::new(CURRENT_SEED + 41)
         .set_frequency(2341.0)
         .set_lacunarity(MOUNTAIN_LACUNARITY)
         .set_octaves(3);
@@ -532,11 +529,11 @@ fn main() {
     // that only the maximum of the output values from the two ridged-
     // multifractal-noise functions contribute to the output value of this
     // subgroup.
-    let mountainousHigh_ma = Max::new(&mountainousHigh_rm0, &mountainousHigh_rm1);
+    let mountainousHigh_ma = Max::new(mountainousHigh_rm0, mountainousHigh_rm1);
 
     // 4: [Warped-high-mountains module]: This turbulence module warps the
     // output value from the high-mountains module, adding some detail to it.
-    let mountainousHigh_tu = Turbulence::new(mountainousHigh_ma)
+    let mountainousHigh_tu = Turbulence::<_, Perlin>::new(mountainousHigh_ma)
         .set_seed(CURRENT_SEED + 42)
         .set_frequency(31511.0)
         .set_power(1.0 / 180371.0 * MOUNTAINS_TWIST)
@@ -559,8 +556,7 @@ fn main() {
     // 1: [Lowland-basis-0 module]: This ridged-multifractal-noise function,
     // along with the lowland-basis-1 module, produces the low mountainous
     // terrain.
-    let mountainousLow_rm0 = RidgedMulti::new()
-        .set_seed(CURRENT_SEED + 50)
+    let mountainousLow_rm0 = RidgedMulti::<Perlin>::new(CURRENT_SEED + 50)
         .set_frequency(1381.0)
         .set_lacunarity(MOUNTAIN_LACUNARITY)
         .set_octaves(8);
@@ -568,8 +564,7 @@ fn main() {
     // 1: [Lowland-basis-1 module]: This ridged-multifractal-noise function,
     // along with the lowland-basis-0 module, produces the low mountainous
     // terrain.
-    let mountainousLow_rm1 = RidgedMulti::new()
-        .set_seed(CURRENT_SEED + 51)
+    let mountainousLow_rm1 = RidgedMulti::<Perlin>::new(CURRENT_SEED + 51)
         .set_frequency(1427.0)
         .set_lacunarity(MOUNTAIN_LACUNARITY)
         .set_octaves(8);
@@ -581,7 +576,7 @@ fn main() {
     // - Flat areas appear when a positive and a negative output value are
     //   multiplied together.
     // - Ridges appear when two positive output values are multiplied together.
-    let mountainousLow_mu = Multiply::new(&mountainousLow_rm0, &mountainousLow_rm1);
+    let mountainousLow_mu = Multiply::new(mountainousLow_rm0, mountainousLow_rm1);
 
     // 4: [Low-mountainous-terrain subgroup]: Caches the output value from the
     // low-mountainous-terrain module.
@@ -604,7 +599,7 @@ fn main() {
     // areas becoming more-or-less flat with little variation. This will also
     // result in the low mountainous areas appearing at the lowest elevations in
     // this subgroup.
-    let mountainousTerrain_sb0 = ScaleBias::new(&mountainousLow)
+    let mountainousTerrain_sb0 = ScaleBias::new(mountainousLow)
         .set_scale(0.03125)
         .set_bias(-0.96875);
 
@@ -612,7 +607,7 @@ fn main() {
     // scales the output value from the high-mountainous-terrain subgroup to 1/4
     // of its initial value and biases it so that its output value is usually
     // positive.
-    let mountainousTerrain_sb1 = ScaleBias::new(&mountainousHigh)
+    let mountainousTerrain_sb1 = ScaleBias::new(mountainousHigh)
         .set_scale(0.25)
         .set_bias(0.25);
 
@@ -620,7 +615,7 @@ fn main() {
     // output value from the scaled-high-mountainous-terrain module to the
     // output value from the mountain-base-definition subgroup. Mountains now
     // appear all over the terrain.
-    let mountainousTerrain_ad = Add::new(&mountainousTerrain_sb1, &mountainBaseDef);
+    let mountainousTerrain_ad = Add::new(mountainousTerrain_sb1, &mountainBaseDef);
 
     // 4: [Combined-mountainous-terrain module]: Note that at this point, the
     // entire terrain is covered in high mountainous terrain, even at the low
@@ -634,8 +629,8 @@ fn main() {
     // module selects the output value from the scaled-low-mountainous-terrain
     // module.
     let mountainousTerrain_se = Select::new(
-        &mountainousTerrain_sb0,
-        &mountainousTerrain_ad,
+        mountainousTerrain_sb0,
+        mountainousTerrain_ad,
         &mountainBaseDef,
     )
     .set_bounds(-0.5, 999.5)
@@ -644,7 +639,7 @@ fn main() {
     // 5: [Scaled-mountainous-terrain-module]: This scale/bias module slightly
     // reduces the range of the output value from the combined-mountainous-
     // terrain module, decreasing the heights of the mountain peaks.
-    let mountainousTerrain_sb2 = ScaleBias::new(&mountainousTerrain_se)
+    let mountainousTerrain_sb2 = ScaleBias::new(mountainousTerrain_se)
         .set_scale(0.8)
         .set_bias(0.0);
 
@@ -655,7 +650,7 @@ fn main() {
     // those mountains. This exponential-curve module expects the output value
     // to range from -1.0 to +1.0.
     let mountainousTerrain_ex =
-        Exponent::new(&mountainousTerrain_sb2).set_exponent(MOUNTAIN_GLACIATION);
+        Exponent::new(mountainousTerrain_sb2).set_exponent(MOUNTAIN_GLACIATION);
 
     let mountainousTerrain = Cache::new(mountainousTerrain_ex);
 
@@ -673,8 +668,7 @@ fn main() {
     //
 
     // 1: [Hills module]: This billow-noise function generates the hills.
-    let hillyTerrain_bi = Billow::new()
-        .set_seed(CURRENT_SEED + 60)
+    let hillyTerrain_bi = Billow::<Perlin>::new(CURRENT_SEED + 60)
         .set_frequency(1663.0)
         .set_persistence(0.5)
         .set_lacunarity(HILLS_LACUNARITY)
@@ -684,17 +678,14 @@ fn main() {
     // value from the hills module so that its hilltops are not too high. The
     // reason for this is that these hills are eventually added to the river
     // valleys (see below).
-    let hillyTerrain_sb0 = ScaleBias::new(&hillyTerrain_bi)
-        .set_scale(0.5)
-        .set_bias(0.5);
+    let hillyTerrain_sb0 = ScaleBias::new(hillyTerrain_bi).set_scale(0.5).set_bias(0.5);
 
     // 3: [River-valley module]: This ridged-multifractal-noise function generates
     // the river valleys. It has a much lower frequency so that more hills will
     // appear in between the valleys. Note that this noise function generates
     // ridged-multifractal noise using only one octave; this information will be
     // important in the next step.
-    let hillyTerrain_rm = RidgedMulti::new()
-        .set_seed(CURRENT_SEED + 61)
+    let hillyTerrain_rm = RidgedMulti::<Perlin>::new(CURRENT_SEED + 61)
         .set_frequency(367.5)
         .set_lacunarity(HILLS_LACUNARITY)
         .set_octaves(1);
@@ -706,7 +697,7 @@ fn main() {
     // octave ridged-multifractal noise. The negative scaling factor inverts
     // the range of the output value, turning the ridges from the river-valley
     // module into valleys.
-    let hillyTerrain_sb1 = ScaleBias::new(&hillyTerrain_rm)
+    let hillyTerrain_sb1 = ScaleBias::new(hillyTerrain_rm)
         .set_scale(-2.0)
         .set_bias(-1.0);
 
@@ -720,12 +711,12 @@ fn main() {
     // scaled-hills module as the control module, causing the low-flat module to
     // appear in the lower areas and causing the scaled-river-valley module to
     // appear in the higher areas.
-    let hillyTerrain_bl = Blend::new(&hillyTerrain_co, &hillyTerrain_sb1, &hillyTerrain_sb0);
+    let hillyTerrain_bl = Blend::new(hillyTerrain_co, hillyTerrain_sb1, hillyTerrain_sb0);
 
     // 7: [Scaled-hills-and-valleys module]: This scale/bias module slightly
     // reduces the range of the output value from the hills-and-valleys
     // module, decreasing the heights of the hilltops.
-    let hillyTerrain_sb2 = ScaleBias::new(&hillyTerrain_bl)
+    let hillyTerrain_sb2 = ScaleBias::new(hillyTerrain_bl)
         .set_scale(0.75)
         .set_bias(-0.25);
 
@@ -734,12 +725,12 @@ fn main() {
     // exponential curve to the output value the scaled-hills-and-valleys
     // module. This exponential-curve module expects the input value to range
     // from -1.0 to 1.0.
-    let hillyTerrain_ex = Exponent::new(&hillyTerrain_sb2).set_exponent(1.375);
+    let hillyTerrain_ex = Exponent::new(hillyTerrain_sb2).set_exponent(1.375);
 
     // 9: [Coarse-turbulence module]: This turbulence module warps the output
     // value from the increased-slope-hilly-terrain module, adding some
     // coarse detail to it.
-    let hillyTerrain_tu0 = Turbulence::new(hillyTerrain_ex)
+    let hillyTerrain_tu0 = Turbulence::<_, Perlin>::new(hillyTerrain_ex)
         .set_seed(CURRENT_SEED + 62)
         .set_frequency(1531.0)
         .set_power(1.0 / 16921.0 * HILLS_TWIST)
@@ -749,7 +740,7 @@ fn main() {
     // output value from the coarse-turbulence module. This turbulence has a
     // higher frequency, but lower power, than the coarse-turbulence module,
     // adding some fine detail to it.
-    let hillyTerrain_tu1 = Turbulence::new(hillyTerrain_tu0)
+    let hillyTerrain_tu1 = Turbulence::<_, Perlin>::new(hillyTerrain_tu0)
         .set_seed(CURRENT_SEED + 63)
         .set_frequency(21617.0)
         .set_power(1.0 / 117529.0 * HILLS_TWIST)
@@ -779,8 +770,7 @@ fn main() {
 
     // 1: [Plains-basis-0 module]: This billow-noise function, along with the
     // plains-basis-1 module, produces the plains.
-    let plainsTerrain_bi0 = Billow::new()
-        .set_seed(CURRENT_SEED + 70)
+    let plainsTerrain_bi0 = Billow::<Perlin>::new(CURRENT_SEED + 70)
         .set_frequency(1097.5)
         .set_persistence(0.5)
         .set_lacunarity(PLAINS_LACUNARITY)
@@ -790,14 +780,13 @@ fn main() {
     // output value from the plains-basis-0 module positive since this output
     // value will be multiplied together with the positive-plains-basis-1
     // module.
-    let plainsTerrain_sb0 = ScaleBias::new(&plainsTerrain_bi0)
+    let plainsTerrain_sb0 = ScaleBias::new(plainsTerrain_bi0)
         .set_scale(0.5)
         .set_bias(0.5);
 
     // 3: [Plains-basis-1 module]: This billow-noise function, along with the
     // plains-basis-2 module, produces the plains.
-    let plainsTerrain_bi1 = Billow::new()
-        .set_seed(CURRENT_SEED + 71)
+    let plainsTerrain_bi1 = Billow::<Perlin>::new(CURRENT_SEED + 71)
         .set_frequency(1097.5)
         .set_persistence(0.5)
         .set_lacunarity(PLAINS_LACUNARITY)
@@ -807,18 +796,18 @@ fn main() {
     // output value from the plains-basis-1 module positive since this output
     // value will be multiplied together with the positive-plains-basis-0
     // module.
-    let plainsTerrain_sb1 = ScaleBias::new(&plainsTerrain_bi1)
+    let plainsTerrain_sb1 = ScaleBias::new(plainsTerrain_bi1)
         .set_scale(0.5)
         .set_bias(0.5);
 
     // 5: [Combined-plains-basis module]: This multiplication module combines
     // the two plains basis modules together.
-    let plainsTerrain_mu = Multiply::new(&plainsTerrain_sb0, &plainsTerrain_sb1);
+    let plainsTerrain_mu = Multiply::new(plainsTerrain_sb0, plainsTerrain_sb1);
 
     // 6: [Rescaled-plains-basis module]: This scale/bias module maps the output
     // value that ranges from 0.0 to 1.0 back to a value that ranges from
     // -1.0 to +1.0.
-    let plainsTerrain_sb2 = ScaleBias::new(&plainsTerrain_mu)
+    let plainsTerrain_sb2 = ScaleBias::new(plainsTerrain_mu)
         .set_scale(2.0)
         .set_bias(-1.0);
 
@@ -843,8 +832,7 @@ fn main() {
     // 1: [Sand-dunes module]: This ridged-multifractal-noise function generates
     // sand dunes. This ridged-multifractal noise is generated with a single
     // octave, which makes very smooth dunes.
-    let badlandsSand_rm = RidgedMulti::new()
-        .set_seed(CURRENT_SEED + 80)
+    let badlandsSand_rm = RidgedMulti::<Perlin>::new(CURRENT_SEED + 80)
         .set_frequency(6163.5)
         .set_lacunarity(BADLANDS_LACUNARITY)
         .set_octaves(1);
@@ -852,7 +840,7 @@ fn main() {
     // 2: [Scaled-sand-dunes module]: This scale/bias module shrinks the dune
     // heights by a small amount. This is necessary so that the subsequent
     // noise functions in this subgroup can add some detail to the dunes.
-    let badlandsSand_sb0 = ScaleBias::new(&badlandsSand_rm)
+    let badlandsSand_sb0 = ScaleBias::new(badlandsSand_rm)
         .set_scale(0.875)
         .set_bias(0.0);
 
@@ -860,23 +848,21 @@ fn main() {
     // generate the detail to add to the dunes. By enabling the distance
     // algorithm, small polygonal pits are generated; the edges of the pits
     // are joined to the edges of nearby pits.
-    let badlandsSand_wo = Worley::new()
-        .set_seed(CURRENT_SEED + 81)
+    let badlandsSand_wo = Worley::new(CURRENT_SEED + 81)
         .set_frequency(16183.25)
-        .set_displacement(0.0)
-        .enable_range(true);
+        .set_return_type(ReturnType::Distance);
 
     // 4: [Scaled-dune-detail module]: This scale/bias module shrinks the dune
     // details by a large amount. This is necessary so that the subsequent
     // noise functions in this subgroup can add this detail to the sand-dunes
     // module.
-    let badlandsSand_sb1 = ScaleBias::new(&badlandsSand_wo)
+    let badlandsSand_sb1 = ScaleBias::new(badlandsSand_wo)
         .set_scale(0.25)
         .set_bias(0.25);
 
     // 5: [Dunes-with-detail module]: This addition module combines the scaled-
     // sand-dunes module with the scaled-dune-detail module.
-    let badlandsSand_ad = Add::new(&badlandsSand_sb0, &badlandsSand_sb1);
+    let badlandsSand_ad = Add::new(badlandsSand_sb0, badlandsSand_sb1);
 
     // 6: [Badlands-sand subgroup]: Caches the output value from the dunes-with-
     // detail module.
@@ -893,8 +879,7 @@ fn main() {
 
     // 1: [Cliff-basis module]: This Perlin-noise function generates some coherent
     // noise that will be used to generate the cliffs.
-    let badlandsCliffs_fb = Fbm::new()
-        .set_seed(CURRENT_SEED + 90)
+    let badlandsCliffs_fb = Fbm::<Perlin>::new(CURRENT_SEED + 90)
         .set_frequency(CONTINENT_FREQUENCY * 839.0)
         .set_persistence(0.5)
         .set_lacunarity(BADLANDS_LACUNARITY)
@@ -905,7 +890,7 @@ fn main() {
     // very shallow, but then its slope increases sharply. At the highest
     // elevations, the curve becomes very flat again. This produces the
     // stereotypical Utah-style desert cliffs.
-    let badlandsCliffs_cu = Curve::new(&badlandsCliffs_fb)
+    let badlandsCliffs_cu = Curve::new(badlandsCliffs_fb)
         .add_control_point(-2.000, -2.000)
         .add_control_point(-1.000, -1.000)
         .add_control_point(-0.000, -0.750)
@@ -917,12 +902,12 @@ fn main() {
     // 3: [Clamped-cliffs module]: This clamping module makes the tops of the
     // cliffs very flat by clamping the output value from the cliff-shaping
     // module.
-    let badlandsCliffs_cl = Clamp::new(&badlandsCliffs_cu).set_bounds(-999.125, 0.875);
+    let badlandsCliffs_cl = Clamp::new(badlandsCliffs_cu).set_bounds(-999.125, 0.875);
 
     // 4: [Terraced-cliffs module]: Next, this terracing module applies some
     // terraces to the clamped-cliffs module in the lower elevations before the
     // sharp cliff transition.
-    let badlandsCliffs_te = Terrace::new(&badlandsCliffs_cl)
+    let badlandsCliffs_te = Terrace::new(badlandsCliffs_cl)
         .add_control_point(-1.000)
         .add_control_point(-0.875)
         .add_control_point(-0.750)
@@ -932,7 +917,7 @@ fn main() {
 
     // 5: [Coarse-turbulence module]: This turbulence module warps the output
     // value from the terraced-cliffs module, adding some coarse detail to it.
-    let badlandsCliffs_tu0 = Turbulence::new(badlandsCliffs_te)
+    let badlandsCliffs_tu0 = Turbulence::<_, Perlin>::new(badlandsCliffs_te)
         .set_seed(CURRENT_SEED + 91)
         .set_frequency(16111.0)
         .set_power(1.0 / 141539.0 * BADLANDS_TWIST)
@@ -942,7 +927,7 @@ fn main() {
     // from the coarse-turbulence module. This turbulence has a higher
     // frequency, but lower power, than the coarse-turbulence module, adding
     // some fine detail to it.
-    let badlandsCliffs_tu1 = Turbulence::new(badlandsCliffs_tu0)
+    let badlandsCliffs_tu1 = Turbulence::<_, Perlin>::new(badlandsCliffs_tu0)
         .set_seed(CURRENT_SEED + 92)
         .set_frequency(36107.0)
         .set_power(1.0 / 211543.0 * BADLANDS_TWIST)
@@ -970,15 +955,13 @@ fn main() {
     // 1: [Scaled-sand-dunes module]: This scale/bias module considerably
     // flattens the output value from the badlands-sands subgroup and lowers
     // this value to near -1.0.
-    let badlandsTerrain_sb = ScaleBias::new(&badlandsSand)
-        .set_scale(0.25)
-        .set_bias(-0.75);
+    let badlandsTerrain_sb = ScaleBias::new(badlandsSand).set_scale(0.25).set_bias(-0.75);
 
     // 2: [Dunes-and-cliffs module]: This maximum-value module causes the dunes
     // to appear in the low areas and the cliffs to appear in the high areas.
     // It does this by selecting the maximum of the output values from the
     // scaled-sand-dunes module and the badlands-cliffs subgroup.
-    let badlandsTerrain_ma = Max::new(&badlandsCliffs, &badlandsTerrain_sb);
+    let badlandsTerrain_ma = Max::new(badlandsCliffs, badlandsTerrain_sb);
 
     // 3: [Badlands-terrain group]: Caches the output value from the dunes-and-
     // cliffs module. This is the output value for the entire badlands-terrain
@@ -1006,8 +989,7 @@ fn main() {
 
     // 1: [Large-river-basis module]: This ridged-multifractal-noise function
     // creates the large, deep rivers.
-    let riverPositions_rm0 = RidgedMulti::new()
-        .set_seed(CURRENT_SEED + 100)
+    let riverPositions_rm0 = RidgedMulti::<Perlin>::new(CURRENT_SEED + 100)
         .set_frequency(18.75)
         .set_lacunarity(CONTINENT_LACUNARITY)
         .set_octaves(1);
@@ -1017,7 +999,7 @@ fn main() {
     // inverted. This creates the rivers. This curve also compresses the edge of
     // the rivers, producing a sharp transition from the land to the river
     // bottom.
-    let riverPositions_cu0 = Curve::new(&riverPositions_rm0)
+    let riverPositions_cu0 = Curve::new(riverPositions_rm0)
         .add_control_point(-2.000, 2.000)
         .add_control_point(-1.000, 1.000)
         .add_control_point(-0.125, 0.875)
@@ -1027,8 +1009,7 @@ fn main() {
 
     // 3: [Small-river-basis module]: This ridged-multifractal-noise function
     // creates the small, shallow rivers.
-    let riverPositions_rm1 = RidgedMulti::new()
-        .set_seed(CURRENT_SEED + 101)
+    let riverPositions_rm1 = RidgedMulti::<Perlin>::new(CURRENT_SEED + 101)
         .set_frequency(43.25)
         .set_lacunarity(CONTINENT_LACUNARITY)
         .set_octaves(1);
@@ -1038,7 +1019,7 @@ fn main() {
     // inverted. This creates the rivers. This curve also compresses the edge of
     // the rivers, producing a sharp transition from the land to the river
     // bottom.
-    let riverPositions_cu1 = Curve::new(&riverPositions_rm1)
+    let riverPositions_cu1 = Curve::new(riverPositions_rm1)
         .add_control_point(-2.000, 2.0000)
         .add_control_point(-1.000, 1.5000)
         .add_control_point(-0.125, 1.4375)
@@ -1050,12 +1031,12 @@ fn main() {
     // rivers to cut into the large rivers.  It does this by selecting the
     // minimum output values from the large-river-curve module and the small-
     // river-curve module.
-    let riverPositions_mi = Min::new(&riverPositions_cu0, &riverPositions_cu1);
+    let riverPositions_mi = Min::new(riverPositions_cu0, riverPositions_cu1);
 
     // 6: [Warped-rivers module]: This turbulence module warps the output value
     //    from the combined-rivers module, which twists the rivers.  The high
     //    roughness produces less-smooth rivers.
-    let riverPositions_tu = Turbulence::new(riverPositions_mi)
+    let riverPositions_tu = Turbulence::<_, Perlin>::new(riverPositions_mi)
         .set_seed(CURRENT_SEED + 102)
         .set_frequency(9.25)
         .set_power(1.0 / 57.75)
@@ -1090,7 +1071,7 @@ fn main() {
     // 1: [Base-scaled-mountainous-terrain module]: This scale/bias module
     // scales the output value from the mountainous-terrain group so that the
     // output value is measured in planetary elevation units.
-    let scaledMountainousTerrain_sb0 = ScaleBias::new(&mountainousTerrain)
+    let scaledMountainousTerrain_sb0 = ScaleBias::new(mountainousTerrain)
         .set_scale(0.125)
         .set_bias(0.125);
 
@@ -1098,8 +1079,7 @@ fn main() {
     // roughly the same elevation. This BasicMulti module generates some
     // random values that will be used by subsequent noise functions to randomly
     // change the elevations of the mountain peaks.
-    let scaledMountainousTerrain_fb = Fbm::new()
-        .set_seed(CURRENT_SEED + 110)
+    let scaledMountainousTerrain_fb = Fbm::<Perlin>::new(CURRENT_SEED + 110)
         .set_frequency(14.5)
         .set_persistence(0.5)
         .set_lacunarity(MOUNTAIN_LACUNARITY)
@@ -1111,14 +1091,13 @@ fn main() {
     // number of low values. This means there will be a few peaks with much
     // higher elevations than the majority of the peaks, making the terrain
     // features more varied.
-    let scaledMountainousTerrain_ex =
-        Exponent::new(&scaledMountainousTerrain_fb).set_exponent(1.25);
+    let scaledMountainousTerrain_ex = Exponent::new(scaledMountainousTerrain_fb).set_exponent(1.25);
 
     // 4: [Scaled-peak-modulation module]: This scale/bias module modifies the
     // range of the output value from the peak-modulation module so that it can
     // be used as the modulator for the peak-height-multiplier module. It is
     // important that this output value is not much lower than 1.0.
-    let scaledMountainousTerrain_sb1 = ScaleBias::new(&scaledMountainousTerrain_ex)
+    let scaledMountainousTerrain_sb1 = ScaleBias::new(scaledMountainousTerrain_ex)
         .set_scale(0.25)
         .set_bias(1.0);
 
@@ -1126,7 +1105,7 @@ fn main() {
     // heights of the mountain peaks from the base-scaled-mountainous-terrain
     // module using the output value from the scaled-peak-modulation module.
     let scaledMountainousTerrain_mu =
-        Multiply::new(&scaledMountainousTerrain_sb0, &scaledMountainousTerrain_sb1);
+        Multiply::new(scaledMountainousTerrain_sb0, scaledMountainousTerrain_sb1);
 
     // 6: [Scaled-mountainous-terrain group]: Caches the output value from the
     // peak-height-multiplier module.  This is the output value for the
@@ -1158,7 +1137,7 @@ fn main() {
     // 1: [Base-scaled-hilly-terrain module]: This scale/bias module scales the
     // output value from the hilly-terrain group so that this output value is
     // measured in planetary elevation units.
-    let scaledHillyTerrain_sb0 = ScaleBias::new(&hillyTerrain)
+    let scaledHillyTerrain_sb0 = ScaleBias::new(hillyTerrain)
         .set_scale(0.0625)
         .set_bias(0.0625);
 
@@ -1166,8 +1145,7 @@ fn main() {
     // roughly the same elevation. This BasicMulti module generates some
     // random values that will be used by subsequent noise functions to
     // randomly change the elevations of the hilltops.
-    let scaledHillyTerrain_fb = Fbm::new()
-        .set_seed(CURRENT_SEED + 120)
+    let scaledHillyTerrain_fb = Fbm::<Perlin>::new(CURRENT_SEED + 120)
         .set_frequency(13.5)
         .set_persistence(0.5)
         .set_lacunarity(HILLS_LACUNARITY)
@@ -1179,20 +1157,20 @@ fn main() {
     // number of low values. This means there will be a few hilltops with
     // much higher elevations than the majority of the hilltops, making the
     // terrain features more varied.
-    let scaledHillyTerrain_ex = Exponent::new(&scaledHillyTerrain_fb).set_exponent(1.25);
+    let scaledHillyTerrain_ex = Exponent::new(scaledHillyTerrain_fb).set_exponent(1.25);
 
     // 4: [Scaled-hilltop-modulation module]: This scale/bias module modifies
     // the range of the output value from the hilltop-modulation module so that
     // it can be used as the modulator for the hilltop-height-multiplier module.
     // It is important that this output value is not much lower than 1.0.
-    let scaledHillyTerrain_sb1 = ScaleBias::new(&scaledHillyTerrain_ex)
+    let scaledHillyTerrain_sb1 = ScaleBias::new(scaledHillyTerrain_ex)
         .set_scale(0.5)
         .set_bias(1.5);
 
     // 5: [Hilltop-height-multiplier module]: This multiplier module modulates
     // the heights of the hilltops from the base-scaled-hilly-terrain module
     // using the output value from the scaled-hilltop-modulation module.
-    let scaledHillyTerrain_mu = Multiply::new(&scaledHillyTerrain_sb0, &scaledHillyTerrain_sb1);
+    let scaledHillyTerrain_mu = Multiply::new(scaledHillyTerrain_sb0, scaledHillyTerrain_sb1);
 
     // 6: [Scaled-hilly-terrain group]: Caches the output value from the
     // hilltop-height-multiplier module. This is the output value for the entire
@@ -1223,7 +1201,7 @@ fn main() {
     // 1: [Scaled-plains-terrain module]: This scale/bias module greatly
     // flattens the output value from the plains terrain.  This output value
     // is measured in planetary elevation units.
-    let scaledPlainsTerrain_sb0 = ScaleBias::new(&plainsTerrain)
+    let scaledPlainsTerrain_sb0 = ScaleBias::new(plainsTerrain)
         .set_scale(0.00390625)
         .set_bias(0.0078125);
 
@@ -1256,7 +1234,7 @@ fn main() {
     // 1: [Scaled-badlands-terrain module]: This scale/bias module scales the
     // output value from the badlands-terrain group so that it is measured
     // in planetary elevation units.
-    let scaledBadlandsTerrain_sb = ScaleBias::new(&badlandsTerrain)
+    let scaledBadlandsTerrain_sb = ScaleBias::new(badlandsTerrain)
         .set_scale(0.0625)
         .set_bias(0.0625);
 
@@ -1310,7 +1288,7 @@ fn main() {
     // value from the shelf-creator module so that its possible range is from
     // the bottom of the ocean to sea level. This is done because this subgroup
     // is only concerned about the oceans.
-    let continentalShelf_cl = Clamp::new(&continentalShelf_te).set_bounds(-0.75, SEA_LEVEL);
+    let continentalShelf_cl = Clamp::new(continentalShelf_te).set_bounds(-0.75, SEA_LEVEL);
 
     //    debug::render_noise_module("complexplanet_images/18_1_continentalShelf_cl\
     //    .png",
@@ -1322,8 +1300,7 @@ fn main() {
     // 3: [Oceanic-trench-basis module]: This ridged-multifractal-noise function
     // generates some coherent noise that will be used to generate the oceanic
     // trenches. The ridges represent the bottom of the trenches.
-    let continentalShelf_rm = RidgedMulti::new()
-        .set_seed(CURRENT_SEED + 130)
+    let continentalShelf_rm = RidgedMulti::<Perlin>::new(CURRENT_SEED + 130)
         .set_frequency(CONTINENT_FREQUENCY * 4.375)
         .set_lacunarity(CONTINENT_LACUNARITY)
         .set_octaves(16);
@@ -1339,7 +1316,7 @@ fn main() {
     // from the oceanic-trench-basis-module so that the ridges become trenches.
     // This noise function also reduces the depth of the trenches so that their
     // depths are measured in planetary elevation units.
-    let continentalShelf_sb = ScaleBias::new(&continentalShelf_rm)
+    let continentalShelf_sb = ScaleBias::new(continentalShelf_rm)
         .set_scale(-0.125)
         .set_bias(-0.125);
 
@@ -1352,7 +1329,7 @@ fn main() {
 
     // 5: [Shelf-and-trenches module]: This addition module adds the oceanic
     // trenches to the clamped-sea-bottom module.
-    let continentalShelf_ad = Add::new(&continentalShelf_sb, &continentalShelf_cl);
+    let continentalShelf_ad = Add::new(continentalShelf_sb, continentalShelf_cl);
 
     // 6: [Continental-shelf subgroup]: Caches the output value from the shelf-
     //    and-trenches module.
@@ -1396,7 +1373,7 @@ fn main() {
     // continent-definition group is below the shelf level. Otherwise, it
     // selects the output value from the base-scaled-continent-elevations
     // module.
-    let baseContinentElev_se = Select::new(&baseContinentElev_sb, &continentalShelf, &continentDef)
+    let baseContinentElev_se = Select::new(baseContinentElev_sb, continentalShelf, &continentDef)
         .set_bounds(SHELF_LEVEL - 1000.0, SHELF_LEVEL)
         .set_falloff(0.03125);
 
@@ -1424,7 +1401,7 @@ fn main() {
 
     // 1: [Continents-with-plains module]: This addition module adds the scaled-
     // plains-terrain group to the base-continent-elevation subgroup.
-    let continentsWithPlains_ad = Add::new(&baseContinentElev, &scaledPlainsTerrain);
+    let continentsWithPlains_ad = Add::new(&baseContinentElev, scaledPlainsTerrain);
 
     // 2: [Continents-with-plains subgroup]: Caches the output value from the
     // continents-with-plains module.
@@ -1450,7 +1427,7 @@ fn main() {
 
     // 1: [Continents-with-hills module]: This addition module adds the scaled-
     // hilly-terrain group to the base-continent-elevation subgroup.
-    let continentsWithHills_ad = Add::new(&baseContinentElev, &scaledHillyTerrain);
+    let continentsWithHills_ad = Add::new(&baseContinentElev, scaledHillyTerrain);
 
     //    debug::render_noise_module("complexplanet_images/21_0_continentsWithHills_ad.png",
     //                               &continentsWithHills_ad,
@@ -1497,7 +1474,7 @@ fn main() {
     // 1: [Continents-and-mountains module]: This addition module adds the
     // scaled-mountainous-terrain group to the base-continent-elevation
     // subgroup.
-    let continentsWithMountains_ad0 = Add::new(&baseContinentElev, &scaledMountainousTerrain);
+    let continentsWithMountains_ad0 = Add::new(&baseContinentElev, scaledMountainousTerrain);
 
     //    debug::render_noise_module("complexplanet_images/22_0_continentsWithMountains_ad0.png",
     //                               &continentsWithMountains_ad0,
@@ -1526,7 +1503,7 @@ fn main() {
     // increased-mountain-heights module to the continents-and-mountains module.
     // The highest continent elevations now have the highest mountains.
     let continentsWithMountains_ad1 =
-        Add::new(&continentsWithMountains_ad0, &continentsWithMountains_cu);
+        Add::new(continentsWithMountains_ad0, continentsWithMountains_cu);
 
     //    debug::render_noise_module("complexplanet_images/22_2_continentsWithMountains_ad1.png",
     //                               &continentsWithMountains_ad1,
@@ -1542,8 +1519,8 @@ fn main() {
     // continents-with-hills subgroup. Note that the continents-with-hills
     // subgroup also contains the plains terrain.
     let continentsWithMountains_se = Select::new(
-        &continentsWithHills,
-        &continentsWithMountains_ad1,
+        continentsWithHills,
+        continentsWithMountains_ad1,
         &terrainTypeDef,
     )
     .set_bounds(1.0 - MOUNTAINS_AMOUNT, 1001.0 - MOUNTAINS_AMOUNT)
@@ -1573,8 +1550,7 @@ fn main() {
     // 1: [Badlands-positions module]: This BasicMulti module generates some
     // random noise, which is used by subsequent noise functions to specify the
     // locations of the badlands.
-    let continentsWithBadlands_bm = Fbm::new()
-        .set_seed(CURRENT_SEED + 140)
+    let continentsWithBadlands_bm = Fbm::<Perlin>::new(CURRENT_SEED + 140)
         .set_frequency(16.5)
         .set_persistence(0.5)
         .set_lacunarity(CONTINENT_LACUNARITY)
@@ -1589,7 +1565,7 @@ fn main() {
     // 2: [Continents-and-badlands module]:  This addition module adds the
     // scaled-badlands-terrain group to the base-continent-elevation
     // subgroup.
-    let continentsWithBadlands_ad = Add::new(&baseContinentElev, &scaledBadlandsTerrain);
+    let continentsWithBadlands_ad = Add::new(&baseContinentElev, scaledBadlandsTerrain);
 
     //    debug::render_noise_module("complexplanet_images/23_1_continentsWithBadlands_ad.png",
     //                               &continentsWithBadlands_ad,
@@ -1626,7 +1602,7 @@ fn main() {
     // mountains subgroup and the select-badlands-positions modules contribute
     // to the output value of this subgroup. One side effect of this process is
     // that the badlands will not appear in mountainous terrain.
-    let continentsWithBadlands_ma = Max::new(&continentsWithMountains, &continentsWithBadlands_se);
+    let continentsWithBadlands_ma = Max::new(&continentsWithMountains, continentsWithBadlands_se);
 
     // 5: [Continents-with-badlands subgroup]: Caches the output value from the
     //    apply-badlands module.
@@ -1652,7 +1628,7 @@ fn main() {
     // 1: [Scaled-rivers module]: This scale/bias module scales the output value
     // from the river-positions group so that it is measured in planetary
     // elevation units and is negative; this is required for step 2.
-    let continentsWithRivers_sb = ScaleBias::new(&riverPositions)
+    let continentsWithRivers_sb = ScaleBias::new(riverPositions)
         .set_scale(RIVER_DEPTH / 2.0)
         .set_bias(-RIVER_DEPTH / 2.0);
 
@@ -1666,7 +1642,7 @@ fn main() {
     // rivers to the continents-with-badlands subgroup. Because the scaled-
     // rivers module only outputs a negative value, the scaled-rivers module
     // carves the rivers out of the terrain.
-    let continentsWithRivers_ad = Add::new(&continentsWithBadlands, &continentsWithRivers_sb);
+    let continentsWithRivers_ad = Add::new(&continentsWithBadlands, continentsWithRivers_sb);
 
     //    debug::render_noise_module("complexplanet_images/24_1_continentsWithRivers_ad.png",
     //                               &continentsWithRivers_ad,
@@ -1683,7 +1659,7 @@ fn main() {
     // continents module.
     let continentsWithRivers_se = Select::new(
         &continentsWithBadlands,
-        &continentsWithRivers_ad,
+        continentsWithRivers_ad,
         &continentsWithBadlands,
     )
     .set_bounds(SEA_LEVEL, CONTINENT_HEIGHT_SCALE + SEA_LEVEL)
@@ -1750,4 +1726,36 @@ fn main() {
         .set_gradient(ColorGradient::new().build_terrain_gradient())
         .render(&noise_map)
         .write_to_file("unscaledFinalPlanet.png");
+
+    let noise_map = PlaneMapBuilder::new(&unscaledFinalPlanet)
+        .set_size(1024, 1024)
+        .set_x_bounds(-0.5, 0.5)
+        .set_y_bounds(-0.5, 0.5)
+        .build();
+
+    ImageRenderer::new()
+        .set_gradient(ColorGradient::new().build_terrain_gradient())
+        .render(&noise_map)
+        .write_to_file("unscaledFinalPlanet_4x_zoom.png");
+
+    let noise_map = PlaneMapBuilder::new(&unscaledFinalPlanet)
+        .set_size(1024, 1024)
+        .set_x_bounds(-0.0, 0.25)
+        .set_y_bounds(-0.125, 0.125)
+        .build();
+
+    ImageRenderer::new()
+        .set_gradient(ColorGradient::new().build_terrain_gradient())
+        .render(&noise_map)
+        .write_to_file("unscaledFinalPlanet_16x_zoom.png");
+
+    ImageRenderer::new()
+        .set_gradient(ColorGradient::new().build_terrain_gradient())
+        .render(
+            &SphereMapBuilder::new(unscaledFinalPlanet)
+                .set_size(1024, 1024)
+                .set_bounds(-90.0, 90.0, -180.0, 180.0)
+                .build(),
+        )
+        .write_to_file("unscaledFinalPlanet_sphere.png");
 }

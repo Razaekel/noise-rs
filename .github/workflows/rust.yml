@@ -1,42 +1,316 @@
-on: push
+name: CI
 
-name: Continuous integration
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+      - main
+
+env:
+  minrust: 1.56.0
 
 jobs:
-  ci:
-    runs-on: ubuntu-latest
+  build:
+    name: Build
+    runs-on: ${{ matrix.os || 'ubuntu-latest' }}
+
     strategy:
+      fail-fast: false
       matrix:
         rust:
           - stable
           - beta
           - nightly
-          - 1.36.0  # MSRV
+
+        include:
+          - name: beta
+            toolchain: beta
+          - name: nightly
+            toolchain: nightly
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout sources
+        uses: actions/checkout@v2
 
-      - uses: actions-rs/toolchain@v1
+      - name: Install toolchain
+        id: tc
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          profile: minimal
+          override: true
+
+      - name: Setup cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-test-${{ steps.tc.outputs.rustc_hash }}-${{ hashFiles('**/Cargo.toml') }}
+
+      - name: Build default
+        run: cargo build
+
+      - name: Build some features
+        if: matrix.features
+        run: cargo build --no-default-features --features "${{ matrix.features }}"
+
+      - name: Build all features
+        if: matrix.features == ''
+        run: cargo build --all-features
+
+  test:
+    name: Test
+    runs-on: ${{ matrix.os || 'ubuntu-latest' }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        rust:
+          - stable
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Install toolchain
+        id: tc
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          profile: minimal
+          override: true
+
+      - name: Setup cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-test-${{ steps.tc.outputs.rustc_hash }}-${{ hashFiles('**/Cargo.toml') }}
+
+      - name: Test default
+        run: cargo test
+
+  rustfmt:
+    name: Rustfmt
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Install toolchain
+        id: tc
+        uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: ${{ matrix.rust }}
+          toolchain: stable
           override: true
-          components: rustfmt, clippy
 
-      - uses: actions-rs/cargo@v1
+      - name: Setup cache
+        uses: actions/cache@v2
         with:
-          command: build
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-clippy-${{ steps.tc.outputs.rustc_hash }}-${{ hashFiles('**/Cargo.toml') }}
 
-      - uses: actions-rs/cargo@v1
-        with:
-          command: test
+      - run: rustup component add rustfmt
 
       - uses: actions-rs/cargo@v1
         with:
           command: fmt
           args: --all -- --check
 
-      - uses: actions-rs/cargo@v1
+  clippy:
+    name: Clippy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Install toolchain
+        id: tc
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      - name: Setup cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-clippy-${{ steps.tc.outputs.rustc_hash }}-${{ hashFiles('**/Cargo.toml') }}
+
+      - run: rustup component add clippy
+
+      - name: Run Clippy
+        uses: actions-rs/cargo@v1
         with:
           command: clippy
           args: -- -D warnings
+
+  MSRV:
+    name: Validate MSRV
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Install toolchain (${{ env.minrust }})
+        id: tc
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ env.minrust }}
+          profile: minimal
+          override: true
+
+      - name: Setup cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-msrv-${{ steps.tc.outputs.rustc_hash }}-${{ hashFiles('**/Cargo.toml') }}
+
+      - name: Build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+
+      - name: Test
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+
+      - run: rustup component add rustfmt
+
+      - name: Run rustfmt
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --all -- --check
+
+      - run: rustup component add clippy
+
+      - name: Run clippy
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: -- -D warnings
+
+  doc:
+    name: Build docs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Install toolchain
+        id: tc
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          profile: minimal
+          override: true
+
+      - name: Setup cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-docs-${{ steps.tc.outputs.rustc_hash }}-${{ hashFiles('**/Cargo.toml') }}
+
+      - name: Build docs
+        env:
+          RUSTDOCFLAGS: -D broken_intra_doc_links
+        run: |
+          cargo doc --no-deps
+
+  examples:
+    name: Examples
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        examples:
+          - abs
+          - add
+          - basicmulti
+          - billow
+          - blend
+          - cache
+          - checkerboard
+          - clamp
+          - complexplanet
+          - constant
+          - curve
+          - cylinders
+          - displace
+          - exponent
+          - fbm
+          - hybridmulti
+          - max
+          - min
+          - multiply
+          - negate
+          - open_simplex
+          - perlin
+          - power
+          - ridgedmulti
+          - rotate_point
+          - scale_bias
+          - scale_point
+          - select
+          - super_simplex
+          - terrace
+          - texturegranite
+          - texturejade
+          - textureslime
+          - texturewood
+          - translate_point
+          - turbulence
+          - value
+          - worley
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Install toolchain
+        id: tc
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          override: true
+
+      - name: Setup cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            examples/target
+          key: ${{ runner.os }}-examples-${{ steps.tc.outputs.rustc_hash }}-${{ hashFiles('**/Cargo.toml') }}
+
+      - name: Build example "${{ matrix.examples }}"
+        if: matrix.examples
+        run: cargo build --features images --example "${{ matrix.examples }}"

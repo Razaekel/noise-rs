@@ -1,6 +1,8 @@
-use crate::math;
-
-use crate::noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
+use crate::{
+    math::vectors::*,
+    noise_fns::{MultiFractal, NoiseFn, Seedable},
+};
+use alloc::vec::Vec;
 
 /// Noise function that outputs fBm (fractal Brownian motion) noise.
 ///
@@ -19,7 +21,7 @@ use crate::noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
 ///
 /// fBm is commonly referred to as Perlin noise.
 #[derive(Clone, Debug)]
-pub struct Fbm {
+pub struct Fbm<T> {
     /// Total number of frequency octaves to generate the noise with.
     ///
     /// The number of octaves control the _amount of detail_ in the noise
@@ -49,45 +51,65 @@ pub struct Fbm {
     pub persistence: f64,
 
     seed: u32,
-    sources: Vec<Perlin>,
+    sources: Vec<T>,
+    scale_factor: f64,
 }
 
-impl Fbm {
+fn calc_scale_factor(persistence: f64, octaves: usize) -> f64 {
+    1.0 - persistence.powi(octaves as i32)
+}
+
+impl<T> Fbm<T>
+where
+    T: Default + Seedable,
+{
     pub const DEFAULT_SEED: u32 = 0;
     pub const DEFAULT_OCTAVE_COUNT: usize = 6;
     pub const DEFAULT_FREQUENCY: f64 = 1.0;
-    pub const DEFAULT_LACUNARITY: f64 = std::f64::consts::PI * 2.0 / 3.0;
+    pub const DEFAULT_LACUNARITY: f64 = core::f64::consts::PI * 2.0 / 3.0;
     pub const DEFAULT_PERSISTENCE: f64 = 0.5;
     pub const MAX_OCTAVES: usize = 32;
 
-    pub fn new() -> Self {
+    pub fn new(seed: u32) -> Self {
         Self {
-            seed: Self::DEFAULT_SEED,
+            seed,
             octaves: Self::DEFAULT_OCTAVE_COUNT,
             frequency: Self::DEFAULT_FREQUENCY,
             lacunarity: Self::DEFAULT_LACUNARITY,
             persistence: Self::DEFAULT_PERSISTENCE,
-            sources: super::build_sources(Self::DEFAULT_SEED, Self::DEFAULT_OCTAVE_COUNT),
+            sources: super::build_sources(seed, Self::DEFAULT_OCTAVE_COUNT),
+            scale_factor: calc_scale_factor(Self::DEFAULT_PERSISTENCE, Self::DEFAULT_OCTAVE_COUNT),
         }
     }
-}
 
-impl Default for Fbm {
-    fn default() -> Self {
-        Self::new()
+    pub fn set_sources(self, sources: Vec<T>) -> Self {
+        Self { sources, ..self }
     }
 }
 
-impl MultiFractal for Fbm {
+impl<T> Default for Fbm<T>
+where
+    T: Default + Seedable,
+{
+    fn default() -> Self {
+        Self::new(Self::DEFAULT_SEED)
+    }
+}
+
+impl<T> MultiFractal for Fbm<T>
+where
+    T: Default + Seedable,
+{
     fn set_octaves(self, mut octaves: usize) -> Self {
         if self.octaves == octaves {
             return self;
         }
 
-        octaves = math::clamp(octaves, 1, Self::MAX_OCTAVES);
+        octaves = octaves.clamp(1, Self::MAX_OCTAVES);
         Self {
             octaves,
             sources: super::build_sources(self.seed, octaves),
+            scale_factor: calc_scale_factor(self.persistence, octaves),
             ..self
         }
     }
@@ -103,12 +125,16 @@ impl MultiFractal for Fbm {
     fn set_persistence(self, persistence: f64) -> Self {
         Self {
             persistence,
+            scale_factor: calc_scale_factor(persistence, self.octaves),
             ..self
         }
     }
 }
 
-impl Seedable for Fbm {
+impl<T> Seedable for Fbm<T>
+where
+    T: Default + Seedable,
+{
     fn set_seed(self, seed: u32) -> Self {
         if self.seed == seed {
             return self;
@@ -127,15 +153,20 @@ impl Seedable for Fbm {
 }
 
 /// 2-dimensional Fbm noise
-impl NoiseFn<[f64; 2]> for Fbm {
-    fn get(&self, mut point: [f64; 2]) -> f64 {
+impl<T> NoiseFn<f64, 2> for Fbm<T>
+where
+    T: NoiseFn<f64, 2>,
+{
+    fn get(&self, point: [f64; 2]) -> f64 {
+        let mut point = Vector2::from(point);
+
         let mut result = 0.0;
 
-        point = math::mul2(point, self.frequency);
+        point *= self.frequency;
 
         for x in 0..self.octaves {
             // Get the signal.
-            let mut signal = self.sources[x].get(point);
+            let mut signal = self.sources[x].get(point.into_array());
 
             // Scale the amplitude appropriately for this frequency.
             signal *= self.persistence.powi(x as i32);
@@ -144,25 +175,29 @@ impl NoiseFn<[f64; 2]> for Fbm {
             result += signal;
 
             // Increase the frequency for the next octave.
-            point = math::mul2(point, self.lacunarity);
+            point *= self.lacunarity;
         }
 
-        // Scale and shift the result into the [-1,1] range
-        let scale = 2.0 - self.persistence.powi(self.octaves as i32 - 1);
-        result / scale
+        // Scale the result into the [-1,1] range
+        result / self.scale_factor
     }
 }
 
 /// 3-dimensional Fbm noise
-impl NoiseFn<[f64; 3]> for Fbm {
-    fn get(&self, mut point: [f64; 3]) -> f64 {
+impl<T> NoiseFn<f64, 3> for Fbm<T>
+where
+    T: NoiseFn<f64, 3>,
+{
+    fn get(&self, point: [f64; 3]) -> f64 {
+        let mut point = Vector3::from(point);
+
         let mut result = 0.0;
 
-        point = math::mul3(point, self.frequency);
+        point *= self.frequency;
 
         for x in 0..self.octaves {
             // Get the signal.
-            let mut signal = self.sources[x].get(point);
+            let mut signal = self.sources[x].get(point.into_array());
 
             // Scale the amplitude appropriately for this frequency.
             signal *= self.persistence.powi(x as i32);
@@ -171,25 +206,29 @@ impl NoiseFn<[f64; 3]> for Fbm {
             result += signal;
 
             // Increase the frequency for the next octave.
-            point = math::mul3(point, self.lacunarity);
+            point *= self.lacunarity;
         }
 
-        // Scale and shift the result into the [-1,1] range
-        let scale = 2.0 - self.persistence.powi(self.octaves as i32 - 1);
-        result / scale
+        // Scale the result into the [-1,1] range
+        result / self.scale_factor
     }
 }
 
 /// 4-dimensional Fbm noise
-impl NoiseFn<[f64; 4]> for Fbm {
-    fn get(&self, mut point: [f64; 4]) -> f64 {
+impl<T> NoiseFn<f64, 4> for Fbm<T>
+where
+    T: NoiseFn<f64, 4>,
+{
+    fn get(&self, point: [f64; 4]) -> f64 {
+        let mut point = Vector4::from(point);
+
         let mut result = 0.0;
 
-        point = math::mul4(point, self.frequency);
+        point *= self.frequency;
 
         for x in 0..self.octaves {
             // Get the signal.
-            let mut signal = self.sources[x].get(point);
+            let mut signal = self.sources[x].get(point.into_array());
 
             // Scale the amplitude appropriately for this frequency.
             signal *= self.persistence.powi(x as i32);
@@ -198,11 +237,10 @@ impl NoiseFn<[f64; 4]> for Fbm {
             result += signal;
 
             // Increase the frequency for the next octave.
-            point = math::mul4(point, self.lacunarity);
+            point *= self.lacunarity;
         }
 
-        // Scale and shift the result into the [-1,1] range
-        let scale = 2.0 - self.persistence.powi(self.octaves as i32 - 1);
-        result / scale
+        // Scale the result into the [-1,1] range
+        result / self.scale_factor
     }
 }

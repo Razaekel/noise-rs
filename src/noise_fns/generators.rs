@@ -1,13 +1,7 @@
-pub use self::checkerboard::*;
-pub use self::constant::*;
-pub use self::cylinders::*;
-pub use self::fractals::*;
-pub use self::open_simplex::*;
-pub use self::perlin::*;
-pub use self::perlin_surflet::*;
-pub use self::super_simplex::*;
-pub use self::value::*;
-pub use self::worley::*;
+pub use self::{
+    checkerboard::*, constant::*, cylinders::*, fractals::*, open_simplex::*, perlin::*,
+    perlin_surflet::*, simplex::*, super_simplex::*, value::*, worley::*,
+};
 
 mod checkerboard;
 mod constant;
@@ -16,6 +10,7 @@ mod fractals;
 mod open_simplex;
 mod perlin;
 mod perlin_surflet;
+mod simplex;
 mod super_simplex;
 mod value;
 mod worley;

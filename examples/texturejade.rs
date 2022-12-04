@@ -5,8 +5,7 @@ use noise::{utils::*, *};
 fn main() {
     // Primary jade texture. The ridges from the ridged-multifractal function
     // produces the veins.
-    let primary_jade = RidgedMulti::new()
-        .set_seed(0)
+    let primary_jade = RidgedMulti::<Perlin>::new(0)
         .set_frequency(2.0)
         .set_lacunarity(2.20703125)
         .set_octaves(6);
@@ -22,7 +21,7 @@ fn main() {
         RotatePoint::new(base_secondary_jade).set_angles(90.0, 25.0, 5.0, 0.0);
 
     // Slightly perturb the secondary jade texture for more realism.
-    let perturbed_base_secondary_jade = Turbulence::new(rotated_base_secondary_jade)
+    let perturbed_base_secondary_jade = Turbulence::<_, Perlin>::new(rotated_base_secondary_jade)
         .set_seed(1)
         .set_frequency(4.0)
         .set_power(1.0 / 4.0)
@@ -30,28 +29,28 @@ fn main() {
 
     // Scale the secondary jade texture so it makes a small contribution to the
     // final jade texture.
-    let secondary_jade = ScaleBias::new(&perturbed_base_secondary_jade)
+    let secondary_jade = ScaleBias::new(perturbed_base_secondary_jade)
         .set_scale(0.25)
         .set_bias(0.0);
 
     // Add the two jade textures together. These two textures were produced
     // using different combinations of coherent noise, so the final texture
     // will have a lot of variation.
-    let combined_jade = Add::new(&primary_jade, &secondary_jade);
+    let combined_jade = Add::new(primary_jade, secondary_jade);
 
     // Finally, perturb the combined jade texture to produce the final jade
     // texture. A low roughness produces nice veins.
-    let final_jade = Turbulence::new(combined_jade)
+    let final_jade = Turbulence::<_, Perlin>::new(combined_jade)
         .set_seed(2)
         .set_frequency(4.0)
         .set_power(1.0 / 16.0)
         .set_roughness(2);
 
-    let planar_texture = PlaneMapBuilder::new(&final_jade)
+    let planar_texture = PlaneMapBuilder::<_, 2>::new(&final_jade)
         .set_size(1024, 1024)
         .build();
 
-    let seamless_texture = PlaneMapBuilder::new(&final_jade)
+    let seamless_texture = PlaneMapBuilder::<_, 2>::new(final_jade)
         .set_size(1024, 1024)
         .set_is_seamless(true)
         .build();

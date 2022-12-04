@@ -1,8 +1,4 @@
-pub use self::displace::*;
-pub use self::rotate_point::*;
-pub use self::scale_point::*;
-pub use self::translate_point::*;
-pub use self::turbulence::*;
+pub use self::{displace::*, rotate_point::*, scale_point::*, translate_point::*, turbulence::*};
 
 mod displace;
 mod rotate_point;

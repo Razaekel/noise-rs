@@ -4,7 +4,7 @@ description = "Procedural noise generation library."
 homepage = "https://github.com/razaekel/noise-rs"
 repository = "https://github.com/razaekel/noise-rs"
 documentation = "https://docs.rs/noise/"
-version = "0.7.0"
+version = "0.8.1"
 license = "Apache-2.0/MIT"
 keywords = ["math", "random"]
 authors = ["The Noise-rs Developers."]
@@ -17,12 +17,16 @@ name = "noise"
 rand = "0.7"
 rand_xorshift = "0.2"
 image = { version = "0.23", optional = true }
+num-traits = "0.2"
 
 [features]
-default = ["image"]
+default = []
+images = ["image", "std"]
+std = []
 
 [dev-dependencies]
-criterion = "0.3"
+criterion = { version = "0.3", features = ["html_reports"] }
+rand_pcg = "0.2"
 
 [[bench]]
 name = "open_simplex"
@@ -30,6 +34,10 @@ harness = false
 
 [[bench]]
 name = "perlin"
+harness = false
+
+[[bench]]
+name = "simplex"
 harness = false
 
 [[bench]]
@@ -46,152 +54,160 @@ harness = false
 
 [[example]]
 name = "perlin"
-required-features = ["image"]
+required-features = ["images"]
+
+[[example]]
+name = "perlin_surflet"
+required-features = ["images"]
 
 [[example]]
 name = "open_simplex"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "super_simplex"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "value"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "constant"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "checkerboard"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "cylinders"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "select"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "blend"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "abs"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "clamp"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "curve"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "exponent"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "negate"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "scale_bias"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "terrace"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "add"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "max"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "min"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "multiply"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "power"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "fbm"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "billow"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "basicmulti"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "ridgedmulti"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "hybridmulti"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "cache"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "worley"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "displace"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "rotate_point"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "scale_point"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "translate_point"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "turbulence"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "texturewood"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "texturejade"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "texturegranite"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "textureslime"
-required-features = ["image"]
+required-features = ["images"]
 
 [[example]]
 name = "complexplanet"
-required-features = ["image"]
+required-features = ["images"]
+
+[[example]]
+name = "simplex"
+required-features = ["images"]

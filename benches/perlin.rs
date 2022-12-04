@@ -15,28 +15,28 @@ criterion_group!(
 criterion_main!(perlin, perlin_64x64);
 
 fn bench_perlin2(c: &mut Criterion) {
-    let perlin = Perlin::new();
+    let perlin = Perlin::default();
     c.bench_function("perlin 2d", |b| {
         b.iter(|| perlin.get(black_box([42.0_f64, 37.0])))
     });
 }
 
 fn bench_perlin3(c: &mut Criterion) {
-    let perlin = Perlin::new();
+    let perlin = Perlin::default();
     c.bench_function("perlin 3d", |b| {
         b.iter(|| perlin.get(black_box([42.0_f64, 37.0, 26.0])))
     });
 }
 
 fn bench_perlin4(c: &mut Criterion) {
-    let perlin = Perlin::new();
+    let perlin = Perlin::default();
     c.bench_function("perlin 4d", |b| {
         b.iter(|| perlin.get(black_box([42.0_f64, 37.0, 26.0, 128.0])))
     });
 }
 
 fn bench_perlin2_64x64(c: &mut Criterion) {
-    let perlin = Perlin::new();
+    let perlin = Perlin::default();
     c.bench_function("perlin 2d (64x64)", |b| {
         b.iter(|| {
             for y in 0i8..64 {
@@ -49,7 +49,7 @@ fn bench_perlin2_64x64(c: &mut Criterion) {
 }
 
 fn bench_perlin3_64x64(c: &mut Criterion) {
-    let perlin = Perlin::new();
+    let perlin = Perlin::default();
     c.bench_function("perlin 3d (64x64)", |b| {
         b.iter(|| {
             for y in 0i8..64 {
@@ -62,7 +62,7 @@ fn bench_perlin3_64x64(c: &mut Criterion) {
 }
 
 fn bench_perlin4_64x64(c: &mut Criterion) {
-    let perlin = Perlin::new();
+    let perlin = Perlin::default();
     c.bench_function("perlin 4d (64x64)", |b| {
         b.iter(|| {
             for y in 0i8..64 {

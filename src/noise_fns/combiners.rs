@@ -1,8 +1,4 @@
-pub use self::add::*;
-pub use self::max::*;
-pub use self::min::*;
-pub use self::multiply::*;
-pub use self::power::*;
+pub use self::{add::*, max::*, min::*, multiply::*, power::*};
 
 mod add;
 mod max;

@@ -1,157 +1,138 @@
-#[macro_use]
 extern crate criterion;
 extern crate noise;
 
-use criterion::{black_box, Criterion};
-use noise::{NoiseFn, Worley};
+use criterion::*;
+use noise::{core::worley::ReturnType, NoiseFn, Worley};
+use rand::Rng;
 
-criterion_group!(
-    worley_range,
-    bench_worley2_range,
-    bench_worley3_range,
-    bench_worley4_range
-);
-criterion_group!(
-    worley_value,
-    bench_worley2_value,
-    bench_worley3_value,
-    bench_worley4_value
-);
-criterion_group!(
-    worley_range_64x64,
-    bench_worley2_range_64x64,
-    bench_worley3_range_64x64,
-    bench_worley4_range_64x64
-);
-criterion_group!(
-    worley_value_64x64,
-    bench_worley2_value_64x64,
-    bench_worley3_value_64x64,
-    bench_worley4_value_64x64
-);
-criterion_main!(
-    worley_range,
-    worley_value,
-    worley_range_64x64,
-    worley_value_64x64
-);
+criterion_group!(worley_range, bench_worley2d, bench_worley3d, bench_worley4d,);
+criterion_main!(worley_range,);
 
-fn bench_worley2_range(c: &mut Criterion) {
-    let worley = Worley::new().enable_range(true);
-    c.bench_function("worley 2d - range", |b| {
-        b.iter(|| worley.get(black_box([42.0_f64, 37.0])))
-    });
-}
+fn bench_worley2d(c: &mut Criterion) {
+    let mut group = c.benchmark_group("Worley 2D");
 
-fn bench_worley3_range(c: &mut Criterion) {
-    let worley = Worley::new().enable_range(true);
-    c.bench_function("worley 3d - range", |b| {
-        b.iter(|| worley.get(black_box([42.0_f64, 37.0, 26.0])))
-    });
-}
+    let plot_config = PlotConfiguration::default().summary_scale(AxisScale::Logarithmic);
 
-fn bench_worley4_range(c: &mut Criterion) {
-    let worley = Worley::new().enable_range(true);
-    c.bench_function("worley 4d - range", |b| {
-        b.iter(|| worley.get(black_box([42.0_f64, 37.0, 26.0, 128.0])))
-    });
-}
+    group.plot_config(plot_config);
 
-fn bench_worley2_value(c: &mut Criterion) {
-    let worley = Worley::new();
-    c.bench_function("worley 2d - value", |b| {
-        b.iter(|| worley.get(black_box([42.0_f64, 37.0])))
-    });
-}
+    let worley = Worley::default();
+    let worley_range = Worley::default().set_return_type(ReturnType::Distance);
 
-fn bench_worley3_value(c: &mut Criterion) {
-    let worley = Worley::new();
-    c.bench_function("worley 3d - value", |b| {
-        b.iter(|| worley.get(black_box([42.0_f64, 37.0, 26.0])))
-    });
-}
+    let mut rng = rand_pcg::Pcg64Mcg::new(rand::random());
 
-fn bench_worley4_value(c: &mut Criterion) {
-    let worley = Worley::new();
-    c.bench_function("worley 4d - value", |b| {
-        b.iter(|| worley.get(black_box([42.0_f64, 37.0, 26.0, 128.0])))
-    });
-}
+    for step in 1..=6 {
+        let size = 1 << step as u64;
 
-fn bench_worley2_range_64x64(c: &mut Criterion) {
-    let worley = Worley::new().enable_range(true);
-    c.bench_function("worley 2d - range (64x64)", |b| {
-        b.iter(|| {
-            for y in 0i8..64 {
-                for x in 0i8..64 {
-                    black_box(worley.get([x as f64, y as f64]));
+        group.throughput(Throughput::Elements(size * size));
+
+        let mut points: Vec<[f64; 2]> = Vec::new();
+
+        for _ in 0..size * size {
+            points.push([rng.gen(), rng.gen()])
+        }
+
+        group.bench_function(BenchmarkId::new("worley - value", size), |b| {
+            b.iter(|| {
+                for point in &points {
+                    black_box(worley.get(*point));
                 }
-            }
-        })
-    });
+            })
+        });
+
+        group.bench_function(BenchmarkId::new("worley - range", size), |b| {
+            b.iter(|| {
+                for point in &points {
+                    black_box(worley_range.get(*point));
+                }
+            })
+        });
+    }
+
+    group.finish();
 }
 
-fn bench_worley3_range_64x64(c: &mut Criterion) {
-    let worley = Worley::new().enable_range(true);
-    c.bench_function("worley 3d - range (64x64)", |b| {
-        b.iter(|| {
-            for y in 0i8..64 {
-                for x in 0i8..64 {
-                    black_box(worley.get([x as f64, y as f64, x as f64]));
+fn bench_worley3d(c: &mut Criterion) {
+    let mut group = c.benchmark_group("Worley 3D");
+
+    let plot_config = PlotConfiguration::default().summary_scale(AxisScale::Logarithmic);
+
+    group.plot_config(plot_config);
+
+    let worley = Worley::default();
+    let worley_range = Worley::default().set_return_type(ReturnType::Distance);
+
+    let mut rng = rand_pcg::Pcg64Mcg::new(rand::random());
+
+    for step in 1..=6 {
+        let size = 1 << step as u64;
+
+        group.throughput(Throughput::Elements(size * size));
+
+        let mut points: Vec<[f64; 3]> = Vec::new();
+
+        for _ in 0..size * size {
+            points.push([rng.gen(), rng.gen(), rng.gen()])
+        }
+
+        group.bench_function(BenchmarkId::new("worley - value", size), |b| {
+            b.iter(|| {
+                for point in &points {
+                    black_box(worley.get(*point));
                 }
-            }
-        })
-    });
+            })
+        });
+
+        group.bench_function(BenchmarkId::new("worley - range", size), |b| {
+            b.iter(|| {
+                for point in &points {
+                    black_box(worley_range.get(*point));
+                }
+            })
+        });
+    }
+
+    group.finish();
 }
 
-fn bench_worley4_range_64x64(c: &mut Criterion) {
-    let worley = Worley::new().enable_range(true);
-    c.bench_function("worley 4d - range (64x64)", |b| {
-        b.iter(|| {
-            for y in 0i8..64 {
-                for x in 0i8..64 {
-                    black_box(worley.get([x as f64, y as f64, x as f64, y as f64]));
-                }
-            }
-        })
-    });
-}
+fn bench_worley4d(c: &mut Criterion) {
+    let mut group = c.benchmark_group("Worley 4D");
 
-fn bench_worley2_value_64x64(c: &mut Criterion) {
-    let worley = Worley::new();
-    c.bench_function("worley 2d - value (64x64)", |b| {
-        b.iter(|| {
-            for y in 0i8..64 {
-                for x in 0i8..64 {
-                    black_box(worley.get([x as f64, y as f64]));
-                }
-            }
-        })
-    });
-}
+    let plot_config = PlotConfiguration::default().summary_scale(AxisScale::Logarithmic);
 
-fn bench_worley3_value_64x64(c: &mut Criterion) {
-    let worley = Worley::new();
-    c.bench_function("worley 3d - value (64x64)", |b| {
-        b.iter(|| {
-            for y in 0i8..64 {
-                for x in 0i8..64 {
-                    black_box(worley.get([x as f64, y as f64, x as f64]));
-                }
-            }
-        })
-    });
-}
+    group.plot_config(plot_config);
 
-fn bench_worley4_value_64x64(c: &mut Criterion) {
-    let worley = Worley::new();
-    c.bench_function("worley 4d - value (64x64)", |b| {
-        b.iter(|| {
-            for y in 0i8..64 {
-                for x in 0i8..64 {
-                    black_box(worley.get([x as f64, y as f64, x as f64, y as f64]));
+    let worley = Worley::default();
+    let worley_range = Worley::default().set_return_type(ReturnType::Distance);
+
+    let mut rng = rand_pcg::Pcg64Mcg::new(rand::random());
+
+    for step in 1..=6 {
+        let size = 1 << step as u64;
+
+        group.throughput(Throughput::Elements(size * size));
+
+        let mut points: Vec<[f64; 4]> = Vec::new();
+
+        for _ in 0..size * size {
+            points.push([rng.gen(), rng.gen(), rng.gen(), rng.gen()])
+        }
+
+        group.bench_function(BenchmarkId::new("worley - value", size), |b| {
+            b.iter(|| {
+                for point in &points {
+                    black_box(worley.get(*point));
                 }
-            }
-        })
-    });
+            })
+        });
+
+        group.bench_function(BenchmarkId::new("worley - range", size), |b| {
+            b.iter(|| {
+                for point in &points {
+                    black_box(worley_range.get(*point));
+                }
+            })
+        });
+    }
+
+    group.finish();
 }

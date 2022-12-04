@@ -4,10 +4,10 @@ use noise::{utils::*, Cylinders, Multiply, Perlin};
 
 fn main() {
     let cyl = Cylinders::new();
-    let perlin = Perlin::new();
-    let multiply = Multiply::new(&cyl, &perlin);
+    let perlin = Perlin::default();
+    let multiply = Multiply::new(cyl, perlin);
 
-    PlaneMapBuilder::new(&multiply)
+    PlaneMapBuilder::<_, 2>::new(multiply)
         .build()
         .write_to_file("multiply.png");
 }

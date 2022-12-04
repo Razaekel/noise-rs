@@ -4,9 +4,11 @@ use noise::{utils::*, Add, Cylinders, Perlin};
 
 fn main() {
     let cyl = Cylinders::new();
-    let perlin = Perlin::new();
+    let perlin = Perlin::default();
 
-    let add = Add::new(&cyl, &perlin);
+    let add = Add::new(cyl, perlin);
 
-    PlaneMapBuilder::new(&add).build().write_to_file("add.png");
+    PlaneMapBuilder::<_, 2>::new(add)
+        .build()
+        .write_to_file("add.png");
 }

@@ -85,9 +85,9 @@ impl<Source> ScalePoint<Source> {
     }
 }
 
-impl<Source> NoiseFn<[f64; 2]> for ScalePoint<Source>
+impl<Source> NoiseFn<f64, 2> for ScalePoint<Source>
 where
-    Source: NoiseFn<[f64; 2]>,
+    Source: NoiseFn<f64, 2>,
 {
     fn get(&self, point: [f64; 2]) -> f64 {
         self.source
@@ -95,9 +95,9 @@ where
     }
 }
 
-impl<Source> NoiseFn<[f64; 3]> for ScalePoint<Source>
+impl<Source> NoiseFn<f64, 3> for ScalePoint<Source>
 where
-    Source: NoiseFn<[f64; 3]>,
+    Source: NoiseFn<f64, 3>,
 {
     fn get(&self, point: [f64; 3]) -> f64 {
         self.source.get([
@@ -108,9 +108,9 @@ where
     }
 }
 
-impl<Source> NoiseFn<[f64; 4]> for ScalePoint<Source>
+impl<Source> NoiseFn<f64, 4> for ScalePoint<Source>
 where
-    Source: NoiseFn<[f64; 4]>,
+    Source: NoiseFn<f64, 4>,
 {
     fn get(&self, point: [f64; 4]) -> f64 {
         self.source.get([
@@ -124,12 +124,11 @@ where
 
 #[cfg(test)]
 mod tests {
-    use super::super::super::Perlin;
-    use super::*;
+    use super::{super::super::Perlin, *};
 
     #[test]
     fn test_pass_by_ref() {
-        let source = Perlin::new();
+        let source = Perlin::default();
         let transformed_by_ref = ScalePoint::new(&source)
             .set_x_scale(0.8)
             .set_y_scale(0.1)

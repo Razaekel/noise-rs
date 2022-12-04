@@ -1,13 +1,15 @@
-use crate::math;
-
-use crate::noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
+use crate::{
+    math::vectors::*,
+    noise_fns::{MultiFractal, NoiseFn, Seedable},
+};
+use alloc::vec::Vec;
 
 /// Noise function that outputs hybrid Multifractal noise.
 ///
 /// The result of this multifractal noise is that valleys in the noise should
 /// have smooth bottoms at all altitudes.
 #[derive(Clone, Debug)]
-pub struct HybridMulti {
+pub struct HybridMulti<T> {
     /// Total number of frequency octaves to generate the noise with.
     ///
     /// The number of octaves control the _amount of detail_ in the noise
@@ -37,20 +39,23 @@ pub struct HybridMulti {
     pub persistence: f64,
 
     seed: u32,
-    sources: Vec<Perlin>,
+    sources: Vec<T>,
 }
 
-impl HybridMulti {
+impl<T> HybridMulti<T>
+where
+    T: Default + Seedable,
+{
     pub const DEFAULT_SEED: u32 = 0;
     pub const DEFAULT_OCTAVES: usize = 6;
     pub const DEFAULT_FREQUENCY: f64 = 2.0;
-    pub const DEFAULT_LACUNARITY: f64 = std::f64::consts::PI * 2.0 / 3.0;
+    pub const DEFAULT_LACUNARITY: f64 = core::f64::consts::PI * 2.0 / 3.0;
     pub const DEFAULT_PERSISTENCE: f64 = 0.25;
     pub const MAX_OCTAVES: usize = 32;
 
-    pub fn new() -> Self {
+    pub fn new(seed: u32) -> Self {
         Self {
-            seed: Self::DEFAULT_SEED,
+            seed,
             octaves: Self::DEFAULT_OCTAVES,
             frequency: Self::DEFAULT_FREQUENCY,
             lacunarity: Self::DEFAULT_LACUNARITY,
@@ -58,21 +63,31 @@ impl HybridMulti {
             sources: super::build_sources(Self::DEFAULT_SEED, Self::DEFAULT_OCTAVES),
         }
     }
-}
 
-impl Default for HybridMulti {
-    fn default() -> Self {
-        Self::new()
+    pub fn set_sources(self, sources: Vec<T>) -> Self {
+        Self { sources, ..self }
     }
 }
 
-impl MultiFractal for HybridMulti {
+impl<T> Default for HybridMulti<T>
+where
+    T: Default + Seedable,
+{
+    fn default() -> Self {
+        Self::new(Self::DEFAULT_SEED)
+    }
+}
+
+impl<T> MultiFractal for HybridMulti<T>
+where
+    T: Default + Seedable,
+{
     fn set_octaves(self, mut octaves: usize) -> Self {
         if self.octaves == octaves {
             return self;
         }
 
-        octaves = math::clamp(octaves, 1, Self::MAX_OCTAVES);
+        octaves = octaves.clamp(1, Self::MAX_OCTAVES);
         Self {
             octaves,
             sources: super::build_sources(self.seed, octaves),
@@ -96,7 +111,10 @@ impl MultiFractal for HybridMulti {
     }
 }
 
-impl Seedable for HybridMulti {
+impl<T> Seedable for HybridMulti<T>
+where
+    T: Default + Seedable,
+{
     fn set_seed(self, seed: u32) -> Self {
         if self.seed == seed {
             return self;
@@ -115,11 +133,16 @@ impl Seedable for HybridMulti {
 }
 
 /// 2-dimensional `HybridMulti` noise
-impl NoiseFn<[f64; 2]> for HybridMulti {
-    fn get(&self, mut point: [f64; 2]) -> f64 {
+impl<T> NoiseFn<f64, 2> for HybridMulti<T>
+where
+    T: NoiseFn<f64, 2>,
+{
+    fn get(&self, point: [f64; 2]) -> f64 {
+        let mut point = Vector2::from(point);
+
         // First unscaled octave of function; later octaves are scaled.
-        point = math::mul2(point, self.frequency);
-        let mut result = self.sources[0].get(point) * self.persistence;
+        point *= self.frequency;
+        let mut result = self.sources[0].get(point.into_array()) * self.persistence;
         let mut weight = result;
 
         // Spectral construction inner loop, where the fractal is built.
@@ -128,10 +151,10 @@ impl NoiseFn<[f64; 2]> for HybridMulti {
             weight = weight.max(1.0);
 
             // Raise the spatial frequency.
-            point = math::mul2(point, self.lacunarity);
+            point *= self.lacunarity;
 
             // Get noise value.
-            let mut signal = self.sources[x].get(point);
+            let mut signal = self.sources[x].get(point.into_array());
 
             // Scale the amplitude appropriately for this frequency.
             signal *= self.persistence.powi(x as i32);
@@ -149,11 +172,16 @@ impl NoiseFn<[f64; 2]> for HybridMulti {
 }
 
 /// 3-dimensional `HybridMulti` noise
-impl NoiseFn<[f64; 3]> for HybridMulti {
-    fn get(&self, mut point: [f64; 3]) -> f64 {
+impl<T> NoiseFn<f64, 3> for HybridMulti<T>
+where
+    T: NoiseFn<f64, 3>,
+{
+    fn get(&self, point: [f64; 3]) -> f64 {
+        let mut point = Vector3::from(point);
+
         // First unscaled octave of function; later octaves are scaled.
-        point = math::mul3(point, self.frequency);
-        let mut result = self.sources[0].get(point) * self.persistence;
+        point *= self.frequency;
+        let mut result = self.sources[0].get(point.into_array()) * self.persistence;
         let mut weight = result;
 
         // Spectral construction inner loop, where the fractal is built.
@@ -162,10 +190,10 @@ impl NoiseFn<[f64; 3]> for HybridMulti {
             weight = weight.max(1.0);
 
             // Raise the spatial frequency.
-            point = math::mul3(point, self.lacunarity);
+            point *= self.lacunarity;
 
             // Get noise value.
-            let mut signal = self.sources[x].get(point);
+            let mut signal = self.sources[x].get(point.into_array());
 
             // Scale the amplitude appropriately for this frequency.
             signal *= self.persistence.powi(x as i32);
@@ -183,11 +211,16 @@ impl NoiseFn<[f64; 3]> for HybridMulti {
 }
 
 /// 4-dimensional `HybridMulti` noise
-impl NoiseFn<[f64; 4]> for HybridMulti {
-    fn get(&self, mut point: [f64; 4]) -> f64 {
+impl<T> NoiseFn<f64, 4> for HybridMulti<T>
+where
+    T: NoiseFn<f64, 4>,
+{
+    fn get(&self, point: [f64; 4]) -> f64 {
+        let mut point = Vector4::from(point);
+
         // First unscaled octave of function; later octaves are scaled.
-        point = math::mul4(point, self.frequency);
-        let mut result = self.sources[0].get(point) * self.persistence;
+        point *= self.frequency;
+        let mut result = self.sources[0].get(point.into_array()) * self.persistence;
         let mut weight = result;
 
         // Spectral construction inner loop, where the fractal is built.
@@ -196,10 +229,10 @@ impl NoiseFn<[f64; 4]> for HybridMulti {
             weight = weight.max(1.0);
 
             // Raise the spatial frequency.
-            point = math::mul4(point, self.lacunarity);
+            point *= self.lacunarity;
 
             // Get noise value.
-            let mut signal = self.sources[x].get(point);
+            let mut signal = self.sources[x].get(point.into_array());
 
             // Scale the amplitude appropriately for this frequency.
             signal *= self.persistence.powi(x as i32);

@@ -1,7 +1,8 @@
-#[cfg(feature = "image")]
-use crate::math;
-#[cfg(feature = "image")]
-use std::{self, path::Path};
+use alloc::{
+    slice::{Iter, IterMut},
+    vec::{IntoIter, Vec},
+};
+use core::ops::{Index, IndexMut};
 
 const RASTER_MAX_WIDTH: u16 = 32_767;
 const RASTER_MAX_HEIGHT: u16 = 32_767;
@@ -15,6 +16,14 @@ pub struct NoiseMap {
 impl NoiseMap {
     pub fn new(width: usize, height: usize) -> Self {
         Self::initialize().set_size(width, height)
+    }
+
+    pub fn iter(&self) -> Iter<'_, f64> {
+        self.map.iter()
+    }
+
+    pub fn iter_mut(&mut self) -> IterMut<'_, f64> {
+        self.map.iter_mut()
     }
 
     pub fn set_size(self, width: usize, height: usize) -> Self {
@@ -68,7 +77,7 @@ impl NoiseMap {
         if x < width && y < height {
             self.map[x + y * width] = value;
         } else {
-            eprintln!("input point out of bounds")
+            // eprintln!("input point out of bounds")
         }
     }
 
@@ -82,13 +91,15 @@ impl NoiseMap {
         }
     }
 
-    #[cfg(feature = "image")]
+    #[cfg(feature = "images")]
     pub fn write_to_file(&self, filename: &str) {
+        use std::{fs, path::Path};
+
         // Create the output directory for the images, if it doesn't already exist
         let target_dir = Path::new("example_images/");
 
         if !target_dir.exists() {
-            std::fs::create_dir(target_dir).expect("failed to create example_images directory");
+            fs::create_dir(target_dir).expect("failed to create example_images directory");
         }
 
         //concatenate the directory to the filename string
@@ -100,7 +111,7 @@ impl NoiseMap {
         let mut pixels: Vec<u8> = Vec::with_capacity(width * height);
 
         for i in &self.map {
-            pixels.push((math::clamp(i * 0.5 + 0.5, 0.0, 1.0) * 255.0) as u8);
+            pixels.push(((i * 0.5 + 0.5).clamp(0.0, 1.0) * 255.0) as u8);
         }
 
         let _ = image::save_buffer(
@@ -126,5 +137,62 @@ impl NoiseMap {
 impl Default for NoiseMap {
     fn default() -> Self {
         Self::initialize()
+    }
+}
+
+impl Index<(usize, usize)> for NoiseMap {
+    type Output = f64;
+
+    fn index(&self, (x, y): (usize, usize)) -> &Self::Output {
+        let (width, height) = self.size;
+        if x < width && y < height {
+            &self.map[x + y * width]
+        } else {
+            &self.border_value
+        }
+    }
+}
+
+impl IndexMut<(usize, usize)> for NoiseMap {
+    fn index_mut(&mut self, (x, y): (usize, usize)) -> &mut Self::Output {
+        let (width, height) = self.size;
+        if x < width && y < height {
+            &mut self.map[x + y * width]
+        } else {
+            panic!(
+                "index ({}, {}) out of bounds for NoiseMap of size ({}, {})",
+                x, y, width, height
+            )
+        }
+    }
+}
+
+impl IntoIterator for NoiseMap {
+    type Item = f64;
+
+    type IntoIter = IntoIter<f64>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.map.into_iter()
+    }
+}
+
+impl<'a> IntoIterator for &'a NoiseMap {
+    type Item = &'a f64;
+
+    type IntoIter = Iter<'a, f64>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
+}
+
+impl<'a> IntoIterator for &'a mut NoiseMap {
+    type Item = &'a mut f64;
+
+    type IntoIter = IterMut<'a, f64>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter_mut()
     }
 }

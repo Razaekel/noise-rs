@@ -1,5 +1,8 @@
-use crate::math::{self, scale_shift};
-use crate::noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
+use crate::{
+    math::{scale_shift, vectors::*},
+    noise_fns::{MultiFractal, NoiseFn, Seedable},
+};
+use alloc::vec::Vec;
 
 /// Noise function that outputs ridged-multifractal noise.
 ///
@@ -18,7 +21,7 @@ use crate::noise_fns::{MultiFractal, NoiseFn, Perlin, Seedable};
 /// Ridged-multifractal noise is often used to generate craggy mountainous
 /// terrain or marble-like textures.
 #[derive(Clone, Debug)]
-pub struct RidgedMulti {
+pub struct RidgedMulti<T> {
     /// Total number of frequency octaves to generate the noise with.
     ///
     /// The number of octaves control the _amount of detail_ in the noise
@@ -54,21 +57,24 @@ pub struct RidgedMulti {
     pub attenuation: f64,
 
     seed: u32,
-    sources: Vec<Perlin>,
+    sources: Vec<T>,
 }
 
-impl RidgedMulti {
+impl<T> RidgedMulti<T>
+where
+    T: Default + Seedable,
+{
     pub const DEFAULT_SEED: u32 = 0;
     pub const DEFAULT_OCTAVE_COUNT: usize = 6;
     pub const DEFAULT_FREQUENCY: f64 = 1.0;
-    pub const DEFAULT_LACUNARITY: f64 = std::f64::consts::PI * 2.0 / 3.0;
+    pub const DEFAULT_LACUNARITY: f64 = core::f64::consts::PI * 2.0 / 3.0;
     pub const DEFAULT_PERSISTENCE: f64 = 1.0;
     pub const DEFAULT_ATTENUATION: f64 = 2.0;
     pub const MAX_OCTAVES: usize = 32;
 
-    pub fn new() -> Self {
+    pub fn new(seed: u32) -> Self {
         Self {
-            seed: Self::DEFAULT_SEED,
+            seed,
             octaves: Self::DEFAULT_OCTAVE_COUNT,
             frequency: Self::DEFAULT_FREQUENCY,
             lacunarity: Self::DEFAULT_LACUNARITY,
@@ -84,21 +90,31 @@ impl RidgedMulti {
             ..self
         }
     }
-}
 
-impl Default for RidgedMulti {
-    fn default() -> Self {
-        Self::new()
+    pub fn set_sources(self, sources: Vec<T>) -> Self {
+        Self { sources, ..self }
     }
 }
 
-impl MultiFractal for RidgedMulti {
+impl<T> Default for RidgedMulti<T>
+where
+    T: Default + Seedable,
+{
+    fn default() -> Self {
+        Self::new(Self::DEFAULT_SEED)
+    }
+}
+
+impl<T> MultiFractal for RidgedMulti<T>
+where
+    T: Default + Seedable,
+{
     fn set_octaves(self, mut octaves: usize) -> Self {
         if self.octaves == octaves {
             return self;
         }
 
-        octaves = math::clamp(octaves, 1, Self::MAX_OCTAVES);
+        octaves = octaves.clamp(1, Self::MAX_OCTAVES);
         Self {
             octaves,
             sources: super::build_sources(self.seed, octaves),
@@ -122,7 +138,10 @@ impl MultiFractal for RidgedMulti {
     }
 }
 
-impl Seedable for RidgedMulti {
+impl<T> Seedable for RidgedMulti<T>
+where
+    T: Default + Seedable,
+{
     fn set_seed(self, seed: u32) -> Self {
         if self.seed == seed {
             return self;
@@ -141,16 +160,21 @@ impl Seedable for RidgedMulti {
 }
 
 /// 2-dimensional `RidgedMulti` noise
-impl NoiseFn<[f64; 2]> for RidgedMulti {
-    fn get(&self, mut point: [f64; 2]) -> f64 {
+impl<T> NoiseFn<f64, 2> for RidgedMulti<T>
+where
+    T: NoiseFn<f64, 2>,
+{
+    fn get(&self, point: [f64; 2]) -> f64 {
+        let mut point = Vector2::from(point);
+
         let mut result = 0.0;
         let mut weight = 1.0;
 
-        point = math::mul2(point, self.frequency);
+        point *= self.frequency;
 
         for x in 0..self.octaves {
             // Get the value.
-            let mut signal = self.sources[x].get(point);
+            let mut signal = self.sources[x].get(point.into_array());
 
             // Make the ridges.
             signal = signal.abs();
@@ -168,7 +192,7 @@ impl NoiseFn<[f64; 2]> for RidgedMulti {
             weight = signal / self.attenuation;
 
             // Clamp the weight to [0,1] to prevent the result from diverging.
-            weight = math::clamp(weight, 0.0, 1.0);
+            weight = weight.clamp(0.0, 1.0);
 
             // Scale the amplitude appropriately for this frequency.
             signal *= self.persistence.powi(x as i32);
@@ -177,7 +201,7 @@ impl NoiseFn<[f64; 2]> for RidgedMulti {
             result += signal;
 
             // Increase the frequency.
-            point = math::mul2(point, self.lacunarity);
+            point *= self.lacunarity;
         }
 
         // Scale and shift the result into the [-1,1] range
@@ -187,16 +211,21 @@ impl NoiseFn<[f64; 2]> for RidgedMulti {
 }
 
 /// 3-dimensional `RidgedMulti` noise
-impl NoiseFn<[f64; 3]> for RidgedMulti {
-    fn get(&self, mut point: [f64; 3]) -> f64 {
+impl<T> NoiseFn<f64, 3> for RidgedMulti<T>
+where
+    T: NoiseFn<f64, 3>,
+{
+    fn get(&self, point: [f64; 3]) -> f64 {
+        let mut point = Vector3::from(point);
+
         let mut result = 0.0;
         let mut weight = 1.0;
 
-        point = math::mul3(point, self.frequency);
+        point *= self.frequency;
 
         for x in 0..self.octaves {
             // Get the value.
-            let mut signal = self.sources[x].get(point);
+            let mut signal = self.sources[x].get(point.into_array());
 
             // Make the ridges.
             signal = signal.abs();
@@ -214,7 +243,7 @@ impl NoiseFn<[f64; 3]> for RidgedMulti {
             weight = signal / self.attenuation;
 
             // Clamp the weight to [0,1] to prevent the result from diverging.
-            weight = math::clamp(weight, 0.0, 1.0);
+            weight = weight.clamp(0.0, 1.0);
 
             // Scale the amplitude appropriately for this frequency.
             signal *= self.persistence.powi(x as i32);
@@ -223,7 +252,7 @@ impl NoiseFn<[f64; 3]> for RidgedMulti {
             result += signal;
 
             // Increase the frequency.
-            point = math::mul3(point, self.lacunarity);
+            point *= self.lacunarity;
         }
 
         // Scale and shift the result into the [-1,1] range
@@ -233,16 +262,21 @@ impl NoiseFn<[f64; 3]> for RidgedMulti {
 }
 
 /// 4-dimensional `RidgedMulti` noise
-impl NoiseFn<[f64; 4]> for RidgedMulti {
-    fn get(&self, mut point: [f64; 4]) -> f64 {
+impl<T> NoiseFn<f64, 4> for RidgedMulti<T>
+where
+    T: NoiseFn<f64, 4>,
+{
+    fn get(&self, point: [f64; 4]) -> f64 {
+        let mut point = Vector4::from(point);
+
         let mut result = 0.0;
         let mut weight = 1.0;
 
-        point = math::mul4(point, self.frequency);
+        point *= self.frequency;
 
         for x in 0..self.octaves {
             // Get the value.
-            let mut signal = self.sources[x].get(point);
+            let mut signal = self.sources[x].get(point.into_array());
 
             // Make the ridges.
             signal = signal.abs();
@@ -257,10 +291,10 @@ impl NoiseFn<[f64; 4]> for RidgedMulti {
             signal *= weight;
 
             // Weight successive contributions by the previous signal.
-            weight = signal * self.attenuation;
+            weight = signal / self.attenuation;
 
             // Clamp the weight to [0,1] to prevent the result from diverging.
-            weight = math::clamp(weight, 0.0, 1.0);
+            weight = weight.clamp(0.0, 1.0);
 
             // Scale the amplitude appropriately for this frequency.
             signal *= self.persistence.powi(x as i32);
@@ -269,7 +303,7 @@ impl NoiseFn<[f64; 4]> for RidgedMulti {
             result += signal;
 
             // Increase the frequency.
-            point = math::mul4(point, self.lacunarity);
+            point *= self.lacunarity;
         }
 
         // Scale and shift the result into the [-1,1] range

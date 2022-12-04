@@ -4,5 +4,5 @@
 /.criterion/
 *.iml
 Cargo.lock
-*.png
+/example_images/
 .DS_Store

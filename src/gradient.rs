@@ -1,9 +1,9 @@
 #[inline(always)]
 #[rustfmt::skip]
-pub(crate) fn get2(index: usize) -> [f64; 2] {
+pub(crate) fn grad2(index: usize) -> [f64; 2] {
     // Vectors are combinations of -1, 0, and 1
     // Precompute the normalized element
-    const DIAG : f64 = std::f64::consts::FRAC_1_SQRT_2;
+    const DIAG : f64 = core::f64::consts::FRAC_1_SQRT_2;
 
     match index % 8 {
         0 => [  1.0,   0.0],
@@ -20,10 +20,10 @@ pub(crate) fn get2(index: usize) -> [f64; 2] {
 
 #[inline(always)]
 #[rustfmt::skip]
-pub(crate) fn get3(index: usize) -> [f64; 3] {
+pub(crate) fn grad3(index: usize) -> [f64; 3] {
     // Vectors are combinations of -1, 0, and 1
     // Precompute the normalized elements
-    const DIAG : f64 = std::f64::consts::FRAC_1_SQRT_2;
+    const DIAG : f64 = core::f64::consts::FRAC_1_SQRT_2;
     const DIAG2 : f64 = 0.577_350_269_189_625_8;
 
     match index % 32 {
@@ -54,7 +54,7 @@ pub(crate) fn get3(index: usize) -> [f64; 3] {
 
 #[inline(always)]
 #[rustfmt::skip]
-pub(crate) fn get4(index: usize) -> [f64; 4] {
+pub(crate) fn grad4(index: usize) -> [f64; 4] {
     // Vectors are combinations of -1, 0, and 1
     // Precompute the normalized elements
     const DIAG : f64 = 0.577_350_269_189_625_8;
