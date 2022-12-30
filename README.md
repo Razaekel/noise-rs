@@ -67,14 +67,22 @@ See the individual function pages for their descriptions, and the [examples][exa
 <!-- USAGE EXAMPLES -->
 ## Usage
 
+To use the function `write_to_file` you have to set the feature `"images"` in the `Cargo.toml`
+
+```toml
+[dependencies]
+noise = { version = "0.8.2", features = ["images"] }
+```
+
+
 ```rust
-use noise::Fbm;
+use noise::{Fbm, Perlin};
 use noise::utils::{NoiseMapBuilder, PlaneMapBuilder};
 
 fn main() {
-  let fbm = Fbm::new();
+  let fbm = Fbm::<Perlin>::new(0);
 
-  PlaneMapBuilder::new(&fbm)
+  PlaneMapBuilder::<_, 2>::new(&fbm)
           .set_size(1000, 1000)
           .set_x_bounds(-5.0, 5.0)
           .set_y_bounds(-5.0, 5.0)
