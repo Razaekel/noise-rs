@@ -80,7 +80,7 @@ where
             lacunarity: Self::DEFAULT_LACUNARITY,
             persistence: Self::DEFAULT_PERSISTENCE,
             attenuation: Self::DEFAULT_ATTENUATION,
-            sources: super::build_sources(Self::DEFAULT_SEED, Self::DEFAULT_OCTAVE_COUNT),
+            sources: super::build_sources(seed, Self::DEFAULT_OCTAVE_COUNT),
         }
     }
 
