@@ -1,5 +1,5 @@
 use crate::{
-    math::{scale_shift, vectors::*},
+    math::vectors::*,
     noise_fns::{MultiFractal, NoiseFn, Seedable},
 };
 use alloc::vec::Vec;
@@ -16,7 +16,7 @@ use alloc::vec::Vec;
 /// default values for the parameters, but there are no guarantees that all
 /// output values will exist within this range. If the parameters are modified
 /// from their defaults, then the output will need to be scaled to remain in
-/// the [-1,1] range.
+/// the [-1, 1] range.
 ///
 /// Ridged-multifractal noise is often used to generate craggy mountainous
 /// terrain or marble-like textures.
@@ -58,6 +58,7 @@ pub struct RidgedMulti<T> {
 
     seed: u32,
     sources: Vec<T>,
+    scale_factor: f64,
 }
 
 impl<T> RidgedMulti<T>
@@ -81,18 +82,46 @@ where
             persistence: Self::DEFAULT_PERSISTENCE,
             attenuation: Self::DEFAULT_ATTENUATION,
             sources: super::build_sources(Self::DEFAULT_SEED, Self::DEFAULT_OCTAVE_COUNT),
+            scale_factor: Self::calc_scale_factor(
+                Self::DEFAULT_PERSISTENCE,
+                Self::DEFAULT_ATTENUATION,
+                Self::DEFAULT_OCTAVE_COUNT,
+            ),
         }
     }
 
     pub fn set_attenuation(self, attenuation: f64) -> Self {
         Self {
             attenuation,
+            scale_factor: Self::calc_scale_factor(self.persistence, attenuation, self.octaves),
             ..self
         }
     }
 
     pub fn set_sources(self, sources: Vec<T>) -> Self {
         Self { sources, ..self }
+    }
+
+    fn calc_scale_factor(persistence: f64, attenuation: f64, octaves: usize) -> f64 {
+        let mut denom = 0.0;
+
+        // Do octave 0
+        let mut amplitude = 1.0;
+        let mut weight = 1.0;
+        let mut signal = weight * amplitude;
+
+        denom += signal;
+
+        if octaves >= 1 {
+            denom += (1..=octaves).fold(0.0, |acc, x| {
+                amplitude *= persistence;
+                weight = (signal / attenuation.powi(x as i32)).clamp(0.0, 1.0);
+                signal = weight * amplitude;
+                acc + signal
+            });
+        }
+
+        2.0 / denom
     }
 }
 
@@ -118,6 +147,7 @@ where
         Self {
             octaves,
             sources: super::build_sources(self.seed, octaves),
+            scale_factor: Self::calc_scale_factor(self.persistence, self.attenuation, octaves),
             ..self
         }
     }
@@ -133,6 +163,7 @@ where
     fn set_persistence(self, persistence: f64) -> Self {
         Self {
             persistence,
+            scale_factor: Self::calc_scale_factor(persistence, self.attenuation, self.octaves),
             ..self
         }
     }
@@ -204,9 +235,17 @@ where
             point *= self.lacunarity;
         }
 
-        // Scale and shift the result into the [-1,1] range
-        let scale = 2.0 - 0.5_f64.powi(self.octaves as i32 - 1);
-        scale_shift(result, 2.0 / scale)
+        // The result before scaling will be 0 to something positive, so need to sale it back down
+        // to -1 to 1. We don't know what the upper limit is, but it can be calculated based on the
+        // number of octaves, and the persistence and attenuation values. By dividing the result by
+        // what the upper limit should be / 2, we should get a value between 0 and 2. Then we can
+        // shift the result to cover the -1 to 1 range.
+
+        // Scale the result to [0, 2]
+        result *= self.scale_factor;
+
+        // Shift the result to [-1, 1]
+        result - 1.0
     }
 }
 
@@ -255,9 +294,17 @@ where
             point *= self.lacunarity;
         }
 
-        // Scale and shift the result into the [-1,1] range
-        let scale = 2.0 - 0.5_f64.powi(self.octaves as i32 - 1);
-        scale_shift(result, 2.0 / scale)
+        // The result before scaling will be 0 to something positive, so need to sale it back down
+        // to -1 to 1. We don't know what the upper limit is, but it can be calculated based on the
+        // number of octaves, and the persistence and attenuation values. By dividing the result by
+        // what the upper limit should be / 2, we should get a value between 0 and 2. Then we can
+        // shift the result to cover the -1 to 1 range.
+
+        // Scale the result to [0, 2]
+        result *= self.scale_factor;
+
+        // Shift the result to [-1, 1]
+        result - 1.0
     }
 }
 
@@ -306,8 +353,16 @@ where
             point *= self.lacunarity;
         }
 
-        // Scale and shift the result into the [-1,1] range
-        let scale = 2.0 - 0.5_f64.powi(self.octaves as i32 - 1);
-        scale_shift(result, 2.0 / scale)
+        // The result before scaling will be 0 to something positive, so need to sale it back down
+        // to -1 to 1. We don't know what the upper limit is, but it can be calculated based on the
+        // number of octaves, and the persistence and attenuation values. By dividing the result by
+        // what the upper limit should be / 2, we should get a value between 0 and 2. Then we can
+        // shift the result to cover the -1 to 1 range.
+
+        // Scale the result to [0, 2]
+        result *= self.scale_factor;
+
+        // Shift the result to [-1, 1]
+        result - 1.0
     }
 }
