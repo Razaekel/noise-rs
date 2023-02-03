@@ -7,10 +7,7 @@ use crate::noise_fns::NoiseFn;
 /// of the cone are -1.
 #[derive(Clone, Copy, Debug)]
 pub struct Cone {
-    /// radius of the cone.
-    pub radius: f64,
-
-    /// private member, square of the radius
+    /// the cone's radius, sqaured
     radius_squared: f64,
 }
 
@@ -19,13 +16,12 @@ impl Cone {
 
     pub fn new() -> Self {
         Self {
-            radius: Self::DEFAULT_RADIUS,
             radius_squared: Self::DEFAULT_RADIUS.powi(2),
         }
     }
 
     pub fn set_radius(self, radius: f64) -> Self {
-        Self { radius: radius, radius_squared: radius.powi(2) }
+        Self { radius_squared: radius.powi(2) }
     }
 }
 
@@ -44,7 +40,7 @@ impl NoiseFn<f64, 2> for Cone {
 
         match dist_from_center_squared > self.radius_squared{
             true => -1f64,
-            false => 1.0 - 2.0*(dist_from_center_squared / self.radius_squared)
+            false => 1.0 - 2.0*(dist_from_center_squared / self.radius_squared).sqrt()
         }
     }
 }
