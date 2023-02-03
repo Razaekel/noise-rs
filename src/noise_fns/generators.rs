@@ -1,11 +1,12 @@
 pub use self::{
     checkerboard::*, constant::*, cylinders::*, fractals::*, open_simplex::*, perlin::*,
-    perlin_surflet::*, simplex::*, super_simplex::*, value::*, worley::*,
+    perlin_surflet::*, simplex::*, super_simplex::*, value::*, worley::*, cone::*,
 };
 
 mod checkerboard;
 mod constant;
 mod cylinders;
+mod cone;
 mod fractals;
 mod open_simplex;
 mod perlin;
