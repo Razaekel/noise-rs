@@ -9,6 +9,9 @@ use crate::noise_fns::NoiseFn;
 pub struct Cone {
     /// radius of the cone.
     pub radius: f64,
+
+    /// private member, square of the radius
+    radius_squared: f64,
 }
 
 impl Cone {
@@ -17,11 +20,12 @@ impl Cone {
     pub fn new() -> Self {
         Self {
             radius: Self::DEFAULT_RADIUS,
+            radius_squared: Self::DEFAULT_RADIUS.powi(2),
         }
     }
 
     pub fn set_radius(self, radius: f64) -> Self {
-        Self { radius }
+        Self { radius: radius, radius_squared: radius.powi(2) }
     }
 }
 
@@ -36,12 +40,11 @@ impl NoiseFn<f64, 2> for Cone {
         let x = point[0];
         let y = point[1];
 
-        // Calculate the distance of the point from the origin.
-        let dist_from_center = (x.powi(2) + y.powi(2)).sqrt();
+        let dist_from_center_squared = x.powi(2) + y.powi(2);
 
-        match dist_from_center > self.radius{
+        match dist_from_center_squared > self.radius_squared{
             true => -1f64,
-            false => 1.0 - 2.0*(dist_from_center / self.radius)
+            false => 1.0 - 2.0*(dist_from_center_squared / self.radius_squared)
         }
     }
 }
