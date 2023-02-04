@@ -16,6 +16,7 @@ use core::marker::PhantomData;
 /// four control points to the curve. If there is less than four control
 /// points, the get() method panics. Each control point can have any input
 /// and output value, although no two control points can have the same input.
+#[derive(Clone)]
 pub struct Curve<T, Source, const DIM: usize>
 where
     Source: NoiseFn<T, DIM>,
@@ -29,6 +30,7 @@ where
     phantom: PhantomData<T>,
 }
 
+#[derive(Clone)]
 struct ControlPoint<T> {
     input: T,
     output: T,
