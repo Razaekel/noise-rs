@@ -1,11 +1,17 @@
+use core::f64;
+
 use crate::{
     math::{
         s_curve::quintic::Quintic,
-        vectors::{Vector, Vector2, Vector3, Vector4},
+        vectors::{
+            Vector,
+            Vector2,
+            Vector3,
+            Vector4,
+        },
     },
     permutationtable::NoiseHasher,
 };
-use core::f64;
 
 #[inline(always)]
 fn linear_interpolation(u: f64, g0: f64, g1: f64) -> f64 {

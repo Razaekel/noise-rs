@@ -1,5 +1,6 @@
-use crate::math::vectors::*;
 use num_traits::Float;
+
+use crate::math::vectors::*;
 
 /// Quintic Interpolation Trait
 ///

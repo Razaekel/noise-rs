@@ -1,5 +1,6 @@
-use crate::noise_fns::NoiseFn;
 use core::marker::PhantomData;
+
+use crate::noise_fns::NoiseFn;
 
 /// Noise function that negates the output value from the source function.
 #[derive(Clone)]

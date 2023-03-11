@@ -1,6 +1,12 @@
 extern crate noise;
 
-use noise::{utils::*, Blend, Fbm, Perlin, RidgedMulti};
+use noise::{
+    utils::*,
+    Blend,
+    Fbm,
+    Perlin,
+    RidgedMulti,
+};
 
 mod utils;
 

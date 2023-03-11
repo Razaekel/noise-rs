@@ -1,4 +1,9 @@
-use core::ops::{Add, Mul, Sub};
+use core::ops::{
+    Add,
+    Mul,
+    Sub,
+};
+
 use num_traits::MulAdd;
 
 /// Performs linear interpolation between two values.

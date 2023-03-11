@@ -1,6 +1,9 @@
 use crate::{
     core::perlin_surflet::*,
-    noise_fns::{NoiseFn, Seedable},
+    noise_fns::{
+        NoiseFn,
+        Seedable,
+    },
     permutationtable::PermutationTable,
 };
 

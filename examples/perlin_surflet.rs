@@ -2,7 +2,11 @@
 
 extern crate noise;
 
-use noise::{utils::*, PerlinSurflet, Seedable};
+use noise::{
+    utils::*,
+    PerlinSurflet,
+    Seedable,
+};
 
 mod utils;
 

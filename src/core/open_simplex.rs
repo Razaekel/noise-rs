@@ -1,6 +1,12 @@
 use crate::{
     gradient,
-    math::vectors::{Vector, Vector2, Vector3, Vector4, VectorMap},
+    math::vectors::{
+        Vector,
+        Vector2,
+        Vector3,
+        Vector4,
+        VectorMap,
+    },
     permutationtable::NoiseHasher,
 };
 

@@ -1,5 +1,7 @@
 use crate::{
-    math::interpolate, noise_fns::NoiseFn, permutationtable::NoiseHasher,
+    math::interpolate,
+    noise_fns::NoiseFn,
+    permutationtable::NoiseHasher,
     utils::noise_map::NoiseMap,
 };
 

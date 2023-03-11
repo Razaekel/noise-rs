@@ -1,8 +1,16 @@
-use crate::{
-    math::{scale_shift, vectors::*},
-    noise_fns::{MultiFractal, NoiseFn, Seedable},
-};
 use alloc::vec::Vec;
+
+use crate::{
+    math::{
+        scale_shift,
+        vectors::*,
+    },
+    noise_fns::{
+        MultiFractal,
+        NoiseFn,
+        Seedable,
+    },
+};
 
 /// Noise function that outputs "billowy" noise.
 ///

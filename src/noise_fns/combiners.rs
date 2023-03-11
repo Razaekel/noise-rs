@@ -1,4 +1,10 @@
-pub use self::{add::*, max::*, min::*, multiply::*, power::*};
+pub use self::{
+    add::*,
+    max::*,
+    min::*,
+    multiply::*,
+    power::*,
+};
 
 mod add;
 mod max;

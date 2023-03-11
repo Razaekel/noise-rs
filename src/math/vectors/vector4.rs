@@ -1,6 +1,26 @@
-use super::{Vector, VectorMap};
-use core::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
-use num_traits::{real::Real, Num, NumCast, One, Zero};
+use core::ops::{
+    Add,
+    AddAssign,
+    Div,
+    DivAssign,
+    Mul,
+    MulAssign,
+    Sub,
+    SubAssign,
+};
+
+use num_traits::{
+    real::Real,
+    Num,
+    NumCast,
+    One,
+    Zero,
+};
+
+use super::{
+    Vector,
+    VectorMap,
+};
 
 #[derive(Copy, Clone, Debug, Default, Eq)]
 pub struct Vector4<T> {

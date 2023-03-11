@@ -1,8 +1,19 @@
-use core::ops::{Add, Mul};
-use num_traits::real::Real;
-use num_traits::{One, Zero};
+use core::ops::{
+    Add,
+    Mul,
+};
 
-pub use self::{vector2::*, vector3::*, vector4::*};
+use num_traits::{
+    real::Real,
+    One,
+    Zero,
+};
+
+pub use self::{
+    vector2::*,
+    vector3::*,
+    vector4::*,
+};
 
 mod vector2;
 mod vector3;

@@ -1,6 +1,9 @@
 extern crate noise;
 
-use noise::{utils::*, *};
+use noise::{
+    utils::*,
+    *,
+};
 
 mod utils;
 

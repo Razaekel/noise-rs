@@ -1,5 +1,12 @@
-pub use self::{basicmulti::*, billow::*, fbm::*, hybridmulti::*, ridgedmulti::*};
 use alloc::vec::Vec;
+
+pub use self::{
+    basicmulti::*,
+    billow::*,
+    fbm::*,
+    hybridmulti::*,
+    ridgedmulti::*,
+};
 
 mod basicmulti;
 mod billow;

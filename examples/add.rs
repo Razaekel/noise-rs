@@ -1,6 +1,11 @@
 extern crate noise;
 
-use noise::{utils::*, Add, Cylinders, Perlin};
+use noise::{
+    utils::*,
+    Add,
+    Cylinders,
+    Perlin,
+};
 
 mod utils;
 

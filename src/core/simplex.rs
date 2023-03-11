@@ -1,9 +1,18 @@
+use num_traits::{
+    Float,
+    NumCast,
+};
+
 use crate::{
     gradient,
-    math::vectors::{Vector, Vector2, Vector3, Vector4},
+    math::vectors::{
+        Vector,
+        Vector2,
+        Vector3,
+        Vector4,
+    },
     permutationtable::NoiseHasher,
 };
-use num_traits::{Float, NumCast};
 
 fn grad1(hash: u8) -> f64 {
     let h = hash & 15;

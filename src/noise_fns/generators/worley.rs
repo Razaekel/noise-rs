@@ -1,10 +1,14 @@
+use alloc::rc::Rc;
+
 use crate::{
     core::worley::*,
     math::vectors::*,
-    noise_fns::{NoiseFn, Seedable},
+    noise_fns::{
+        NoiseFn,
+        Seedable,
+    },
     permutationtable::PermutationTable,
 };
-use alloc::rc::Rc;
 
 /// Noise function that outputs Worley noise.
 #[derive(Clone)]

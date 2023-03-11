@@ -1,8 +1,12 @@
+use core::marker::PhantomData;
+
 use crate::{
-    math::{interpolate, s_curve::cubic::Cubic},
+    math::{
+        interpolate,
+        s_curve::cubic::Cubic,
+    },
     noise_fns::NoiseFn,
 };
-use core::marker::PhantomData;
 
 /// Noise function that outputs the value selected from one of two source
 /// functions chosen by the output value from a control function.

@@ -2,7 +2,10 @@
 
 extern crate noise;
 
-use noise::{utils::*, Checkerboard};
+use noise::{
+    utils::*,
+    Checkerboard,
+};
 
 mod utils;
 

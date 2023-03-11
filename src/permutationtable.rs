@@ -1,8 +1,13 @@
 use core::fmt;
+
 use rand::{
-    distributions::{Distribution, Standard},
+    distributions::{
+        Distribution,
+        Standard,
+    },
     seq::SliceRandom,
-    Rng, SeedableRng,
+    Rng,
+    SeedableRng,
 };
 use rand_xorshift::XorShiftRng;
 
@@ -77,8 +82,13 @@ impl fmt::Debug for PermutationTable {
 
 #[cfg(test)]
 mod tests {
-    use crate::{NoiseFn, Perlin, Seedable};
     use rand::random;
+
+    use crate::{
+        NoiseFn,
+        Perlin,
+        Seedable,
+    };
 
     #[test]
     fn test_random_seed() {

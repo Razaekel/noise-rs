@@ -2,7 +2,12 @@
 
 extern crate noise;
 
-use noise::{utils::*, Perlin, RidgedMulti, Worley};
+use noise::{
+    utils::*,
+    Perlin,
+    RidgedMulti,
+    Worley,
+};
 
 mod utils;
 

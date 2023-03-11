@@ -1,5 +1,6 @@
-use crate::noise_fns::NoiseFn;
 use core::marker::PhantomData;
+
+use crate::noise_fns::NoiseFn;
 
 /// Noise function that raises the output value from the first source function
 /// to the power of the output value of the second source function.

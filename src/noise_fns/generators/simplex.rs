@@ -1,6 +1,9 @@
 use crate::{
     core::simplex::*,
-    noise_fns::{NoiseFn, Seedable},
+    noise_fns::{
+        NoiseFn,
+        Seedable,
+    },
     permutationtable::PermutationTable,
 };
 

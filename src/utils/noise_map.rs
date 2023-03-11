@@ -1,8 +1,17 @@
 use alloc::{
-    slice::{Iter, IterMut},
-    vec::{IntoIter, Vec},
+    slice::{
+        Iter,
+        IterMut,
+    },
+    vec::{
+        IntoIter,
+        Vec,
+    },
 };
-use core::ops::{Index, IndexMut};
+use core::ops::{
+    Index,
+    IndexMut,
+};
 
 const RASTER_MAX_WIDTH: u16 = 32_767;
 const RASTER_MAX_HEIGHT: u16 = 32_767;
