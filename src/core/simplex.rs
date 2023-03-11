@@ -10,7 +10,7 @@ fn grad1(hash: u8) -> f64 {
     let gx = (1 + (h & 7)) as f64; // Gradient value is one of 1.0, 2.0, ..., 8.0
     match h & 8 {
         0 => -gx,
-        1 => gx, // Make half of the gradients negative
+        8 => gx, // Make half of the gradients negative
         _ => unreachable!(),
     }
 }

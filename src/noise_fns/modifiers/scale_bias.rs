@@ -6,6 +6,7 @@ use core::marker::PhantomData;
 ///
 /// The function retrieves the output value from the source function, multiplies
 /// it with the scaling factor, adds the bias to it, then outputs the value.
+#[derive(Clone)]
 pub struct ScaleBias<T, Source, const DIM: usize> {
     /// Outputs a value.
     pub source: Source,

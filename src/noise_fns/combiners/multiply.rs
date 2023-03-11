@@ -3,6 +3,7 @@ use core::marker::PhantomData;
 
 /// Noise function that outputs the product of the two output values from two source
 /// functions.
+#[derive(Clone)]
 pub struct Multiply<T, Source1, Source2, const DIM: usize>
 where
     Source1: NoiseFn<T, DIM>,
