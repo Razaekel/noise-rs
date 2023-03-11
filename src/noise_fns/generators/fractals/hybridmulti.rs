@@ -61,7 +61,7 @@ where
             frequency: Self::DEFAULT_FREQUENCY,
             lacunarity: Self::DEFAULT_LACUNARITY,
             persistence: Self::DEFAULT_PERSISTENCE,
-            sources: super::build_sources(Self::DEFAULT_SEED, Self::DEFAULT_OCTAVES),
+            sources: super::build_sources(seed, Self::DEFAULT_OCTAVES),
             scale_factor: Self::calc_scale_factor(Self::DEFAULT_PERSISTENCE, Self::DEFAULT_OCTAVES),
         }
     }
