@@ -2,7 +2,12 @@
 
 extern crate noise;
 
-use noise::{utils::*, HybridMulti, Perlin, Worley};
+use noise::{
+    utils::*,
+    HybridMulti,
+    Perlin,
+    Worley,
+};
 
 mod utils;
 

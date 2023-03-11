@@ -1,6 +1,10 @@
-use crate::{math::interpolate, noise_fns::NoiseFn};
 use alloc::vec::Vec;
 use core::marker::PhantomData;
+
+use crate::{
+    math::interpolate,
+    noise_fns::NoiseFn,
+};
 
 /// Noise function that maps the output value from the source function onto an
 /// arbitrary function curve.

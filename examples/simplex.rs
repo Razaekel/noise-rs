@@ -2,7 +2,11 @@
 
 extern crate noise;
 
-use noise::{utils::*, Seedable, Simplex};
+use noise::{
+    utils::*,
+    Seedable,
+    Simplex,
+};
 
 mod utils;
 

@@ -1,6 +1,13 @@
 use crate::{
-    core::value::{value_2d, value_3d, value_4d},
-    noise_fns::{NoiseFn, Seedable},
+    core::value::{
+        value_2d,
+        value_3d,
+        value_4d,
+    },
+    noise_fns::{
+        NoiseFn,
+        Seedable,
+    },
     permutationtable::PermutationTable,
 };
 

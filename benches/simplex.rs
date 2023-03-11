@@ -2,7 +2,10 @@ extern crate criterion;
 extern crate noise;
 
 use criterion::*;
-use noise::{NoiseFn, Simplex};
+use noise::{
+    NoiseFn,
+    Simplex,
+};
 use rand::Rng;
 
 criterion_group!(simplex, bench_simplex);

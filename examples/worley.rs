@@ -1,7 +1,10 @@
 extern crate noise;
 
 use noise::{
-    core::worley::{distance_functions::*, ReturnType},
+    core::worley::{
+        distance_functions::*,
+        ReturnType,
+    },
     utils::*,
     Worley,
 };

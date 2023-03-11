@@ -1,8 +1,13 @@
+use alloc::vec::Vec;
+
 use crate::{
     math::vectors::*,
-    noise_fns::{MultiFractal, NoiseFn, Seedable},
+    noise_fns::{
+        MultiFractal,
+        NoiseFn,
+        Seedable,
+    },
 };
-use alloc::vec::Vec;
 
 /// Noise function that outputs heterogenous Multifractal noise.
 ///

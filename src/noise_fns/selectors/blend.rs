@@ -1,5 +1,9 @@
-use crate::{math::interpolate, noise_fns::NoiseFn};
 use core::marker::PhantomData;
+
+use crate::{
+    math::interpolate,
+    noise_fns::NoiseFn,
+};
 
 /// Noise function that outputs a weighted blend of the output values from two
 /// source functions given the output value supplied by a control function.

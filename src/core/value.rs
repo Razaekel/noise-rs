@@ -1,5 +1,9 @@
 use crate::{
-    math::{interpolate, s_curve::quintic::Quintic, vectors::*},
+    math::{
+        interpolate,
+        s_curve::quintic::Quintic,
+        vectors::*,
+    },
     permutationtable::NoiseHasher,
 };
 

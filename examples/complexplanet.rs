@@ -1,6 +1,10 @@
 extern crate noise;
 
-use noise::{core::worley::ReturnType, utils::*, *};
+use noise::{
+    core::worley::ReturnType,
+    utils::*,
+    *,
+};
 
 mod utils;
 

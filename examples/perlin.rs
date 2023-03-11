@@ -3,7 +3,11 @@
 extern crate noise;
 
 use noise::{
-    core::perlin::{perlin_2d, perlin_3d, perlin_4d},
+    core::perlin::{
+        perlin_2d,
+        perlin_3d,
+        perlin_4d,
+    },
     permutationtable::PermutationTable,
     utils::*,
 };

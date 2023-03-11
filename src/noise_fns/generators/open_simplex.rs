@@ -3,8 +3,15 @@
 //! <http://uniblock.tumblr.com/post/97868843242/noise>
 
 use crate::{
-    core::open_simplex::{open_simplex_2d, open_simplex_3d, open_simplex_4d},
-    noise_fns::{NoiseFn, Seedable},
+    core::open_simplex::{
+        open_simplex_2d,
+        open_simplex_3d,
+        open_simplex_4d,
+    },
+    noise_fns::{
+        NoiseFn,
+        Seedable,
+    },
     permutationtable::PermutationTable,
 };
 

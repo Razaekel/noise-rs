@@ -125,7 +125,10 @@ where
 
 #[cfg(test)]
 mod tests {
-    use super::{super::super::Perlin, *};
+    use super::{
+        super::super::Perlin,
+        *,
+    };
 
     #[test]
     fn test_pass_by_ref() {

@@ -2,8 +2,14 @@
 extern crate criterion;
 extern crate noise;
 
-use criterion::{black_box, Criterion};
-use noise::{NoiseFn, Value};
+use criterion::{
+    black_box,
+    Criterion,
+};
+use noise::{
+    NoiseFn,
+    Value,
+};
 
 criterion_group!(value, bench_value2, bench_value3, bench_value4);
 criterion_group!(

@@ -1,8 +1,15 @@
+use core::f64;
+
 use crate::{
-    math::vectors::{Vector, Vector2, Vector3, Vector4, VectorMap},
+    math::vectors::{
+        Vector,
+        Vector2,
+        Vector3,
+        Vector4,
+        VectorMap,
+    },
     permutationtable::NoiseHasher,
 };
-use core::f64;
 
 #[derive(Clone, Copy, Debug)]
 pub enum ReturnType {

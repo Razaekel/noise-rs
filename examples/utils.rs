@@ -1,10 +1,16 @@
 #[cfg(feature = "images")]
-use noise::utils::{NoiseImage, NoiseMap};
+use noise::utils::{
+    NoiseImage,
+    NoiseMap,
+};
 
 #[allow(dead_code)]
 #[cfg(feature = "images")]
 pub fn write_example_to_file(map: &NoiseMap, filename: &str) {
-    use std::{fs, path::Path};
+    use std::{
+        fs,
+        path::Path,
+    };
 
     let target_dir = Path::new("example_images/");
 
@@ -20,7 +26,10 @@ pub fn write_example_to_file(map: &NoiseMap, filename: &str) {
 #[allow(dead_code)]
 #[cfg(feature = "images")]
 pub fn write_image_to_file(image: &NoiseImage, filename: &str) {
-    use std::{fs, path::Path};
+    use std::{
+        fs,
+        path::Path,
+    };
 
     let target_dir = Path::new("example_images/");
 

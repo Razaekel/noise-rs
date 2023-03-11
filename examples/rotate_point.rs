@@ -1,6 +1,10 @@
 extern crate noise;
 
-use noise::{utils::*, Cylinders, RotatePoint};
+use noise::{
+    utils::*,
+    Cylinders,
+    RotatePoint,
+};
 
 mod utils;
 
