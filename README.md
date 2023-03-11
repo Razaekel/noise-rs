@@ -10,7 +10,7 @@
 [![CI Status][ci badge]][ci link]
 [![Documentation][docs badge]][docs link]
 [![Version][crates.io version]][crates.io link]
-[![MSRV][rust 1.51.0+ badge]][rust 1.51.0+ link]
+[![MSRV][rust version badge]][rust version link]
 
 <!-- PROJECT LOGO -->
 <br />
@@ -144,5 +144,5 @@ Project Link: [https://github.com/razaekel/noise-rs][github link]
 [planet surface image]: /images/unscaledFinalPlanet.png
 [planet surface 4x]: /images/unscaledFinalPlanet_4x_zoom.png
 [planet surface 16x]: /images/unscaledFinalPlanet_16x_zoom.png
-[rust 1.51.0+ badge]: https://img.shields.io/badge/rust-1.51.0+-93450a.svg?style=for-the-badge&logo=rust
-[rust 1.51.0+ link]: https://blog.rust-lang.org/2021/03/25/Rust-1.51.0.html
+[rust version badge]: https://img.shields.io/badge/rust-1.60.0+-93450a.svg?style=for-the-badge&logo=rust
+[rust version link]: https://blog.rust-lang.org/2022/04/07/Rust-1.60.0.html
