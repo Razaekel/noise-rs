@@ -1,6 +1,6 @@
 use crate::{
     gradient,
-    math::vectors::{Vector, Vector2, Vector3, Vector4, VectorMap},
+    math::vectors::{Vector2, Vector3, Vector4},
     permutationtable::NoiseHasher,
 };
 
@@ -30,7 +30,7 @@ where
     let stretched = point.map(|v| v + stretch_offset);
 
     // Floor to get grid coordinates of rhombus (stretched square) cell origin.
-    let stretched_floor = stretched.floor();
+    let stretched_floor = stretched.floor_to_isize().numcast().unwrap();
 
     // Skew out to get actual coordinates of rhombus origin. We'll need these later.
     let squish_offset = stretched_floor.sum() * SQUISH_CONSTANT;
@@ -112,7 +112,7 @@ where
 
     // Floor to get simplectic honeycomb coordinates of rhombohedron
     // (stretched cube) super-cell origin.
-    let stretched_floor = stretched.floor();
+    let stretched_floor = stretched.floor_to_isize().numcast().unwrap();
 
     // Skew out to get actual coordinates of rhombohedron origin. We'll need
     // these later.
@@ -224,7 +224,7 @@ where
 
     // Floor to get simplectic honeycomb coordinates of rhombo-hypercube
     // super-cell origin.
-    let stretched_floor = stretched.floor();
+    let stretched_floor = stretched.floor_to_isize().numcast().unwrap();
 
     // Skew out to get actual coordinates of stretched rhombo-hypercube origin.
     // We'll need these later.

@@ -1,6 +1,6 @@
 use crate::{
     gradient,
-    math::vectors::{Vector, Vector2, Vector3, Vector4},
+    math::vectors::{Vector2, Vector3, Vector4},
     permutationtable::NoiseHasher,
 };
 use num_traits::{Float, NumCast};
@@ -151,12 +151,13 @@ where
 
     /* Skew the input space to determine which simplex cell we're in */
     let skew = point.sum() * f2; /* Hairy factor for 2D */
-    let skewed = point + Vector2::broadcast(skew);
-    let cell: Vector2<isize> = skewed.floor().numcast().unwrap();
+    let skewed = point + skew;
+    let cell = skewed.floor_to_isize();
+    let floor = cell.numcast::<f64>().unwrap();
 
-    let unskew: f64 = cell.sum() as f64 * g2;
+    let unskew: f64 = floor.sum() * g2;
     // Unskew the cell origin back to (x,y) space
-    let unskewed = cell.numcast().unwrap() - Vector2::broadcast(unskew);
+    let unskewed = floor - unskew;
     // The x,y distances from the cell origin
     let distance = point - unskewed;
 
@@ -175,9 +176,9 @@ where
      * a step of (0,1) in (i,j) means a step of (-c,1-c) in (x,y), where
      * c = (3-sqrt(3))/6   */
     // Offsets for middle corner in (x,y) unskewed coords */
-    let distance1 = distance - offset.numcast().unwrap() + Vector2::broadcast(g2);
+    let distance1 = distance - offset.numcast().unwrap() + g2;
     /* Offsets for last corner in (x,y) unskewed coords */
-    let distance2 = distance - Vector2::broadcast(1.0 + 2.0 * g2);
+    let distance2 = distance - (1.0 + 2.0 * g2);
 
     // Calculate gradient indexes for each corner
     let gi0 = hasher.hash(&cell.into_array());
@@ -275,13 +276,13 @@ where
     /* Skew the input space to determine which simplex cell we're in */
     // let skew = (x + y + z) * f3; /* Very nice and simple skew factor for 3D */
     let skew = point.sum() * f3;
-    let skewed = point + Vector3::broadcast(skew);
-    let cell: Vector3<isize> = skewed.floor().numcast().unwrap();
+    let skewed = point + skew;
+    let cell = skewed.floor_to_isize();
+    let floor = cell.numcast::<f64>().unwrap();
 
-    // let unskew = (cell_x + cell_y + cell_z) as f64 * g3;
-    let unskew = cell.sum() as f64 * g3;
+    let unskew = floor.sum() * g3;
     /* Unskew the cell origin back to (x,y,z) space */
-    let unskewed = cell.numcast().unwrap() - Vector3::broadcast(unskew);
+    let unskewed = floor - unskew;
     /* The x,y,z distances from the cell origin */
     let distance = point - unskewed;
 
@@ -318,9 +319,9 @@ where
      * a step of (0,0,1) in (i,j,k) means a step of (-c,-c,1-c) in (x,y,z), where
      * c = 1/6.   */
 
-    let offset1 = distance - order1.numcast().unwrap() + Vector3::broadcast(g3);
-    let offset2 = distance - order2.numcast().unwrap() + Vector3::broadcast(2.0 * g3);
-    let offset3 = distance - Vector3::one() + Vector3::broadcast(3.0 * g3);
+    let offset1 = distance - order1.numcast().unwrap() + g3;
+    let offset2 = distance - order2.numcast().unwrap() + (2.0 * g3);
+    let offset3 = distance - Vector3::one() + (3.0 * g3);
 
     // Calculate gradient indexes for each corner
     let gi0 = hasher.hash(&cell.into_array());
@@ -431,13 +432,14 @@ where
     // Skew the (x,y,z,w) space to determine which cell of 24 simplices we're in
     // Factor for 4D skewing
     let skew = point.sum() * f4;
-    let skewed = point + Vector4::broadcast(skew);
+    let skewed = point + skew;
     let cell: Vector4<isize> = skewed.numcast().unwrap();
+    let floor = cell.numcast::<f64>().unwrap();
 
     // Factor for 4D unskewing
-    let unskew = cell.sum() as f64 * g4;
+    let unskew = floor.sum() * g4;
     // Unskew the cell origin back to (x,y,z,w) space
-    let unskewed = cell.numcast().unwrap() - Vector4::broadcast(unskew);
+    let unskewed = floor - unskew;
 
     // let distance_x = x - unskewed_x; // The x,y,z,w distances from the cell origin
     // let distance_y = y - unskewed_y;
@@ -491,13 +493,13 @@ where
     let order3 = Vector4::new(i3, j3, k3, l3);
 
     // Offsets for second corner in (x,y,z,w) coords
-    let offset1 = distance - order1.numcast().unwrap() + Vector4::broadcast(g4);
+    let offset1 = distance - order1.numcast().unwrap() + g4;
     // Offsets for third corner in (x,y,z,w) coords
-    let offset2 = distance - order2.numcast().unwrap() + Vector4::broadcast(2.0 * g4);
+    let offset2 = distance - order2.numcast().unwrap() + (2.0 * g4);
     // Offsets for fourth corner in (x,y,z,w) coords
-    let offset3 = distance - order3.numcast().unwrap() + Vector4::broadcast(3.0 * g4);
+    let offset3 = distance - order3.numcast().unwrap() + (3.0 * g4);
     // Offsets for last corner in (x,y,z,w) coords
-    let offset4 = distance - Vector4::one() + Vector4::broadcast(4.0 * g4);
+    let offset4 = distance - Vector4::one() + (4.0 * g4);
 
     // Calculate gradient indexes for each corner
     let gi0 = hasher.hash(&cell.into_array());

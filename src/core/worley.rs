@@ -1,5 +1,5 @@
 use crate::{
-    math::vectors::{Vector, Vector2, Vector3, Vector4, VectorMap},
+    math::vectors::{Vector2, Vector3, Vector4},
     permutationtable::NoiseHasher,
 };
 use core::f64;
@@ -78,14 +78,14 @@ where
         get_vec2(index) + whole.numcast().unwrap()
     }
 
-    let cell = point.floor();
-    let whole = cell.numcast().unwrap();
-    let frac = point - cell;
+    let cell = point.floor_to_isize();
+    let floor = cell.numcast().unwrap();
+    let frac = point - floor;
 
     let half = frac.map(|x| x > 0.5);
 
-    let near = whole + half.map(|x| x as isize);
-    let far = whole + half.map(|x| !x as isize);
+    let near = half.map(|x| x as isize) + cell;
+    let far = half.map(|x| !x as isize) + cell;
 
     let mut seed_cell = near;
     let seed_index = hasher.hash(&near.into_array());
@@ -164,14 +164,14 @@ where
         get_vec3(index) + whole.numcast().unwrap()
     }
 
-    let cell = point.floor();
-    let whole = cell.numcast().unwrap();
-    let frac = point - cell;
+    let cell = point.floor_to_isize();
+    let floor = cell.numcast().unwrap();
+    let frac = point - floor;
 
     let half = frac.map(|x| x > 0.5);
 
-    let near = whole + half.map(|x| x as isize);
-    let far = whole + half.map(|x| !x as isize);
+    let near = half.map(|x| x as isize) + cell;
+    let far = half.map(|x| !x as isize) + cell;
 
     let mut seed_cell = near;
     let seed_index = hasher.hash(&near.into_array());
@@ -274,14 +274,14 @@ where
         get_vec4(index) + whole.numcast().unwrap()
     }
 
-    let cell = point.floor();
-    let whole = cell.numcast().unwrap();
-    let frac = point - cell;
+    let cell = point.floor_to_isize();
+    let floor = cell.numcast().unwrap();
+    let frac = point - floor;
 
     let half = frac.map(|x| x > 0.5);
 
-    let near = whole + half.map(|x| x as isize);
-    let far = whole + half.map(|x| !x as isize);
+    let near = half.map(|x| x as isize) + cell;
+    let far = half.map(|x| !x as isize) + cell;
 
     let mut seed_cell = near;
     let seed_index = hasher.hash(&near.into_array());

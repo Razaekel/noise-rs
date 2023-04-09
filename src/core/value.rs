@@ -9,8 +9,8 @@ where
 {
     let point = Vector2::from(point);
 
-    let floored = point.floor();
-    let corner = floored.numcast().unwrap();
+    let corner = point.floor_to_isize();
+    let floored = corner.numcast().unwrap();
     let weight = (point - floored).map_quintic();
 
     macro_rules! get(
@@ -39,8 +39,8 @@ where
 {
     let point = Vector3::from(point);
 
-    let floored = point.floor();
-    let corner = floored.numcast().unwrap();
+    let corner = point.floor_to_isize();
+    let floored = corner.numcast().unwrap();
     let weight = (point - floored).map_quintic();
 
     macro_rules! get(
@@ -77,8 +77,8 @@ where
 {
     let point = Vector4::from(point);
 
-    let floored = point.floor();
-    let corner = floored.numcast().unwrap();
+    let corner = point.floor_to_isize();
+    let floored = corner.numcast().unwrap();
     let weight = (point - floored).map_quintic();
 
     macro_rules! get(
