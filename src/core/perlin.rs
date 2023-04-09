@@ -1,7 +1,7 @@
 use crate::{
     math::{
         s_curve::quintic::Quintic,
-        vectors::{Vector, Vector2, Vector3, Vector4},
+        vectors::{Vector2, Vector3, Vector4},
     },
     permutationtable::NoiseHasher,
 };
@@ -96,8 +96,8 @@ where
         }
     }
 
-    let floored = point.floor();
-    let corner: Vector2<isize> = floored.numcast().unwrap();
+    let corner = point.floor_to_isize();
+    let floored = corner.numcast().unwrap();
     let distance = point - floored;
 
     macro_rules! call_gradient(
@@ -178,8 +178,8 @@ where
         }
     }
 
-    let floored = point.floor();
-    let corner: Vector3<isize> = floored.numcast().unwrap();
+    let corner = point.floor_to_isize();
+    let floored = corner.numcast().unwrap();
     let distance = point - floored;
 
     macro_rules! call_gradient(
@@ -275,8 +275,8 @@ where
         }
     }
 
-    let floored = point.floor();
-    let corner: Vector4<isize> = floored.numcast().unwrap();
+    let corner = point.floor_to_isize();
+    let floored = corner.numcast().unwrap();
     let distance = point - floored;
 
     macro_rules! call_gradient(

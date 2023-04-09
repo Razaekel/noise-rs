@@ -94,8 +94,8 @@ where
     let simplex_point = point.map(|v| v + to_simplex_offset);
 
     // Get base point of simplex and barycentric coordinates in simplex space
-    let simplex_base_point = simplex_point.floor();
-    let simplex_base_point_i = simplex_base_point.numcast().unwrap();
+    let simplex_base_point_i = simplex_point.floor_to_isize();
+    let simplex_base_point = simplex_base_point_i.numcast().unwrap();
     let simplex_rel_coords = simplex_point - simplex_base_point;
 
     // Create index to lookup table from barycentric coordinates
@@ -140,11 +140,11 @@ where
     let second_simplex_point = simplex_point.map(|v| v + 512.5);
 
     // Get base point of simplex and barycentric coordinates in simplex space
-    let simplex_base_point = simplex_point.floor();
-    let simplex_base_point_i = simplex_base_point.numcast().unwrap();
+    let simplex_base_point_i = simplex_point.floor_to_isize();
+    let simplex_base_point = simplex_base_point_i.numcast().unwrap();
     let simplex_rel_coords = simplex_point - simplex_base_point;
-    let second_simplex_base_point = second_simplex_point.floor();
-    let second_simplex_base_point_i = second_simplex_base_point.numcast().unwrap();
+    let second_simplex_base_point_i = second_simplex_point.floor_to_isize();
+    let second_simplex_base_point = second_simplex_base_point_i.numcast().unwrap();
     let second_simplex_rel_coords = second_simplex_point - second_simplex_base_point;
 
     // Create indices to lookup table from barycentric coordinates

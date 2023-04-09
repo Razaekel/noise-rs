@@ -1,6 +1,6 @@
 use crate::{
     gradient,
-    math::vectors::{Vector, Vector2, Vector3, Vector4},
+    math::vectors::{Vector2, Vector3, Vector4},
     permutationtable::NoiseHasher,
 };
 
@@ -24,8 +24,8 @@ where
 
     let point = Vector2::from(point);
 
-    let floored = point.floor();
-    let corner = floored.numcast().unwrap();
+    let corner = point.floor_to_isize();
+    let floored = corner.numcast().unwrap();
     let distance = point - floored;
 
     macro_rules! call_surflet(
@@ -67,8 +67,8 @@ where
 
     let point = Vector3::from(point);
 
-    let floored = point.floor();
-    let corner = floored.numcast().unwrap();
+    let corner = point.floor_to_isize();
+    let floored = corner.numcast().unwrap();
     let distance = point - floored;
 
     macro_rules! call_surflet(
@@ -114,8 +114,8 @@ where
 
     let point = Vector4::from(point);
 
-    let floored = point.floor();
-    let corner = floored.numcast().unwrap();
+    let corner = point.floor_to_isize();
+    let floored = corner.numcast().unwrap();
     let distance = point - floored;
 
     macro_rules! call_surflet(
