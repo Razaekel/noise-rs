@@ -1,4 +1,4 @@
-use crate::noise_fns::NoiseFn;
+use crate::{core::checkerboard::*, noise_fns::NoiseFn};
 
 /// Noise function that outputs a checkerboard pattern.
 ///
@@ -39,18 +39,20 @@ impl Default for Checkerboard {
     }
 }
 
-impl<const N: usize> NoiseFn<f64, N> for Checkerboard {
-    fn get(&self, point: [f64; N]) -> f64 {
-        let result = point
-            .iter()
-            .map(|&a| a.floor() as isize)
-            .reduce(|a, b| (a & self.size as isize) ^ (b & self.size as isize))
-            .unwrap();
+impl NoiseFn<f64, 2> for Checkerboard {
+    fn get(&self, point: [f64; 2]) -> f64 {
+        checkerboard_2d(point.into(), self.size as f64)
+    }
+}
 
-        if result > 0 {
-            -1.0
-        } else {
-            1.0
-        }
+impl NoiseFn<f64, 3> for Checkerboard {
+    fn get(&self, point: [f64; 3]) -> f64 {
+        checkerboard_3d(point.into(), self.size as f64)
+    }
+}
+
+impl NoiseFn<f64, 4> for Checkerboard {
+    fn get(&self, point: [f64; 4]) -> f64 {
+        checkerboard_4d(point.into(), self.size as f64)
     }
 }
