@@ -22,14 +22,6 @@ where
     }
 }
 
-fn pad_array<const SIZE: usize>(values: &[f64]) -> [f64; SIZE] {
-    let mut result = [0.0; SIZE];
-
-    result[..values.len().min(SIZE)].clone_from_slice(&values[..values.len().min(SIZE)]);
-
-    result
-}
-
 pub trait NoiseMapBuilder<SourceModule> {
     fn set_size(self, width: usize, height: usize) -> Self;
 
@@ -150,9 +142,9 @@ where
     }
 }
 
-pub struct PlaneMapBuilder<SourceModule, const DIM: usize>
+pub struct PlaneMapBuilder<SourceModule>
 where
-    SourceModule: NoiseFn<f64, DIM>,
+    SourceModule: NoiseFn<f64, 3>,
 {
     is_seamless: bool,
     x_bounds: (f64, f64),
@@ -161,10 +153,10 @@ where
     source_module: SourceModule,
 }
 
-impl<NH, F, const DIM: usize> PlaneMapBuilder<NoiseFnWrapper<NH, F, DIM>, DIM>
+impl<NH, F> PlaneMapBuilder<NoiseFnWrapper<NH, F, 3>>
 where
     NH: NoiseHasher + Clone,
-    F: Fn([f64; DIM], &NH) -> f64,
+    F: Fn([f64; 3], &NH) -> f64,
 {
     pub fn new_fn(func: F, hasher: &NH) -> Self {
         PlaneMapBuilder {
@@ -180,9 +172,9 @@ where
     }
 }
 
-impl<SourceModule, const DIM: usize> PlaneMapBuilder<SourceModule, DIM>
+impl<SourceModule> PlaneMapBuilder<SourceModule>
 where
-    SourceModule: NoiseFn<f64, DIM>,
+    SourceModule: NoiseFn<f64, 3>,
 {
     pub fn new(source_module: SourceModule) -> Self {
         PlaneMapBuilder {
@@ -224,10 +216,9 @@ where
     }
 }
 
-impl<SourceModule, const DIM: usize> NoiseMapBuilder<SourceModule>
-    for PlaneMapBuilder<SourceModule, DIM>
+impl<SourceModule> NoiseMapBuilder<SourceModule> for PlaneMapBuilder<SourceModule>
 where
-    SourceModule: NoiseFn<f64, DIM>,
+    SourceModule: NoiseFn<f64, 3>,
 {
     fn set_size(self, width: usize, height: usize) -> Self {
         PlaneMapBuilder {
@@ -265,16 +256,16 @@ where
                 let current_x = self.x_bounds.0 + x_step * x as f64;
 
                 let final_value = if self.is_seamless {
-                    let sw_value = self.source_module.get(pad_array(&[current_x, current_y]));
+                    let sw_value = self.source_module.get([current_x, current_y, 0.0]);
                     let se_value = self
                         .source_module
-                        .get(pad_array(&[current_x + x_extent, current_y]));
+                        .get([current_x + x_extent, current_y, 0.0]);
                     let nw_value = self
                         .source_module
-                        .get(pad_array(&[current_x, current_y + y_extent]));
-                    let ne_value = self
-                        .source_module
-                        .get(pad_array(&[current_x + x_extent, current_y + y_extent]));
+                        .get([current_x, current_y + y_extent, 0.0]);
+                    let ne_value =
+                        self.source_module
+                            .get([current_x + x_extent, current_y + y_extent, 0.0]);
 
                     let x_blend = 1.0 - ((current_x - self.x_bounds.0) / x_extent);
                     let y_blend = 1.0 - ((current_y - self.y_bounds.0) / y_extent);
@@ -284,7 +275,7 @@ where
 
                     interpolate::linear(y0, y1, y_blend)
                 } else {
-                    self.source_module.get(pad_array(&[current_x, current_y]))
+                    self.source_module.get([current_x, current_y, 0.0])
                 };
 
                 result_map[(x, y)] = final_value;
