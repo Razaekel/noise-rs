@@ -10,21 +10,21 @@ fn main() {
     let hybrid_multi = HybridMulti::<Perlin>::default();
 
     utils::write_example_to_file(
-        &PlaneMapBuilder::<_, 2>::new(hybrid_multi).build(),
+        &PlaneMapBuilder::new(hybrid_multi).build(),
         "hybrid_multi_perlin.png",
     );
 
     let hybrid_multi = HybridMulti::<Worley>::default();
 
     utils::write_example_to_file(
-        &PlaneMapBuilder::<_, 2>::new(hybrid_multi).build(),
+        &PlaneMapBuilder::new(hybrid_multi).build(),
         "hybrid_multi_worley.png",
     );
 
     let hybrid_multi = HybridMulti::<HybridMulti<Perlin>>::default();
 
     utils::write_example_to_file(
-        &PlaneMapBuilder::<_, 2>::new(hybrid_multi).build(),
+        &PlaneMapBuilder::new(hybrid_multi).build(),
         "hybrid_multi_hybrid_multi_perlin.png",
     );
 }

@@ -203,14 +203,14 @@ fn main() {
     let super_simplex = SuperSimplex::default();
 
     utils::write_example_to_file(
-        &PlaneMapBuilder::<_, 2>::new(super_simplex).build(),
+        &PlaneMapBuilder::new(super_simplex).build(),
         "super_simplex.png",
     );
 
     let super_simplex = super_simplex.set_seed(1);
 
     utils::write_example_to_file(
-        &PlaneMapBuilder::<_, 2>::new(super_simplex).build(),
+        &PlaneMapBuilder::new(super_simplex).build(),
         "super_simplex_seed=1.png",
     );
 }

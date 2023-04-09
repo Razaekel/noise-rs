@@ -10,7 +10,7 @@ fn main() {
     let perlin = PerlinSurflet::default();
 
     utils::write_example_to_file(
-        &PlaneMapBuilder::<_, 2>::new(perlin)
+        &PlaneMapBuilder::new(perlin)
             .set_size(1024, 1024)
             .set_x_bounds(-5.0, 5.0)
             .set_y_bounds(-5.0, 5.0)
@@ -21,7 +21,7 @@ fn main() {
     let perlin = perlin.set_seed(1);
 
     utils::write_example_to_file(
-        &PlaneMapBuilder::<_, 2>::new(perlin)
+        &PlaneMapBuilder::new(perlin)
             .set_size(1024, 1024)
             .set_x_bounds(-5.0, 5.0)
             .set_y_bounds(-5.0, 5.0)

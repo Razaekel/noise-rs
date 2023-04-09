@@ -8,5 +8,5 @@ fn main() {
     let perlin = Perlin::default();
     let abs = Abs::new(perlin);
 
-    utils::write_example_to_file(&PlaneMapBuilder::<_, 2>::new(abs).build(), "abs.png");
+    utils::write_example_to_file(&PlaneMapBuilder::new(abs).build(), "abs.png");
 }

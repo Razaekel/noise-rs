@@ -9,5 +9,5 @@ fn main() {
     let perlin = Perlin::default();
     let min = Min::new(cyl, perlin);
 
-    utils::write_example_to_file(&PlaneMapBuilder::<_, 2>::new(min).build(), "min.png");
+    utils::write_example_to_file(&PlaneMapBuilder::new(min).build(), "min.png");
 }

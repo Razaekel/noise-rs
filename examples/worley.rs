@@ -10,24 +10,22 @@ mod utils;
 
 fn main() {
     utils::write_example_to_file(
-        &PlaneMapBuilder::<_, 2>::new(Worley::default()).build(),
+        &PlaneMapBuilder::new(Worley::default()).build(),
         "worley.png",
     );
 
     utils::write_example_to_file(
-        &PlaneMapBuilder::<_, 2>::new(Worley::default().set_return_type(ReturnType::Distance))
-            .build(),
+        &PlaneMapBuilder::new(Worley::default().set_return_type(ReturnType::Distance)).build(),
         "worley_distance.png",
     );
 
     utils::write_example_to_file(
-        &PlaneMapBuilder::<_, 2>::new(Worley::default().set_distance_function(euclidean_squared))
-            .build(),
+        &PlaneMapBuilder::new(Worley::default().set_distance_function(euclidean_squared)).build(),
         "worley_squared.png",
     );
 
     utils::write_example_to_file(
-        &PlaneMapBuilder::<_, 2>::new(
+        &PlaneMapBuilder::new(
             Worley::default()
                 .set_return_type(ReturnType::Distance)
                 .set_distance_function(euclidean_squared),
@@ -37,12 +35,12 @@ fn main() {
     );
 
     utils::write_example_to_file(
-        &PlaneMapBuilder::<_, 2>::new(Worley::default().set_distance_function(manhattan)).build(),
+        &PlaneMapBuilder::new(Worley::default().set_distance_function(manhattan)).build(),
         "worley_manhattan.png",
     );
 
     utils::write_example_to_file(
-        &PlaneMapBuilder::<_, 2>::new(
+        &PlaneMapBuilder::new(
             Worley::default()
                 .set_distance_function(manhattan)
                 .set_return_type(ReturnType::Distance),
@@ -52,12 +50,12 @@ fn main() {
     );
 
     utils::write_example_to_file(
-        &PlaneMapBuilder::<_, 2>::new(Worley::default().set_distance_function(chebyshev)).build(),
+        &PlaneMapBuilder::new(Worley::default().set_distance_function(chebyshev)).build(),
         "worley_chebyshev.png",
     );
 
     utils::write_example_to_file(
-        &PlaneMapBuilder::<_, 2>::new(
+        &PlaneMapBuilder::new(
             Worley::default()
                 .set_return_type(ReturnType::Distance)
                 .set_distance_function(chebyshev),

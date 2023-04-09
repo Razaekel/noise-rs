@@ -10,5 +10,5 @@ fn main() {
 
     let add = Add::new(cyl, perlin);
 
-    utils::write_example_to_file(&PlaneMapBuilder::<_, 2>::new(add).build(), "add.png");
+    utils::write_example_to_file(&PlaneMapBuilder::new(add).build(), "add.png");
 }
