@@ -1,126 +1,139 @@
 use crate::{
-    math::{interpolate, s_curve::quintic::Quintic, vectors::*},
+    math::{interpolate::linear, s_curve::quintic::Quintic, vectors::*},
     permutationtable::NoiseHasher,
 };
 
-pub fn value_2d<NH>(point: [f64; 2], hasher: &NH) -> f64
+pub fn value_2d<NH>(point: Vector2<f64>, hasher: &NH) -> f64
 where
     NH: NoiseHasher + ?Sized,
 {
-    let point = Vector2::from(point);
-
     let corner = point.floor_to_isize();
-    let floored = corner.numcast().unwrap();
-    let weight = (point - floored).map_quintic();
+    let weight = (point - corner.numcast().unwrap()).map_quintic();
 
     macro_rules! get(
-        ($corner:expr, $offset:expr) => {
+        ($offset:expr) => {
             {
-               hasher.hash(&($corner + Vector2::from($offset)).into_array()) as f64 / 255.0
+               hasher.hash(&(corner + $offset).into_array()) as f64 / 255.0
             }
         }
     );
 
-    let f00 = get!(corner, [0, 0]);
-    let f10 = get!(corner, [1, 0]);
-    let f01 = get!(corner, [0, 1]);
-    let f11 = get!(corner, [1, 1]);
+    let f00 = get!(Vector2::new(0, 0));
+    let f10 = get!(Vector2::new(1, 0));
+    let f01 = get!(Vector2::new(0, 1));
+    let f11 = get!(Vector2::new(1, 1));
 
-    let d0 = interpolate::linear(f00, f10, weight.x);
-    let d1 = interpolate::linear(f01, f11, weight.x);
-    let d = interpolate::linear(d0, d1, weight.y);
+    let result = linear(
+        linear(f00, f10, weight.x),
+        linear(f01, f11, weight.x),
+        weight.y,
+    );
 
-    d * 2.0 - 1.0
+    result * 2.0 - 1.0
 }
 
-pub fn value_3d<NH>(point: [f64; 3], hasher: &NH) -> f64
+pub fn value_3d<NH>(point: Vector3<f64>, hasher: &NH) -> f64
 where
     NH: NoiseHasher + ?Sized,
 {
-    let point = Vector3::from(point);
-
     let corner = point.floor_to_isize();
-    let floored = corner.numcast().unwrap();
-    let weight = (point - floored).map_quintic();
+    let weight = (point - corner.numcast().unwrap()).map_quintic();
 
     macro_rules! get(
-        ($corner:expr, $offset:expr) => {
+        ($offset:expr) => {
             {
-               hasher.hash(&($corner + Vector3::from($offset)).into_array()) as f64 / 255.0
+               hasher.hash(&(corner + $offset).into_array()) as f64 / 255.0
             }
         }
     );
 
-    let f000 = get!(corner, [0, 0, 0]);
-    let f100 = get!(corner, [1, 0, 0]);
-    let f010 = get!(corner, [0, 1, 0]);
-    let f110 = get!(corner, [1, 1, 0]);
-    let f001 = get!(corner, [0, 0, 1]);
-    let f101 = get!(corner, [1, 0, 1]);
-    let f011 = get!(corner, [0, 1, 1]);
-    let f111 = get!(corner, [1, 1, 1]);
+    let f000 = get!(Vector3::new(0, 0, 0));
+    let f100 = get!(Vector3::new(1, 0, 0));
+    let f010 = get!(Vector3::new(0, 1, 0));
+    let f110 = get!(Vector3::new(1, 1, 0));
+    let f001 = get!(Vector3::new(0, 0, 1));
+    let f101 = get!(Vector3::new(1, 0, 1));
+    let f011 = get!(Vector3::new(0, 1, 1));
+    let f111 = get!(Vector3::new(1, 1, 1));
 
-    let d00 = interpolate::linear(f000, f100, weight.x);
-    let d01 = interpolate::linear(f001, f101, weight.x);
-    let d10 = interpolate::linear(f010, f110, weight.x);
-    let d11 = interpolate::linear(f011, f111, weight.x);
-    let d0 = interpolate::linear(d00, d10, weight.y);
-    let d1 = interpolate::linear(d01, d11, weight.y);
-    let d = interpolate::linear(d0, d1, weight.z);
+    let result = linear(
+        linear(
+            linear(f000, f100, weight.x),
+            linear(f010, f110, weight.x),
+            weight.y,
+        ),
+        linear(
+            linear(f001, f101, weight.x),
+            linear(f011, f111, weight.x),
+            weight.y,
+        ),
+        weight.z,
+    );
 
-    d * 2.0 - 1.0
+    result * 2.0 - 1.0
 }
 
-pub fn value_4d<NH>(point: [f64; 4], hasher: &NH) -> f64
+pub fn value_4d<NH>(point: Vector4<f64>, hasher: &NH) -> f64
 where
     NH: NoiseHasher + ?Sized,
 {
-    let point = Vector4::from(point);
-
     let corner = point.floor_to_isize();
-    let floored = corner.numcast().unwrap();
-    let weight = (point - floored).map_quintic();
+    let weight = (point - corner.numcast().unwrap()).map_quintic();
 
     macro_rules! get(
-        ($corner:expr, $offset:expr) => {
+        ($offset:expr) => {
             {
-               hasher.hash(&($corner + Vector4::from($offset)).into_array()) as f64 / 255.0
+               hasher.hash(&(corner + $offset).into_array()) as f64 / 255.0
             }
         }
     );
 
-    let f0000 = get!(corner, [0, 0, 0, 0]);
-    let f1000 = get!(corner, [1, 0, 0, 0]);
-    let f0100 = get!(corner, [0, 1, 0, 0]);
-    let f1100 = get!(corner, [1, 1, 0, 0]);
-    let f0010 = get!(corner, [0, 0, 1, 0]);
-    let f1010 = get!(corner, [1, 0, 1, 0]);
-    let f0110 = get!(corner, [0, 1, 1, 0]);
-    let f1110 = get!(corner, [1, 1, 1, 0]);
-    let f0001 = get!(corner, [0, 0, 0, 1]);
-    let f1001 = get!(corner, [1, 0, 0, 1]);
-    let f0101 = get!(corner, [0, 1, 0, 1]);
-    let f1101 = get!(corner, [1, 1, 0, 1]);
-    let f0011 = get!(corner, [0, 0, 1, 1]);
-    let f1011 = get!(corner, [1, 0, 1, 1]);
-    let f0111 = get!(corner, [0, 1, 1, 1]);
-    let f1111 = get!(corner, [1, 1, 1, 1]);
+    let f0000 = get!(Vector4::new(0, 0, 0, 0));
+    let f1000 = get!(Vector4::new(1, 0, 0, 0));
+    let f0100 = get!(Vector4::new(0, 1, 0, 0));
+    let f1100 = get!(Vector4::new(1, 1, 0, 0));
+    let f0010 = get!(Vector4::new(0, 0, 1, 0));
+    let f1010 = get!(Vector4::new(1, 0, 1, 0));
+    let f0110 = get!(Vector4::new(0, 1, 1, 0));
+    let f1110 = get!(Vector4::new(1, 1, 1, 0));
+    let f0001 = get!(Vector4::new(0, 0, 0, 1));
+    let f1001 = get!(Vector4::new(1, 0, 0, 1));
+    let f0101 = get!(Vector4::new(0, 1, 0, 1));
+    let f1101 = get!(Vector4::new(1, 1, 0, 1));
+    let f0011 = get!(Vector4::new(0, 0, 1, 1));
+    let f1011 = get!(Vector4::new(1, 0, 1, 1));
+    let f0111 = get!(Vector4::new(0, 1, 1, 1));
+    let f1111 = get!(Vector4::new(1, 1, 1, 1));
 
-    let d000 = interpolate::linear(f0000, f1000, weight.x);
-    let d010 = interpolate::linear(f0010, f1010, weight.x);
-    let d100 = interpolate::linear(f0100, f1100, weight.x);
-    let d110 = interpolate::linear(f0110, f1110, weight.x);
-    let d001 = interpolate::linear(f0001, f1001, weight.x);
-    let d011 = interpolate::linear(f0011, f1011, weight.x);
-    let d101 = interpolate::linear(f0101, f1101, weight.x);
-    let d111 = interpolate::linear(f0111, f1111, weight.x);
-    let d00 = interpolate::linear(d000, d100, weight.y);
-    let d10 = interpolate::linear(d010, d110, weight.y);
-    let d01 = interpolate::linear(d001, d101, weight.y);
-    let d11 = interpolate::linear(d011, d111, weight.y);
-    let d0 = interpolate::linear(d00, d10, weight.z);
-    let d1 = interpolate::linear(d01, d11, weight.z);
-    let d = interpolate::linear(d0, d1, weight.w);
+    let result = linear(
+        linear(
+            linear(
+                linear(f0000, f1000, weight.x),
+                linear(f0100, f1100, weight.x),
+                weight.y,
+            ),
+            linear(
+                linear(f0010, f1010, weight.x),
+                linear(f0110, f1110, weight.x),
+                weight.y,
+            ),
+            weight.z,
+        ),
+        linear(
+            linear(
+                linear(f0001, f1001, weight.x),
+                linear(f0101, f1101, weight.x),
+                weight.y,
+            ),
+            linear(
+                linear(f0011, f1011, weight.x),
+                linear(f0111, f1111, weight.x),
+                weight.y,
+            ),
+            weight.z,
+        ),
+        weight.w,
+    );
 
-    d * 2.0 - 1.0
+    result * 2.0 - 1.0
 }

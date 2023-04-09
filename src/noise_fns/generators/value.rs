@@ -51,20 +51,20 @@ impl Seedable for Value {
 /// 2-dimensional value noise
 impl NoiseFn<f64, 2> for Value {
     fn get(&self, point: [f64; 2]) -> f64 {
-        value_2d(point, &self.perm_table)
+        value_2d(point.into(), &self.perm_table)
     }
 }
 
 /// 3-dimensional value noise
 impl NoiseFn<f64, 3> for Value {
     fn get(&self, point: [f64; 3]) -> f64 {
-        value_3d(point, &self.perm_table)
+        value_3d(point.into(), &self.perm_table)
     }
 }
 
 /// 4-dimensional value noise
 impl NoiseFn<f64, 4> for Value {
     fn get(&self, point: [f64; 4]) -> f64 {
-        value_4d(point, &self.perm_table)
+        value_4d(point.into(), &self.perm_table)
     }
 }
