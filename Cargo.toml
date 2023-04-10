@@ -55,7 +55,15 @@ name = "value"
 harness = false
 
 [[bench]]
-name = "worley"
+name = "worley_2d"
+harness = false
+
+[[bench]]
+name = "worley_3d"
+harness = false
+
+[[bench]]
+name = "worley_4d"
 harness = false
 
 [[example]]
