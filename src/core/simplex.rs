@@ -5,16 +5,6 @@ use crate::{
 };
 use num_traits::{Float, NumCast};
 
-fn grad1(hash: u8) -> f64 {
-    let h = hash & 15;
-    let gx = (1 + (h & 7)) as f64; // Gradient value is one of 1.0, 2.0, ..., 8.0
-    match h & 8 {
-        0 => -gx,
-        8 => gx, // Make half of the gradients negative
-        _ => unreachable!(),
-    }
-}
-
 // Skew Value
 //
 //     sqrt(n + 1) - 1
@@ -65,79 +55,6 @@ where
 ///  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ///  * General Public License for more details.
 ///  */
-///
-/// 1D Simplex Noise with Derivative
-#[inline(always)]
-pub fn simplex_1d<NH>(x: f64, hasher: &NH) -> (f64, f64)
-where
-    NH: NoiseHasher + ?Sized,
-{
-    let cell = x.floor() as isize;
-
-    let near_distance = x - cell as f64;
-    let far_distance = near_distance - 1.0;
-
-    // Calculate gradient indexes for each corner
-    let gi0 = hasher.hash(&[cell]);
-    let gi1 = hasher.hash(&[cell + 1]);
-
-    struct SurfletComponents {
-        value: f64,
-        t: f64,
-        t2: f64,
-        t4: f64,
-        gradient: f64,
-        x2: f64,
-    }
-
-    fn surflet(gradient_index: usize, x: f64) -> SurfletComponents {
-        let x2 = x * x;
-        let t = 1.0 - x2;
-
-        // if t <= 0.0 { Never happens in 1D: x is always <= 1.
-        // No influence
-        // t0 = 0.0;
-        // } else {
-        let gradient = grad1((gradient_index % 0xff) as u8);
-        let t2 = t * t;
-        let t4 = t2 * t2;
-
-        let value = t4 * gradient * x;
-
-        SurfletComponents {
-            value,
-            t,
-            t2,
-            t4,
-            gradient,
-            x2,
-        }
-    }
-
-    let corner0 = surflet(gi0, near_distance);
-    let corner1 = surflet(gi1, far_distance);
-
-    // The maximum value of this noise is 8*(3/4)^4 = 2.53125
-    // A factor of 0.395 would scale to fit exactly within [-1,1], but
-    // to better match classic Perlin noise, we scale it down some more.
-    // ^-- Original note from Gustavson.
-
-    // Since the objective of this library is to be as close to [-1, 1] as possible, we'll use the
-    // 0.395 scale instead.
-    let noise = 0.395 * (corner0.value + corner1.value);
-
-    /* Compute derivative according to:
-     *  dnoise_dx = -8.0 * t20 * t0 * x0 * (gx0 * x0) + t40 * gx0;
-     *  dnoise_dx += -8.0 * t21 * t1 * x1 * (gx1 * x1) + t41 * gx1;
-     */
-    let mut dnoise_dx = corner0.t2 * corner0.t * corner0.gradient * corner0.x2;
-    dnoise_dx += corner1.t2 * corner1.t * corner1.gradient * corner1.x2;
-    dnoise_dx *= -8.0;
-    dnoise_dx += corner0.t4 * corner0.gradient + corner1.t4 * corner1.gradient;
-    dnoise_dx *= 0.395; /* Scale derivative to match the noise scaling */
-
-    (noise, dnoise_dx)
-}
 
 #[inline(always)]
 pub fn simplex_2d<NH>(point: [f64; 2], hasher: &NH) -> (f64, [f64; 2])
