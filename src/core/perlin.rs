@@ -50,7 +50,7 @@ where
 }
 
 #[inline(always)]
-pub fn perlin_2d<NH>(point: [f64; 2], hasher: &NH) -> f64
+pub fn perlin_2d<NH>(point: Vector2<f64>, hasher: &NH) -> f64
 where
     NH: NoiseHasher + ?Sized,
 {
@@ -60,8 +60,6 @@ where
     //
     // 1/(sqrt(N)/2), N=2 -> 2/sqrt(2)
     const SCALE_FACTOR: f64 = 2.0 / f64::consts::SQRT_2;
-
-    let point = Vector2::from(point);
 
     let corner = point.floor_to_isize();
     let distance = point - corner.numcast().unwrap();
@@ -101,7 +99,7 @@ where
 }
 
 #[inline(always)]
-pub fn perlin_3d<NH>(point: [f64; 3], hasher: &NH) -> f64
+pub fn perlin_3d<NH>(point: Vector3<f64>, hasher: &NH) -> f64
 where
     NH: NoiseHasher + ?Sized,
 {
@@ -115,7 +113,6 @@ where
     // 2/sqrt(3) = 1.1547005383792515290182975610039149112952035025402537520372046529
     const SCALE_FACTOR: f64 = 1.154_700_538_379_251_5;
 
-    let point = Vector3::from(point);
     let corner = point.floor_to_isize();
     let distance = point - corner.numcast().unwrap();
 
@@ -174,7 +171,7 @@ where
 }
 
 #[inline(always)]
-pub fn perlin_4d<NH>(point: [f64; 4], hasher: &NH) -> f64
+pub fn perlin_4d<NH>(point: Vector4<f64>, hasher: &NH) -> f64
 where
     NH: NoiseHasher + ?Sized,
 {
@@ -182,8 +179,6 @@ where
     // Need to invert this value and multiply the unscaled result by the value to get a scaled
     // range of (-1, 1).
     const SCALE_FACTOR: f64 = 1.0; // 1/(sqrt(N)/2), N=4 -> 2/sqrt(4) -> 2/2 -> 1
-
-    let point = Vector4::from(point);
 
     let corner = point.floor_to_isize();
     let distance = point - corner.numcast().unwrap();
