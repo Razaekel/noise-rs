@@ -178,34 +178,4 @@ fn main() {
         ReturnType::Distance,
         "worley_4d_chebyshev_distance.png",
     );
-    output_2d(
-        &quadratic,
-        ReturnType::Value,
-        "worley_2d_quadratic_value.png",
-    );
-    output_3d(
-        &quadratic,
-        ReturnType::Value,
-        "worley_3d_quadratic_value.png",
-    );
-    output_4d(
-        &quadratic,
-        ReturnType::Value,
-        "worley_4d_quadratic_value.png",
-    );
-    output_2d(
-        &quadratic,
-        ReturnType::Distance,
-        "worley_2d_quadratic_distance.png",
-    );
-    output_3d(
-        &quadratic,
-        ReturnType::Distance,
-        "worley_3d_quadratic_distance.png",
-    );
-    output_4d(
-        &quadratic,
-        ReturnType::Distance,
-        "worley_4d_quadratic_distance.png",
-    );
 }
