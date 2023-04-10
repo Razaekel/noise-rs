@@ -2,25 +2,22 @@
 
 extern crate noise;
 
-use noise::{core::perlin::perlin_3d, permutationtable::PermutationTable, utils::*};
+use noise::{Perlin, utils::*};
 
 mod utils;
 
 fn main() {
-    let hasher = PermutationTable::new(0);
-
-    PlaneMapBuilder::new_fn(perlin_3d, &hasher)
+    utils::write_example_to_file(&PlaneMapBuilder::new(Perlin::default())
         .set_size(1024, 1024)
         .set_x_bounds(-5.0, 5.0)
         .set_y_bounds(-5.0, 5.0)
-        .build()
-        .write_to_file("perlin_seed=0.png");
+        .build(),
+        "perlin_seed=0.png");
 
-    let hasher = PermutationTable::new(1);
-    PlaneMapBuilder::new_fn(perlin_3d, &hasher)
+    utils::write_example_to_file(&PlaneMapBuilder::new(Perlin::new(1))
         .set_size(1024, 1024)
         .set_x_bounds(-5.0, 5.0)
         .set_y_bounds(-5.0, 5.0)
-        .build()
-        .write_to_file("perlin_seed=1.png");
+        .build(),
+        "perlin_seed=1.png");
 }
