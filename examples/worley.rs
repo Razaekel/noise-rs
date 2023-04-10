@@ -4,6 +4,7 @@ use noise::{
     core::worley::{distance_functions::*, worley_2d, worley_3d, worley_4d, ReturnType},
     permutationtable::PermutationTable,
     utils::*,
+    Vector2, Vector3, Vector4,
 };
 
 mod utils;
@@ -13,11 +14,11 @@ where
     F: Fn(&[f64], &[f64]) -> f64,
 {
     let hasher = PermutationTable::new(0);
-    let closure = |point: [f64; 2], hasher: &PermutationTable| {
+    let closure = |point: Vector2<f64>, hasher: &PermutationTable| {
         worley_2d(hasher, distance_function, return_type, point)
     };
     utils::write_example_to_file(
-        &PlaneMapBuilder::new_fn(|point| closure(point, &hasher))
+        &PlaneMapBuilder::new_fn(|point| closure(point.into(), &hasher))
             .set_size(256, 256)
             .build(),
         name,
@@ -29,11 +30,11 @@ where
     F: Fn(&[f64], &[f64]) -> f64,
 {
     let hasher = PermutationTable::new(0);
-    let closure = |point: [f64; 3], hasher: &PermutationTable| {
+    let closure = |point: Vector3<f64>, hasher: &PermutationTable| {
         worley_3d(hasher, distance_function, return_type, point)
     };
     utils::write_example_to_file(
-        &PlaneMapBuilder::new_fn(|point| closure(point, &hasher))
+        &PlaneMapBuilder::new_fn(|point| closure(point.into(), &hasher))
             .set_size(256, 256)
             .build(),
         name,
@@ -45,11 +46,11 @@ where
     F: Fn(&[f64], &[f64]) -> f64,
 {
     let hasher = PermutationTable::new(0);
-    let closure = |point: [f64; 4], hasher: &PermutationTable| {
+    let closure = |point: Vector4<f64>, hasher: &PermutationTable| {
         worley_4d(hasher, distance_function, return_type, point)
     };
     utils::write_example_to_file(
-        &PlaneMapBuilder::new_fn(|point| closure(point, &hasher))
+        &PlaneMapBuilder::new_fn(|point| closure(point.into(), &hasher))
             .set_size(256, 256)
             .build(),
         name,

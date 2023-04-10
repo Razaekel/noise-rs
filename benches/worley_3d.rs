@@ -5,6 +5,7 @@ extern crate noise;
 use criterion::{black_box, Criterion};
 use noise::{
     core::worley::{distance_functions::*, ReturnType, worley_3d},
+    math::vectors::Vector3,
     permutationtable::PermutationTable,
 };
 
@@ -40,7 +41,7 @@ where
 {
     let hasher = PermutationTable::new(0);
     c.bench_function(format!("worley 3d {}", name).as_str(), |b| {
-        b.iter(|| worley_3d(&hasher, distance_function, return_type, black_box([42.0f64, 37.0, 26.0])))
+        b.iter(|| worley_3d(&hasher, distance_function, return_type, black_box(Vector3::new(42.0f64, 37.0, 26.0))))
     });
 }
 
@@ -53,7 +54,7 @@ where
         b.iter(|| {
             for y in 0i8..64 {
                 for x in 0i8..64 {
-                    black_box(worley_3d(&hasher, distance_function, return_type, [x as f64, y as f64, x as f64]));
+                    black_box(worley_3d(&hasher, distance_function, return_type, Vector3::new(x as f64, y as f64, x as f64)));
                 }
             }
         })
