@@ -314,28 +314,24 @@ pub fn simplex_4d<NH>(point: [f64; 4], hasher: &NH) -> (f64, [f64; 4])
 where
     NH: NoiseHasher + ?Sized,
 {
-    let f4: f64 = skew_factor(4);
-    let g4: f64 = unskew_factor(4);
+    let skew_factor: f64 = skew_factor(4);
+    let unskew_factor: f64 = unskew_factor(4);
 
     let point = Vector4::from(point);
 
     // Skew the (x,y,z,w) space to determine which cell of 24 simplices we're in
     // Factor for 4D skewing
-    let skew = point.sum() * f4;
+    let skew = point.sum() * skew_factor;
     let skewed = point + skew;
-    let cell: Vector4<isize> = skewed.numcast().unwrap();
-    let floor = cell.numcast::<f64>().unwrap();
+    let cell: Vector4<isize> = skewed.floor_to_isize();
+    let floor = cell.numcast().unwrap();
 
     // Factor for 4D unskewing
-    let unskew = floor.sum() * g4;
+    let unskew: f64 = floor.sum() * unskew_factor;
     // Unskew the cell origin back to (x,y,z,w) space
     let unskewed = floor - unskew;
-
-    // let distance_x = x - unskewed_x; // The x,y,z,w distances from the cell origin
-    // let distance_y = y - unskewed_y;
-    // let distance_z = z - unskewed_z;
-    // let distance_w = w - unskewed_w;
-    let distance = point - unskewed;
+    // The x,y,z,w distances from the cell origin
+    let offset1 = point - unskewed;
 
     // For the 4D case, the simplex is a 4D shape I won't even try to describe.
     // To find out which of the 24 possible simplices we're in, we need to
@@ -345,58 +341,41 @@ where
     // First, six pair-wise comparisons are performed between each possible pair
     // of the four coordinates, and then the results are used to add up binary
     // bits for an integer index into a precomputed lookup table, simplex[].
-    let c1 = (distance.x > distance.y) as usize * 32;
-    let c2 = (distance.x > distance.z) as usize * 16;
-    let c3 = (distance.y > distance.z) as usize * 8;
-    let c4 = (distance.x > distance.w) as usize * 4;
-    let c5 = (distance.y > distance.w) as usize * 2;
-    let c6 = (distance.z > distance.w) as usize;
+    let c1 = (offset1.x > offset1.y) as usize * 32;
+    let c2 = (offset1.x > offset1.z) as usize * 16;
+    let c3 = (offset1.y > offset1.z) as usize * 8;
+    let c4 = (offset1.x > offset1.w) as usize * 4;
+    let c5 = (offset1.y > offset1.w) as usize * 2;
+    let c6 = (offset1.z > offset1.w) as usize;
     let c = c1 | c2 | c3 | c4 | c5 | c6; // '|' is mostly faster than '+'
-
-    let [i1, j1, k1, l1]: [isize; 4]; // The integer offsets for the second simplex corner
-    let [i2, j2, k2, l2]: [isize; 4]; // The integer offsets for the third simplex corner
-    let [i3, j3, k3, l3]: [isize; 4]; // The integer offsets for the fourth simplex corner
 
     // simplex[c] is a 4-vector with the numbers 0, 1, 2 and 3 in some order.
     // Many values of c will never occur, since e.g. x>y>z>w makes x<z, y<w and x<w
     // impossible. Only the 24 indices which have non-zero entries make any sense.
     // We use a thresholding to set the coordinates in turn from the largest magnitude.
     // The number 3 in the "simplex" array is at the position of the largest coordinate.
-    j1 = (SIMPLEX[c][1] >= 1) as isize;
-    k1 = (SIMPLEX[c][2] >= 1) as isize;
-    l1 = (SIMPLEX[c][3] >= 1) as isize;
-    i1 = (SIMPLEX[c][0] >= 1) as isize;
+    let order1 = Vector4::from(SIMPLEX[c]).map(|n| if n >= 3 { 1 } else { 0 });
     // The number 2 in the "simplex" array is at the second largest coordinate.
-    i2 = (SIMPLEX[c][0] >= 1) as isize;
-    j2 = (SIMPLEX[c][1] >= 1) as isize;
-    k2 = (SIMPLEX[c][2] >= 1) as isize;
-    l2 = (SIMPLEX[c][3] >= 1) as isize;
+    let order2 = Vector4::from(SIMPLEX[c]).map(|n| if n >= 2 { 1 } else { 0 });
     // The number 1 in the "simplex" array is at the second smallest coordinate.
-    i3 = (SIMPLEX[c][0] >= 1) as isize;
-    j3 = (SIMPLEX[c][1] >= 1) as isize;
-    k3 = (SIMPLEX[c][2] >= 1) as isize;
-    l3 = (SIMPLEX[c][3] >= 1) as isize;
+    let order3 = Vector4::from(SIMPLEX[c]).map(|n| if n >= 1 { 1 } else { 0 });
     // The fifth corner has all coordinate offsets = 1, so no need to look that up.
 
-    let order1 = Vector4::new(i1, j1, k1, l1);
-    let order2 = Vector4::new(i2, j2, k2, l2);
-    let order3 = Vector4::new(i3, j3, k3, l3);
-
     // Offsets for second corner in (x,y,z,w) coords
-    let offset1 = distance - order1.numcast().unwrap() + g4;
+    let offset2 = offset1 - order1.numcast().unwrap() + unskew_factor;
     // Offsets for third corner in (x,y,z,w) coords
-    let offset2 = distance - order2.numcast().unwrap() + (2.0 * g4);
+    let offset3 = offset1 - order2.numcast().unwrap() + 2.0 * unskew_factor;
     // Offsets for fourth corner in (x,y,z,w) coords
-    let offset3 = distance - order3.numcast().unwrap() + (3.0 * g4);
+    let offset4 = offset1 - order3.numcast().unwrap() + 3.0 * unskew_factor;
     // Offsets for last corner in (x,y,z,w) coords
-    let offset4 = distance - Vector4::one() + (4.0 * g4);
+    let offset5 = offset1 - 1.0 + 4.0 * unskew_factor;
 
     // Calculate gradient indexes for each corner
     let gi0 = hasher.hash(&cell.into_array());
     let gi1 = hasher.hash(&(cell + order1).into_array());
     let gi2 = hasher.hash(&(cell + order2).into_array());
-    let gi3 = hasher.hash(&(cell + order2).into_array());
-    let gi4 = hasher.hash(&(cell + Vector4::one()).into_array());
+    let gi3 = hasher.hash(&(cell + order3).into_array());
+    let gi4 = hasher.hash(&(cell + 1).into_array());
 
     struct SurfletComponents {
         value: f64,
@@ -406,9 +385,24 @@ where
         gradient: Vector4<f64>,
     }
 
-    impl SurfletComponents {
-        fn zeros() -> Self {
-            Self {
+    fn surflet(gradient_index: usize, point: Vector4<f64>) -> SurfletComponents {
+        let t = 1.0 - point.magnitude_squared() * 2.0;
+
+        if t > 0.0 {
+            let gradient = gradient::grad4(gradient_index).into();
+            let t2 = t * t;
+            let t4 = t2 * t2;
+
+            SurfletComponents {
+                value: (2.0 * t2 + t4) * point.dot(gradient),
+                t,
+                t2,
+                t4,
+                gradient,
+            }
+        } else {
+            // No influence
+            SurfletComponents {
                 value: 0.0,
                 t: 0.0,
                 t2: 0.0,
@@ -418,37 +412,15 @@ where
         }
     }
 
-    fn surflet(gradient_index: usize, point: Vector4<f64>) -> SurfletComponents {
-        let t = 0.6 - point.magnitude_squared();
-
-        if t > 0.0 {
-            let gradient = Vector4::from(gradient::grad4(gradient_index));
-            let t2 = t * t;
-            let t4 = t2 * t2;
-
-            SurfletComponents {
-                value: t4 * gradient.dot(point),
-                t,
-                t2,
-                t4,
-                gradient,
-            }
-        } else {
-            // No influence
-            SurfletComponents::zeros()
-        }
-    }
-
     /* Calculate the contribution from the five corners */
-    let corner0 = surflet(gi0, distance);
-    let corner1 = surflet(gi1, offset1);
-    let corner2 = surflet(gi2, offset2);
-    let corner3 = surflet(gi3, offset3);
-    let corner4 = surflet(gi4, offset4);
+    let corner1 = surflet(gi0, offset1);
+    let corner2 = surflet(gi1, offset2);
+    let corner3 = surflet(gi2, offset3);
+    let corner4 = surflet(gi3, offset4);
+    let corner5 = surflet(gi4, offset5);
 
     // Sum up and scale the result to cover the range [-1,1]
-    let noise =
-        27.0 * (corner0.value + corner1.value + corner2.value + corner3.value + corner4.value); // TODO: The scale factor is preliminary!
+    let noise = corner1.value + corner2.value + corner3.value + corner4.value + corner5.value;
 
     /*  A straight, unoptimised calculation would be like:
      *    dnoise_dx = -8.0 * t20 * t0 * x0 * dot(gx0, gy0, gz0, gw0, x0, y0, z0, w0) + t40 * gx0;
@@ -472,31 +444,19 @@ where
      *    dnoise_dz += -8.0 * t24 * t4 * z4 * dot(gx4, gy4, gz4, gw4, x4, y4, z4, w4) + t44 * gz4;
      *    dnoise_dw += -8.0 * t24 * t4 * w4 * dot(gx4, gy4, gz4, gw4, x4, y4, z4, w4) + t44 * gw4;
      */
-    let temp0 = corner0.t2 * corner0.t * (corner0.gradient.dot(distance));
-    let mut dnoise = distance * temp0;
-
-    let temp1 = corner1.t2 * corner1.t * (corner1.gradient.dot(offset1));
-    dnoise += offset1 * temp1;
-
-    let temp2 = corner2.t2 * corner2.t * (corner2.gradient.dot(offset2));
-    dnoise += offset2 * temp2;
-
-    let temp3 = corner3.t2 * corner3.t * (corner3.gradient.dot(offset3));
-    dnoise += offset3 * temp3;
-
-    let temp4 = corner4.t2 * corner4.t * (corner4.gradient.dot(offset4));
-    dnoise += offset4 * temp4;
+    let mut dnoise = offset1 * corner1.t2 * corner1.t * corner1.gradient.dot(offset1);
+    dnoise += offset2 * corner2.t2 * corner2.t * corner2.gradient.dot(offset2);
+    dnoise += offset3 * corner3.t2 * corner3.t * corner3.gradient.dot(offset3);
+    dnoise += offset4 * corner4.t2 * corner4.t * corner4.gradient.dot(offset4);
+    dnoise += offset5 * corner5.t2 * corner5.t * corner5.gradient.dot(offset5);
 
     dnoise *= -8.0;
 
-    dnoise += corner0.gradient * corner0.t4
-        + corner1.gradient * corner1.t4
+    dnoise += corner1.gradient * corner1.t4
         + corner2.gradient * corner2.t4
         + corner3.gradient * corner3.t4
-        + corner4.gradient * corner4.t4;
-
-    // Scale derivative to match the noise scaling
-    dnoise *= 28.0;
+        + corner4.gradient * corner4.t4
+        + corner5.gradient * corner5.t4;
 
     (noise, dnoise.into())
 }
