@@ -174,32 +174,32 @@ pub fn simplex_3d<NH>(point: [f64; 3], hasher: &NH) -> (f64, [f64; 3])
 where
     NH: NoiseHasher + ?Sized,
 {
-    let f3: f64 = skew_factor(3);
-    let g3: f64 = unskew_factor(3);
+    let skew_factor: f64 = skew_factor(3);
+    let unskew_factor: f64 = unskew_factor(3);
 
     let point = Vector3::from(point);
 
     /* Skew the input space to determine which simplex cell we're in */
     // let skew = (x + y + z) * f3; /* Very nice and simple skew factor for 3D */
-    let skew = point.sum() * f3;
+    let skew = point.sum() * skew_factor;
     let skewed = point + skew;
     let cell = skewed.floor_to_isize();
-    let floor = cell.numcast::<f64>().unwrap();
+    let floor = cell.numcast().unwrap();
 
-    let unskew = floor.sum() * g3;
+    let unskew: f64 = floor.sum() * unskew_factor;
     /* Unskew the cell origin back to (x,y,z) space */
     let unskewed = floor - unskew;
     /* The x,y,z distances from the cell origin */
-    let distance = point - unskewed;
+    let offset1 = point - unskewed;
 
     /* For the 3D case, the simplex shape is a slightly irregular tetrahedron.
      * Determine which simplex we are in. */
     /* TODO: This code would benefit from a backport from the GLSL version! */
-    let (order1, order2): (Vector3<isize>, Vector3<isize>) = if distance.x >= distance.y {
-        if distance.y >= distance.z {
+    let (order1, order2): (Vector3<isize>, Vector3<isize>) = if offset1.x >= offset1.y {
+        if offset1.y >= offset1.z {
             /* X Y Z order */
             (Vector3::new(1, 0, 0), Vector3::new(1, 1, 0))
-        } else if distance.x >= distance.z {
+        } else if offset1.x >= offset1.z {
             /* X Z Y order */
             (Vector3::new(1, 0, 0), Vector3::new(1, 0, 1))
         } else {
@@ -208,10 +208,10 @@ where
         }
     } else {
         // x0<y0
-        if distance.y < distance.z {
+        if offset1.y < offset1.z {
             /* Z Y X order */
             (Vector3::new(0, 0, 1), Vector3::new(0, 1, 1))
-        } else if distance.x < distance.z {
+        } else if offset1.x < offset1.z {
             /* Y Z X order */
             (Vector3::new(0, 1, 0), Vector3::new(0, 1, 1))
         } else {
@@ -225,15 +225,15 @@ where
      * a step of (0,0,1) in (i,j,k) means a step of (-c,-c,1-c) in (x,y,z), where
      * c = 1/6.   */
 
-    let offset1 = distance - order1.numcast().unwrap() + g3;
-    let offset2 = distance - order2.numcast().unwrap() + (2.0 * g3);
-    let offset3 = distance - Vector3::one() + (3.0 * g3);
+    let offset2 = offset1 - order1.numcast().unwrap() + unskew_factor;
+    let offset3 = offset1 - order2.numcast().unwrap() + 2.0 * unskew_factor;
+    let offset4 = offset1 - Vector3::one() + 3.0 * unskew_factor;
 
     // Calculate gradient indexes for each corner
     let gi0 = hasher.hash(&cell.into_array());
     let gi1 = hasher.hash(&(cell + order1).into_array());
     let gi2 = hasher.hash(&(cell + order2).into_array());
-    let gi3 = hasher.hash(&(cell + Vector3::one()).into_array());
+    let gi3 = hasher.hash(&(cell + 1).into_array());
 
     struct SurfletComponents {
         value: f64,
@@ -243,9 +243,24 @@ where
         gradient: Vector3<f64>,
     }
 
-    impl SurfletComponents {
-        fn zeros() -> Self {
-            Self {
+    fn surflet(gradient_index: usize, point: Vector3<f64>) -> SurfletComponents {
+        let t = 1.0 - point.magnitude_squared() * 2.0;
+
+        if t > 0.0 {
+            let gradient = gradient::grad3(gradient_index).into();
+            let t2 = t * t;
+            let t4 = t2 * t2;
+
+            SurfletComponents {
+                value: (2.0 * t2 + t4) * point.dot(gradient),
+                t,
+                t2,
+                t4,
+                gradient,
+            }
+        } else {
+            // No influence
+            SurfletComponents {
                 value: 0.0,
                 t: 0.0,
                 t2: 0.0,
@@ -255,36 +270,15 @@ where
         }
     }
 
-    fn surflet(gradient_index: usize, point: Vector3<f64>) -> SurfletComponents {
-        let t = 0.5 - point.magnitude_squared();
-
-        if t > 0.0 {
-            let gradient = Vector3::from(gradient::grad3(gradient_index));
-            let t2 = t * t;
-            let t4 = t2 * t2;
-
-            SurfletComponents {
-                value: t4 * gradient.dot(point),
-                t,
-                t2,
-                t4,
-                gradient,
-            }
-        } else {
-            // No influence
-            SurfletComponents::zeros()
-        }
-    }
-
     /* Calculate the contribution from the four corners */
-    let corner0 = surflet(gi0, distance);
-    let corner1 = surflet(gi1, offset1);
-    let corner2 = surflet(gi2, offset2);
-    let corner3 = surflet(gi3, offset3);
+    let corner0 = surflet(gi0, offset1);
+    let corner1 = surflet(gi1, offset2);
+    let corner2 = surflet(gi2, offset3);
+    let corner3 = surflet(gi3, offset4);
 
     /*  Add contributions from each corner to get the final noise value.
      * The result is scaled to return values in the range [-1,1] */
-    let noise = 28.0 * (corner0.value + corner1.value + corner2.value + corner3.value);
+    let noise = corner0.value + corner1.value + corner2.value + corner3.value;
 
     /*  A straight, unoptimised calculation would be like:
      *    dnoise_dx = -8.0 * t20 * t0 * x0 * dot(gx0, gy0, gz0, x0, y0, z0) + t40 * gx0;
@@ -300,17 +294,10 @@ where
      *    dnoise_dy += -8.0 * t23 * t3 * y3 * dot(gx3, gy3, gz3, x3, y3, z3) + t43 * gy3;
      *    dnoise_dz += -8.0 * t23 * t3 * z3 * dot(gx3, gy3, gz3, x3, y3, z3) + t43 * gz3;
      */
-    let temp0 = corner0.t2 * corner0.t * corner0.gradient.dot(distance);
-    let mut dnoise = distance * temp0;
-
-    let temp1 = corner1.t2 * corner1.t * corner1.gradient.dot(offset1);
-    dnoise += offset1 * temp1;
-
-    let temp2 = corner2.t2 * corner2.t * corner2.gradient.dot(offset2);
-    dnoise += offset2 * temp2;
-
-    let temp3 = corner3.t2 * corner3.t * corner3.gradient.dot(offset3);
-    dnoise += offset3 * temp3;
+    let mut dnoise = offset1 * corner0.t2 * corner0.t * corner0.gradient.dot(offset1);
+    dnoise += offset2 * corner1.t2 * corner1.t * corner1.gradient.dot(offset2);
+    dnoise += offset3 * corner2.t2 * corner2.t * corner2.gradient.dot(offset3);
+    dnoise += offset4 * corner3.t2 * corner3.t * corner3.gradient.dot(offset4);
 
     dnoise *= -8.0;
 
@@ -318,9 +305,6 @@ where
         + corner1.gradient * corner1.t4
         + corner2.gradient * corner2.t4
         + corner3.gradient * corner3.t4;
-
-    /* Scale derivative to match the noise scaling */
-    dnoise *= 28.0;
 
     (noise, dnoise.into())
 }
