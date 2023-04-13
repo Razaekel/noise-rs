@@ -57,14 +57,12 @@ where
 ///  */
 
 #[inline(always)]
-pub fn simplex_2d<NH>(point: [f64; 2], hasher: &NH) -> (f64, [f64; 2])
+pub fn simplex_2d<NH>(point: Vector2<f64>, hasher: &NH) -> (f64, [f64; 2])
 where
     NH: NoiseHasher + ?Sized,
 {
     let skew_factor: f64 = skew_factor(2);
     let unskew_factor: f64 = unskew_factor(2);
-
-    let point = Vector2::from(point);
 
     // Skew the input space to determine which simplex cell we're in
     let skew = point.sum() * skew_factor;
@@ -170,14 +168,12 @@ where
 }
 
 #[inline(always)]
-pub fn simplex_3d<NH>(point: [f64; 3], hasher: &NH) -> (f64, [f64; 3])
+pub fn simplex_3d<NH>(point: Vector3<f64>, hasher: &NH) -> (f64, [f64; 3])
 where
     NH: NoiseHasher + ?Sized,
 {
     let skew_factor: f64 = skew_factor(3);
     let unskew_factor: f64 = unskew_factor(3);
-
-    let point = Vector3::from(point);
 
     /* Skew the input space to determine which simplex cell we're in */
     // let skew = (x + y + z) * f3; /* Very nice and simple skew factor for 3D */
@@ -310,14 +306,12 @@ where
 }
 
 #[inline(always)]
-pub fn simplex_4d<NH>(point: [f64; 4], hasher: &NH) -> (f64, [f64; 4])
+pub fn simplex_4d<NH>(point: Vector4<f64>, hasher: &NH) -> (f64, [f64; 4])
 where
     NH: NoiseHasher + ?Sized,
 {
     let skew_factor: f64 = skew_factor(4);
     let unskew_factor: f64 = unskew_factor(4);
-
-    let point = Vector4::from(point);
 
     // Skew the (x,y,z,w) space to determine which cell of 24 simplices we're in
     // Factor for 4D skewing
