@@ -213,3 +213,7 @@ required-features = ["images"]
 [[example]]
 name = "simplex"
 required-features = ["images"]
+
+[[example]]
+name = "spheres"
+required-features = ["images"]

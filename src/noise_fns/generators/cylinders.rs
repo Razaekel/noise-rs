@@ -1,4 +1,4 @@
-use crate::noise_fns::NoiseFn;
+use crate::{core::spheres::*, math::vectors::Vector2, noise_fns::NoiseFn};
 
 /// Noise function that outputs concentric cylinders.
 ///
@@ -31,20 +31,20 @@ impl Default for Cylinders {
     }
 }
 
-impl<const N: usize> NoiseFn<f64, N> for Cylinders {
-    fn get(&self, point: [f64; N]) -> f64 {
-        // Scale the inputs by the frequency.
-        let x = point[0] * self.frequency;
-        let y = point[1] * self.frequency;
+impl NoiseFn<f64, 2> for Cylinders {
+    fn get(&self, point: [f64; 2]) -> f64 {
+        spheres_2d(point.into(), self.frequency)
+    }
+}
 
-        // Calculate the distance of the point from the origin.
-        let dist_from_center = (x.powi(2) + y.powi(2)).sqrt();
+impl NoiseFn<f64, 3> for Cylinders {
+    fn get(&self, point: [f64; 3]) -> f64 {
+        spheres_2d(Vector2::new(point[0], point[1]), self.frequency)
+    }
+}
 
-        let dist_from_smaller_sphere = dist_from_center - dist_from_center.floor();
-        let dist_from_larger_sphere = 1.0 - dist_from_smaller_sphere;
-        let nearest_dist = dist_from_smaller_sphere.min(dist_from_larger_sphere);
-
-        // Shift the result to be in the -1.0 to +1.0 range.
-        1.0 - (nearest_dist * 4.0)
+impl NoiseFn<f64, 4> for Cylinders {
+    fn get(&self, point: [f64; 4]) -> f64 {
+        spheres_2d(Vector2::new(point[0], point[1]), self.frequency)
     }
 }
