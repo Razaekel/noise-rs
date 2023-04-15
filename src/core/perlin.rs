@@ -65,24 +65,26 @@ where
     let distance = point - corner.numcast().unwrap();
 
     macro_rules! call_gradient(
-        ($offset:expr) => {
+        ($x:expr, $y:expr) => {
             {
-                let offset = distance - $offset.numcast().unwrap();
-                match hasher.hash(&(corner + $offset).into_array()) & 0b11 {
-                    0 =>  offset.x + offset.y, // ( 1,  1)
-                    1 => -offset.x + offset.y, // (-1,  1)
-                    2 =>  offset.x - offset.y, // ( 1, -1)
-                    3 => -offset.x - offset.y, // (-1, -1)
+                let offset = Vector2::new($x, $y);
+                let point = distance - offset.numcast().unwrap();
+
+                match hasher.hash(&(corner + offset).into_array()) & 0b11 {
+                    0 =>  point.x + point.y, // ( 1,  1)
+                    1 => -point.x + point.y, // (-1,  1)
+                    2 =>  point.x - point.y, // ( 1, -1)
+                    3 => -point.x - point.y, // (-1, -1)
                     _ => unreachable!(),
                 }
             }
         }
     );
 
-    let g00 = call_gradient!(Vector2::new(0, 0));
-    let g10 = call_gradient!(Vector2::new(1, 0));
-    let g01 = call_gradient!(Vector2::new(0, 1));
-    let g11 = call_gradient!(Vector2::new(1, 1));
+    let g00 = call_gradient!(0, 0);
+    let g10 = call_gradient!(1, 0);
+    let g01 = call_gradient!(0, 1);
+    let g11 = call_gradient!(1, 1);
 
     let curve = distance.map_quintic();
 
@@ -117,36 +119,38 @@ where
     let distance = point - corner.numcast().unwrap();
 
     macro_rules! call_gradient(
-        ($offset:expr) => {
+        ($x:expr, $y:expr, $z:expr) => {
             {
-                let offset = distance - $offset.numcast().unwrap();
-                match hasher.hash(&(corner + $offset).into_array()) & 0b1111 {
-                    0  | 12 =>  offset.x + offset.y, // ( 1,  1,  0)
-                    1  | 13 => -offset.x + offset.y, // (-1,  1,  0)
-                    2       =>  offset.x - offset.y, // ( 1, -1,  0)
-                    3       => -offset.x - offset.y, // (-1, -1,  0)
-                    4       =>  offset.x + offset.z, // ( 1,  0,  1)
-                    5       => -offset.x + offset.z, // (-1,  0,  1)
-                    6       =>  offset.x - offset.z, // ( 1,  0, -1)
-                    7       => -offset.x - offset.z, // (-1,  0, -1)
-                    8       =>  offset.y + offset.z, // ( 0,  1,  1)
-                    9  | 14 => -offset.y + offset.z, // ( 0, -1,  1)
-                    10      =>  offset.y - offset.z, // ( 0,  1, -1)
-                    11 | 15 => -offset.y - offset.z, // ( 0, -1, -1)
+                let offset = Vector3::new($x, $y, $z);
+                let point = distance - offset.numcast().unwrap();
+
+                match hasher.hash(&(corner + offset).into_array()) & 0b1111 {
+                    0  | 12 =>  point.x + point.y, // ( 1,  1,  0)
+                    1  | 13 => -point.x + point.y, // (-1,  1,  0)
+                    2       =>  point.x - point.y, // ( 1, -1,  0)
+                    3       => -point.x - point.y, // (-1, -1,  0)
+                    4       =>  point.x + point.z, // ( 1,  0,  1)
+                    5       => -point.x + point.z, // (-1,  0,  1)
+                    6       =>  point.x - point.z, // ( 1,  0, -1)
+                    7       => -point.x - point.z, // (-1,  0, -1)
+                    8       =>  point.y + point.z, // ( 0,  1,  1)
+                    9  | 14 => -point.y + point.z, // ( 0, -1,  1)
+                    10      =>  point.y - point.z, // ( 0,  1, -1)
+                    11 | 15 => -point.y - point.z, // ( 0, -1, -1)
                     _ => unreachable!(),
                 }
             }
         }
     );
 
-    let g000 = call_gradient!(Vector3::new(0, 0, 0));
-    let g100 = call_gradient!(Vector3::new(1, 0, 0));
-    let g010 = call_gradient!(Vector3::new(0, 1, 0));
-    let g110 = call_gradient!(Vector3::new(1, 1, 0));
-    let g001 = call_gradient!(Vector3::new(0, 0, 1));
-    let g101 = call_gradient!(Vector3::new(1, 0, 1));
-    let g011 = call_gradient!(Vector3::new(0, 1, 1));
-    let g111 = call_gradient!(Vector3::new(1, 1, 1));
+    let g000 = call_gradient!(0, 0, 0);
+    let g100 = call_gradient!(1, 0, 0);
+    let g010 = call_gradient!(0, 1, 0);
+    let g110 = call_gradient!(1, 1, 0);
+    let g001 = call_gradient!(0, 0, 1);
+    let g101 = call_gradient!(1, 0, 1);
+    let g011 = call_gradient!(0, 1, 1);
+    let g111 = call_gradient!(1, 1, 1);
 
     let curve = distance.map_quintic();
 
@@ -184,60 +188,62 @@ where
     let distance = point - corner.numcast().unwrap();
 
     macro_rules! call_gradient(
-        ($offset:expr) => {
+        ($x:expr, $y:expr, $z:expr, $w:expr) => {
             {
-                let offset = distance - $offset.numcast().unwrap();
-                match hasher.hash(&(corner + $offset).into_array()) & 0b11111 {
-                    0  | 28 =>  offset.x + offset.y + offset.z, // ( 1,  1,  1,  0)
-                    1       => -offset.x + offset.y + offset.z, // (-1,  1,  1,  0)
-                    2       =>  offset.x - offset.y + offset.z, // ( 1, -1,  1,  0)
-                    3       =>  offset.x + offset.y - offset.z, // ( 1,  1, -1,  0)
-                    4       => -offset.x + offset.y - offset.z, // (-1,  1, -1,  0)
-                    5       =>  offset.x - offset.y - offset.z, // ( 1, -1, -1,  0)
-                    6       =>  offset.x - offset.y - offset.z, // (-1, -1, -1,  0)
-                    7  | 29 =>  offset.x + offset.y + offset.w, // ( 1,  1,  0,  1)
-                    8       => -offset.x + offset.y + offset.w, // (-1,  1,  0,  1)
-                    9       =>  offset.x - offset.y + offset.w, // ( 1, -1,  0,  1)
-                    10      =>  offset.x + offset.y - offset.w, // ( 1,  1,  0, -1)
-                    11      =>  offset.x + offset.y - offset.w, // (-1,  1,  0, -1)
-                    12      =>  offset.x + offset.y - offset.w, // ( 1, -1,  0, -1)
-                    13      => -offset.x - offset.y - offset.w, // (-1, -1,  0, -1)
-                    14 | 30 =>  offset.x + offset.z + offset.w, // ( 1,  0,  1,  1)
-                    15      => -offset.x + offset.z + offset.w, // (-1,  0,  1,  1)
-                    16      =>  offset.x - offset.z + offset.w, // ( 1,  0, -1,  1)
-                    17      =>  offset.x + offset.z - offset.w, // ( 1,  0,  1, -1)
-                    18      =>  offset.x + offset.z - offset.w, // (-1,  0,  1, -1)
-                    19      =>  offset.x + offset.z - offset.w, // ( 1,  0, -1, -1)
-                    20      => -offset.x - offset.z - offset.w, // (-1,  0, -1, -1)
-                    21 | 31 =>  offset.y + offset.z + offset.w, // ( 0,  1,  1,  1)
-                    22      => -offset.y + offset.z + offset.w, // ( 0, -1,  1,  1)
-                    23      =>  offset.y - offset.z + offset.w, // ( 0,  1, -1,  1)
-                    24      =>  offset.y - offset.z - offset.w, // ( 0,  1,  1, -1)
-                    25      => -offset.y - offset.z - offset.w, // ( 0, -1,  1, -1)
-                    26      =>  offset.x + offset.y + offset.z - offset.w, // ( 0,  1, -1, -1)
-                    27      => -offset.x + offset.y + offset.z - offset.w, // ( 0, -1, -1, -1)
+                let offset = Vector4::new($x, $y, $z, $w);
+                let point = distance - offset.numcast().unwrap();
+
+                match hasher.hash(&(corner + offset).into_array()) & 0b11111 {
+                    0  | 28 =>  point.x + point.y + point.z, // ( 1,  1,  1,  0)
+                    1       => -point.x + point.y + point.z, // (-1,  1,  1,  0)
+                    2       =>  point.x - point.y + point.z, // ( 1, -1,  1,  0)
+                    3       =>  point.x + point.y - point.z, // ( 1,  1, -1,  0)
+                    4       => -point.x + point.y - point.z, // (-1,  1, -1,  0)
+                    5       =>  point.x - point.y - point.z, // ( 1, -1, -1,  0)
+                    6       =>  point.x - point.y - point.z, // (-1, -1, -1,  0)
+                    7  | 29 =>  point.x + point.y + point.w, // ( 1,  1,  0,  1)
+                    8       => -point.x + point.y + point.w, // (-1,  1,  0,  1)
+                    9       =>  point.x - point.y + point.w, // ( 1, -1,  0,  1)
+                    10      =>  point.x + point.y - point.w, // ( 1,  1,  0, -1)
+                    11      =>  point.x + point.y - point.w, // (-1,  1,  0, -1)
+                    12      =>  point.x + point.y - point.w, // ( 1, -1,  0, -1)
+                    13      => -point.x - point.y - point.w, // (-1, -1,  0, -1)
+                    14 | 30 =>  point.x + point.z + point.w, // ( 1,  0,  1,  1)
+                    15      => -point.x + point.z + point.w, // (-1,  0,  1,  1)
+                    16      =>  point.x - point.z + point.w, // ( 1,  0, -1,  1)
+                    17      =>  point.x + point.z - point.w, // ( 1,  0,  1, -1)
+                    18      =>  point.x + point.z - point.w, // (-1,  0,  1, -1)
+                    19      =>  point.x + point.z - point.w, // ( 1,  0, -1, -1)
+                    20      => -point.x - point.z - point.w, // (-1,  0, -1, -1)
+                    21 | 31 =>  point.y + point.z + point.w, // ( 0,  1,  1,  1)
+                    22      => -point.y + point.z + point.w, // ( 0, -1,  1,  1)
+                    23      =>  point.y - point.z + point.w, // ( 0,  1, -1,  1)
+                    24      =>  point.y - point.z - point.w, // ( 0,  1,  1, -1)
+                    25      => -point.y - point.z - point.w, // ( 0, -1,  1, -1)
+                    26      =>  point.y - point.z - point.w, // ( 0,  1, -1, -1)
+                    27      => -point.y - point.z - point.w, // ( 0, -1, -1, -1)
                     _ => unreachable!(),
                 }
             }
         }
     );
 
-    let g0000 = call_gradient!(Vector4::new(0, 0, 0, 0));
-    let g1000 = call_gradient!(Vector4::new(1, 0, 0, 0));
-    let g0100 = call_gradient!(Vector4::new(0, 1, 0, 0));
-    let g1100 = call_gradient!(Vector4::new(1, 1, 0, 0));
-    let g0010 = call_gradient!(Vector4::new(0, 0, 1, 0));
-    let g1010 = call_gradient!(Vector4::new(1, 0, 1, 0));
-    let g0110 = call_gradient!(Vector4::new(0, 1, 1, 0));
-    let g1110 = call_gradient!(Vector4::new(1, 1, 1, 0));
-    let g0001 = call_gradient!(Vector4::new(0, 0, 0, 1));
-    let g1001 = call_gradient!(Vector4::new(1, 0, 0, 1));
-    let g0101 = call_gradient!(Vector4::new(0, 1, 0, 1));
-    let g1101 = call_gradient!(Vector4::new(1, 1, 0, 1));
-    let g0011 = call_gradient!(Vector4::new(0, 0, 1, 1));
-    let g1011 = call_gradient!(Vector4::new(1, 0, 1, 1));
-    let g0111 = call_gradient!(Vector4::new(0, 1, 1, 1));
-    let g1111 = call_gradient!(Vector4::new(1, 1, 1, 1));
+    let g0000 = call_gradient!(0, 0, 0, 0);
+    let g1000 = call_gradient!(1, 0, 0, 0);
+    let g0100 = call_gradient!(0, 1, 0, 0);
+    let g1100 = call_gradient!(1, 1, 0, 0);
+    let g0010 = call_gradient!(0, 0, 1, 0);
+    let g1010 = call_gradient!(1, 0, 1, 0);
+    let g0110 = call_gradient!(0, 1, 1, 0);
+    let g1110 = call_gradient!(1, 1, 1, 0);
+    let g0001 = call_gradient!(0, 0, 0, 1);
+    let g1001 = call_gradient!(1, 0, 0, 1);
+    let g0101 = call_gradient!(0, 1, 0, 1);
+    let g1101 = call_gradient!(1, 1, 0, 1);
+    let g0011 = call_gradient!(0, 0, 1, 1);
+    let g1011 = call_gradient!(1, 0, 1, 1);
+    let g0111 = call_gradient!(0, 1, 1, 1);
+    let g1111 = call_gradient!(1, 1, 1, 1);
 
     let curve = distance.map_quintic();
 
