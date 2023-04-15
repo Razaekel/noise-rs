@@ -2,22 +2,41 @@
 
 extern crate noise;
 
-use noise::{utils::*, OpenSimplex, Seedable};
+use noise::{
+    core::open_simplex::{open_simplex_2d, open_simplex_3d, open_simplex_4d},
+    permutationtable::PermutationTable,
+    utils::*,
+};
 
 mod utils;
 
 fn main() {
-    let open_simplex = OpenSimplex::default();
+    let hasher = PermutationTable::new(0);
 
     utils::write_example_to_file(
-        &PlaneMapBuilder::new(open_simplex).build(),
-        "open_simplex.png",
+        &PlaneMapBuilder::new_fn(|point| open_simplex_2d(point, &hasher))
+            .set_size(1024, 1024)
+            .set_x_bounds(-5.0, 5.0)
+            .set_y_bounds(-5.0, 5.0)
+            .build(),
+        "open_simplex 2d.png",
     );
 
-    let open_simplex = open_simplex.set_seed(1);
+    utils::write_example_to_file(
+        &PlaneMapBuilder::new_fn(|point| open_simplex_3d(point, &hasher))
+            .set_size(1024, 1024)
+            .set_x_bounds(-5.0, 5.0)
+            .set_y_bounds(-5.0, 5.0)
+            .build(),
+        "open_simplex 3d.png",
+    );
 
     utils::write_example_to_file(
-        &PlaneMapBuilder::new(open_simplex).build(),
-        "open_simplex_seed=1.png",
+        &PlaneMapBuilder::new_fn(|point| open_simplex_4d(point, &hasher))
+            .set_size(1024, 1024)
+            .set_x_bounds(-5.0, 5.0)
+            .set_y_bounds(-5.0, 5.0)
+            .build(),
+        "open_simplex 4d.png",
     );
 }
