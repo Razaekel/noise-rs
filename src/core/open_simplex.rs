@@ -4,7 +4,8 @@ use crate::{
     permutationtable::NoiseHasher,
 };
 
-pub fn open_simplex_2d<NH>(point: [f64; 2], hasher: &NH) -> f64
+#[inline(always)]
+pub fn open_simplex_2d<NH>(point: Vector2<f64>, hasher: &NH) -> f64
 where
     NH: NoiseHasher + ?Sized,
 {
@@ -22,8 +23,6 @@ where
             0.0
         }
     }
-
-    let point = Vector2::from(point);
 
     // Place input coordinates onto grid.
     let stretch_offset = point.sum() * STRETCH_CONSTANT;
@@ -46,12 +45,12 @@ where
     let rel_pos = point - origin;
 
     macro_rules! contribute (
-        ($x:expr, $y:expr) => {
+        ($x:literal, $y:literal) => {
             {
                 let offset = Vector2::new($x, $y);
                 let vertex = stretched_floor + offset;
                 let index = hasher.hash(&vertex.numcast().unwrap().into_array());
-                let dpos = rel_pos - (Vector2::broadcast(SQUISH_CONSTANT) * offset.sum()) - offset;
+                let dpos = rel_pos - (SQUISH_CONSTANT * offset.sum()) - offset;
 
                 surflet(index, dpos)
             }
@@ -85,7 +84,8 @@ where
     value * NORM_CONSTANT
 }
 
-pub fn open_simplex_3d<NH>(point: [f64; 3], hasher: &NH) -> f64
+#[inline(always)]
+pub fn open_simplex_3d<NH>(point: Vector3<f64>, hasher: &NH) -> f64
 where
     NH: NoiseHasher,
 {
@@ -103,8 +103,6 @@ where
             0.0
         }
     }
-
-    let point = Vector3::from(point);
 
     // Place input coordinates on simplectic honeycomb.
     let stretch_offset = point.sum() * STRETCH_CONSTANT;
@@ -129,12 +127,12 @@ where
     let rel_pos = point - origin;
 
     macro_rules! contribute (
-        ($x:expr, $y:expr, $z:expr) => {
+        ($x:literal, $y:literal, $z:literal) => {
             {
                 let offset = Vector3::new($x, $y, $z);
                 let vertex = stretched_floor + offset;
                 let index = hasher.hash(&vertex.numcast().unwrap().into_array());
-                let dpos = rel_pos - (Vector3::broadcast(SQUISH_CONSTANT) * offset.sum()) - offset;
+                let dpos = rel_pos - (SQUISH_CONSTANT * offset.sum()) - offset;
 
                 surflet(index, dpos)
             }
@@ -196,7 +194,8 @@ where
     value * NORM_CONSTANT
 }
 
-pub fn open_simplex_4d<NH>(point: [f64; 4], hasher: &NH) -> f64
+#[inline(always)]
+pub fn open_simplex_4d<NH>(point: Vector4<f64>, hasher: &NH) -> f64
 where
     NH: NoiseHasher + ?Sized,
 {
@@ -215,8 +214,6 @@ where
             0.0
         }
     }
-
-    let point = Vector4::from(point);
 
     // Place input coordinates on simplectic honeycomb.
     let stretch_offset = point.sum() * STRETCH_CONSTANT;
@@ -243,12 +240,12 @@ where
     let rel_pos = point - origin;
 
     macro_rules! contribute (
-        ($x:expr, $y:expr, $z:expr, $w:expr) => {
+        ($x:literal, $y:literal, $z:literal, $w:literal) => {
             {
                 let offset = Vector4::new($x, $y, $z, $w);
                 let vertex = stretched_floor + offset;
                 let index = hasher.hash(&vertex.numcast().unwrap().into_array());
-                let dpos = rel_pos - (Vector4::broadcast(SQUISH_CONSTANT) * offset.sum()) - offset;
+                let dpos = rel_pos - (SQUISH_CONSTANT * offset.sum()) - offset;
 
                 surflet(index, dpos)
             }

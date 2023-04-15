@@ -14,7 +14,7 @@ fn main() {
     let hasher = PermutationTable::new(0);
 
     utils::write_example_to_file(
-        &PlaneMapBuilder::new_fn(|point| open_simplex_2d(point, &hasher))
+        &PlaneMapBuilder::new_fn(|point| open_simplex_2d(point.into(), &hasher))
             .set_size(1024, 1024)
             .set_x_bounds(-5.0, 5.0)
             .set_y_bounds(-5.0, 5.0)
@@ -23,7 +23,7 @@ fn main() {
     );
 
     utils::write_example_to_file(
-        &PlaneMapBuilder::new_fn(|point| open_simplex_3d(point, &hasher))
+        &PlaneMapBuilder::new_fn(|point| open_simplex_3d(point.into(), &hasher))
             .set_size(1024, 1024)
             .set_x_bounds(-5.0, 5.0)
             .set_y_bounds(-5.0, 5.0)
@@ -32,7 +32,7 @@ fn main() {
     );
 
     utils::write_example_to_file(
-        &PlaneMapBuilder::new_fn(|point| open_simplex_4d(point, &hasher))
+        &PlaneMapBuilder::new_fn(|point| open_simplex_4d(point.into(), &hasher))
             .set_size(1024, 1024)
             .set_x_bounds(-5.0, 5.0)
             .set_y_bounds(-5.0, 5.0)
