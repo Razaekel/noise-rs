@@ -5,6 +5,7 @@ extern crate noise;
 use criterion::{black_box, Criterion};
 use noise::{
     core::open_simplex::{open_simplex_2d, open_simplex_3d, open_simplex_4d},
+    math::vectors::{Vector2, Vector3, Vector4},
     permutationtable::PermutationTable,
 };
 
@@ -75,7 +76,10 @@ fn bench_open_simplex4_64x64(c: &mut Criterion) {
         b.iter(|| {
             for y in 0i8..64 {
                 for x in 0i8..64 {
-                    black_box(open_simplex_4d([x as f64, y as f64, x as f64, y as f64], &hasher));
+                    black_box(open_simplex_4d(
+                        [x as f64, y as f64, x as f64, y as f64],
+                        &hasher,
+                    ));
                 }
             }
         })
