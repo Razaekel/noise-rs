@@ -39,6 +39,10 @@ name = "perlin"
 harness = false
 
 [[bench]]
+name = "perlin_surflet"
+harness = false
+
+[[bench]]
 name = "simplex"
 harness = false
 

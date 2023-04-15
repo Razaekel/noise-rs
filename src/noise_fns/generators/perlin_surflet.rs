@@ -54,20 +54,20 @@ impl Seedable for PerlinSurflet {
 /// 2-dimensional perlin noise
 impl NoiseFn<f64, 2> for PerlinSurflet {
     fn get(&self, point: [f64; 2]) -> f64 {
-        perlin_surflet_2d(point, &self.perm_table)
+        perlin_surflet_2d(point.into(), &self.perm_table)
     }
 }
 
 /// 3-dimensional perlin noise
 impl NoiseFn<f64, 3> for PerlinSurflet {
     fn get(&self, point: [f64; 3]) -> f64 {
-        perlin_surflet_3d(point, &self.perm_table)
+        perlin_surflet_3d(point.into(), &self.perm_table)
     }
 }
 
 /// 4-dimensional perlin noise
 impl NoiseFn<f64, 4> for PerlinSurflet {
     fn get(&self, point: [f64; 4]) -> f64 {
-        perlin_surflet_4d(point, &self.perm_table)
+        perlin_surflet_4d(point.into(), &self.perm_table)
     }
 }
