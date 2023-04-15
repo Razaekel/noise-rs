@@ -5,7 +5,7 @@ use crate::{
 };
 
 #[inline(always)]
-pub fn perlin_surflet_2d<NH>(point: [f64; 2], hasher: &NH) -> f64
+pub fn perlin_surflet_2d<NH>(point: Vector2<f64>, hasher: &NH) -> f64
 where
     NH: NoiseHasher + ?Sized,
 {
@@ -21,8 +21,6 @@ where
             0.0
         }
     }
-
-    let point = Vector2::from(point);
 
     let corner = point.floor_to_isize();
     let floored = corner.numcast().unwrap();
@@ -47,7 +45,8 @@ where
     ((f00 + f10 + f01 + f11) * SCALE_FACTOR).clamp(-1.0, 1.0)
 }
 
-pub fn perlin_surflet_3d<NH>(point: [f64; 3], hasher: &NH) -> f64
+#[inline(always)]
+pub fn perlin_surflet_3d<NH>(point: Vector3<f64>, hasher: &NH) -> f64
 where
     NH: NoiseHasher + ?Sized,
 {
@@ -64,8 +63,6 @@ where
             0.0
         }
     }
-
-    let point = Vector3::from(point);
 
     let corner = point.floor_to_isize();
     let floored = corner.numcast().unwrap();
@@ -94,7 +91,8 @@ where
     ((f000 + f100 + f010 + f110 + f001 + f101 + f011 + f111) * SCALE_FACTOR).clamp(-1.0, 1.0)
 }
 
-pub fn perlin_surflet_4d<NH>(point: [f64; 4], hasher: &NH) -> f64
+#[inline(always)]
+pub fn perlin_surflet_4d<NH>(point: Vector4<f64>, hasher: &NH) -> f64
 where
     NH: NoiseHasher + ?Sized,
 {
@@ -111,8 +109,6 @@ where
             0.0
         }
     }
-
-    let point = Vector4::from(point);
 
     let corner = point.floor_to_isize();
     let floored = corner.numcast().unwrap();
