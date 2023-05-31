@@ -36,7 +36,12 @@ where
     }
 
     let floored = point.floor();
-    let corner: Vector2<isize> = floored.numcast().unwrap();
+    let corner = floored.numcast();
+    if corner.is_none() {
+        // This can happen if the generation parameters are to large.
+        return 0.0;
+    }
+    let corner: Vector2<isize> = corner.unwrap();
     let distance = point - floored;
 
     macro_rules! call_gradient(
