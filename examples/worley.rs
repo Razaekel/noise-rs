@@ -61,121 +61,121 @@ fn main() {
     output_2d(
         &euclidean,
         ReturnType::Value,
-        "worley_2d_euclidean_value.png",
+        "worley/2d_euclidean_value.png",
     );
     output_3d(
         &euclidean,
         ReturnType::Value,
-        "worley_3d_euclidean_value.png",
+        "worley/3d_euclidean_value.png",
     );
     output_4d(
         &euclidean,
         ReturnType::Value,
-        "worley_4d_euclidean_value.png",
+        "worley/4d_euclidean_value.png",
     );
     output_2d(
         &euclidean,
         ReturnType::Distance,
-        "worley_2d_euclidean_distance.png",
+        "worley/2d_euclidean_distance.png",
     );
     output_3d(
         &euclidean,
         ReturnType::Distance,
-        "worley_3d_euclidean_distance.png",
+        "worley/3d_euclidean_distance.png",
     );
     output_4d(
         &euclidean,
         ReturnType::Distance,
-        "worley_4d_euclidean_distance.png",
+        "worley/4d_euclidean_distance.png",
     );
     output_2d(
         &euclidean_squared,
         ReturnType::Value,
-        "worley_2d_euclidean_squared_value.png",
+        "worley/2d_euclidean_squared_value.png",
     );
     output_3d(
         &euclidean_squared,
         ReturnType::Value,
-        "worley_3d_euclidean_squared_value.png",
+        "worley/3d_euclidean_squared_value.png",
     );
     output_4d(
         &euclidean_squared,
         ReturnType::Value,
-        "worley_4d_euclidean_squared_value.png",
+        "worley/4d_euclidean_squared_value.png",
     );
     output_2d(
         &euclidean_squared,
         ReturnType::Distance,
-        "worley_2d_euclidean_squared_distance.png",
+        "worley/2d_euclidean_squared_distance.png",
     );
     output_3d(
         &euclidean_squared,
         ReturnType::Distance,
-        "worley_3d_euclidean_squared_distance.png",
+        "worley/3d_euclidean_squared_distance.png",
     );
     output_4d(
         &euclidean_squared,
         ReturnType::Distance,
-        "worley_4d_euclidean_squared_distance.png",
+        "worley/4d_euclidean_squared_distance.png",
     );
     output_2d(
         &manhattan,
         ReturnType::Value,
-        "worley_2d_manhattan_value.png",
+        "worley/2d_manhattan_value.png",
     );
     output_3d(
         &manhattan,
         ReturnType::Value,
-        "worley_3d_manhattan_value.png",
+        "worley/3d_manhattan_value.png",
     );
     output_4d(
         &manhattan,
         ReturnType::Value,
-        "worley_4d_manhattan_value.png",
+        "worley/4d_manhattan_value.png",
     );
     output_2d(
         &manhattan,
         ReturnType::Distance,
-        "worley_2d_manhattan_distance.png",
+        "worley/2d_manhattan_distance.png",
     );
     output_3d(
         &manhattan,
         ReturnType::Distance,
-        "worley_3d_manhattan_distance.png",
+        "worley/3d_manhattan_distance.png",
     );
     output_4d(
         &manhattan,
         ReturnType::Distance,
-        "worley_4d_manhattan_distance.png",
+        "worley/4d_manhattan_distance.png",
     );
     output_2d(
         &chebyshev,
         ReturnType::Value,
-        "worley_2d_chebyshev_value.png",
+        "worley/2d_chebyshev_value.png",
     );
     output_3d(
         &chebyshev,
         ReturnType::Value,
-        "worley_3d_chebyshev_value.png",
+        "worley/3d_chebyshev_value.png",
     );
     output_4d(
         &chebyshev,
         ReturnType::Value,
-        "worley_4d_chebyshev_value.png",
+        "worley/4d_chebyshev_value.png",
     );
     output_2d(
         &chebyshev,
         ReturnType::Distance,
-        "worley_2d_chebyshev_distance.png",
+        "worley/2d_chebyshev_distance.png",
     );
     output_3d(
         &chebyshev,
         ReturnType::Distance,
-        "worley_3d_chebyshev_distance.png",
+        "worley/3d_chebyshev_distance.png",
     );
     output_4d(
         &chebyshev,
         ReturnType::Distance,
-        "worley_4d_chebyshev_distance.png",
+        "worley/4d_chebyshev_distance.png",
     );
 }
