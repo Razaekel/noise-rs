@@ -11,7 +11,7 @@ pub fn write_example_to_file(map: &NoiseMap, filename: &str) {
     fs::create_dir_all(target.clone().parent().expect("No parent directory found."))
         .expect("Failed to create directories.");
 
-    map.write_to_file(target.to_str().unwrap())
+    map.write_to_file(&target)
 }
 
 #[allow(dead_code)]
@@ -24,7 +24,7 @@ pub fn write_image_to_file(image: &NoiseImage, filename: &str) {
     fs::create_dir_all(target.clone().parent().expect("No parent directory found."))
         .expect("Failed to create directories.");
 
-    image.write_to_file(target.to_str().unwrap())
+    image.write_to_file(&target)
 }
 
 #[allow(dead_code)]
