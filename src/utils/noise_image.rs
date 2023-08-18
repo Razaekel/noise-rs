@@ -116,7 +116,7 @@ impl NoiseImage {
 
         let _ = image::save_buffer(
             filename,
-            &*result,
+            &result,
             self.size.0 as u32,
             self.size.1 as u32,
             image::ColorType::Rgba8,
