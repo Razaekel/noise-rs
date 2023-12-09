@@ -180,7 +180,7 @@ where
             signal *= attenuation;
 
             // Increase the attenuation for the next octave, to be equal to persistence ^ (x + 1)
-            attenuation *= attenuation;
+            attenuation *= self.persistence;
 
             // Add the signal to the result.
             result += signal;
@@ -216,7 +216,7 @@ where
             signal *= attenuation;
 
             // Increase the attenuation for the next octave, to be equal to persistence ^ (x + 1)
-            attenuation *= attenuation;
+            attenuation *= self.persistence;
 
             // Add the signal to the result.
             result += signal;
@@ -252,7 +252,7 @@ where
             signal *= attenuation;
 
             // Increase the attenuation for the next octave, to be equal to persistence ^ (x + 1)
-            attenuation *= attenuation;
+            attenuation *= self.persistence;
 
             // Add the signal to the result.
             result += signal;
