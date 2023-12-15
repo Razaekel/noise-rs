@@ -39,6 +39,10 @@ name = "perlin"
 harness = false
 
 [[bench]]
+name = "perlin_surflet"
+harness = false
+
+[[bench]]
 name = "simplex"
 harness = false
 
@@ -51,7 +55,15 @@ name = "value"
 harness = false
 
 [[bench]]
-name = "worley"
+name = "worley_2d"
+harness = false
+
+[[bench]]
+name = "worley_3d"
+harness = false
+
+[[bench]]
+name = "worley_4d"
 harness = false
 
 [[example]]
@@ -212,4 +224,8 @@ required-features = ["images"]
 
 [[example]]
 name = "simplex"
+required-features = ["images"]
+
+[[example]]
+name = "spheres"
 required-features = ["images"]

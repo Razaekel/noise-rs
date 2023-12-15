@@ -47,11 +47,11 @@ fn main() {
         .set_power(1.0 / 32.0)
         .set_roughness(2);
 
-    let planar_texture = PlaneMapBuilder::<_, 2>::new(&final_slime)
+    let planar_texture = PlaneMapBuilder::new(&final_slime)
         .set_size(1024, 1024)
         .build();
 
-    let seamless_texture = PlaneMapBuilder::<_, 2>::new(final_slime)
+    let seamless_texture = PlaneMapBuilder::new(final_slime)
         .set_size(1024, 1024)
         .set_is_seamless(true)
         .build();

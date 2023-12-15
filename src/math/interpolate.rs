@@ -1,24 +1,12 @@
 use core::ops::{Add, Mul, Sub};
-use num_traits::MulAdd;
 
 /// Performs linear interpolation between two values.
-#[cfg(not(target_os = "emscripten"))]
-#[inline]
-pub(crate) fn linear<T>(a: T, b: T, x: T) -> T
+#[inline(always)]
+pub fn linear<T>(a: T, b: T, alpha: f64) -> T
 where
-    T: MulAdd<Output = T> + Sub<Output = T> + Copy,
+    T: Mul<f64, Output = T> + Add<Output = T>,
 {
-    x.mul_add(b - a, a)
-}
-
-/// Performs linear interpolation between two values.
-#[cfg(target_os = "emscripten")]
-#[inline]
-pub(crate) fn linear<T>(a: T, b: T, x: T) -> T
-where
-    T: Mul<Output = T> + Add<Output = T> + Sub<Output = T> + Copy,
-{
-    (x * (b - a)) + a
+    b * alpha + a * (1.0 - alpha)
 }
 
 /// Performs cubic interpolation between two values bound between two other

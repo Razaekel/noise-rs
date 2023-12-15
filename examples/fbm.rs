@@ -10,7 +10,7 @@ fn main() {
     let fbm = Fbm::<Perlin>::default();
 
     utils::write_example_to_file(
-        &PlaneMapBuilder::<_, 2>::new(fbm)
+        &PlaneMapBuilder::new(fbm)
             .set_size(1000, 1000)
             .set_x_bounds(-5.0, 5.0)
             .set_y_bounds(-5.0, 5.0)
@@ -21,7 +21,7 @@ fn main() {
     let fbm = Fbm::<Worley>::default();
 
     utils::write_example_to_file(
-        &PlaneMapBuilder::<_, 2>::new(fbm)
+        &PlaneMapBuilder::new(fbm)
             .set_size(1000, 1000)
             .set_x_bounds(-5.0, 5.0)
             .set_y_bounds(-5.0, 5.0)
@@ -32,7 +32,7 @@ fn main() {
     let fbm = Fbm::<Fbm<Perlin>>::default();
 
     utils::write_example_to_file(
-        &PlaneMapBuilder::<_, 2>::new(fbm)
+        &PlaneMapBuilder::new(fbm)
             .set_size(1000, 1000)
             .set_x_bounds(-5.0, 5.0)
             .set_y_bounds(-5.0, 5.0)

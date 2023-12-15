@@ -10,5 +10,5 @@ fn main() {
     let fbm = Fbm::<Perlin>::default();
     let blend = Blend::new(perlin, ridged, fbm);
 
-    utils::write_example_to_file(&PlaneMapBuilder::<_, 2>::new(blend).build(), "blend.png");
+    utils::write_example_to_file(&PlaneMapBuilder::new(blend).build(), "blend.png");
 }

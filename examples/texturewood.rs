@@ -47,7 +47,7 @@ fn main() {
         .set_power(1.0 / 64.0)
         .set_roughness(4);
 
-    let planar_texture = PlaneMapBuilder::<_, 2>::new(final_wood)
+    let planar_texture = PlaneMapBuilder::new(final_wood)
         .set_size(1024, 1024)
         .build();
 

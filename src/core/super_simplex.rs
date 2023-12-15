@@ -83,19 +83,18 @@ const LATTICE_LOOKUP_3D: [[i8; 3]; 4 * 16] =
      [0, 0, 0],[0, 1, 1],[1, 0, 1],[1, 1, 0],
      [1, 1, 1],[0, 1, 1],[1, 0, 1],[1, 1, 0]];
 
-pub fn super_simplex_2d<NH>(point: [f64; 2], hasher: &NH) -> f64
+#[inline(always)]
+pub fn super_simplex_2d<NH>(point: Vector2<f64>, hasher: &NH) -> f64
 where
     NH: NoiseHasher + ?Sized,
 {
-    let point = Vector2::from(point);
-
     // Transform point from real space to simplex space
     let to_simplex_offset = point.sum() * TO_SIMPLEX_CONSTANT_2D;
     let simplex_point = point.map(|v| v + to_simplex_offset);
 
     // Get base point of simplex and barycentric coordinates in simplex space
-    let simplex_base_point = simplex_point.floor();
-    let simplex_base_point_i = simplex_base_point.numcast().unwrap();
+    let simplex_base_point_i = simplex_point.floor_to_isize();
+    let simplex_base_point = simplex_base_point_i.numcast().unwrap();
     let simplex_rel_coords = simplex_point - simplex_base_point;
 
     // Create index to lookup table from barycentric coordinates
@@ -128,23 +127,22 @@ where
     value * NORM_CONSTANT_2D
 }
 
-pub fn super_simplex_3d<NH>(point: [f64; 3], hasher: &NH) -> f64
+#[inline(always)]
+pub fn super_simplex_3d<NH>(point: Vector3<f64>, hasher: &NH) -> f64
 where
     NH: NoiseHasher + ?Sized,
 {
-    let point = Vector3::from(point);
-
     // Transform point from real space to simplex space
     let to_simplex_offset = point.sum() * TO_SIMPLEX_CONSTANT_3D;
     let simplex_point = point.map(|v| -(v + to_simplex_offset));
     let second_simplex_point = simplex_point.map(|v| v + 512.5);
 
     // Get base point of simplex and barycentric coordinates in simplex space
-    let simplex_base_point = simplex_point.floor();
-    let simplex_base_point_i = simplex_base_point.numcast().unwrap();
+    let simplex_base_point_i = simplex_point.floor_to_isize();
+    let simplex_base_point = simplex_base_point_i.numcast().unwrap();
     let simplex_rel_coords = simplex_point - simplex_base_point;
-    let second_simplex_base_point = second_simplex_point.floor();
-    let second_simplex_base_point_i = second_simplex_base_point.numcast().unwrap();
+    let second_simplex_base_point_i = second_simplex_point.floor_to_isize();
+    let second_simplex_base_point = second_simplex_base_point_i.numcast().unwrap();
     let second_simplex_rel_coords = second_simplex_point - second_simplex_base_point;
 
     // Create indices to lookup table from barycentric coordinates

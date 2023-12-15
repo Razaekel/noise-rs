@@ -15,5 +15,5 @@ fn main() {
         .add_control_point(0.75, 1.0)
         .add_control_point(2.0, 1.25);
 
-    utils::write_example_to_file(&PlaneMapBuilder::<_, 2>::new(curve).build(), "curve.png");
+    utils::write_example_to_file(&PlaneMapBuilder::new(curve).build(), "curve.png");
 }

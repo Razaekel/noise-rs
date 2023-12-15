@@ -8,15 +8,15 @@ mod utils;
 
 fn main() {
     utils::write_example_to_file(
-        &PlaneMapBuilder::<_, 2>::new(Constant::new(-1.0)).build(),
+        &PlaneMapBuilder::new(Constant::new(-1.0)).build(),
         "constant_-1.png",
     );
     utils::write_example_to_file(
-        &PlaneMapBuilder::<_, 2>::new(Constant::new(0.0)).build(),
+        &PlaneMapBuilder::new(Constant::new(0.0)).build(),
         "constant_0.png",
     );
     utils::write_example_to_file(
-        &PlaneMapBuilder::<_, 2>::new(Constant::new(1.0)).build(),
+        &PlaneMapBuilder::new(Constant::new(1.0)).build(),
         "constant_1.png",
     );
 }

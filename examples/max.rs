@@ -9,5 +9,5 @@ fn main() {
     let perlin = Perlin::default();
     let max = Max::new(cyl, perlin);
 
-    utils::write_example_to_file(&PlaneMapBuilder::<_, 2>::new(max).build(), "max.png");
+    utils::write_example_to_file(&PlaneMapBuilder::new(max).build(), "max.png");
 }

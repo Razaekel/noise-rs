@@ -4,6 +4,8 @@ use alloc::{
     vec::{IntoIter, Vec},
 };
 use core::ops::{Index, IndexMut};
+#[cfg(feature = "images")]
+use std::path::Path;
 
 const RASTER_MAX_WIDTH: u16 = 32_767;
 const RASTER_MAX_HEIGHT: u16 = 32_767;
@@ -101,9 +103,7 @@ impl NoiseImage {
     }
 
     #[cfg(feature = "images")]
-    pub fn write_to_file(&self, filename: &str) {
-        use std::path::Path;
-
+    pub fn write_to_file(&self, filename: &Path) {
         // collect the values from the map vector into an array
         let (width, height) = self.size;
         let mut result = Vec::with_capacity(width * height);
@@ -115,14 +115,14 @@ impl NoiseImage {
         }
 
         let _ = image::save_buffer(
-            &Path::new(filename),
-            &*result,
+            filename,
+            &result,
             self.size.0 as u32,
             self.size.1 as u32,
             image::ColorType::Rgba8,
         );
 
-        println!("\nFinished generating {}", filename);
+        println!("\nFinished generating {}", filename.to_string_lossy());
     }
 }
 

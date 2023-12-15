@@ -6,15 +6,12 @@ use noise::utils::{NoiseImage, NoiseMap};
 pub fn write_example_to_file(map: &NoiseMap, filename: &str) {
     use std::{fs, path::Path};
 
-    let target_dir = Path::new("example_images/");
+    let target = Path::new("example_images/").join(Path::new(filename));
 
-    if !target_dir.exists() {
-        fs::create_dir(target_dir).expect("failed to create example_images directory");
-    }
+    fs::create_dir_all(target.clone().parent().expect("No parent directory found."))
+        .expect("Failed to create directories.");
 
-    let target = target_dir.join(Path::new(filename));
-
-    map.write_to_file(target.to_str().unwrap())
+    map.write_to_file(&target)
 }
 
 #[allow(dead_code)]
@@ -22,15 +19,12 @@ pub fn write_example_to_file(map: &NoiseMap, filename: &str) {
 pub fn write_image_to_file(image: &NoiseImage, filename: &str) {
     use std::{fs, path::Path};
 
-    let target_dir = Path::new("example_images/");
+    let target = Path::new("example_images/").join(Path::new(filename));
 
-    if !target_dir.exists() {
-        fs::create_dir(target_dir).expect("failed to create example_images directory");
-    }
+    fs::create_dir_all(target.clone().parent().expect("No parent directory found."))
+        .expect("Failed to create directories.");
 
-    let target = target_dir.join(Path::new(filename));
-
-    image.write_to_file(target.to_str().unwrap())
+    image.write_to_file(&target)
 }
 
 #[allow(dead_code)]

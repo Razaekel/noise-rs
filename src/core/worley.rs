@@ -1,5 +1,5 @@
 use crate::{
-    math::vectors::{Vector, Vector2, Vector3, Vector4, VectorMap},
+    math::vectors::{Vector2, Vector3, Vector4},
     permutationtable::NoiseHasher,
 };
 use core::f64;
@@ -43,49 +43,30 @@ pub mod distance_functions {
             .map(|a| a.abs())
             .fold(f64::MIN, |a, b| a.max(b))
     }
-
-    pub fn quadratic(p1: &[f64], p2: &[f64]) -> f64 {
-        #[cfg(not(feature = "std"))]
-        use alloc::vec::Vec;
-
-        let temp: Vec<f64> = p1.iter().zip(p2).map(|(a, b)| *a - *b).collect();
-
-        let mut result = 0.0;
-
-        for i in &temp {
-            for j in &temp {
-                result += *i * *j;
-            }
-        }
-
-        result
-    }
 }
 
 pub fn worley_2d<F, NH>(
     hasher: &NH,
     distance_function: F,
     return_type: ReturnType,
-    point: [f64; 2],
+    point: Vector2<f64>,
 ) -> f64
 where
     F: Fn(&[f64], &[f64]) -> f64,
     NH: NoiseHasher + ?Sized,
 {
-    let point = Vector2::from(point);
-
     fn get_point(index: usize, whole: Vector2<isize>) -> Vector2<f64> {
         get_vec2(index) + whole.numcast().unwrap()
     }
 
-    let cell = point.floor();
-    let whole = cell.numcast().unwrap();
-    let frac = point - cell;
+    let cell = point.floor_to_isize();
+    let floor = cell.numcast().unwrap();
+    let frac = point - floor;
 
     let half = frac.map(|x| x > 0.5);
 
-    let near = whole + half.map(|x| x as isize);
-    let far = whole + half.map(|x| !x as isize);
+    let near = half.map(|x| x as isize) + cell;
+    let far = half.map(|x| !x as isize) + cell;
 
     let mut seed_cell = near;
     let seed_index = hasher.hash(&near.into_array());
@@ -152,26 +133,24 @@ pub fn worley_3d<F, NH>(
     hasher: &NH,
     distance_function: F,
     return_type: ReturnType,
-    point: [f64; 3],
+    point: Vector3<f64>,
 ) -> f64
 where
     F: Fn(&[f64], &[f64]) -> f64,
     NH: NoiseHasher + ?Sized,
 {
-    let point = Vector3::from(point);
-
     fn get_point(index: usize, whole: Vector3<isize>) -> Vector3<f64> {
         get_vec3(index) + whole.numcast().unwrap()
     }
 
-    let cell = point.floor();
-    let whole = cell.numcast().unwrap();
-    let frac = point - cell;
+    let cell = point.floor_to_isize();
+    let floor = cell.numcast().unwrap();
+    let frac = point - floor;
 
     let half = frac.map(|x| x > 0.5);
 
-    let near = whole + half.map(|x| x as isize);
-    let far = whole + half.map(|x| !x as isize);
+    let near = half.map(|x| x as isize) + cell;
+    let far = half.map(|x| !x as isize) + cell;
 
     let mut seed_cell = near;
     let seed_index = hasher.hash(&near.into_array());
@@ -262,26 +241,24 @@ pub fn worley_4d<F, NH>(
     hasher: &NH,
     distance_function: F,
     return_type: ReturnType,
-    point: [f64; 4],
+    point: Vector4<f64>,
 ) -> f64
 where
     F: Fn(&[f64], &[f64]) -> f64,
     NH: NoiseHasher + ?Sized,
 {
-    let point = Vector4::from(point);
-
     fn get_point(index: usize, whole: Vector4<isize>) -> Vector4<f64> {
         get_vec4(index) + whole.numcast().unwrap()
     }
 
-    let cell = point.floor();
-    let whole = cell.numcast().unwrap();
-    let frac = point - cell;
+    let cell = point.floor_to_isize();
+    let floor = cell.numcast().unwrap();
+    let frac = point - floor;
 
     let half = frac.map(|x| x > 0.5);
 
-    let near = whole + half.map(|x| x as isize);
-    let far = whole + half.map(|x| !x as isize);
+    let near = half.map(|x| x as isize) + cell;
+    let far = half.map(|x| !x as isize) + cell;
 
     let mut seed_cell = near;
     let seed_index = hasher.hash(&near.into_array());
