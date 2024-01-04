@@ -152,13 +152,13 @@ cargo run --example "curve" --features="images"
 ```
 cargo run --example "cylinders" --features="images"
 ```
-![cylinders.png]
-
-*cylinders.png*
-
 ![cylinders-f5.png]
 
 *cylinders-f5.png*
+
+![cylinders.png]
+
+*cylinders.png*
 
 
 ## [displace](/examples/displace.rs)
@@ -685,9 +685,9 @@ cargo run --example "worley" --features="images"
 
 [curve.png]: /images/examples/curve.png
 
-[cylinders.png]: /images/examples/cylinders.png
-
 [cylinders-f5.png]: /images/examples/cylinders-f5.png
+
+[cylinders.png]: /images/examples/cylinders.png
 
 [displace.png]: /images/examples/displace.png
 
