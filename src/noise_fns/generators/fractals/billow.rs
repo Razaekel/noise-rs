@@ -158,6 +158,8 @@ where
 
         let mut result = 0.0;
 
+        let mut attenuation = self.persistence;
+
         point *= self.frequency;
 
         for x in 0..self.octaves {
@@ -169,7 +171,10 @@ where
             signal = scale_shift(signal, 2.0);
 
             // Scale the amplitude appropriately for this frequency.
-            signal *= self.persistence.powi((x as i32) + 1);
+            signal *= attenuation;
+
+            // Increase the attenuation for the next octave, to be equal to persistence ^ (x + 1)
+            attenuation *= self.persistence;
 
             // Add the signal to the result.
             result += signal;
@@ -193,6 +198,8 @@ where
 
         let mut result = 0.0;
 
+        let mut attenuation = self.persistence;
+
         point *= self.frequency;
 
         for x in 0..self.octaves {
@@ -204,7 +211,10 @@ where
             signal = scale_shift(signal, 2.0);
 
             // Scale the amplitude appropriately for this frequency.
-            signal *= self.persistence.powi((x as i32) + 1);
+            signal *= attenuation;
+
+            // Increase the attenuation for the next octave, to be equal to persistence ^ (x + 1)
+            attenuation *= self.persistence;
 
             // Add the signal to the result.
             result += signal;
@@ -228,6 +238,8 @@ where
 
         let mut result = 0.0;
 
+        let mut attenuation = self.persistence;
+
         point *= self.frequency;
 
         for x in 0..self.octaves {
@@ -239,7 +251,10 @@ where
             signal = scale_shift(signal, 2.0);
 
             // Scale the amplitude appropriately for this frequency.
-            signal *= self.persistence.powi((x as i32) + 1);
+            signal *= attenuation;
+
+            // Increase the attenuation for the next octave, to be equal to persistence ^ (x + 1)
+            attenuation *= self.persistence;
 
             // Add the signal to the result.
             result += signal;

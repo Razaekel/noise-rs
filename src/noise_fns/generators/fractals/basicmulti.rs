@@ -166,6 +166,7 @@ where
 
         // if only 1 octave of noise, then return result unchanged, otherwise process another octave
         if self.octaves > 1 {
+            let mut attenuation = self.persistence;
             // Spectral construction inner loop, where the fractal is built.
             for x in 1..self.octaves {
                 // Raise the spatial frequency.
@@ -175,7 +176,10 @@ where
                 let mut signal = self.sources[x].get(point.into_array());
 
                 // Scale the amplitude appropriately for this frequency.
-                signal *= self.persistence.powi(x as i32);
+                signal *= attenuation;
+
+                // Increase the attenuation for the next octave, to be equal to persistence ^ (x + 1)
+                attenuation *= self.persistence;
 
                 // Scale the signal by the current 'altitude' of the function.
                 signal *= result;
@@ -204,6 +208,7 @@ where
 
         // if only 1 octave of noise, then return result unchanged, otherwise process another octave
         if self.octaves > 1 {
+            let mut attenuation = self.persistence;
             // Spectral construction inner loop, where the fractal is built.
             for x in 1..self.octaves {
                 // Raise the spatial frequency.
@@ -213,7 +218,10 @@ where
                 let mut signal = self.sources[x].get(point.into_array());
 
                 // Scale the amplitude appropriately for this frequency.
-                signal *= self.persistence.powi(x as i32);
+                signal *= attenuation;
+
+                // Increase the attenuation for the next octave, to be equal to persistence ^ (x + 1)
+                attenuation *= self.persistence;
 
                 // Scale the signal by the current 'altitude' of the function.
                 signal *= result;
@@ -242,6 +250,7 @@ where
 
         // if only 1 octave of noise, then return result unchanged, otherwise process another octave
         if self.octaves > 1 {
+            let mut attenuation = self.persistence;
             // Spectral construction inner loop, where the fractal is built.
             for x in 1..self.octaves {
                 // Raise the spatial frequency.
@@ -251,7 +260,10 @@ where
                 let mut signal = self.sources[x].get(point.into_array());
 
                 // Scale the amplitude appropriately for this frequency.
-                signal *= self.persistence.powi(x as i32);
+                signal *= attenuation;
+
+                // Increase the attenuation for the next octave, to be equal to persistence ^ (x + 1)
+                attenuation *= self.persistence;
 
                 // Scale the signal by the current 'altitude' of the function.
                 signal *= result;
