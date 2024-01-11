@@ -438,13 +438,13 @@ cargo run --example "super_simplex" --features="images"
 ```
 cargo run --example "terrace" --features="images"
 ```
-![terrace_inverted.png]
-
-*terrace_inverted.png*
-
 ![terrace.png]
 
 *terrace.png*
+
+![terrace_inverted.png]
+
+*terrace_inverted.png*
 
 
 ## [texturegranite](/examples/texturegranite.rs)
@@ -765,9 +765,9 @@ cargo run --example "worley" --features="images"
 
 [super_simplex 3d.png]: /images/examples/super_simplex%203d.png
 
-[terrace_inverted.png]: /images/examples/terrace_inverted.png
-
 [terrace.png]: /images/examples/terrace.png
+
+[terrace_inverted.png]: /images/examples/terrace_inverted.png
 
 [texture_granite_planar.png]: /images/examples/texture_granite_planar.png
 

@@ -168,6 +168,8 @@ where
     fn get(&self, point: [f64; 2]) -> f64 {
         let mut point = Vector2::from(point);
 
+        let mut attenuation = self.persistence;
+
         // First unscaled octave of function; later octaves are scaled.
         point *= self.frequency;
         let mut result = self.sources[0].get(point.into_array()) * self.persistence;
@@ -185,7 +187,10 @@ where
             let mut signal = self.sources[x].get(point.into_array());
 
             // Scale the amplitude appropriately for this frequency.
-            signal *= self.persistence.powi(x as i32);
+            signal *= attenuation;
+
+            // Increase the attenuation for the next octave, to be equal to persistence ^ (x + 1)
+            attenuation *= self.persistence;
 
             // Add it in, weighted by previous octave's noise value.
             result += weight * signal;
@@ -207,6 +212,8 @@ where
     fn get(&self, point: [f64; 3]) -> f64 {
         let mut point = Vector3::from(point);
 
+        let mut attenuation = self.persistence;
+
         // First unscaled octave of function; later octaves are scaled.
         point *= self.frequency;
         let mut result = self.sources[0].get(point.into_array()) * self.persistence;
@@ -224,7 +231,10 @@ where
             let mut signal = self.sources[x].get(point.into_array());
 
             // Scale the amplitude appropriately for this frequency.
-            signal *= self.persistence.powi(x as i32);
+            signal *= attenuation;
+
+            // Increase the attenuation for the next octave, to be equal to persistence ^ (x + 1)
+            attenuation *= self.persistence;
 
             // Add it in, weighted by previous octave's noise value.
             result += weight * signal;
@@ -246,6 +256,8 @@ where
     fn get(&self, point: [f64; 4]) -> f64 {
         let mut point = Vector4::from(point);
 
+        let mut attenuation = self.persistence;
+
         // First unscaled octave of function; later octaves are scaled.
         point *= self.frequency;
         let mut result = self.sources[0].get(point.into_array()) * self.persistence;
@@ -263,7 +275,10 @@ where
             let mut signal = self.sources[x].get(point.into_array());
 
             // Scale the amplitude appropriately for this frequency.
-            signal *= self.persistence.powi(x as i32);
+            signal *= attenuation;
+
+            // Increase the attenuation for the next octave, to be equal to persistence ^ (x + 1)
+            attenuation *= self.persistence;
 
             // Add it in, weighted by previous octave's noise value.
             result += weight * signal;
