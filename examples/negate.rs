@@ -1,15 +1,12 @@
 extern crate noise;
 
-use noise::{utils::*, Abs, Negate, Perlin};
+use noise::{utils::*, Abs, NoiseFn, Perlin};
 
 mod utils;
 
 fn main() {
     let perlin = Perlin::default();
-    let abs = Abs::new(perlin);
+    let negate = Abs::new(perlin).negate();
 
-    utils::write_example_to_file(
-        &PlaneMapBuilder::new(Negate::new(abs)).build(),
-        "negate.png",
-    );
+    utils::write_example_to_file(&PlaneMapBuilder::new(negate).build(), "negate.png");
 }

@@ -1,6 +1,6 @@
 extern crate noise;
 
-use noise::{utils::*, Checkerboard, Constant, Cylinders, Perlin, Select};
+use noise::{utils::*, Checkerboard, Constant, Cylinders, NoiseFn, Perlin};
 
 mod utils;
 
@@ -9,12 +9,8 @@ fn main() {
     let cylinders = Cylinders::new();
     let perlin = Perlin::default();
     let constant = Constant::new(0.5);
-    let select1 = Select::new(perlin, cylinders, checkerboard)
-        .set_bounds(0.0, 1.0)
-        .set_falloff(0.5);
-    let select2 = Select::new(perlin, constant, checkerboard)
-        .set_bounds(0.0, 1.0)
-        .set_falloff(0.0);
+    let select1 = perlin.select(cylinders, checkerboard, 0.0, 1.0, 0.5);
+    let select2 = perlin.select(constant, checkerboard, 0.0, 1.0, 0.0);
 
     utils::write_example_to_file(
         &PlaneMapBuilder::new(select1)

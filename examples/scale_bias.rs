@@ -1,12 +1,12 @@
 extern crate noise;
 
-use noise::{utils::*, Perlin, ScaleBias};
+use noise::{utils::*, NoiseFn, Perlin};
 
 mod utils;
 
 fn main() {
     let perlin = Perlin::default();
-    let scale_bias = ScaleBias::new(perlin).set_scale(0.0625).set_bias(0.0);
+    let scale_bias = perlin.scale_bias(0.0625, 0.0);
 
     utils::write_example_to_file(&PlaneMapBuilder::new(scale_bias).build(), "scale_bias.png");
 }
