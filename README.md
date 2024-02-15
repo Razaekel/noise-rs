@@ -167,6 +167,6 @@ Project Link: [https://github.com/razaekel/noise-rs][github link]
 
 [planet surface 16x]: /images/unscaledFinalPlanet_16x_zoom.png
 
-[rust version badge]: https://img.shields.io/badge/rust-1.60.0+-93450a.svg?style=for-the-badge&logo=rust
+[rust version badge]: https://img.shields.io/badge/rust-1.63.0+-93450a.svg?style=for-the-badge&logo=rust
 
-[rust version link]: https://blog.rust-lang.org/2022/04/07/Rust-1.60.0.html
+[rust version link]: https://blog.rust-lang.org/2022/08/11/Rust-1.63.0.html
