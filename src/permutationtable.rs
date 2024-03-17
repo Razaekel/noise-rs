@@ -25,14 +25,8 @@ impl Distribution<PermutationTable> for Standard {
     /// Generates a PermutationTable using a random seed.
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> PermutationTable {
         let mut perm_table = PermutationTable {
-            values: [0; TABLE_SIZE],
+            values: core::array::from_fn(|x| x as u8),
         };
-
-        perm_table
-            .values
-            .iter_mut()
-            .enumerate()
-            .for_each(|(i, b)| *b = i as u8);
         perm_table.values.shuffle(rng);
 
         perm_table
