@@ -26,7 +26,7 @@ images = ["image", "std"]
 std = []
 
 [dev-dependencies]
-criterion = { version = "0.3", features = ["html_reports"] }
+criterion = { version = "0.5.1", features = ["html_reports"] }
 rand = { version = "0.8", default-features = true }
 rand_pcg = "0.3"
 
