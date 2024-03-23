@@ -10,6 +10,7 @@ keywords = ["math", "random"]
 authors = ["The Noise-rs Developers."]
 edition = "2018"
 resolver = "2"
+exclude = ["images/"]
 
 [lib]
 name = "noise"
