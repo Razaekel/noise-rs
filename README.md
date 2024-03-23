@@ -35,7 +35,7 @@ Procedural Noise Generation library <i>for Rust</i>
 
 ```toml
 [dependencies]
-noise = "0.8"
+noise = "0.9"
 ```
 
 <!-- ABOUT THE PROJECT -->
@@ -73,7 +73,7 @@ To use the function `write_to_file` you have to set the feature `"images"` in th
 
 ```toml
 [dependencies]
-noise = { version = "0.8.2", features = ["images"] }
+noise = { version = "0.9.0", features = ["images"] }
 ```
 
 ```rust
