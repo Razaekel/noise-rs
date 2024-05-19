@@ -3,7 +3,7 @@ use core::marker::PhantomData;
 
 /// Noise function that outputs the absolute value of the output value from the
 /// source function.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Abs<T, Source, const DIM: usize>
 where
     Source: NoiseFn<T, DIM>,

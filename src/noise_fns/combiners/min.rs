@@ -3,7 +3,7 @@ use core::marker::PhantomData;
 
 /// Noise function that outputs the smaller of the two output values from two source
 /// functions.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Min<T, Source1, Source2, const DIM: usize>
 where
     Source1: NoiseFn<T, DIM>,

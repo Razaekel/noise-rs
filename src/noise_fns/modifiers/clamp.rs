@@ -3,7 +3,7 @@ use core::marker::PhantomData;
 
 /// Noise function that clamps the output value from the source function to a
 /// range of values.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Clamp<T, Source, const DIM: usize>
 where
     Source: NoiseFn<T, DIM>,

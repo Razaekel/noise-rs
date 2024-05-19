@@ -2,7 +2,7 @@ use crate::noise_fns::NoiseFn;
 use core::marker::PhantomData;
 
 /// Noise function that negates the output value from the source function.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Negate<T, Source, const DIM: usize>
 where
     Source: NoiseFn<T, DIM>,

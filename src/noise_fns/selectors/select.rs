@@ -6,7 +6,7 @@ use core::marker::PhantomData;
 
 /// Noise function that outputs the value selected from one of two source
 /// functions chosen by the output value from a control function.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Select<T, Source1, Source2, Control, const DIM: usize>
 where
     Source1: NoiseFn<T, DIM>,

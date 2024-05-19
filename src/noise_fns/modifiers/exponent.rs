@@ -8,7 +8,7 @@ use core::marker::PhantomData;
 /// this noise function first normalizes the output value (the range becomes 0.0
 /// to 1.0), maps that value onto an exponential curve, then rescales that
 /// value back to the original range.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Exponent<T, Source, const DIM: usize>
 where
     Source: NoiseFn<T, DIM>,

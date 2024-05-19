@@ -6,7 +6,7 @@ use core::marker::PhantomData;
 ///
 /// This noise function uses linear interpolation to perform the blending
 /// operation.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Blend<T, Source1, Source2, Control, const DIM: usize>
 where
     Source1: NoiseFn<T, DIM>,

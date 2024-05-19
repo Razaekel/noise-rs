@@ -3,7 +3,7 @@ use core::marker::PhantomData;
 
 /// Noise function that raises the output value from the first source function
 /// to the power of the output value of the second source function.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Power<T, Source1, Source2, const DIM: usize>
 where
     Source1: NoiseFn<T, DIM>,
