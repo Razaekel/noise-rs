@@ -20,7 +20,7 @@ where
     // 1/(sqrt(N)/2), N=1 -> 2/sqrt(1) -> 2
     const SCALE_FACTOR: f64 = 2.0;
 
-    let corner = point as isize;
+    let corner = point.floor() as isize;
     let distance = point - corner as f64;
 
     macro_rules! call_gradient(
