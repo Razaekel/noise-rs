@@ -4,12 +4,18 @@ extern crate noise;
 
 use criterion::{black_box, Criterion};
 use noise::{
-    core::perlin::{perlin_2d, perlin_3d, perlin_4d},
+    core::perlin::{perlin_1d, perlin_2d, perlin_3d, perlin_4d},
     permutationtable::PermutationTable,
     Vector2, Vector3, Vector4,
 };
 
-criterion_group!(perlin, bench_perlin2, bench_perlin3, bench_perlin4);
+criterion_group!(
+    perlin,
+    bench_perlin1,
+    bench_perlin2,
+    bench_perlin3,
+    bench_perlin4
+);
 criterion_group!(
     perlin_64x64,
     bench_perlin2_64x64,
@@ -17,6 +23,13 @@ criterion_group!(
     bench_perlin4_64x64
 );
 criterion_main!(perlin, perlin_64x64);
+
+fn bench_perlin1(c: &mut Criterion) {
+    let hasher = PermutationTable::new(0);
+    c.bench_function("perlin 1d", |b| {
+        b.iter(|| perlin_1d(black_box(42.0_f64), &hasher))
+    });
+}
 
 fn bench_perlin2(c: &mut Criterion) {
     let hasher = PermutationTable::new(0);
