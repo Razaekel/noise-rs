@@ -2,13 +2,17 @@ use alloc::{
     slice::{Iter, IterMut},
     vec::{IntoIter, Vec},
 };
+
 use core::ops::{Index, IndexMut};
 #[cfg(feature = "images")]
 use std::path::Path;
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
 
 const RASTER_MAX_WIDTH: u16 = 32_767;
 const RASTER_MAX_HEIGHT: u16 = 32_767;
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct NoiseMap {
     size: (usize, usize),
     border_value: f64,

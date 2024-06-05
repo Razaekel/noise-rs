@@ -382,6 +382,11 @@ cargo run --example "select" --features="images"
 
 *select2.png*
 
+## [serde](/examples/serde.rs)
+
+```
+cargo run --example "serde" --features="serde"
+```
 
 ## [simplex](/examples/simplex.rs)
 
