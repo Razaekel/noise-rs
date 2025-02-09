@@ -38,7 +38,7 @@ where
 ///
 /// This is Stefan Gustavson's original copyright notice:
 ///
-/// /* sdnoise1234, Simplex noise with true analytic
+///  * sdnoise1234, Simplex noise with true analytic
 ///  * derivative in 1D to 4D.
 ///  *
 ///  * Copyright © 2003-2011, Stefan Gustavson
@@ -54,8 +54,7 @@ where
 ///  * but WITHOUT ANY WARRANTY; without even the implied warranty of
 ///  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ///  * General Public License for more details.
-///  */
-
+///  *
 #[inline(always)]
 pub fn simplex_2d<NH>(point: Vector2<f64>, hasher: &NH) -> (f64, [f64; 2])
 where

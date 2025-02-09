@@ -27,7 +27,7 @@ pub trait NoiseFn<T, const DIM: usize> {
     fn get(&self, point: [T; DIM]) -> f64;
 }
 
-impl<'a, T, M, const DIM: usize> NoiseFn<T, DIM> for &'a M
+impl<T, M, const DIM: usize> NoiseFn<T, DIM> for &M
 where
     M: NoiseFn<T, DIM> + ?Sized,
 {
