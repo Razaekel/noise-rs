@@ -1,10 +1,13 @@
 use crate::{
     core::worley::*,
     math::vectors::*,
-    noise_fns::{NoiseFn, Seedable},
+    noise_fns::{NoiseFn, Seedable, DEFAULT_SEED},
     permutationtable::PermutationTable,
+    Seed,
 };
 use alloc::rc::Rc;
+use rand::{Rng, SeedableRng};
+use rand_xorshift::XorShiftRng;
 
 /// Noise function that outputs Worley noise.
 #[derive(Clone)]
@@ -20,19 +23,20 @@ pub struct Worley {
     /// Frequency of the seed points.
     pub frequency: f64,
 
-    seed: u32,
+    seed: Seed,
     perm_table: PermutationTable,
 }
 
 type DistanceFunction = dyn Fn(&[f64], &[f64]) -> f64;
 
 impl Worley {
-    pub const DEFAULT_SEED: u32 = 0;
     pub const DEFAULT_FREQUENCY: f64 = 1.0;
 
-    pub fn new(seed: u32) -> Self {
+    pub fn new(seed: Seed) -> Self {
+        let mut rng = XorShiftRng::from_seed(seed);
+
         Self {
-            perm_table: PermutationTable::new(seed),
+            perm_table: rng.gen(),
             seed,
             distance_function: Rc::new(distance_functions::euclidean),
             return_type: ReturnType::Value,
@@ -68,27 +72,29 @@ impl Worley {
 
 impl Default for Worley {
     fn default() -> Self {
-        Self::new(0)
+        Self::new(DEFAULT_SEED)
     }
 }
 
 impl Seedable for Worley {
     /// Sets the seed value used by the Worley cells.
-    fn set_seed(self, seed: u32) -> Self {
+    fn set_seed(self, seed: Seed) -> Self {
         // If the new seed is the same as the current seed, just return self.
         if self.seed == seed {
             return self;
         }
 
         // Otherwise, regenerate the permutation table based on the new seed.
+        let mut rng = XorShiftRng::from_seed(seed);
+
         Self {
-            perm_table: PermutationTable::new(seed),
+            perm_table: rng.gen(),
             seed,
             ..self
         }
     }
 
-    fn seed(&self) -> u32 {
+    fn seed(&self) -> Seed {
         self.seed
     }
 }

@@ -1,20 +1,24 @@
 extern crate noise;
 
 use noise::{core::worley::ReturnType, utils::*, *};
+use rand::{Rng, SeedableRng};
+use rand_xorshift::XorShiftRng;
 
 mod utils;
 
 fn main() {
+    let mut rng = XorShiftRng::from_seed(DEFAULT_SEED);
+
     // Primary granite texture. This generates the "roughness" of the texture
     // when lit by a light source.
-    let primary_granite = Billow::<Perlin>::new(0)
+    let primary_granite = Billow::<Perlin>::new(rng.gen())
         .set_frequency(8.0)
         .set_persistence(0.625)
         .set_lacunarity(2.18359375)
         .set_octaves(6);
 
     // Use Worley polygons to produce the small grains for the granite texture.
-    let base_grains = Worley::new(1)
+    let base_grains = Worley::new(rng.gen())
         .set_frequency(16.0)
         .set_return_type(ReturnType::Distance);
 
@@ -28,7 +32,7 @@ fn main() {
 
     // Finally, perturb the granite texture to add realism.
     let final_granite = Turbulence::<_, Perlin>::new(combined_granite)
-        .set_seed(2)
+        .set_seed(rng.gen())
         .set_frequency(4.0)
         .set_power(1.0 / 8.0)
         .set_roughness(6);

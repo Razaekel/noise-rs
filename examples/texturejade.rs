@@ -1,13 +1,17 @@
 extern crate noise;
 
 use noise::{utils::*, *};
+use rand::{Rng, SeedableRng};
+use rand_xorshift::XorShiftRng;
 
 mod utils;
 
 fn main() {
+    let mut rng = XorShiftRng::from_seed(DEFAULT_SEED);
+
     // Primary jade texture. The ridges from the ridged-multifractal function
     // produces the veins.
-    let primary_jade = RidgedMulti::<Perlin>::new(0)
+    let primary_jade = RidgedMulti::<Perlin>::new(rng.gen())
         .set_frequency(2.0)
         .set_lacunarity(2.20703125)
         .set_octaves(6);
@@ -24,7 +28,7 @@ fn main() {
 
     // Slightly perturb the secondary jade texture for more realism.
     let perturbed_base_secondary_jade = Turbulence::<_, Perlin>::new(rotated_base_secondary_jade)
-        .set_seed(1)
+        .set_seed(rng.gen())
         .set_frequency(4.0)
         .set_power(1.0 / 4.0)
         .set_roughness(4);
@@ -43,7 +47,7 @@ fn main() {
     // Finally, perturb the combined jade texture to produce the final jade
     // texture. A low roughness produces nice veins.
     let final_jade = Turbulence::<_, Perlin>::new(combined_jade)
-        .set_seed(2)
+        .set_seed(rng.gen())
         .set_frequency(4.0)
         .set_power(1.0 / 16.0)
         .set_roughness(2);

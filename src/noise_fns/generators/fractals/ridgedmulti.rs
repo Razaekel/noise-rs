@@ -1,6 +1,7 @@
 use crate::{
     math::vectors::*,
-    noise_fns::{MultiFractal, NoiseFn, Seedable},
+    noise_fns::{MultiFractal, NoiseFn, Seedable, DEFAULT_SEED},
+    Seed,
 };
 use alloc::vec::Vec;
 
@@ -56,7 +57,8 @@ pub struct RidgedMulti<T> {
     /// half the height of the previous.
     pub attenuation: f64,
 
-    seed: u32,
+    seed: Seed,
+
     sources: Vec<T>,
     scale_factor: f64,
 }
@@ -65,7 +67,6 @@ impl<T> RidgedMulti<T>
 where
     T: Default + Seedable,
 {
-    pub const DEFAULT_SEED: u32 = 0;
     pub const DEFAULT_OCTAVE_COUNT: usize = 6;
     pub const DEFAULT_FREQUENCY: f64 = 1.0;
     pub const DEFAULT_LACUNARITY: f64 = core::f64::consts::PI * 2.0 / 3.0;
@@ -73,7 +74,7 @@ where
     pub const DEFAULT_ATTENUATION: f64 = 2.0;
     pub const MAX_OCTAVES: usize = 32;
 
-    pub fn new(seed: u32) -> Self {
+    pub fn new(seed: Seed) -> Self {
         Self {
             seed,
             octaves: Self::DEFAULT_OCTAVE_COUNT,
@@ -130,7 +131,7 @@ where
     T: Default + Seedable,
 {
     fn default() -> Self {
-        Self::new(Self::DEFAULT_SEED)
+        Self::new(DEFAULT_SEED)
     }
 }
 
@@ -173,7 +174,7 @@ impl<T> Seedable for RidgedMulti<T>
 where
     T: Default + Seedable,
 {
-    fn set_seed(self, seed: u32) -> Self {
+    fn set_seed(self, seed: Seed) -> Self {
         if self.seed == seed {
             return self;
         }
@@ -185,7 +186,7 @@ where
         }
     }
 
-    fn seed(&self) -> u32 {
+    fn seed(&self) -> Seed {
         self.seed
     }
 }

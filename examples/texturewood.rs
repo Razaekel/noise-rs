@@ -1,15 +1,19 @@
 extern crate noise;
 
 use noise::{utils::*, *};
+use rand::{Rng, SeedableRng};
+use rand_xorshift::XorShiftRng;
 
 mod utils;
 
 fn main() {
+    let mut rng = XorShiftRng::from_seed(DEFAULT_SEED);
+
     // Base wood texture. Uses concentric cylinders aligned on the z-axis, like a log.
     let base_wood = Cylinders::new().set_frequency(16.0);
 
     // Basic Multifractal noise to use for the wood grain.
-    let wood_grain_noise = BasicMulti::<Perlin>::new(0)
+    let wood_grain_noise = BasicMulti::<Perlin>::new(rng.gen())
         .set_frequency(48.0)
         .set_persistence(0.5)
         .set_lacunarity(2.20703125)
@@ -29,7 +33,7 @@ fn main() {
 
     // Slightly perturb the wood to create a more realistic texture.
     let perturbed_wood = Turbulence::<_, Perlin>::new(combined_wood)
-        .set_seed(1)
+        .set_seed(rng.gen())
         .set_frequency(4.0)
         .set_power(1.0 / 256.0)
         .set_roughness(4);
@@ -42,7 +46,7 @@ fn main() {
 
     // Finally, perturb the wood texture again to produce the final texture.
     let final_wood = Turbulence::<_, Perlin>::new(rotated_wood)
-        .set_seed(2)
+        .set_seed(rng.gen())
         .set_frequency(2.0)
         .set_power(1.0 / 64.0)
         .set_roughness(4);

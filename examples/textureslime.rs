@@ -1,19 +1,23 @@
 extern crate noise;
 
 use noise::{utils::*, *};
+use rand::{Rng, SeedableRng};
+use rand_xorshift::XorShiftRng;
 
 mod utils;
 
 fn main() {
+    let mut rng = XorShiftRng::from_seed(DEFAULT_SEED);
+
     // Large slime bubble texture.
-    let large_slime = Billow::<Perlin>::new(0)
+    let large_slime = Billow::<Perlin>::new(rng.gen())
         .set_frequency(4.0)
         .set_lacunarity(2.12109375)
         .set_octaves(1);
 
     // Base of the small slime bubble texture. This texture will eventually
     // appear inside cracks in the large slime bubble texture.
-    let small_slime_base = Billow::<Perlin>::new(1)
+    let small_slime_base = Billow::<Perlin>::new(rng.gen())
         .set_frequency(24.0)
         .set_lacunarity(2.14453125)
         .set_octaves(1);
@@ -25,7 +29,7 @@ fn main() {
 
     // Create a map that specifies where the large and small slime bubble
     // textures will appear in the final texture map.
-    let slime_map = RidgedMulti::<Perlin>::new(2)
+    let slime_map = RidgedMulti::<Perlin>::new(rng.gen())
         .set_frequency(2.0)
         .set_lacunarity(2.20703125)
         .set_octaves(3);
@@ -42,7 +46,7 @@ fn main() {
 
     // Finally, perturb the slime texture to add realism.
     let final_slime = Turbulence::<_, Perlin>::new(slime_chooser)
-        .set_seed(3)
+        .set_seed(rng.gen())
         .set_frequency(8.0)
         .set_power(1.0 / 32.0)
         .set_roughness(2);

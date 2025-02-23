@@ -1,49 +1,49 @@
+use rand::{Rng, SeedableRng};
+use rand_xorshift::XorShiftRng;
+
 use crate::{
     core::super_simplex::*,
-    noise_fns::{NoiseFn, Seedable},
+    noise_fns::{NoiseFn, Seedable, DEFAULT_SEED},
     permutationtable::PermutationTable,
+    Seed,
 };
 
 /// Noise function that outputs 2/3-dimensional Super Simplex noise.
 #[derive(Clone, Copy, Debug)]
 pub struct SuperSimplex {
-    seed: u32,
+    seed: Seed,
     perm_table: PermutationTable,
 }
 
 impl SuperSimplex {
-    pub const DEFAULT_SEED: u32 = 0;
-
-    pub fn new(seed: u32) -> Self {
+    pub fn new(seed: Seed) -> Self {
+        let mut rng = XorShiftRng::from_seed(seed);
         Self {
             seed,
-            perm_table: PermutationTable::new(seed),
+            perm_table: rng.gen(),
         }
     }
 }
 
 impl Default for SuperSimplex {
     fn default() -> Self {
-        Self::new(Self::DEFAULT_SEED)
+        Self::new(DEFAULT_SEED)
     }
 }
 
 impl Seedable for SuperSimplex {
     /// Sets the seed value for Super Simplex noise
-    fn set_seed(self, seed: u32) -> Self {
+    fn set_seed(self, seed: Seed) -> Self {
         // If the new seed is the same as the current seed, just return self.
         if self.seed == seed {
             return self;
         }
 
         // Otherwise, regenerate the permutation table based on the new seed.
-        Self {
-            seed,
-            perm_table: PermutationTable::new(seed),
-        }
+        Self::new(seed)
     }
 
-    fn seed(&self) -> u32 {
+    fn seed(&self) -> Seed {
         self.seed
     }
 }

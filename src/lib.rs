@@ -3,9 +3,9 @@
 //! # Example
 //!
 //! ```rust
-//! use noise::{NoiseFn, Perlin, Seedable};
+//! use noise::{NoiseFn, Perlin, Seedable, DEFAULT_SEED};
 //!
-//! let perlin = Perlin::new(1);
+//! let perlin = Perlin::new(DEFAULT_SEED);
 //! let val = perlin.get([42.4, 37.7, 2.8]);
 //! ```
 

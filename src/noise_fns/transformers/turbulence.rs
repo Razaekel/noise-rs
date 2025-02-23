@@ -1,4 +1,10 @@
-use crate::noise_fns::{Fbm, MultiFractal, NoiseFn, Seedable};
+use rand::{Rng, SeedableRng};
+use rand_xorshift::XorShiftRng;
+
+use crate::{
+    noise_fns::{Fbm, MultiFractal, NoiseFn, Seedable, DEFAULT_SEED},
+    Seed,
+};
 
 /// Noise function that randomly displaces the input value before returning the
 /// output value from the source function.
@@ -26,7 +32,8 @@ where
     /// Affects the roughness of the turbulence. Higher values are rougher.
     pub roughness: usize,
 
-    seed: u32,
+    seed: Seed,
+
     x_distort_function: Fbm<F>,
     y_distort_function: Fbm<F>,
     z_distort_function: Fbm<F>,
@@ -37,32 +44,37 @@ impl<Source, F> Turbulence<Source, F>
 where
     F: Default + Seedable,
 {
-    pub const DEFAULT_SEED: u32 = 0;
     pub const DEFAULT_FREQUENCY: f64 = 1.0;
     pub const DEFAULT_POWER: f64 = 1.0;
     pub const DEFAULT_ROUGHNESS: usize = 3;
 
     pub fn new(source: Source) -> Self {
+        Self::new_with_seed(source, DEFAULT_SEED)
+    }
+
+    pub fn new_with_seed(source: Source, seed: Seed) -> Self {
+        let mut rng = XorShiftRng::from_seed(seed);
+
         Self {
             source,
-            seed: Self::DEFAULT_SEED,
+            seed: DEFAULT_SEED,
             frequency: Self::DEFAULT_FREQUENCY,
             power: Self::DEFAULT_POWER,
             roughness: Self::DEFAULT_ROUGHNESS,
             x_distort_function: Fbm::default()
-                .set_seed(Self::DEFAULT_SEED)
+                .set_seed(rng.gen())
                 .set_octaves(Self::DEFAULT_ROUGHNESS)
                 .set_frequency(Self::DEFAULT_FREQUENCY),
             y_distort_function: Fbm::default()
-                .set_seed(Self::DEFAULT_SEED + 1)
+                .set_seed(rng.gen())
                 .set_octaves(Self::DEFAULT_ROUGHNESS)
                 .set_frequency(Self::DEFAULT_FREQUENCY),
             z_distort_function: Fbm::default()
-                .set_seed(Self::DEFAULT_SEED + 2)
+                .set_seed(rng.gen())
                 .set_octaves(Self::DEFAULT_ROUGHNESS)
                 .set_frequency(Self::DEFAULT_FREQUENCY),
             u_distort_function: Fbm::default()
-                .set_seed(Self::DEFAULT_SEED + 3)
+                .set_seed(rng.gen())
                 .set_octaves(Self::DEFAULT_ROUGHNESS)
                 .set_frequency(Self::DEFAULT_FREQUENCY),
         }
@@ -99,18 +111,20 @@ impl<Source, F> Seedable for Turbulence<Source, F>
 where
     F: Default + Seedable,
 {
-    fn set_seed(self, seed: u32) -> Self {
+    fn set_seed(self, seed: Seed) -> Self {
+        let mut rng = XorShiftRng::from_seed(seed);
+
         Self {
             seed,
-            x_distort_function: self.x_distort_function.set_seed(seed),
-            y_distort_function: self.y_distort_function.set_seed(seed + 1),
-            z_distort_function: self.z_distort_function.set_seed(seed + 2),
-            u_distort_function: self.u_distort_function.set_seed(seed + 3),
+            x_distort_function: self.x_distort_function.set_seed(rng.gen()),
+            y_distort_function: self.y_distort_function.set_seed(rng.gen()),
+            z_distort_function: self.z_distort_function.set_seed(rng.gen()),
+            u_distort_function: self.u_distort_function.set_seed(rng.gen()),
             ..self
         }
     }
 
-    fn seed(&self) -> u32 {
+    fn seed(&self) -> Seed {
         self.seed
     }
 }

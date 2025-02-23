@@ -2,12 +2,16 @@
 
 extern crate noise;
 
-use noise::{utils::*, Perlin, RidgedMulti, Worley};
+use noise::{utils::*, Perlin, RidgedMulti, Worley, DEFAULT_SEED};
+use rand::{Rng, SeedableRng};
+use rand_xorshift::XorShiftRng;
 
 mod utils;
 
 fn main() {
-    let ridged_multi = RidgedMulti::<Perlin>::default();
+    let mut rng = XorShiftRng::from_seed(DEFAULT_SEED);
+
+    let ridged_multi = RidgedMulti::<Perlin>::new(rng.gen());
 
     utils::write_example_to_file(
         &PlaneMapBuilder::new(ridged_multi).build(),
@@ -21,7 +25,7 @@ fn main() {
         "ridged_multi_worley.png",
     );
 
-    let ridged_multi = RidgedMulti::<RidgedMulti<Perlin>>::default();
+    let ridged_multi = RidgedMulti::<RidgedMulti<Perlin>>::new(rng.gen());
 
     utils::write_example_to_file(
         &PlaneMapBuilder::new(ridged_multi).build(),

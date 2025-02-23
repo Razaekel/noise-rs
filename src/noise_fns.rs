@@ -50,8 +50,14 @@ where
 /// Trait for functions that require a seed before generating their values
 pub trait Seedable {
     /// Set the seed for the function implementing the `Seedable` trait
-    fn set_seed(self, seed: u32) -> Self;
+    fn set_seed(self, seed: Seed) -> Self;
 
     /// Getter to retrieve the seed from the function
-    fn seed(&self) -> u32;
+    fn seed(&self) -> Seed;
 }
+
+pub type Seed = [u8; 16];
+
+pub const DEFAULT_SEED: Seed = [
+    0x4f, 0x09, 0xd6, 0x9f, 0x62, 0x9b, 0x09, 0x0c, 0x0c, 0x49, 0x09, 0xfe, 0x6f, 0x1d, 0x4a, 0x38,
+];
