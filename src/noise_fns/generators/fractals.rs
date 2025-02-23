@@ -27,7 +27,7 @@ where
     let mut sources = Vec::with_capacity(octaves);
     for x in 0..octaves {
         let source = Source::default();
-        sources.push(source.set_seed(seed + x as u32));
+        sources.push(source.set_seed(seed.wrapping_add(x as u32)));
     }
     sources
 }
