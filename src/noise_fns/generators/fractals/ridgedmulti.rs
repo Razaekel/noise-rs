@@ -4,6 +4,9 @@ use crate::{
 };
 use alloc::vec::Vec;
 
+#[cfg(not(feature = "std"))]
+use num_traits::float::FloatCore;
+
 /// Noise function that outputs ridged-multifractal noise.
 ///
 /// This noise function, heavily based on the fBm-noise function, generates

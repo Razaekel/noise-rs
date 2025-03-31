@@ -1,6 +1,9 @@
 use crate::{math::scale_shift, noise_fns::NoiseFn};
 use core::marker::PhantomData;
 
+#[cfg(feature = "libm")]
+use num_traits::Float;
+
 /// Noise function that maps the output value from the source function onto an
 /// exponential curve.
 ///

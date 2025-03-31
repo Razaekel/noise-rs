@@ -1,5 +1,8 @@
 use alloc::vec::Vec;
 
+#[cfg(not(feature = "std"))]
+use num_traits::float::FloatCore;
+
 pub type Color = [u8; 4];
 
 #[derive(Clone, Copy, Debug, Default)]

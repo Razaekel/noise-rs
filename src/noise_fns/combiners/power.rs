@@ -1,6 +1,9 @@
 use crate::noise_fns::NoiseFn;
 use core::marker::PhantomData;
 
+#[cfg(feature = "libm")]
+use num_traits::Float;
+
 /// Noise function that raises the output value from the first source function
 /// to the power of the output value of the second source function.
 #[derive(Clone, Debug)]

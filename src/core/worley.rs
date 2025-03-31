@@ -4,6 +4,9 @@ use crate::{
 };
 use core::f64;
 
+#[cfg(feature = "libm")]
+use num_traits::Float;
+
 #[derive(Clone, Copy, Debug)]
 pub enum ReturnType {
     Distance,

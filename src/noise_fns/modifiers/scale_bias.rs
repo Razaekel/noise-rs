@@ -1,6 +1,9 @@
 use crate::noise_fns::NoiseFn;
 use core::marker::PhantomData;
 
+#[cfg(feature = "libm")]
+use num_traits::MulAdd;
+
 /// Noise function that applies a scaling factor and a bias to the output value
 /// from the source function.
 ///

@@ -1,5 +1,8 @@
 use crate::{utils::NoiseMap, NoiseFn};
 
+#[cfg(feature = "libm")]
+use num_traits::Float;
+
 use super::NoiseMapBuilder;
 
 pub struct CylinderMapBuilder<SourceModule>
