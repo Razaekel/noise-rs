@@ -19,12 +19,13 @@ name = "noise"
 rand = { version = "0.9", default-features = false }
 rand_xorshift = "0.4"
 image = { version = "0.25.5", optional = true }
-num-traits = "0.2"
+num-traits = { version = "0.2", default-features = false }
 
 [features]
-default = []
-images = ["image", "std"]
-std = []
+default = ["std"]
+images = ["image"]
+libm = ["num-traits/libm"]
+std = ["num-traits/std"]
 
 [dev-dependencies]
 criterion = { version = "0.5.1", features = ["html_reports"] }
