@@ -14,6 +14,9 @@ pub enum ReturnType {
 }
 
 pub mod distance_functions {
+    #[cfg(feature = "libm")]
+    use num_traits::Float;
+
     pub fn euclidean(p1: &[f64], p2: &[f64]) -> f64 {
         p1.iter()
             .zip(p2)
