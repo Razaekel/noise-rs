@@ -4,6 +4,9 @@ use crate::{
 };
 use alloc::vec::Vec;
 
+#[cfg(not(feature = "std"))]
+use num_traits::float::FloatCore;
+
 /// Noise function that outputs "billowy" noise.
 ///
 /// This noise function produces "billowy" noise suitable for clouds and rocks.

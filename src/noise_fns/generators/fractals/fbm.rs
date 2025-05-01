@@ -4,6 +4,9 @@ use crate::{
 };
 use alloc::vec::Vec;
 
+#[cfg(not(feature = "std"))]
+use num_traits::float::FloatCore;
+
 /// Noise function that outputs fBm (fractal Brownian motion) noise.
 ///
 /// fBm is a _monofractal_ method. In essence, fBm has a _constant_ fractal

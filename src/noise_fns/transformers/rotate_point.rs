@@ -1,5 +1,8 @@
 use crate::noise_fns::NoiseFn;
 
+#[cfg(feature = "libm")]
+use num_traits::Float;
+
 /// Noise function that rotates the input value around the origin before
 /// returning the output value from the source function.
 ///

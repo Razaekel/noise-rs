@@ -1,5 +1,8 @@
 use crate::math::vectors::{Vector2, Vector3, Vector4};
 
+#[cfg(not(feature = "std"))]
+use num_traits::float::FloatCore;
+
 macro_rules! impl_sphere {
     ($name:ident, $vector:ty) => {
         #[inline(always)]

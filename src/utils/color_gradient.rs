@@ -1,5 +1,8 @@
 use alloc::vec::Vec;
 
+#[cfg(feature = "libm")]
+use num_traits::MulAdd;
+
 pub type Color = [u8; 4];
 
 #[derive(Clone, Copy, Debug, Default)]

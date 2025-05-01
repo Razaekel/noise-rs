@@ -8,6 +8,9 @@ use crate::{
 };
 use core::f64;
 
+#[cfg(not(feature = "std"))]
+use num_traits::float::FloatCore;
+
 #[inline(always)]
 pub fn perlin_1d<NH>(point: f64, hasher: &NH) -> f64
 where

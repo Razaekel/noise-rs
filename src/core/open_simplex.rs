@@ -4,6 +4,9 @@ use crate::{
     permutationtable::NoiseHasher,
 };
 
+#[cfg(not(feature = "std"))]
+use num_traits::float::FloatCore;
+
 #[inline(always)]
 pub fn open_simplex_2d<NH>(point: Vector2<f64>, hasher: &NH) -> f64
 where
