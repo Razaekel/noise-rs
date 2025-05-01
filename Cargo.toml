@@ -23,7 +23,7 @@ num-traits = { version = "0.2", default-features = false }
 
 [features]
 default = ["std"]
-images = ["image"]
+images = ["image", "std"]
 libm = ["num-traits/libm"]
 std = ["num-traits/std"]
 
