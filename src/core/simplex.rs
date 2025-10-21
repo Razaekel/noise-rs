@@ -154,7 +154,7 @@ where
     //   dnoise_dx += -8.0 * t22 * t2 * x2 * ( gx2 * x2 + gy2 * y2 ) + t42 * gx2;
     //   dnoise_dy += -8.0 * t22 * t2 * y2 * ( gx2 * x2 + gy2 * y2 ) + t42 * gy2;
     //
-    let mut dnoise = offset1 + corner0.t2 * corner0.t * corner0.gradient.dot(offset1);
+    let mut dnoise = offset1 * corner0.t2 * corner0.t * corner0.gradient.dot(offset1);
     dnoise += offset2 * corner1.t2 * corner1.t * corner1.gradient.dot(offset2);
     dnoise += offset3 * corner2.t2 * corner2.t * corner2.gradient.dot(offset3);
 
