@@ -122,7 +122,7 @@ impl NoiseImage {
             image::ColorType::Rgba8,
         );
 
-        println!("\nFinished generating {}", filename.to_string_lossy());
+        std::println!("\nFinished generating {}", filename.to_string_lossy());
     }
 }
 

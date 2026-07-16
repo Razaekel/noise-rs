@@ -1,3 +1,6 @@
+#[cfg(not(feature = "std"))]
+use num_traits::Float as _;
+
 use crate::{
     gradient,
     math::vectors::{Vector2, Vector3, Vector4},

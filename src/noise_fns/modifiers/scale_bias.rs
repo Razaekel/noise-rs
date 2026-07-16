@@ -1,3 +1,6 @@
+#[cfg(not(feature = "std"))]
+use num_traits::Float as _;
+
 use crate::noise_fns::NoiseFn;
 use core::marker::PhantomData;
 

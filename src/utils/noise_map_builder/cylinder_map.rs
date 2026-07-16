@@ -1,3 +1,6 @@
+#[cfg(not(feature = "std"))]
+use num_traits::Float as _;
+
 use crate::{utils::NoiseMap, NoiseFn};
 
 use super::NoiseMapBuilder;

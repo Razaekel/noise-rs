@@ -1,3 +1,6 @@
+#[cfg(not(feature = "std"))]
+use num_traits::Float as _;
+
 use alloc::vec::Vec;
 
 pub type Color = [u8; 4];

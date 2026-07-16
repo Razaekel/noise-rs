@@ -1,3 +1,6 @@
+#[cfg(not(feature = "std"))]
+use num_traits::Float as _;
+
 use crate::{
     math::vectors::{Vector2, Vector3, Vector4},
     permutationtable::NoiseHasher,
@@ -11,6 +14,9 @@ pub enum ReturnType {
 }
 
 pub mod distance_functions {
+    #[cfg(not(feature = "std"))]
+    use num_traits::Float as _;
+
     pub fn euclidean(p1: &[f64], p2: &[f64]) -> f64 {
         p1.iter()
             .zip(p2)

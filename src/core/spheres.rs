@@ -1,3 +1,6 @@
+#[cfg(not(feature = "std"))]
+use num_traits::Float as _;
+
 use crate::math::vectors::{Vector2, Vector3, Vector4};
 
 macro_rules! impl_sphere {

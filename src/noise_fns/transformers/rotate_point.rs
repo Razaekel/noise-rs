@@ -1,3 +1,6 @@
+#[cfg(not(feature = "std"))]
+use num_traits::Float as _;
+
 use crate::noise_fns::NoiseFn;
 
 /// Noise function that rotates the input value around the origin before
