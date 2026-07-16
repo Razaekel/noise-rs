@@ -5,6 +5,9 @@ pub(crate) mod interpolate;
 pub(crate) mod s_curve;
 pub mod vectors;
 
+#[cfg(not(feature = "std"))]
+use num_traits::Float as _;
+
 #[cfg(not(target_os = "emscripten"))]
 #[inline]
 pub(crate) fn scale_shift(value: f64, n: f64) -> f64 {

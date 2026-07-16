@@ -1,3 +1,6 @@
+#[cfg(not(feature = "std"))]
+use num_traits::Float as _;
+
 use crate::{
     math::{scale_shift, vectors::*},
     noise_fns::{MultiFractal, NoiseFn, Seedable},

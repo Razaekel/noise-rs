@@ -111,7 +111,7 @@ impl NoiseMap {
             image::ColorType::L8,
         );
 
-        println!("\nFinished generating {}", filename.to_string_lossy());
+        std::println!("\nFinished generating {}", filename.to_string_lossy());
     }
 
     fn initialize() -> Self {
